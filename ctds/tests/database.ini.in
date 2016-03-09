@@ -1,0 +1,10 @@
+[DEFAULT]
+# Define the test SQL server host here.
+server=UNDEFINED
+port=1433
+login_timeout=1
+user=TDSUnittest
+password=TDSUnittest
+database=TDSUnittest
+timeout=1
+autocommit=1

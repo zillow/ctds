@@ -1,0 +1,10 @@
+*~
+*.egg-info
+*.gcov
+*.pyc
+*.so
+.coverage
+.zpr/
+build/
+dist/
+ctds/tests/database.ini

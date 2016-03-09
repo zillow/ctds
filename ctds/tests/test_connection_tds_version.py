@@ -1,0 +1,58 @@
+import ctds
+
+from .base import TestExternalDatabase
+from .compat import unicode_
+
+class TestConnectionTDSVersion(TestExternalDatabase):
+    '''Unit tests related to the Connection.tds_version attribute.
+    '''
+
+    def test___doc__(self):
+        self.assertEqual(
+            ctds.Connection.tds_version.__doc__,
+            '''\
+The TDS version in use for the connection.
+
+:return: None if the connection is closed.
+'''
+        )
+
+    def test_read(self):
+        try:
+            with self.connect(tds_version='7.3'):
+                supports73 = True
+        except ctds.InterfaceError:
+            supports73 = False
+
+        versions = [
+            ('7.0', '7.0'),
+            ('7.1', '7.1'),
+
+            # FreeTDS versions without 7.3 support always downgrade 7.2 to 7.1.
+            ('7.2', '7.2' if supports73 else '7.1'),
+        ]
+        if supports73:
+            versions.append(('7.3', '7.3'))
+
+        for tds_version, expected in versions:
+            with self.connect(tds_version=tds_version) as connection:
+                self.assertTrue(isinstance(connection.tds_version, unicode_))
+                self.assertEqual(connection.tds_version, expected)
+
+        self.assertEqual(connection.tds_version, None)
+
+    def test_write(self):
+        with self.connect() as connection:
+            try:
+                connection.tds_version = 9
+            except AttributeError:
+                pass
+            else:
+                self.fail('.tds_version did not fail as expected') # pragma: nocover
+
+        try:
+            connection.tds_version = None
+        except AttributeError:
+            pass
+        else:
+            self.fail('.tds_version did not fail as expected') # pragma: nocover
