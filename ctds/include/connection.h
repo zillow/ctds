@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #include <Python.h>
-#include <sybfront.h>
+
 #include <sybdb.h>
 
 

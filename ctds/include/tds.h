@@ -4,16 +4,16 @@
 #include <Python.h>
 #include <stdlib.h>
 
-PyObject* PyExc_tds_Warning;
-PyObject* PyExc_tds_Error;
-PyObject* PyExc_tds_InterfaceError;
-PyObject* PyExc_tds_DatabaseError;
-PyObject* PyExc_tds_DataError;
-PyObject* PyExc_tds_OperationalError;
-PyObject* PyExc_tds_IntegrityError;
-PyObject* PyExc_tds_InternalError;
-PyObject* PyExc_tds_ProgrammingError;
-PyObject* PyExc_tds_NotSupportedError;
+extern PyObject* PyExc_tds_Warning;
+extern PyObject* PyExc_tds_Error;
+extern PyObject* PyExc_tds_InterfaceError;
+extern PyObject* PyExc_tds_DatabaseError;
+extern PyObject* PyExc_tds_DataError;
+extern PyObject* PyExc_tds_OperationalError;
+extern PyObject* PyExc_tds_IntegrityError;
+extern PyObject* PyExc_tds_InternalError;
+extern PyObject* PyExc_tds_ProgrammingError;
+extern PyObject* PyExc_tds_NotSupportedError;
 
 #define tds_mem_malloc malloc
 #define tds_mem_realloc realloc

@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sybfront.h>
 #include <sybdb.h>
 
 #include "include/cursor.h"

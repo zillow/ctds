@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <dlfcn.h>
 
-#include <sybfront.h>
 #include <sybdb.h>
 
 #include "include/macros.h"
@@ -13,6 +12,11 @@
 #include "include/pyutils.h"
 #include "include/parameter.h"
 
+#ifdef __APPLE__
+#  define SHAREDLIB_EXT "dylib"
+#else
+#  define SHAREDLIB_EXT "so"
+#endif
 
 /* Platform-specific thread-local storage support. */
 #ifdef __clang__
@@ -788,10 +792,10 @@ static PyObject* Connection_timeout_get(PyObject* self, void* closure)
     do
     {
         dbgettimeout_ fn;
-        libsybdb = dlopen("libsybdb.so", RTLD_LAZY);
+        libsybdb = dlopen("libsybdb." SHAREDLIB_EXT, RTLD_LAZY);
         if (!libsybdb)
         {
-            PyErr_SetString(PyExc_tds_NotSupportedError, dlerror());
+            PyErr_SetString(PyExc_tds_InternalError, dlerror());
             break;
         }
         fn = (dbgettimeout_)dlsym(libsybdb, "dbgettimeout");
@@ -850,7 +854,7 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
             break;
         }
 
-        libsybdb = dlopen("libsybdb.so", RTLD_LAZY);
+        libsybdb = dlopen("libsybdb." SHAREDLIB_EXT, RTLD_LAZY);
         if (!libsybdb)
         {
             PyErr_SetString(PyExc_tds_NotSupportedError, dlerror());

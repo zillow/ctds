@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-#include <sybfront.h>
 #include <sybdb.h>
 
 #include "include/connection.h"

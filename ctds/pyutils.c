@@ -2,7 +2,7 @@
 /* `datetime.h` must only be included here. */
 #include <datetime.h>
 
-#include <endian.h>
+#include <sys/types.h>
 
 #include "include/pyutils.h"
 

@@ -4,25 +4,41 @@ PACKAGE_NAME = ctds
 
 # FreeTDS version to test against.
 ifndef FREETDS_VERSION
-    FREETDS_VERSION = 0.95.87
+    FREETDS_VERSION := 0.95.87
 endif
 
 # Python version support
-PYTHON_VERSIONS = \
-    2.7 \
+SUPPORTED_PYTHON_VERSIONS := \
     2.6 \
+    2.7 \
     3.3 \
     3.4 \
     3.5
 
-DEFAULT_PYTHON_VERSION = $(lastword $(PYTHON_VERSIONS))
+define CHECK_PYTHON
+    $(if $(shell which python$(strip $(1))), $(strip $(1)))
+endef
+
+PYTHON_VERSIONS := $(strip $(foreach V, $(SUPPORTED_PYTHON_VERSIONS), $(call CHECK_PYTHON, $(V))))
+DEFAULT_PYTHON_VERSION := $(lastword $(PYTHON_VERSIONS))
 
 ifndef VIRTUALENV
     VIRTUALENV = virtualenv
 endif
 
 # Local directories
-BUILD_DIR = build
+BUILD_DIR := build
+
+# Platform-specific values.
+ifeq "$(shell uname -s)" "Darwin"
+    FREETDS_MAC_OSX := 1
+endif
+
+ifdef FREETDS_MAC_OSX
+    LD_LIBRARY_PATH := DYLD_FALLBACK_LIBRARY_PATH
+else
+    LD_LIBRARY_PATH := LD_LIBRARY_PATH
+endif
 
 
 # Functions to generate the FreeTDS paths.
@@ -37,7 +53,9 @@ FREETDS_LIB = $(call FREETDS_ROOT, $(1))/lib
 # This will generate a target to build the specific version of FreeTDS as specified in
 # FREETDS_VERSION.
 $(BUILD_DIR)/freetds-$(FREETDS_VERSION):
-	wget -P $(BUILD_DIR) 'ftp://ftp.freetds.org/pub/freetds/stable/freetds-$(FREETDS_VERSION).tar.gz'
+	mkdir -p $(BUILD_DIR)
+	curl -o "$(BUILD_DIR)/freetds-$(FREETDS_VERSION).tar.gz" \
+        'ftp://ftp.freetds.org/pub/freetds/stable/freetds-$(FREETDS_VERSION).tar.gz'
 	tar -xzf $(BUILD_DIR)/freetds-$(FREETDS_VERSION).tar.gz -C $(BUILD_DIR)
 
 # The version-specific build sentinel.
@@ -97,7 +115,8 @@ define TEST_COMMANDS
         --global-option=build_ext --global-option="-f"
 
 
-	$(call ENV_PYTHON, $(1)) setup.py test $(if $(TEST),-s $(TEST))
+	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(FREETDS_VERSION)) \
+        $(call ENV_PYTHON, $(1)) setup.py test $(if $(TEST),-s $(TEST))
 endef
 
 define PYLINT_COMMANDS
