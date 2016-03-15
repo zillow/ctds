@@ -7,7 +7,10 @@ cTDS
 `cTDS` is a full Python `DB API-2.0`_-compliant SQL Server database library for `Linux` and
 `Mac OS X`.
 
+The full documentation for `cTDS` can be found `here`_.
+
 .. _`DB API-2.0`: https://www.python.org/dev/peps/pep-0249
+.. _`here`: http://pythonhosted.org/ctds/
 
 
 Dependencies

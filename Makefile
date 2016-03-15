@@ -28,6 +28,7 @@ endif
 
 # Local directories
 BUILD_DIR := build
+HTML_BUILD_DIR := $(BUILD_DIR)/docs/html
 
 # Platform-specific values.
 ifeq "$(shell uname -s)" "Darwin"
@@ -125,7 +126,7 @@ endef
 
 define DOC_COMMANDS
 	$(call ENV_PIP, $(1)) install -v -e .
-	$(ENV_PYTHON) -m sphinx -n -a docs $(BUILD_DIR)/$(strip $(1))
+	$(ENV_PYTHON) -m sphinx -n -a -d $(BUILD_DIR)/$(strip $(1)) docs $(HTML_BUILD_DIR)
 endef
 
 
@@ -142,6 +143,12 @@ help:
 	@echo
 	@echo "    cover"
 	@echo "        Generate code coverage for c source code."
+	@echo
+	@echo "    doc"
+	@echo "        Generate documentation."
+	@echo
+	@echo "    publish-docs"
+	@echo "        Publish docs to http://pythonhosted.org/ctds."
 	@echo
 	@echo "    pylint"
 	@echo "        Run pylint over all *.py files."
@@ -173,6 +180,9 @@ cover: test
 
 # doc
 $(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
+
+publish-docs: doc
+	python setup.py upload_docs --upload-dir=$(HTML_BUILD_DIR)
 
 # pylint
 $(eval $(call ENV_RULE, pylint, $(DEFAULT_PYTHON_VERSION), pylint, PYLINT_COMMANDS))
