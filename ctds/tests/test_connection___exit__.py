@@ -11,15 +11,15 @@ class TestConnectionExit(TestExternalDatabase):
 __exit__(exc_type, exc_val, exc_tb)
 
 Exit the connection's runtime context, closing the connection.
-If no error occurred, any pending transaction will be commited
+If no error occurred, any pending transaction will be committed
 prior to closing the connection. If an error occurred, the transaction
 will be implicitly rolled back when the connection is closed.
 
-:param type exc_type: The exeception type, if an exception
+:param type exc_type: The exception type, if an exception
     is raised in the context, otherwise `None`.
-:param Exception exc_val: The exeception value, if an exception
+:param Exception exc_val: The exception value, if an exception
     is raised in the context, otherwise `None`.
-:param object exc_tb: The exeception traceback, if an exception
+:param object exc_tb: The exception traceback, if an exception
     is raised in the context, otherwise `None`.
 
 :rtype: None

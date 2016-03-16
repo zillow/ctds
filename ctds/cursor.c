@@ -1126,11 +1126,11 @@ static const char s_Cursor_callproc_doc[] =
     "Call a stored database procedure with the given name. The sequence of\n"
     "parameters must contain one entry for each argument that the procedure\n"
     "expects. The result of the call is returned as modified copy of the input\n"
-    "sequence. Input parameters are left untouched, output and input/output\n"
-    "parameters replaced with possibly new values.\n"
+    "sequence. Input parameters are left untouched. Output and input/output\n"
+    "parameters are replaced with output values.\n"
     "\n"
-    ".. warning:: Due to TDS implementation details, stored procedures with\n"
-    "    output parameters are not supported with resultsets.\n"
+    ".. warning:: Due to FreeTDS implementation details, stored procedures with\n"
+    "    both output parameters and resultsets are not supported.\n"
     "\n"
     ".. warning:: Currently `FreeTDS` does not support passing empty string\n"
     "    parameters. Empty strings are converted to `NULL` values internally\n"
@@ -1145,8 +1145,8 @@ static const char s_Cursor_callproc_doc[] =
     "    value. Parameters passed in a tuple are passed in the tuple order.\n"
     ":type parameters: tuple or dict\n"
 
-    ":return: The input `parameters` with any output parameters replced with\n"
-    "    the output value\n"
+    ":return: The input `parameters` with any output parameters replaced with\n"
+    "    the output values.\n"
     ":rtype: tuple or dict\n";
 
 static PyObject* Cursor_callproc(PyObject* self, PyObject* args)
@@ -2492,7 +2492,7 @@ static PyObject* Cursor_nextset(PyObject* self, PyObject* args)
 static const char s_Cursor_setinputsizes_doc[] =
     "setinputsizes()\n"
     "\n"
-    "This method has no affect.\n"
+    "This method has no effect.\n"
     "\n"
     ":pep:`0249#setinputsizes`\n";
 
@@ -2507,7 +2507,7 @@ static PyObject* Cursor_setinputsizes(PyObject* self, PyObject* args)
 static const char s_Cursor_setoutputsize_doc[] =
     "setoutputsize()\n"
     "\n"
-    "This method has no affect.\n"
+    "This method has no effect.\n"
     "\n"
     ":pep:`0249#setoutputsize`\n";
 
@@ -2568,11 +2568,11 @@ static const char s_Cursor___exit___doc[] =
     "\n"
     "Exit the cursor's runtime context, closing the cursor.\n"
     "\n"
-    ":param type exc_type: The exeception type, if an exception\n"
+    ":param type exc_type: The exception type, if an exception\n"
     "    is raised in the context, otherwise `None`.\n"
-    ":param Exception exc_val: The exeception value, if an exception\n"
+    ":param Exception exc_val: The exception value, if an exception\n"
     "    is raised in the context, otherwise `None`.\n"
-    ":param object exc_tb: The exeception traceback, if an exception\n"
+    ":param object exc_tb: The exception traceback, if an exception\n"
     "    is raised in the context, otherwise `None`.\n"
     "\n"
     ":rtype: None\n";

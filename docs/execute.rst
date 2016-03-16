@@ -3,7 +3,9 @@ Executing SQL Statements
 
 *cTDS* implements both the :py:meth:`~ctds.Cursor.execute` and
 :py:meth:`~ctds.Cursor.executemany` methods for executing SQL statements.
-Both are implemented using the `sp_executesql` SQL Server stored procedure.
+Both are implemented using the
+`sp_executesql <https://msdn.microsoft.com/en-us/library/ms188001.aspx>`_
+SQL Server stored procedure.
 This allows optimizations when running batches using
 :py:meth:`~ctds.Cursor.executemany`.
 
@@ -42,8 +44,8 @@ Parameter Types
 
 Parameter SQL types are inferred from the Python object type. If desired,
 the SQL type can be explicitly specified using a
-:doc:`type wrapper class <types>`. For example, this may be necessary when
-passing `None` for a `BINARY` column.
+:doc:`type wrapper class <types>`. For example, this is necessary when passing
+`None` for a `BINARY` column.
 
 .. code-block:: python
 

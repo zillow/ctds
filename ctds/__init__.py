@@ -1,6 +1,6 @@
 '''
-*cTDS* is a pure-c implementation of the `Python DB API 2.0 <https://www.python.org/dev/peps/pep-0249>`_
-specification for TDS-based SQL databases, specifically Microsoft SQL Server.
+*cTDS* is a pure C implementation of the `Python DB API 2.0 <https://www.python.org/dev/peps/pep-0249>`_
+specification for Microsoft SQL Server.
 '''
 import logging
 

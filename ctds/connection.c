@@ -136,7 +136,7 @@ struct Connection {
     LOGINREC* login;
     DBPROCESS* dbproc;
 
-    /* Should execute calls be auto-commited? */
+    /* Should execute calls be auto-committed? */
     bool autocommit;
 
     /* Last seen error, as set by the error handler. */
@@ -577,7 +577,7 @@ static void Connection_dealloc(PyObject* self)
 static const char s_Connection_autocommit_doc[] =
     "Auto-commit transactions after :py:meth:`ctds.Cursor.execute`,\n"
     ":py:meth:`ctds.Cursor.executemany`, and :py:meth:`ctds.Cursor.callproc`.\n"
-    "If this is False, operations must be commited explicitly using\n"
+    "If this is False, operations must be committed explicitly using\n"
     ":py:meth:`.commit`.\n";
 
 static PyObject* Connection_autocommit_get(PyObject* self, void* closure)
@@ -1401,15 +1401,15 @@ static const char s_Connection___exit___doc[] =
     "__exit__(exc_type, exc_val, exc_tb)\n"
     "\n"
     "Exit the connection's runtime context, closing the connection.\n"
-    "If no error occurred, any pending transaction will be commited\n"
+    "If no error occurred, any pending transaction will be committed\n"
     "prior to closing the connection. If an error occurred, the transaction\n"
     "will be implicitly rolled back when the connection is closed.\n"
     "\n"
-    ":param type exc_type: The exeception type, if an exception\n"
+    ":param type exc_type: The exception type, if an exception\n"
     "    is raised in the context, otherwise `None`.\n"
-    ":param Exception exc_val: The exeception value, if an exception\n"
+    ":param Exception exc_val: The exception value, if an exception\n"
     "    is raised in the context, otherwise `None`.\n"
-    ":param object exc_tb: The exeception traceback, if an exception\n"
+    ":param object exc_tb: The exception traceback, if an exception\n"
     "    is raised in the context, otherwise `None`.\n"
     "\n"
     ":rtype: None\n";

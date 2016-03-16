@@ -7,16 +7,16 @@ are created using the :func:`ctds.connect` method. All
 in a `with <https://www.python.org/dev/peps/pep-0343/>`_ statement.
 
 In order to actually perform queries or called stored procedures,
-a :py:class:`ctds.Cursor` is required. This can be aquired using the
+a :py:class:`ctds.Cursor` is required. This can be acquired using the
 :py:func:`ctds.Connection.cursor` method. Like the :py:class:`ctds.Connection`
 object, the :py:class:`ctds.Cursor` object can also be used as a context
 manager.
 
 .. note::
 
-    Due to the implementation of *TDS*, :py:class:`ctds.Cursor` objects cannot
-    have multiple query results active at once. Only the results from the last
-    query are available from the :py:class:`ctds.Cursor`.
+    Due to the design of the *TDS* protocol, :py:class:`ctds.Cursor` objects
+    cannot have multiple query results active at once. Only the results from
+    the last query are available from the :py:class:`ctds.Cursor`.
 
 
 An example of a simple query follows:

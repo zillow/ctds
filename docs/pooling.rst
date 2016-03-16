@@ -6,7 +6,7 @@ performance. *cTDS* does not provide connection pooling itself, but can be
 used in a 3rd party implementation, such as `antipool <http://furius.ca/antiorm/>`_.
 
 Whatever connection pooling solution is used, it is important to remember that
-`:py:class:ctds.Connection` and `:py:class:ctds.Cursor` objects must **not** be
+:py:class:`ctds.Connection` and :py:class:`ctds.Cursor` objects must **not** be
 shared across threads.
 
 

@@ -12,7 +12,7 @@ Parameter(value, output=False)
 
 Explicitly define a parameter for :py:meth:`.callproc`,
 :py:meth:`.execute`, or :py:meth:`.executemany`. This is necessary
-to indicate whether a parameter is *SQL* `OUTPUT` or `INTPUT/OUTPUT`
+to indicate whether a parameter is *SQL* `OUTPUT` or `INPUT/OUTPUT`
 parameter.
 
 :param object value: The parameter's value.

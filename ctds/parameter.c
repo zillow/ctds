@@ -116,7 +116,7 @@ static const char s_tds_Parameter_doc[] =
     "\n"
     "Explicitly define a parameter for :py:meth:`.callproc`,\n"
     ":py:meth:`.execute`, or :py:meth:`.executemany`. This is necessary\n"
-    "to indicate whether a parameter is *SQL* `OUTPUT` or `INTPUT/OUTPUT`\n"
+    "to indicate whether a parameter is *SQL* `OUTPUT` or `INPUT/OUTPUT`\n"
     "parameter.\n"
     "\n"
     ":param object value: The parameter's value.\n"

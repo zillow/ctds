@@ -5,6 +5,12 @@ Calling Stored Procedures
 procedures, as defined by :pep:`0249#callproc`.
 Stored procedure parameters may be passed as either a `tuple` or `dict`.
 
+.. warning::
+
+    Currently `FreeTDS` does not support passing empty string parameters. Empty strings
+    are converted to `NULL` values internally before being transmitted to the database.
+
+
 Passing `tuple` parameters
 --------------------------
 
@@ -20,12 +26,6 @@ to the stored procedure in the tuple order. The returned results will be a
     # EXEC MyStoredProcedure 1, 3, 2, 4
 
     assert isinstance(outputs, tuple)
-
-
-.. warning::
-
-    Currently `FreeTDS` does not support passing empty string parameters. Empty strings
-    are converted to `NULL` values internally before being transmitted to the database.
 
 
 Passing `dict` parameters
@@ -64,10 +64,10 @@ Output Parameters
 -----------------
 
 :pep:`0249#callproc` does not define a way to specify a stored procedure parameter
-as an `output` parameter. To accomodate output parameters, the
-:py:class:`ctds.Parameter` is provided to wrap a parameter and indicate it as
-an output parameter. Output parameter values are available in the result returned
-from :py:meth:`~ctds.Cursor.callproc`.
+as an `output` parameter. `cTDS` allows you to wrap a parameter with the
+:py:class:`ctds.Parameter` class in order to indicate that it is an output parameter.
+Output parameter values are available in the result returned from
+:py:meth:`~ctds.Cursor.callproc`.
 
 .. code-block:: python
 
@@ -91,7 +91,7 @@ from :py:meth:`~ctds.Cursor.callproc`.
 
 By default, the output parameter's type is inferred from the Python value
 passed to it when created. This can be explicitly specified using a
-:doc:`type wrapper class <types>`. Additionally, the buffer for recieving
+:doc:`type wrapper class <types>`. Additionally, the buffer for receiving
 the output parameter is allocated based on the size of the value passed to
 :py:meth:`ctds.Parameter`. Again using an explicit
 :doc:`type wrapper class <types>` is useful for indicating how large the

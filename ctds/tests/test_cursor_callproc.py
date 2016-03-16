@@ -45,11 +45,11 @@ callproc(sql, parameters)
 Call a stored database procedure with the given name. The sequence of
 parameters must contain one entry for each argument that the procedure
 expects. The result of the call is returned as modified copy of the input
-sequence. Input parameters are left untouched, output and input/output
-parameters replaced with possibly new values.
+sequence. Input parameters are left untouched. Output and input/output
+parameters are replaced with output values.
 
-.. warning:: Due to TDS implementation details, stored procedures with
-    output parameters are not supported with resultsets.
+.. warning:: Due to FreeTDS implementation details, stored procedures with
+    both output parameters and resultsets are not supported.
 
 .. warning:: Currently `FreeTDS` does not support passing empty string
     parameters. Empty strings are converted to `NULL` values internally
@@ -62,8 +62,8 @@ parameters replaced with possibly new values.
     Parameters passed in a dict must map from the parameter name to
     value. Parameters passed in a tuple are passed in the tuple order.
 :type parameters: tuple or dict
-:return: The input `parameters` with any output parameters replced with
-    the output value
+:return: The input `parameters` with any output parameters replaced with
+    the output values.
 :rtype: tuple or dict
 '''
         )

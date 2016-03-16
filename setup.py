@@ -13,7 +13,7 @@ import sys
 
 CTDS_MAJOR_VERSION = 1
 CTDS_MINOR_VERSION = 0
-CTDS_PATCH_VERSION = 1
+CTDS_PATCH_VERSION = 2
 
 install_requires = [
 ]
@@ -39,6 +39,9 @@ if os.environ.get('TDS_COVER'):
 if sys.platform == 'darwin':
     extra_link_args.append('-lpthread')
 
+with open('README.rst') as readme:
+    long_description = readme.read()
+
 setuptools.setup(
     name = 'ctds',
     version = '{0}.{1}.{2}'.format(
@@ -49,18 +52,37 @@ setuptools.setup(
 
     author = 'Joshua Lang',
     author_email = 'joshual@zillow.com',
-    description = 'DB API 2.0-compliant interface based on freetds',
-    keywords = 'freetds SQL DB',
-    license = '(C) Zillow, Inc. 2015-',
+    description = 'DB API 2.0-compliant Linux driver for SQL Server',
+    long_description = long_description,
+    keywords = [
+        'freetds',
+        'mssql',
+        'SQL',
+        'T-SQL',
+        'TDS',
+        'SQL Server',
+        'DB-API',
+        'PEP-0249',
+        'database',
+    ],
+    license = 'MIT',
     url = 'https://github.com/zillow/ctds',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
-        'Topic :: Utilities',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: C',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: SQL',
+        'Topic :: Database',
     ],
 
     packages = [

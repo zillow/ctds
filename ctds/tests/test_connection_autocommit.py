@@ -39,7 +39,7 @@ class TestConnectionAutocommit(TestExternalDatabase):
                 cursor.execute('SELECT @@OPTIONS')
                 self.assertTrue(self.IMPLICIT_TRANSACTIONS & cursor.fetchone()[0])
 
-                # The transaction should be commited when enabling autocommit.
+                # The transaction should be committed when enabling autocommit.
                 connection.autocommit = True
                 self.assertEqual(connection.autocommit, True)
 

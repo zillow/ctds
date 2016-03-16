@@ -12,7 +12,7 @@ class TestCursorSetOutputSize(TestExternalDatabase):
             '''\
 setoutputsize()
 
-This method has no affect.
+This method has no effect.
 
 :pep:`0249#setoutputsize`
 '''
