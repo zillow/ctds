@@ -43,14 +43,20 @@ class TestCursorTypes(TestExternalDatabase):
     def test_varchar(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                for value in ('', None, ' ', 'one'):
+                for value in (
+                        unicode_(''),
+                        None,
+                        unicode_(' '),
+                        unicode_('one'),
+                        unicode_('hola \u0153')
+                ):
                     for size in (None, 1, 3, 500):
                         kwargs = {}
                         if size is not None:
                             kwargs['size'] = size
                             expected_size = size
                         else:
-                            expected_size = 1 if value is None else max(1, len(value))
+                            expected_size = 1 if value is None else max(1, len(value.encode('utf-8')))
 
                         varchar = ctds.SqlVarChar(value, **kwargs)
                         self.assertEqual(id(varchar.value), id(value))
@@ -67,7 +73,7 @@ class TestCursorTypes(TestExternalDatabase):
                         # TODO: fix this once supported by FreeTDS
                         # Currently FreeTDS (really the db-lib API) will
                         # turn empty string to NULL
-                        if value == '':
+                        if value == '' and self.use_sp_executesql:
                             value = None
                         self.assertEqual(
                             [tuple(row) for row in cursor.fetchall()],
@@ -157,7 +163,18 @@ class TestCursorTypes(TestExternalDatabase):
     def test_bigint(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                for case in (2**63 - 1, None):
+                for case in (
+                        0,
+                        -1,
+                        255,
+                        256,
+                        -255,
+                        2**15 - 1,
+                        -2 ** 15 + 1,
+                        2**63 - 1,
+                        -2**63 + 1,
+                        None
+                ):
                     bigint = ctds.SqlBigInt(case)
                     self.assertEqual(id(bigint.value), id(case))
                     self.assertEqual(bigint.size, -1)

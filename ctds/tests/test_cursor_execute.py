@@ -160,7 +160,7 @@ specified in the SQL statement. Parameter notation is specified by
                     unicode_('hello \'world\' \u0153'), # pylint: disable=anomalous-unicode-escape-in-string
                     datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
                     Decimal('123.4567890'),
-                    Decimal('1000000.0001')
+                    Decimal('1000000.4532')
                 )
                 query = cursor.execute(
                     '''
@@ -192,9 +192,27 @@ specified in the SQL statement. Parameter notation is specified by
                         args[5],
                         args[6],
                         args[7],
-                        args[8],
+                        self.round_money(args[8]),
                     )
                 )
+
+    def test_escape(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                args = ("''; SELECT @@VERSION;",)
+                cursor.execute(
+                    '''
+                    SELECT :0
+                    ''',
+                    args
+                )
+                self.assertEqual(
+                    [tuple(row) for row in cursor.fetchall()],
+                    [
+                        args
+                    ]
+                )
+                self.assertEqual(cursor.nextset(), None)
 
     def test_compute(self):
         # COMPUTE clauses are only supported in SQL Server 2005 & 2008

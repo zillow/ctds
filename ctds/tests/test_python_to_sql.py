@@ -115,6 +115,10 @@ class TestPythonToSQL(TestExternalDatabase):
                     unicode_('*'),
                     unicode_('*' * 8001),
                     unicode_('*' * 8000),
+                    unicode_('*' * 7999),
+                    unicode_('\u0153' * 8001),
+                    unicode_('\u0153' * 8000),
+                    unicode_('\u0153' * 7999),
                 ]
                 for value in values:
                     cursor.execute('SELECT :0 AS Value', (value,))

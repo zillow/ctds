@@ -1,22 +1,24 @@
 Calling Stored Procedures
 =========================
 
-*cTDS* implements the :py:meth:`~ctds.Cursor.callproc` method for calling stored
+*cTDS* implements the :py:meth:`ctds.Cursor.callproc` method for calling stored
 procedures, as defined by :pep:`0249#callproc`.
-Stored procedure parameters may be passed as either a `tuple` or `dict`.
+Stored procedure parameters may be passed as either a :py:class:`tuple` or
+:py:class:`dict`.
 
 .. warning::
 
-    Currently `FreeTDS` does not support passing empty string parameters. Empty strings
-    are converted to `NULL` values internally before being transmitted to the database.
+    Currently `FreeTDS`_ does not support passing empty string parameters. Empty
+    strings are converted to `NULL` values internally before being transmitted
+    to the database.
 
 
 Passing `tuple` parameters
 --------------------------
 
-Arguments passed to :py:meth:`~ctds.Cursor.callproc` in a `tuple` will be passed
-to the stored procedure in the tuple order. The returned results will be a
-`tuple` object, with output parameters replaced.
+Arguments passed to :py:meth:`ctds.Cursor.callproc` in a :py:class:`tuple` will
+be passed to the stored procedure in the tuple order. The returned results will
+be a :py:class:`tuple` object, with output parameters replaced.
 
 .. code-block:: python
 
@@ -31,10 +33,11 @@ to the stored procedure in the tuple order. The returned results will be a
 Passing `dict` parameters
 -------------------------
 
-Arguments passed to :py:meth:`~ctds.Cursor.callproc` in a `dict` will be passed
-to the stored procedure using the `dict` keys for the argument names and `dict`
-values for the argument values. Order does not matter in this usage. The
-returned results will be a `dict` object, with output parameters replaced.
+Arguments passed to :py:meth:`ctds.Cursor.callproc` in a :py:class:`dict` will
+be passed to the stored procedure using the :py:class:`dict` keys for the
+argument names and :py:class:`dict` values for the argument values. Order does
+not matter in this usage. The returned results will be a :py:class:`dict`
+object, with output parameters replaced.
 
 .. code-block:: python
 
@@ -57,7 +60,7 @@ returned results will be a `dict` object, with output parameters replaced.
 .. note::
 
     All parameter names **must** begin with the **@** character when using this
-    form of :py:meth:`~ctds.Cursor.callproc`.
+    form of :py:meth:`ctds.Cursor.callproc`.
 
 
 Output Parameters
@@ -67,7 +70,7 @@ Output Parameters
 as an `output` parameter. `cTDS` allows you to wrap a parameter with the
 :py:class:`ctds.Parameter` class in order to indicate that it is an output parameter.
 Output parameter values are available in the result returned from
-:py:meth:`~ctds.Cursor.callproc`.
+:py:meth:`ctds.Cursor.callproc`.
 
 .. code-block:: python
 
@@ -104,3 +107,6 @@ parameter:
         'MyStoredProcedureWithLargeVariableOutput',
         (cursor.Parameter(cursor.SqlVarChar(None, size=4000)),)
     )
+
+
+.. _FreeTDS: http://www.freetds.org

@@ -48,4 +48,7 @@ The number of rows that the last :py:meth:`.execute` produced or affected.
                         INSERT INTO @test_rowcount(i) VALUES (1),(2),(3);
                     '''
                 )
-                self.assertEqual(cursor.rowcount, -1)
+                self.assertEqual(
+                    cursor.rowcount,
+                    -1 if self.use_sp_executesql else 3
+                )

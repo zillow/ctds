@@ -8,7 +8,7 @@ import ctds
 from .base import TestExternalDatabase
 from .compat import unicode_
 
-class TestSQLToPython(TestExternalDatabase):
+class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-methods
     '''Unit tests related to SQL to Python type conversion.
     '''
 
@@ -305,10 +305,11 @@ class TestSQLToPython(TestExternalDatabase):
             tuple(self.cursor.fetchone()),
             (
                 None,
-                Decimal('-922337203685477.5808'),
-                Decimal('922337203685477.5807'),
+                self.round_money(Decimal('-922337203685477.5808')),
+                self.round_money(Decimal('922337203685477.5807')),
 
                 None,
+                # SMALLMONEY seems to be rounded properly by FreeTDS ...
                 Decimal('-214748.3648'),
                 Decimal('214748.3647'),
             )
@@ -406,7 +407,7 @@ class TestSQLToPython(TestExternalDatabase):
             (
                 None,
                 datetime(1900, 1, 1),
-                # TODO: Rounded up during conversion ?!?
+                # SMALLDATETIME only has minute accuracy.
                 datetime(2076, 6, 7)
             )
         )

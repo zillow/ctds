@@ -1,24 +1,24 @@
 Executing SQL Statements
 ========================
 
-*cTDS* implements both the :py:meth:`~ctds.Cursor.execute` and
-:py:meth:`~ctds.Cursor.executemany` methods for executing SQL statements.
-Both are implemented using the
-`sp_executesql <https://msdn.microsoft.com/en-us/library/ms188001.aspx>`_
-SQL Server stored procedure.
+*cTDS* implements both the :py:meth:`ctds.Cursor.execute` and
+:py:meth:`ctds.Cursor.executemany` methods for executing SQL statements.
+Both are implemented using the `sp_executesql`_ `SQL Server`_ stored procedure.
 This allows optimizations when running batches using
-:py:meth:`~ctds.Cursor.executemany`.
+:py:meth:`ctds.Cursor.executemany`.
 
-.. code-block:: python
+.. note::
 
-    cursor.execute('SELECT * FROM MyTable')
+    Versions of `FreeTDS`_ prior to **0.92.405** can't properly support the use
+    of `sp_executesql`_. `cTDS` still implements
+    :py:meth:`~ctds.Cursor.executemany`, however performance benefits are lost.
 
 
 Passing Parameters
 ------------------
 
-Parameters may be passed to the :py:meth:`~ctds.Cursor.execute` and
-:py:meth:`~ctds.Cursor.executemany` methods using the **numeric** parameter
+Parameters may be passed to the :py:meth:`ctds.Cursor.execute` and
+:py:meth:`ctds.Cursor.executemany` methods using the **numeric** parameter
 style as defined in :pep:`0249#paramstyle`.
 
 .. code-block:: python
@@ -45,7 +45,7 @@ Parameter Types
 Parameter SQL types are inferred from the Python object type. If desired,
 the SQL type can be explicitly specified using a
 :doc:`type wrapper class <types>`. For example, this is necessary when passing
-`None` for a `BINARY` column.
+:py:obj:`None` for a `BINARY` column.
 
 .. code-block:: python
 
@@ -63,8 +63,8 @@ the SQL type can be explicitly specified using a
 Limitations
 -----------
 
-Due to the implementation of :py:meth:`~ctds.Cursor.execute` and
-:py:meth:`~ctds.Cursor.executemany`, any SQL code which defines parameters
+Due to the implementation of :py:meth:`ctds.Cursor.execute` and
+:py:meth:`ctds.Cursor.executemany`, any SQL code which defines parameters
 cannot be used with execute parameters. For example, the following is **not**
 supported:
 
@@ -85,5 +85,10 @@ supported:
 
 .. warning::
 
-    Currently `FreeTDS` does not support passing empty string parameters. Empty strings
+    Currently `FreeTDS`_ does not support passing empty string parameters. Empty strings
     are converted to `NULL` values internally before being transmitted to the database.
+
+
+.. _FreeTDS: http://www.freetds.org
+.. _SQL Server: http://www.microsoft.com/sqlserver/
+.. _sp_executesql: https://msdn.microsoft.com/en-us/library/ms188001.aspx

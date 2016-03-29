@@ -15,8 +15,8 @@ class TestConnectionBulkInsert(TestExternalDatabase):
             '''\
 bulk_insert(table, rows, batch_size=None, tablock=False)
 
-Bulk insert rows to a given table.
-This method utilizes the bulk copy (bcp) functionality of SQL Server
+Bulk insert rows into a given table.
+This method utilizes the `BULK INSERT` functionality of SQL Server
 to efficiently insert large amounts of data into a table. By default,
 rows are not validated until all rows have been processed.
 
@@ -24,9 +24,10 @@ An optional batch size may be specified to validate the inserted rows
 after `batch_size` rows have been copied to server.
 
 :param str table: The table in which to insert the rows.
-:param iterable rows: An iterable of data rows. Data rows are Python
-    `sequence` objects. Each item in the data row is inserted into the
-    table in sequential order.
+:param rows: An iterable of data rows. Data rows are Python `sequence`
+    objects. Each item in the data row is inserted into the table in
+    sequential order.
+:type rows: :ref:`typeiter <python:typeiter>`
 :param int batch_size: An optional batch size.
 :param bool tablock: Should the `TABLOCK` hint be passed.
 :return: The number of rows saved to the table.

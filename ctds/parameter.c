@@ -763,6 +763,255 @@ PyObject* Parameter_value(struct Parameter* rpcparam)
     return rpcparam->value;
 }
 
+char* Parameter_serialize(struct Parameter* rpcparam)
+{
+    char* serialized = NULL;
+    char* value = NULL;
+    bool convert = true;
+    if (NULL == rpcparam->input)
+    {
+        value = strdup("NULL");
+        if (!value)
+        {
+            PyErr_NoMemory();
+        }
+    }
+    else
+    {
+        switch (rpcparam->tdstype)
+        {
+            case TDSCHAR:
+            case TDSVARCHAR:
+            case TDSTEXT:
+            {
+                const char* input = (const char*)rpcparam->input;
+                size_t written = 0;
+
+                /*
+                    Escape the string for SQL by replacing "'" with "''".
+
+                    The first pass computes the size of the escaped string.
+                    The second pass allocates a buffer and then escapes the string
+                    to the buffer.
+                */
+                int write;
+                for (write = 0; write < 2; ++write)
+                {
+                    size_t ixsrc;
+                    if (write)
+                    {
+                        value = (char*)tds_mem_malloc(written);
+                        if (!value)
+                        {
+                            PyErr_NoMemory();
+                            break;
+                        }
+                        written = 0;
+                    }
+
+                    if (write) { value[written] = '\''; }
+                    ++written;
+
+                    for (ixsrc = 0; ixsrc < MIN((size_t)rpcparam->tdstypesize, rpcparam->ninput); ++ixsrc)
+                    {
+                        switch (input[ixsrc])
+                        {
+                            case '\'':
+                            {
+                                if (write) { value[written] = '\''; }
+                                ++written;
+                                /* Intentional fall-through. */
+                            }
+                            default:
+                            {
+                                if (write) { value[written] = input[ixsrc]; }
+                                ++written;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (write) { value[written] = '\''; }
+                    ++written;
+                    if (write) { value[written] = '\0'; }
+                    ++written;
+                }
+
+                convert = ((TDSCHAR == rpcparam->tdstype) ||
+                           ((size_t)rpcparam->tdstypesize != rpcparam->ninput));
+                break;
+            }
+            case TDSBINARY:
+            case TDSVARBINARY:
+            case TDSIMAGE:
+            {
+                size_t ix, written = 0;
+
+                /* Large enough for the hexadecimal representation. */
+                value = (char*)tds_mem_malloc(ARRAYSIZE("0x") + rpcparam->ninput * 2 + 1 /* '\0' */);
+                if (!value)
+                {
+                    PyErr_NoMemory();
+                    break;
+                }
+                written += (size_t)sprintf(&value[written], "0x");
+                for (ix = 0; ix < rpcparam->ninput; ++ix)
+                {
+                    const unsigned char byte = ((unsigned char*)rpcparam->input)[ix];
+                    written += (size_t)sprintf(&value[written], "%02x", byte);
+                }
+                value[written] = '\0';
+                break;
+            }
+            case TDSDATE:
+            case TDSDATETIME:
+            case TDSDATETIME2:
+            case TDSTIME:
+            case TDSMONEY:
+            case TDSDECIMAL:
+            case TDSFLOAT:
+            {
+                size_t written = 0;
+                DBINT result;
+
+                size_t nvalue;
+                bool quoted = false;
+
+                switch (rpcparam->tdstype)
+                {
+                    case TDSMONEY:
+                    case TDSDECIMAL:
+                    {
+                        nvalue = 1 /* '-' */ + 38 + 1 /* '.' */ + 1 /* '\0' */;
+                        break;
+                    }
+                    case TDSFLOAT:
+                    {
+                        nvalue = 1 /* '-' */ + 15 + 1 /* '.' */ + 5 /* e+123 */ + 1 /* '\0' */;
+                        break;
+                    }
+                    default:
+                    {
+                        quoted = true;
+                        nvalue = ARRAYSIZE("'MMM DD YYYY hh:mm:ss:nnnPM'");
+                        break;
+                    }
+                }
+
+                value = (char*)tds_mem_malloc(nvalue);
+                if (!value)
+                {
+                    PyErr_NoMemory();
+                    break;
+                }
+
+                if (quoted)
+                {
+                    value[written++] = '\'';
+                }
+                result = dbconvert(NULL,
+                                   rpcparam->tdstype,
+                                   (BYTE*)rpcparam->input,
+                                   -1,
+                                   TDSCHAR,
+                                   (BYTE*)&value[written],
+                                   (DBINT)(nvalue - written));
+                assert(-1 != result);
+                written += (size_t)result;
+                if (quoted)
+                {
+                    value[written++] = '\'';
+                }
+                value[written] = '\0';
+                break;
+            }
+            case TDSBITN:
+            case TDSTINYINT:
+            case TDSSMALLINT:
+            case TDSINT:
+            case TDSBIGINT:
+            {
+                union
+                {
+                    uint8_t tiny;
+                    int16_t small;
+                    int32_t int_;
+                    int64_t big;
+                } ints;
+                memset(&ints, 0, sizeof(ints));
+
+                value = (char*)tds_mem_malloc(ARRAYSIZE("-9223372036854775808"));
+                if (!value)
+                {
+                    PyErr_NoMemory();
+                    break;
+                }
+                memcpy(&ints, rpcparam->input, rpcparam->ninput);
+                if (TDSBIGINT == rpcparam->tdstype)
+                {
+                    (void)sprintf(value, "%lli", (long long int)ints.big);
+                }
+                else if (TDSINT == rpcparam->tdstype)
+                {
+                    (void)sprintf(value, "%i", ints.int_);
+                }
+                else if (TDSSMALLINT == rpcparam->tdstype)
+                {
+                    (void)sprintf(value, "%i", ints.small);
+                }
+                else
+                {
+                    (void)sprintf(value, "%u", ints.tiny);
+                }
+                break;
+            }
+            default:
+            {
+                PyErr_Format(PyExc_tds_InternalError, "failed to serialize TDS type %d", rpcparam->tdstype);
+                break;
+            }
+        }
+    }
+
+    if (!PyErr_Occurred())
+    {
+        if (convert)
+        {
+            char* type = Parameter_sqltype(rpcparam);
+            if (type)
+            {
+                serialized = (char*)tds_mem_malloc(
+                    ARRAYSIZE("CONVERT(") + strlen(type) + ARRAYSIZE(",") + strlen(value) + ARRAYSIZE(")")
+                );
+                if (serialized)
+                {
+                    (void)sprintf(serialized, "CONVERT(%s,%s)", type, value);
+                }
+                else
+                {
+                    PyErr_NoMemory();
+                }
+                tds_mem_free(type);
+            }
+        }
+        else
+        {
+            serialized = value;
+            value = NULL;
+        }
+    }
+
+    if (PyErr_Occurred())
+    {
+        tds_mem_free(serialized);
+        serialized = NULL;
+    }
+
+    tds_mem_free(value);
+
+    return serialized;
+}
+
 PyTypeObject* ParameterType_init(void)
 {
     if (0 != PyType_Ready(&ParameterType))

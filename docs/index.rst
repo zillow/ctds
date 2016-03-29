@@ -26,6 +26,8 @@ Index
     Executing SQL <execute>
     Calling Stored Procedures <callproc>
     Reading Results <results>
+    Transactions <transactions>
+    Bulk Insert <bulk_insert>
     Connection Pooling <pooling>
     api
 

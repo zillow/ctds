@@ -56,6 +56,19 @@ result set. The tuple describes the column data as follows:
     def test_types(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
+                args = (
+                    None,
+                    -1234567890,
+                    2 ** 45,
+                    b'1234',
+                    bytearray('1234', 'ascii'),
+                    unicode_("hello 'world' ") + unicode_(b'\xc4\x80', encoding='utf-8'),
+                    datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
+                    date(2010, 2, 14),
+                    time(11, 12, 13, 140 * 1000),
+                    Decimal('123.4567890'),
+                    Decimal('1000000.0001')
+                )
                 cursor.execute(
                     '''
                     SELECT
@@ -75,19 +88,7 @@ result set. The tuple describes the column data as follows:
                         :9 AS decimal,
                         CONVERT(MONEY, :10) AS money
                     ''',
-                    (
-                        None,
-                        -1234567890,
-                        2 ** 45,
-                        b'1234',
-                        bytearray('1234', 'ascii'),
-                        unicode_('hello \'world\' ') + unicode_(b'\xc4\x80', encoding='utf-8'),
-                        datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
-                        date(2010, 2, 14),
-                        time(11, 12, 13, 140 * 1000),
-                        Decimal('123.4567890'),
-                        Decimal('1000000.0001')
-                    )
+                    args
                 )
                 self.assertEqual(
                     cursor.description,
@@ -99,21 +100,35 @@ result set. The tuple describes the column data as follows:
                         ('binary10', ctds.BINARY, long_(10), long_(10), long_(0), long_(0), True),
                         ('varbinary10', ctds.BINARY, long_(10), long_(10), long_(0), long_(0), True),
                         ('bytearray', ctds.BINARY, long_(4), long_(4), long_(0), long_(0), True),
-                        ('string', ctds.CHAR, long_(64), long_(64), long_(0), long_(0), True),
+                        (
+                            'string',
+                            ctds.CHAR,
+                            long_((len(args[5]) + int(self.use_sp_executesql)) * 4),
+                            long_((len(args[5]) + int(self.use_sp_executesql)) * 4),
+                            long_(0),
+                            long_(0),
+                            self.use_sp_executesql
+                        ),
                         ('char10', ctds.CHAR, long_(40), long_(40), long_(0), long_(0), True),
                         ('varchar10', ctds.CHAR, long_(40), long_(40), long_(0), long_(0), True),
                         ('datetime', ctds.DATETIME, long_(8), long_(8), long_(0), long_(0), True),
                         (
-                            ('date', ctds.CHAR, long_(40), long_(40), long_(0), long_(0), True)
-                            if connection.tds_version < '7.3'
-                            else
-                            ('date', ctds.DATE, long_(16), long_(16), long_(0), long_(0), True)
+                            'date',
+                            ctds.CHAR if connection.tds_version < '7.3' else ctds.DATE,
+                            long_(40) if connection.tds_version < '7.3' else long_(16),
+                            long_(40) if connection.tds_version < '7.3' else long_(16),
+                            long_(0),
+                            long_(0),
+                            True
                         ),
                         (
-                            ('time', ctds.CHAR, long_(64), long_(64), long_(0), long_(0), True)
-                            if connection.tds_version < '7.3'
-                            else
-                            ('time', ctds.TIME, long_(16), long_(16), long_(7), long_(7), True)
+                            'time',
+                            ctds.CHAR if connection.tds_version < '7.3' else ctds.TIME,
+                            long_(64) if connection.tds_version < '7.3' else long_(16),
+                            long_(64) if connection.tds_version < '7.3' else long_(16),
+                            long_(0) if connection.tds_version < '7.3' else long_(7),
+                            long_(0) if connection.tds_version < '7.3' else long_(7),
+                            True
                         ),
                         ('decimal', ctds.DECIMAL, long_(17), long_(17), long_(10), long_(7), True),
                         ('money', ctds.MONEY, long_(8), long_(8), long_(0), long_(0), True)

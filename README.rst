@@ -19,7 +19,7 @@ and Python 3.
 Features
 --------
 
-* Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2005 and up.
+* Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2008 and up.
 * Complete `DB API-2.0 <https://www.python.org/dev/peps/pep-0249>`_ support.
 * Python 2.6, Python 2.7, Python 3.3, Python 3.4, and Python 3.5 support.
 * Bulk insert (bcp) support.

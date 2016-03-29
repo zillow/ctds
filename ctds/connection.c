@@ -914,7 +914,7 @@ static const char s_Connection_close_doc[] =
     "\n"
     "Close the connection now. Pending transactions will be rolled back.\n"
     "Subsequent calls to this object or any :py:class:`ctds.Cursor` objects it\n"
-    "created will raise an :py:exc:`ctds.InterfaceError`.\n"
+    "created will raise :py:exc:`ctds.InterfaceError`.\n"
     "\n"
     ":pep:`0249#Connection.close`\n";
 
@@ -1040,8 +1040,8 @@ static PyObject* Connection_cursor(PyObject* self, PyObject* args)
 static const char s_Connection_bulk_insert_doc[] =
     "bulk_insert(table, rows, batch_size=None, tablock=False)\n"
     "\n"
-    "Bulk insert rows to a given table.\n"
-    "This method utilizes the bulk copy (bcp) functionality of SQL Server\n"
+    "Bulk insert rows into a given table.\n"
+    "This method utilizes the `BULK INSERT` functionality of SQL Server\n"
     "to efficiently insert large amounts of data into a table. By default,\n"
     "rows are not validated until all rows have been processed.\n"
     "\n"
@@ -1050,9 +1050,10 @@ static const char s_Connection_bulk_insert_doc[] =
     "\n"
     ":param str table: The table in which to insert the rows.\n"
 
-    ":param iterable rows: An iterable of data rows. Data rows are Python\n"
-    "    `sequence` objects. Each item in the data row is inserted into the\n"
-    "    table in sequential order.\n"
+    ":param rows: An iterable of data rows. Data rows are Python `sequence`\n"
+    "    objects. Each item in the data row is inserted into the table in\n"
+    "    sequential order.\n"
+    ":type rows: :ref:`typeiter <python:typeiter>`\n"
 
     ":param int batch_size: An optional batch size.\n"
 

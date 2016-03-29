@@ -48,8 +48,8 @@ expects. The result of the call is returned as modified copy of the input
 sequence. Input parameters are left untouched. Output and input/output
 parameters are replaced with output values.
 
-.. warning:: Due to FreeTDS implementation details, stored procedures with
-    both output parameters and resultsets are not supported.
+.. warning:: Due to `FreeTDS` implementation details, stored procedures
+    with both output parameters and resultsets are not supported.
 
 .. warning:: Currently `FreeTDS` does not support passing empty string
     parameters. Empty strings are converted to `NULL` values internally
@@ -59,12 +59,13 @@ parameters are replaced with output values.
 
 :param str sproc: The stored procedure to execute.
 :param parameters: Parameters to pass to the stored procedure.
-    Parameters passed in a dict must map from the parameter name to
-    value. Parameters passed in a tuple are passed in the tuple order.
-:type parameters: tuple or dict
+    Parameters passed in a :py:class:`dict` must map from the parameter
+    name to value. Parameters passed in a :py:class:`tuple` are passed
+    in the tuple order.
+:type parameters: dict or tuple
 :return: The input `parameters` with any output parameters replaced with
     the output values.
-:rtype: tuple or dict
+:rtype: dict or tuple
 '''
         )
 
@@ -857,17 +858,28 @@ parameters are replaced with output values.
                         else
                         self.UNICODE_REPLACEMENT
                     )
+
+                    # Older versions of SQL server don't support passing codepoints outside
+                    # of the server's code page. SQL Server defaults to latin-1, so assume
+                    # non-latin-1 codepoints won't be supported.
+                    if not self.use_sp_executesql:
+                        catface = unicode_('?')
+                        snowman = unicode_('?')
+
                     inputs = (
                         format_.format(snowman, catface),
-                        ctds.Parameter(unicode_('*') * 256, output=True),
+                        ctds.Parameter(ctds.SqlVarChar(None, size=256), output=True),
                     )
 
-                    # The snowman is not representable in UCS-2, and therefore is replaced.
+                    # The catface is not representable in UCS-2, and therefore is replaced.
                     with warnings.catch_warnings(record=True) as warns:
                         outputs = cursor.callproc(sproc, inputs)
-                        if self.UCS4_SUPPORTED:
+                        if ord(catface) > 2**16:
                             self.assertEqual(len(warns), 1)
-                            msg = 'Unicode codepoint U+0001F638 is not representable in UCS-2; replaced with U+FFFD'
+                            msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
+                                ord(catface),
+                                ord(self.UNICODE_REPLACEMENT)
+                            )
                             self.assertEqual(
                                 [str(warn.message) for warn in warns],
                                 [msg] * len(warns)
@@ -879,7 +891,7 @@ parameters are replaced with output values.
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
                     self.assertNotEqual(id(outputs[1]), id(inputs[1]))
 
-                    # SQL server will inproperly convert the values to single-byte, which corrupts them.
+                    # SQL server will improperly convert the values to single-byte, which corrupts them.
                     # FreeTDS will replace them on reads with a '?'.
                     self.assertEqual(
                         format_.format(unicode_('?'), unicode_('?')),
@@ -968,17 +980,28 @@ parameters are replaced with output values.
                         else
                         self.UNICODE_REPLACEMENT
                     )
+
+                    # Older versions of SQL server don't support passing codepoints outside
+                    # of the server's code page. SQL Server defaults to latin-1, so assume
+                    # non-latin-1 codepoints won't be supported.
+                    if not self.use_sp_executesql:
+                        catface = unicode_('?')
+                        snowman = unicode_('?')
+
                     inputs = (
                         format_.format(snowman, catface),
-                        ctds.Parameter(unicode_('*') * 256, output=True),
+                        ctds.Parameter(ctds.SqlVarChar(None, size=256), output=True),
                     )
 
-                    # The snowman is not representable in UCS-2, and therefore is replaced.
+                    # The catface is not representable in UCS-2, and therefore is replaced.
                     with warnings.catch_warnings(record=True) as warns:
                         outputs = cursor.callproc(sproc, inputs)
-                        if self.UCS4_SUPPORTED:
+                        if ord(catface) > 2**16:
                             self.assertEqual(len(warns), 1)
-                            msg = 'Unicode codepoint U+0001F638 is not representable in UCS-2; replaced with U+FFFD'
+                            msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
+                                ord(catface),
+                                ord(self.UNICODE_REPLACEMENT)
+                            )
                             self.assertEqual(
                                 [str(warn.message) for warn in warns],
                                 [msg] * len(warns)
@@ -991,7 +1014,10 @@ parameters are replaced with output values.
                     self.assertNotEqual(id(outputs[1]), id(inputs[1]))
 
                     self.assertEqual(
-                        format_.format(snowman, self.UNICODE_REPLACEMENT),
+                        format_.format(
+                            snowman,
+                            self.UNICODE_REPLACEMENT if self.use_sp_executesql else unicode_('?')
+                        ),
                         outputs[1]
                     )
 

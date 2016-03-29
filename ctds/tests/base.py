@@ -1,3 +1,5 @@
+from decimal import Decimal
+import re
 import os
 import unittest
 
@@ -102,3 +104,20 @@ class TestExternalDatabase(unittest.TestCase):
                 version = cursor.fetchone()[0]
 
         return tuple(int(part) for part in version.split('.'))
+
+    @property
+    def freetds_version(self):
+        matches = re.match(r'freetds v(\d+)\.(\d+)\.(\d+)', ctds.freetds_version)
+        if matches:
+            return tuple(int(g) for g in matches.groups())
+
+    @property
+    def use_sp_executesql(self):
+        return self.freetds_version >= (0, 92, 405)
+
+    # Older versions of FreeTDS improperly round the money to the nearest hundredth.
+    def round_money(self, money):
+        if self.freetds_version > (0, 92, 405):
+            return money
+        else:
+            return money.quantize(Decimal('.01'))

@@ -30,6 +30,8 @@ endif
 BUILD_DIR := build
 HTML_BUILD_DIR := $(BUILD_DIR)/docs/html
 
+CTDS_VERSION := $(strip $(shell python setup.py --version))
+
 # Platform-specific values.
 ifeq "$(shell uname -s)" "Darwin"
     FREETDS_MAC_OSX := 1
@@ -115,7 +117,6 @@ define TEST_COMMANDS
         --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(FREETDS_VERSION))" \
         --global-option=build_ext --global-option="-f"
 
-
 	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(FREETDS_VERSION)) \
         $(call ENV_PYTHON, $(1)) setup.py test $(if $(TEST),-s $(TEST))
 endef
@@ -147,8 +148,8 @@ help:
 	@echo "    doc"
 	@echo "        Generate documentation."
 	@echo
-	@echo "    publish-docs"
-	@echo "        Publish docs to http://pythonhosted.org/ctds."
+	@echo "    publish"
+	@echo "        Publish egg and docs to pypi"
 	@echo
 	@echo "    pylint"
 	@echo "        Run pylint over all *.py files."
@@ -181,7 +182,10 @@ cover: test
 # doc
 $(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
 
-publish-docs: doc
+publish: doc
+	git tag -a v$(CTDS_VERSION) -m "v$(CTDS_VERSION)"
+	git push --tags
+	python setup.py sdist upload
 	python setup.py upload_docs --upload-dir=$(HTML_BUILD_DIR)
 
 # pylint

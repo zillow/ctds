@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include <sybdb.h>
+#include <ctpublic.h>
 
 #include "include/connection.h"
 #include "include/cursor.h"
@@ -730,8 +731,16 @@ PyMODINIT_FUNC PyInit__tds(void)
 
     /***** Initialize DB-lib. *****/
 
-    /* FreeTDS version. */
-    if (0 != PyModule_AddStringConstant(module, "freetds_version", dbversion())) FAIL_MODULE_INIT;
+    /*
+        FreeTDS version.
+
+        Use the CT-library API since older versions of FreeTDS don't return
+        a proper version string from dbversion()
+    */
+    char freetds_version[100];
+    int written;
+    (void)ct_config(NULL, CS_GET, CS_VERSION, freetds_version, sizeof(freetds_version), &written);
+    if (0 != PyModule_AddStringConstant(module, "freetds_version", freetds_version)) FAIL_MODULE_INIT;
 
     if (FAIL == dbinit()) FAIL_MODULE_INIT;
     dberrhandle(Connection_dberrhandler);

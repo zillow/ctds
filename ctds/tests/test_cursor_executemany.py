@@ -24,7 +24,8 @@ against all parameter sequences or mappings found in the sequence
 :pep:`0249#executemany`
 
 :param str sql: The SQL statement to execute.
-:param iterable seq_of_parameters: An iterable of parameter sequences to bind.
+:param seq_of_parameters: An iterable of parameter sequences to bind.
+:type seq_of_parameters: :ref:`typeiter <python:typeiter>`
 '''
         )
 
@@ -181,7 +182,7 @@ against all parameter sequences or mappings found in the sequence
                     unicode_('hello \'world\' \u0153'), # pylint: disable=anomalous-unicode-escape-in-string
                     datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
                     Decimal('123.4567890'),
-                    Decimal('1000000.0001')
+                    Decimal('1000000.4532')
                 )
                 query = cursor.executemany(
                     '''
@@ -213,7 +214,7 @@ against all parameter sequences or mappings found in the sequence
                         args[5],
                         args[6],
                         args[7],
-                        args[8],
+                        self.round_money(args[8]),
                     )
                 )
 
@@ -331,7 +332,7 @@ against all parameter sequences or mappings found in the sequence
         try:
             with self.connect() as connection:
                 with connection.cursor() as cursor:
-                    cursor.executemany('BOGUS :0', ((None,),))
+                    cursor.executemany("BOGUS ''", ())
         except ctds.ProgrammingError as ex:
             self.assertEqual(str(ex), "Could not find stored procedure 'BOGUS'.")
             self.assertEqual(ex.severity, 16)

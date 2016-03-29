@@ -15,6 +15,20 @@
 #include "include/tds.h"
 #include "include/type.h"
 
+/*
+    Use `sp_executesql` when possible for the execute*() methods. This method
+    won't work on older versions of FreeTDS which don't properly support passing
+    NVARCHAR data.
+
+    Versions 0.92.405 and later of FreeTDS will support using the `sp_executesql`
+    implementation.
+
+    Detection is done via the DBVERSION_73 macro.
+*/
+#ifdef DBVERSION_73
+#  define CTDS_USE_SP_EXECUTESQL
+#endif
+
 
 struct Column {
     DBCOL dbcol;
@@ -152,19 +166,17 @@ static int Cursor_next_resultset(struct Cursor* cursor, RETCODE* retcode)
     /* Read any unprocessed rows from the database. */
     while (dbnextrow(dbproc) != NO_MORE_ROWS) {}
 
-    *retcode = dbresults(dbproc);
-    if (SUCCEED != *retcode /* retcode may be NO_MORE_RESULTS */)
+    /*
+        dbresults() sometimes returns SUCCEED and dbnumcols() returns 0.
+        In this case, keep looking for the next resultset.
+    */
+    for (ncolumns = 0; 0 == ncolumns; ncolumns = dbnumcols(dbproc))
     {
-        return (NO_MORE_RESULTS == *retcode) ? 0 : -1;
-    }
-
-    ncolumns = dbnumcols(dbproc);
-
-    /* Treat 0 columns the same as NO_MORE_RESULTS. */
-    if (!ncolumns)
-    {
-        *retcode = NO_MORE_RESULTS;
-        return 0;
+        *retcode = dbresults(dbproc);
+        if (SUCCEED != *retcode /* retcode may be NO_MORE_RESULTS */)
+        {
+            return (NO_MORE_RESULTS == *retcode) ? 0 : -1;
+        }
     }
 
     cursor->description = ResultSetDescription_create((size_t)ncolumns);
@@ -1129,8 +1141,8 @@ static const char s_Cursor_callproc_doc[] =
     "sequence. Input parameters are left untouched. Output and input/output\n"
     "parameters are replaced with output values.\n"
     "\n"
-    ".. warning:: Due to FreeTDS implementation details, stored procedures with\n"
-    "    both output parameters and resultsets are not supported.\n"
+    ".. warning:: Due to `FreeTDS` implementation details, stored procedures\n"
+    "    with both output parameters and resultsets are not supported.\n"
     "\n"
     ".. warning:: Currently `FreeTDS` does not support passing empty string\n"
     "    parameters. Empty strings are converted to `NULL` values internally\n"
@@ -1141,13 +1153,14 @@ static const char s_Cursor_callproc_doc[] =
     ":param str sproc: The stored procedure to execute.\n"
 
     ":param parameters: Parameters to pass to the stored procedure.\n"
-    "    Parameters passed in a dict must map from the parameter name to\n"
-    "    value. Parameters passed in a tuple are passed in the tuple order.\n"
-    ":type parameters: tuple or dict\n"
+    "    Parameters passed in a :py:class:`dict` must map from the parameter\n"
+    "    name to value. Parameters passed in a :py:class:`tuple` are passed\n"
+    "    in the tuple order.\n"
+    ":type parameters: dict or tuple\n"
 
     ":return: The input `parameters` with any output parameters replaced with\n"
     "    the output values.\n"
-    ":rtype: tuple or dict\n";
+    ":rtype: dict or tuple\n";
 
 static PyObject* Cursor_callproc(PyObject* self, PyObject* args)
 {
@@ -1194,6 +1207,9 @@ static PyObject* Cursor_close(PyObject* self, PyObject* args)
     Py_RETURN_NONE;
     UNUSED(args);
 }
+
+
+#if defined(CTDS_USE_SP_EXECUTESQL)
 
 /*
     Append one string to an existing one by reallocating the existing string.
@@ -1538,6 +1554,247 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
     return (PyErr_Occurred()) ? -1 : 0;
 }
 
+#else /* if defined(CTDS_USE_SP_EXECUTESQL) */
+
+/**
+    Format a SQL string using the given parameters and add it to the SQL command buffer.
+
+    If no parameters are given, the entire SQL format string is added the command buffer.
+
+    @note: On error, an appropriate Python error will be set.
+
+    @param[in] cursor The cursor object.
+    @param[in] sqlfmt The SQL format string.
+    @param[in] parameters A Python Sequence object.
+    @param[in] nparameters The lender of the `parameters` sequence.
+
+    @return 0 on success, -1 on error.
+*/
+static int Cursor_format_sql(struct Cursor* cursor, const char* sqlfmt,
+                             PyObject* parameters, Py_ssize_t nparameters)
+{
+    DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
+
+    const char* start = sqlfmt;
+
+    /* If parameters were supplied, replace them in the format string. */
+    if (nparameters)
+    {
+        const char* end = start;
+        while ('\0' != *end)
+        {
+            if (':' == *end)
+            {
+                long int paramnum;
+                char* paramnum_end;
+                const char* paramnum_start = end + 1; /* skip over the ':' */
+                paramnum = strtol(paramnum_start, &paramnum_end, 10);
+                if (paramnum_start != paramnum_end)
+                {
+                    if (paramnum < nparameters)
+                    {
+                        char* sql = NULL;
+                        char* serialized = NULL;
+                        PyObject* param = NULL;
+                        do
+                        {
+                            /* Write the preceding chunk to the command buffer. */
+                            sql = strndup(start, (size_t)(end - start));
+                            if (!sql)
+                            {
+                                PyErr_NoMemory();
+                                break;
+                            }
+                            if (FAIL == dbcmd(dbproc, sql))
+                            {
+                                Connection_raise(cursor->connection);
+                                break;
+                            }
+
+                            /* Serialize the parameter to a string. */
+                            param = PySequence_Fast_GET_ITEM(parameters, paramnum);
+                            if (!Parameter_Check(param))
+                            {
+                                struct Parameter* tmp = Parameter_create(param, 0 /* output */);
+                                if (!tmp)
+                                {
+                                    break;
+                                }
+                                /* `param` is a borrowed reference, so safe to overwrite. */
+                                param = (PyObject*)tmp;
+                            }
+                            else
+                            {
+                                /* `param` is a borrowed reference, so increment. */
+                                Py_INCREF(param);
+                            }
+
+                            serialized = Parameter_serialize((struct Parameter*)param);
+                            if (!serialized)
+                            {
+                                break;
+                            }
+
+                            if (FAIL == dbcmd(dbproc, serialized))
+                            {
+                                Connection_raise(cursor->connection);
+                                break;
+                            }
+
+                            end = start = paramnum_end;
+                        } while (0);
+
+                        Py_XDECREF(param);
+                        tds_mem_free(serialized);
+                        free(sql);
+
+                        if (PyErr_Occurred())
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        PyErr_Format(PyExc_IndexError, "%ld", paramnum);
+                        break;
+                    }
+                }
+                else
+                {
+                    /* Missing the index following the parameter marker. */
+                    PyErr_Format(PyExc_tds_InterfaceError, "invalid parameter marker");
+                    break;
+                }
+            }
+            else
+            {
+                end++;
+            }
+        }
+    }
+
+    if (!PyErr_Occurred())
+    {
+        /* Append the last chunk. */
+        if (FAIL == dbcmd(dbproc, start))
+        {
+            Connection_raise(cursor->connection);
+        }
+    }
+
+    return (PyErr_Occurred()) ? -1 : 0;
+}
+
+static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, PyObject* sequence)
+{
+    PyObject* isequence = PyObject_GetIter(sequence);
+    if (isequence)
+    {
+        size_t ix = 0;
+
+        PyObject* parameters = NULL; /* current parameters, if any */
+        Py_ssize_t nparameters = 0;
+
+        PyObject* nextparams = PyIter_Next(isequence);
+        do
+        {
+            RETCODE retcode;
+            int error;
+
+            DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
+
+            Connection_clear_lastwarning(cursor->connection);
+
+            if (nextparams)
+            {
+                static const char s_fmt[] = "invalid parameter sequence item %ld";
+
+                char msg[ARRAYSIZE(s_fmt) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
+                (void)sprintf(msg, s_fmt, ix);
+
+                assert(NULL == parameters);
+                parameters = PySequence_Fast(nextparams, msg);
+                if (!parameters)
+                {
+                    break;
+                }
+                /* Set the expected parameter count based on the first sequence. */
+                if (0 == ix)
+                {
+                    nparameters = PySequence_Fast_GET_SIZE(parameters);
+                }
+                ix++;
+            }
+
+            if (nparameters != ((parameters) ? PySequence_Fast_GET_SIZE(parameters) : 0))
+            {
+                PyErr_Format(PyExc_tds_InterfaceError,
+                             "unexpected parameter count in sequence item %ld",
+                             ix);
+                break;
+            }
+
+            if (0 != Cursor_format_sql(cursor, sqlfmt, parameters, nparameters))
+            {
+                break;
+            }
+            Py_XDECREF(parameters);
+            parameters = NULL;
+
+            Py_BEGIN_ALLOW_THREADS
+
+                do
+                {
+                    retcode = dbcancel(dbproc);
+                    if (FAIL == retcode)
+                    {
+                        break;
+                    }
+                    retcode = dbsqlsend(dbproc);
+                    if (FAIL == retcode)
+                    {
+                        break;
+                    }
+                    retcode = dbsqlok(dbproc);
+                    if (FAIL == retcode)
+                    {
+                        break;
+                    }
+
+                    error = Cursor_next_resultset(cursor, &retcode);
+                } while (0);
+
+            Py_END_ALLOW_THREADS
+
+            if (FAIL == retcode)
+            {
+                Connection_raise(cursor->connection);
+                break;
+            }
+            if (error)
+            {
+                assert(FAIL != retcode);
+                PyErr_NoMemory();
+                break;
+            }
+
+            /* Raise any warnings that may have occurred. */
+            Connection_raise_lastwarning(cursor->connection);
+        }
+        while (NULL != (nextparams = PyIter_Next(isequence)));
+
+        Py_XDECREF(nextparams);
+        Py_XDECREF(parameters);
+
+        Py_DECREF(isequence);
+    }
+
+    return (PyErr_Occurred()) ? -1 : 0;
+}
+
+#endif /* else if defined(CTDS_USE_SP_EXECUTESQL) */
+
+
 /* https://www.python.org/dev/peps/pep-0249/#execute */
 static const char s_Cursor_execute_doc[] =
     "execute(sql, parameters=None)\n"
@@ -1604,7 +1861,8 @@ static const char s_Cursor_executemany_doc[] =
     "\n"
     ":param str sql: The SQL statement to execute.\n"
 
-    ":param iterable seq_of_parameters: An iterable of parameter sequences to bind.\n";
+    ":param seq_of_parameters: An iterable of parameter sequences to bind.\n"
+    ":type seq_of_parameters: :ref:`typeiter <python:typeiter>`\n";
 
 PyObject* Cursor_executemany(PyObject* self, PyObject* args)
 {

@@ -12,7 +12,7 @@ close()
 
 Close the connection now. Pending transactions will be rolled back.
 Subsequent calls to this object or any :py:class:`ctds.Cursor` objects it
-created will raise an :py:exc:`ctds.InterfaceError`.
+created will raise :py:exc:`ctds.InterfaceError`.
 
 :pep:`0249#Connection.close`
 '''
