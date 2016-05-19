@@ -42,7 +42,7 @@ Retrieve the SQL Server Session Process ID (SPID) for the connection.
                 cursor.execute('SELECT @@SPID;')
                 spid = cursor.fetchone()[0]
 
-                if cursor.spid != -1: # pragma: nocover
+                if self.freetds_version >= (1, 0, 0): # pragma: nocover
                     self.assertEqual(cursor.spid, spid)
 
     def test_write(self):

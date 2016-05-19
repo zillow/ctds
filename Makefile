@@ -209,8 +209,9 @@ test: test_config test_$(DEFAULT_PYTHON_VERSION)_$(FREETDS_VERSION)
 test_config: ctds/tests/database.ini
 
 ctds/tests/database.ini:
-	cp ctds/tests/database.ini.in $@
-	@echo "Test database configuration required in $@" && /bin/false
+	@cp ctds/tests/database.ini.in $@
+	@echo "Test database configuration required in $@"
+	@/bin/false
 
 # test_*
 $(foreach V, $(PYTHON_VERSIONS), $(eval $(call ENV_RULE, test_$(V)_$(FREETDS_VERSION), $(V), , TEST_COMMANDS)))

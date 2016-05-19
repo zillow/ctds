@@ -107,9 +107,16 @@ class TestExternalDatabase(unittest.TestCase):
 
     @property
     def freetds_version(self):
-        matches = re.match(r'freetds v(\d+)\.(\d+)\.(\d+)', ctds.freetds_version)
+        matches = re.match(
+            r'^freetds v(?P<major>[\d]+)\.(?P<minor>[\d]+)(?:\.(?P<patch>[\d]+))?$',
+            ctds.freetds_version
+        )
         if matches:
-            return tuple(int(g) for g in matches.groups())
+            return (
+                int(matches.group('major')),
+                int(matches.group('minor') or 0),
+                int(matches.group('patch') or 0),
+            )
 
     @property
     def use_sp_executesql(self):

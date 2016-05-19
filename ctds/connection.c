@@ -1,7 +1,6 @@
 #include <Python.h>
 
 #include <stddef.h>
-#include <dlfcn.h>
 
 #include <sybdb.h>
 
@@ -12,11 +11,6 @@
 #include "include/pyutils.h"
 #include "include/parameter.h"
 
-#ifdef __APPLE__
-#  define SHAREDLIB_EXT "dylib"
-#else
-#  define SHAREDLIB_EXT "so"
-#endif
 
 /* Platform-specific thread-local storage support. */
 #ifdef __clang__
@@ -144,6 +138,13 @@ struct Connection {
 
     /* Last seen database message, as set by the message handler. */
     struct LastMsg lastmsg;
+
+    /*
+        The query timeout for this connection.
+        This is only stored here because there is currently no way to
+        retrieve it from dblib.
+    */
+    int query_timeout;
 };
 
 static PyObject* build_lastdberr_dict(const struct LastError* lasterror)
@@ -762,6 +763,9 @@ static PyObject* Connection_tds_version_get(PyObject* self, void* closure)
 #ifdef DBTDS_7_3
             case DBTDS_7_3: { tds_version = "7.3"; break; }
 #endif
+#ifdef DBTDS_7_4
+            case DBTDS_7_4: { tds_version = "7.4"; break; }
+#endif
             default: { tds_version = NULL; break; }
         }
 
@@ -778,36 +782,21 @@ static PyObject* Connection_tds_version_get(PyObject* self, void* closure)
 }
 
 static const char s_Connection_timeout_doc[] =
-    "The connection timeout.\n";
-
-typedef int (*dbgettimeout_)(DBPROCESS*);
-typedef RETCODE (*dbsettimeout_)(DBPROCESS*, int);
+    "The connection timeout.\n"
+    "\n"
+    ".. note:: Setting the timeout requires FreeTDS version 1.00 or later.\n";
 
 static PyObject* Connection_timeout_get(PyObject* self, void* closure)
 {
     struct Connection* connection = (struct Connection*)self;
 
     PyObject* timeout = NULL;
-    void* libsybdb = NULL;
     do
     {
-        dbgettimeout_ fn;
-        libsybdb = dlopen("libsybdb." SHAREDLIB_EXT, RTLD_LAZY);
-        if (!libsybdb)
-        {
-            PyErr_SetString(PyExc_tds_InternalError, dlerror());
-            break;
-        }
-        fn = (dbgettimeout_)dlsym(libsybdb, "dbgettimeout");
-        if (!fn)
-        {
-            PyErr_SetString(PyExc_tds_NotSupportedError, dlerror());
-            break;
-        }
         if (!Connection_closed(connection))
         {
             /* This API shouldn't block, so don't bother releasing the GIL. */
-            timeout = PyLong_FromLong(fn(connection->dbproc));
+            timeout = PyLong_FromLong(connection->query_timeout);
         }
         else
         {
@@ -817,11 +806,6 @@ static PyObject* Connection_timeout_get(PyObject* self, void* closure)
     }
     while (0);
 
-    if (libsybdb)
-    {
-        (void)dlclose(libsybdb);
-    }
-
     return timeout;
 
     UNUSED(closure);
@@ -830,7 +814,6 @@ static PyObject* Connection_timeout_get(PyObject* self, void* closure)
 static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure)
 {
     struct Connection* connection = (struct Connection*)self;
-    void* libsybdb = NULL;
 
     if (
 #if PY_MAJOR_VERSION < 3
@@ -845,8 +828,6 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
 
     do
     {
-        dbsettimeout_ fn;
-
         long timeout = PyLong_AsLong(value);
         if (timeout > INT_MAX || timeout < 0)
         {
@@ -854,26 +835,18 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
             break;
         }
 
-        libsybdb = dlopen("libsybdb." SHAREDLIB_EXT, RTLD_LAZY);
-        if (!libsybdb)
-        {
-            PyErr_SetString(PyExc_tds_NotSupportedError, dlerror());
-            break;
-        }
-        fn = (dbsettimeout_)dlsym(libsybdb, "dbsettimeout");
-        if (!fn)
-        {
-            PyErr_SetString(PyExc_tds_NotSupportedError, dlerror());
-            break;
-        }
         if (!Connection_closed(connection))
         {
-            /* This API shouldn't block, so don't bother releasing the GIL. */
-            /*
-                Ignore failures. Any failures would indicate the connection is
-                closed or "dead" and subsequent operations would fail anyway.
-            */
-            (void)fn(connection->dbproc, (int)timeout);
+            /* The timeout must be passed as a string. */
+            char str[ARRAYSIZE("2147483648")];
+            (void)snprintf(str, sizeof(str), "%d", (int)timeout);
+            if (FAIL == dbsetopt(connection->dbproc, DBSETTIME, str, (int)timeout))
+            {
+                PyErr_SetString(PyExc_tds_NotSupportedError, "FreeTDS does not support this option");
+                break;
+            }
+
+            connection->query_timeout = (int)timeout;
         }
         else
         {
@@ -882,11 +855,6 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
         }
     }
     while (0);
-
-    if (libsybdb)
-    {
-        (void)dlclose(libsybdb);
-    }
 
     return (PyErr_Occurred()) ? -1 : 0;
 
@@ -1547,6 +1515,9 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 DBINT dbversion;
             } s_supported_tds_versions[] = {
                 /* Note: The versions MUST be kept in descending order. */
+#ifdef DBVERSION_74
+                { "7.4", DBVERSION_74 },
+#endif
 #ifdef DBVERSION_73
                 { "7.3", DBVERSION_73 },
 #endif
@@ -1624,7 +1595,10 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
 
             connection->autocommit = autocommit;
 
-            /* $TODO: these are global. Setting a per-connection timeout will require additions to db-lib */
+            /*
+                $TODO: this is global. Setting a per-connection login timeout will
+                require additions to db-lib.
+            */
             (void)dbsetlogintime((int)login_timeout);
             (void)dbsettime((int)timeout);
 
@@ -1643,6 +1617,8 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 raise_lasterror(PyExc_tds_OperationalError, LastError_get(), LastMsg_get());
                 break;
             }
+
+            connection->query_timeout = (int)timeout;
 
             dbsetuserdata(connection->dbproc, (BYTE*)connection);
 

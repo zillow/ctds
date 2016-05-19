@@ -91,11 +91,11 @@ To run tests against all versions of Python:
 
 The tests are only run against one version of FreeTDS (*0.95.87*) by default.
 However, they can easily be run against any version of FreeTDS using the
-following.
+**FREETDS_VERSION** value. For example,
 
 .. code-block::
 
     make test FREETDS_VERSION=0.92.408
 
-This will download the specified version of FreeTDS, compile it, and then run
+This will download the *0.92.408* version of FreeTDS, compile it, and then run
 the tests.

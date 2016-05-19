@@ -20,7 +20,13 @@ Retrieve the SQL Server Session Process ID (SPID) for the connection.
 
     def test_read(self):
         with self.connect() as connection:
-            self.assertTrue(isinstance(connection.spid, (int_, long_)))
+            self.assertTrue(isinstance(connection.spid, long_))
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT @@SPID;')
+                spid = cursor.fetchone()[0]
+
+            if self.freetds_version >= (1, 0, 0): # pragma: nocover
+                self.assertEqual(connection.spid, spid)
 
         self.assertEqual(connection.spid, None)
 

@@ -30,7 +30,7 @@ class TestTds(unittest.TestCase):
         self.assertTrue(isinstance(version, str))
         self.assertTrue(
             re.match(
-                r'^freetds v(?P<major>[\d]+)\.(?P<minor>[\d]+)\.(?P<patch>[\d]+)$',
+                r'^freetds v(?P<major>[\d]+)\.(?P<minor>[\d]+)(?:\.(?P<patch>[\d]+))?$',
                 version
             )
         )
