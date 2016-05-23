@@ -837,16 +837,21 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
 
         if (!Connection_closed(connection))
         {
+#ifdef DBVERSION_74 /* indicates FreeTDS 1.00+ */
             /* The timeout must be passed as a string. */
             char str[ARRAYSIZE("2147483648")];
             (void)snprintf(str, sizeof(str), "%d", (int)timeout);
             if (FAIL == dbsetopt(connection->dbproc, DBSETTIME, str, (int)timeout))
             {
-                PyErr_SetString(PyExc_tds_NotSupportedError, "FreeTDS does not support this option");
+                Connection_raise(connection);
                 break;
             }
 
             connection->query_timeout = (int)timeout;
+#else /* ifdef DBVERSION_74 */
+            PyErr_SetString(PyExc_tds_NotSupportedError, "FreeTDS does not support the DBSETTIME option");
+            break;
+#endif /* else ifdef DBVERSION_74 */
         }
         else
         {

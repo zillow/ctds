@@ -44,6 +44,13 @@ The connection timeout.
                 ):
                     connection.timeout = timeout
                     self.assertEqual(connection.timeout, timeout)
+            else:
+                try:
+                    connection.timeout = 2
+                except ctds.NotSupportedError as ex:
+                    self.assertEqual(str(ex), 'FreeTDS does not support the DBSETTIME option')
+                else:
+                    self.fail('.timeout did not fail as expected') # pragma: nocover
 
     def test_timeout(self):
         with self.connect(timeout=1) as connection:
@@ -67,6 +74,14 @@ The connection timeout.
                     )
                 else:
                     self.fail('.execute() did not fail as expected') # pragma: nocover
+
+                if self.supports_timeout_set:
+                    try:
+                        connection.timeout = 3
+                    except ctds.DatabaseError as ex:
+                        self.assertEqual(str(ex), 'DBPROCESS is dead or not enabled')
+                    else:
+                        self.fail('.timeout did not fail as expected') # pragma: nocover
 
         with self.connect(timeout=1) as connection:
             with connection.cursor() as cursor:

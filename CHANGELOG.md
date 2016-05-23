@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.5] - 2016-05-23
+### Fixed
+- Fix the `ctds.Connection.timeout` property to raise an appropriate error
+when the option is supported, but the set fails.
+
 ## [1.0.4] - 2016-05-19
 ### Fixed
 - Fix the `ctds.Connection.timeout` property to work with the **DBSETTIME**
@@ -42,7 +47,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.0.5...HEAD
+[1.0.4]: https://github.com/zillow/ctds/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/zillow/ctds/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/zillow/ctds/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/zillow/ctds/compare/v1.0.1...v1.0.2
