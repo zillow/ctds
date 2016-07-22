@@ -1133,7 +1133,7 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
 
 /* https://www.python.org/dev/peps/pep-0249/#callproc */
 static const char s_Cursor_callproc_doc[] =
-    "callproc(sql, parameters)\n"
+    "callproc(sproc, parameters)\n"
     "\n"
     "Call a stored database procedure with the given name. The sequence of\n"
     "parameters must contain one entry for each argument that the procedure\n"
@@ -1150,12 +1150,12 @@ static const char s_Cursor_callproc_doc[] =
     "\n"
     ":pep:`0249#callproc`\n"
     "\n"
-    ":param str sproc: The stored procedure to execute.\n"
+    ":param str sproc: The name of the stored procedure to execute.\n"
 
     ":param parameters: Parameters to pass to the stored procedure.\n"
     "    Parameters passed in a :py:class:`dict` must map from the parameter\n"
-    "    name to value. Parameters passed in a :py:class:`tuple` are passed\n"
-    "    in the tuple order.\n"
+    "    name to value and start with the **@** character. Parameters passed\n"
+    "    in a :py:class:`tuple` are passed in the tuple order.\n"
     ":type parameters: dict or tuple\n"
 
     ":return: The input `parameters` with any output parameters replaced with\n"

@@ -79,4 +79,3 @@ Rollback any pending transaction to the database.
                     )
                 else:
                     self.fail('.execute() did not fail as expected') # pragma: nocover
-

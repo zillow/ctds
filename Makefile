@@ -23,7 +23,7 @@ PYTHON_VERSIONS := $(strip $(foreach V, $(SUPPORTED_PYTHON_VERSIONS), $(call CHE
 DEFAULT_PYTHON_VERSION := $(lastword $(PYTHON_VERSIONS))
 
 ifndef VIRTUALENV
-    VIRTUALENV = virtualenv
+    VIRTUALENV = python -m virtualenv
 endif
 
 # Local directories

@@ -57,4 +57,3 @@ A reference to the Connection object on which the cursor was created.
                         pass
                     else:
                         self.fail('.connection did not fail as expected') # pragma: nocover
-

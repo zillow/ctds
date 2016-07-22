@@ -85,7 +85,11 @@ specified in the SQL statement. Parameter notation is specified by
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 try:
-                    cursor.execute("RAISERROR (N'some custom error %s', 12, 111, 'hello!');")
+                    cursor.execute(
+                        '''
+                        RAISERROR (N'some custom error %s', 12, 111, 'hello!');
+                        '''
+                    )
                 except ctds.ProgrammingError as ex:
                     msg = "some custom error hello!"
                     self.assertEqual(str(ex), msg)
@@ -98,7 +102,7 @@ specified in the SQL statement. Parameter notation is specified by
                         'severity': 12,
                         'description': msg,
                         'proc': '',
-                        'line': 1,
+                        'line': 2,
                     })
                 else:
                     self.fail('.execute() did not fail as expected') # pragma: nocover
@@ -111,7 +115,11 @@ specified in the SQL statement. Parameter notation is specified by
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 with warnings.catch_warnings(record=True) as warns:
-                    cursor.execute("RAISERROR (N'some custom non-severe error %s', 10, 111, 'hello!');")
+                    cursor.execute(
+                        '''
+                        RAISERROR (N'some custom non-severe error %s', 10, 111, 'hello!');
+                        '''
+                    )
                     msg = "some custom non-severe error hello!"
                     self.assertEqual(len(warns), 1)
                     self.assertEqual(
@@ -130,7 +138,11 @@ specified in the SQL statement. Parameter notation is specified by
     def test_no_arguments(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                cursor.execute('''SELECT ':0';''')
+                cursor.execute(
+                    '''
+                    SELECT ':0';
+                    '''
+                )
                 self.assertEqual(tuple(cursor.fetchone()), (':0',))
 
     def test_typeerror(self):

@@ -61,3 +61,6 @@ Using `antipool <http://furius.ca/antiorm/>`_ is fairly straightforward.
                 print(ex)
     finally:
         connection.release()
+
+    # Explicitly cleanup the connection pool.
+    pool.finalize()

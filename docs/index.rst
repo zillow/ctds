@@ -29,5 +29,6 @@ Index
     Transactions <transactions>
     Bulk Insert <bulk_insert>
     Connection Pooling <pooling>
+    faq
     api
 

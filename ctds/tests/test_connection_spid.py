@@ -1,7 +1,7 @@
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import int_, long_
+from .compat import long_
 
 class TestConnectionSpid(TestExternalDatabase):
     '''Unit tests related to the Connection.spid attribute.

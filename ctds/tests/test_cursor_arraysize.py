@@ -52,4 +52,3 @@ The number of rows to fetch at a time with :py:meth:`.fetchmany`.
                         self.fail('.arraysize did not fail as expected') # pragma: nocover
                 else: # pragma: nocover
                     pass
-

@@ -52,4 +52,3 @@ Set the current database.
             else:
                 self.fail('.use() did not fail as expected') # pragma: nocover
             self.assertEqual(connection.database, current)
-

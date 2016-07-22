@@ -40,7 +40,7 @@ class TestCursorCallproc(TestExternalDatabase): # pylint: disable=too-many-publi
         self.assertEqual(
             ctds.Cursor.callproc.__doc__,
             '''\
-callproc(sql, parameters)
+callproc(sproc, parameters)
 
 Call a stored database procedure with the given name. The sequence of
 parameters must contain one entry for each argument that the procedure
@@ -57,11 +57,11 @@ parameters are replaced with output values.
 
 :pep:`0249#callproc`
 
-:param str sproc: The stored procedure to execute.
+:param str sproc: The name of the stored procedure to execute.
 :param parameters: Parameters to pass to the stored procedure.
     Parameters passed in a :py:class:`dict` must map from the parameter
-    name to value. Parameters passed in a :py:class:`tuple` are passed
-    in the tuple order.
+    name to value and start with the **@** character. Parameters passed
+    in a :py:class:`tuple` are passed in the tuple order.
 :type parameters: dict or tuple
 :return: The input `parameters` with any output parameters replaced with
     the output values.
@@ -135,6 +135,8 @@ parameters are replaced with output values.
                 self.assertTrue(cursor.fetchall())
 
     def test_sql_raiseerror_warning(self):
+        # The error is simply reported as a warning because another statement follows
+        # and completes sucessfully.
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 sproc = self.test_sql_raiseerror_warning.__name__
@@ -143,12 +145,13 @@ parameters are replaced with output values.
                     sproc,
                     '''
                     AS
-                        RAISERROR (N'some custom non-severe error %s', 10, 111, 'hello!');
+                        RAISERROR (N'some custom error %s', 16, -1, 'hello!');
+                        SELECT 1 As SomeResult
                     '''
                     ):
                     with warnings.catch_warnings(record=True) as warns:
                         cursor.callproc(sproc, ())
-                        msg = "some custom non-severe error hello!"
+                        msg = "some custom error hello!"
                         self.assertEqual(len(warns), 1)
                         self.assertEqual(
                             [str(warn.message) for warn in warns],
@@ -156,6 +159,12 @@ parameters are replaced with output values.
                         )
 
                         self.assertEqual(warns[0].category, ctds.Warning)
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (1,)
+                        ]
+                    )
 
                 # The cursor should be usable after a warning.
                 with warnings.catch_warnings(record=True) as warns:
@@ -368,7 +377,7 @@ parameters are replaced with output values.
                         }
                         outputs = cursor.callproc(sproc, inputs)
                         self.assertEqual(inputs, outputs)
-                        for key in inputs.keys():
+                        for key in inputs:
                             # (N)(VAR)CHAR parameters are translated to UCS-2 and therefore
                             # the id() values will never match.
                             if key != '@pVarChar':

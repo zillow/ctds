@@ -51,4 +51,3 @@ class TestTdsTime(unittest.TestCase):
                 self.assertEqual(str(ex), '{0} is out of range'.format(part))
             else:
                 self.fail('.Time() did not fail as expected') # pragma: nocover
-

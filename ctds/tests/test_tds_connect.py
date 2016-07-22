@@ -276,4 +276,3 @@ Connect to a database.
                 self.assertFalse(self.QUOTED_IDENTIFIER & options)
                 self.assertFalse(self.ANSI_NULL_DFLT_ON & options)
                 self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
-
