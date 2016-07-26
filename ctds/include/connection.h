@@ -1,15 +1,13 @@
 #ifndef __CONNECTION_H__
 #define __CONNECTION_H__
 
+#include "push_warnings.h"
+#include <Python.h>
+#include <sybdb.h>
+#include "pop_warnings.h"
+
 #include <stdbool.h>
 #include <stdint.h>
-
-#include <Python.h>
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#include <sybdb.h>
-#pragma GCC diagnostic pop
 
 
 PyTypeObject* ConnectionType_init(void);

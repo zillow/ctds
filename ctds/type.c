@@ -1,10 +1,8 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wlong-long"
-#  include <Python.h>
-#  include "structmember.h"
-#  include <sybdb.h>
-#pragma GCC diagnostic pop
+#include "include/push_warnings.h"
+#include <Python.h>
+#include "structmember.h"
+#include <sybdb.h>
+#include "include/pop_warnings.h"
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -16,8 +14,10 @@
 #include "include/tds.h"
 #include "include/type.h"
 
-/* Ignore "ISO C90 does not support ‘long long’ [-Werror=long-long]". */
-#pragma GCC diagnostic ignored "-Wlong-long"
+#ifdef __GNUC__
+/* Ignore "ISO C90 does not support 'long long' [-Werror=long-long]". */
+#  pragma GCC diagnostic ignored "-Wlong-long"
+#endif /* ifdef __GNUC__ */
 
 
 #define SqlType_init_base(_type, _value, _tdstype) \

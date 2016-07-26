@@ -1,9 +1,7 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wlong-long"
-#  include <Python.h>
-#  include <sybdb.h>
-#pragma GCC diagnostic pop
+#include "include/push_warnings.h"
+#include <Python.h>
+#include <sybdb.h>
+#include "include/pop_warnings.h"
 
 #include <assert.h>
 #include <stddef.h>
@@ -18,15 +16,16 @@
 #include "include/tds.h"
 #include "include/type.h"
 
+#ifdef __GNUC__
 /*
-    Ignore "string length ‘1189’ is greater than the length ‘509’ ISO C90
+    Ignore "string length '%d' is greater than the length '509' ISO C90
     compilers are required to support [-Werror=overlength-strings]".
 */
-#pragma GCC diagnostic ignored "-Woverlength-strings"
+#  pragma GCC diagnostic ignored "-Woverlength-strings"
 
-/* Ignore "ISO C90 does not support ‘long long’ [-Werror=long-long]". */
-#pragma GCC diagnostic ignored "-Wlong-long"
-
+/* Ignore "ISO C90 does not support 'long long' [-Werror=long-long]". */
+#  pragma GCC diagnostic ignored "-Wlong-long"
+#endif /* ifdef __GNUC__ */
 
 /*
     Use `sp_executesql` when possible for the execute*() methods. This method

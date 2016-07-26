@@ -1,10 +1,8 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wlong-long"
-#  include <Python.h>
-#  include <sybdb.h>
-#  include <ctpublic.h>
-#pragma GCC diagnostic pop
+#include "include/push_warnings.h"
+#include <Python.h>
+#include <sybdb.h>
+#include <ctpublic.h>
+#include "include/pop_warnings.h"
 
 #include <stdint.h>
 
@@ -16,11 +14,13 @@
 #include "include/tds.h"
 #include "include/type.h"
 
+#ifdef __GNUC__
 /*
     Ignore "string length ‘1189’ is greater than the length ‘509’ ISO C90
     compilers are required to support [-Werror=overlength-strings]".
 */
-#pragma GCC diagnostic ignored "-Woverlength-strings"
+#  pragma GCC diagnostic ignored "-Woverlength-strings"
+#endif /* ifdef __GNUC__ */
 
 PyObject* PyExc_tds_Warning = NULL;
 PyObject* PyExc_tds_Error = NULL;

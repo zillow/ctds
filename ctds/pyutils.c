@@ -1,10 +1,8 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wlong-long"
-#  include <Python.h>
+#include "include/push_warnings.h"
+#include <Python.h>
 /* `datetime.h` must only be included here. */
-#  include <datetime.h>
-#pragma GCC diagnostic pop
+#include <datetime.h>
+#include "include/pop_warnings.h"
 
 #include <sys/types.h>
 

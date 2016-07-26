@@ -1,9 +1,10 @@
 #ifndef __TYPE_H__
 #define __TYPE_H__
 
+#include "push_warnings.h"
 #include <Python.h>
-
 #include <sybdb.h>
+#include "pop_warnings.h"
 
 #define DECIMAL_MAX_PRECISION 38
 

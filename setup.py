@@ -27,6 +27,11 @@ if (sys.version_info < (3, 3)):
 debug = os.environ.get('DEBUG')
 windows = platform.system() == 'Windows'
 
+libraries = [
+    'sybdb',
+    'ct',
+]
+
 if not windows:
     extra_compile_args = [
         '-ansi',
@@ -139,15 +144,12 @@ setuptools.setup(
                 ('CTDS_MAJOR_VERSION', CTDS_MAJOR_VERSION),
                 ('CTDS_MINOR_VERSION', CTDS_MINOR_VERSION),
                 ('CTDS_PATCH_VERSION', CTDS_PATCH_VERSION),
+                ('PY_SSIZE_T_CLEAN', '1'),
+                ('MSDBLIB', '1'),
             ],
-            extra_compile_args=[
-                '-DPY_SSIZE_T_CLEAN',
-                '-DMSDBLIB',
-            ] + extra_compile_args,
-            extra_link_args=[
-                '-lsybdb',
-                '-lct'
-            ] + extra_link_args,
+            extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
+            libraries=libraries,
         ),
     ],
 

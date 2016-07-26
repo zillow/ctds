@@ -1,11 +1,12 @@
 #ifndef __PARAMETER_H__
 #define __PARAMETER_H__
 
-#include <stdbool.h>
-
+#include "push_warnings.h"
 #include <Python.h>
-
 #include <sybdb.h>
+#include "pop_warnings.h"
+
+#include <stdbool.h>
 
 PyTypeObject* ParameterType_init(void);
 int Parameter_Check(PyObject* o);

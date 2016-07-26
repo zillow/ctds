@@ -1,7 +1,9 @@
 #ifndef __CURSOR_H__
 #define __CURSOR_H__
 
+#include "push_warnings.h"
 #include <Python.h>
+#include "pop_warnings.h"
 
 /**
     Initialize the Cursor Python type object.

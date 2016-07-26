@@ -1,9 +1,7 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wlong-long"
-#  include <Python.h>
-#  include <sybdb.h>
-#pragma GCC diagnostic pop
+#include "include/push_warnings.h"
+#include <Python.h>
+#include <sybdb.h>
+#include "include/pop_warnings.h"
 
 #include <stddef.h>
 
@@ -14,11 +12,13 @@
 #include "include/pyutils.h"
 #include "include/parameter.h"
 
+#ifdef __GNUC__
 /*
-    Ignore "string length ‘1189’ is greater than the length ‘509’ ISO C90
+    Ignore "string length '%d' is greater than the length '509' ISO C90
     compilers are required to support [-Werror=overlength-strings]".
 */
-#pragma GCC diagnostic ignored "-Woverlength-strings"
+#  pragma GCC diagnostic ignored "-Woverlength-strings"
+#endif /* ifdef __GNUC__ */
 
 /* Platform-specific thread-local storage support. */
 #ifdef __clang__

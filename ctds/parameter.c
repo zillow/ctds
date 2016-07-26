@@ -1,9 +1,7 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wlong-long"
-#  include <Python.h>
-#  include "structmember.h"
-#pragma GCC diagnostic pop
+#include "include/push_warnings.h"
+#include <Python.h>
+#include "structmember.h"
+#include "include/pop_warnings.h"
 
 #include <stddef.h>
 #include <float.h>
@@ -16,11 +14,15 @@
 #include "include/tds.h"
 #include "include/type.h"
 
-/* Ignore "ISO C90 does not support ‘long long’ [-Werror=long-long]". */
-#pragma GCC diagnostic ignored "-Wlong-long"
+#ifdef __GNUC__
+/* Ignore "ISO C90 does not support 'long long' [-Werror=long-long]". */
+#  pragma GCC diagnostic ignored "-Wlong-long"
 
-/* Ignore "ISO C90 does not support the ‘ll’ gnu_printf length modifier [-Werror=format=]" */
-#pragma GCC diagnostic ignored "-Wformat="
+#  ifndef __clang__
+/* Ignore "ISO C90 does not support the 'll' gnu_printf length modifier [-Werror=format=]" */
+#    pragma GCC diagnostic ignored "-Wformat="
+#  endif /* ifndef __clang__ */
+#endif /* ifdef __GNUC__ */
 
 
 struct Parameter

@@ -1,7 +1,10 @@
 #ifndef __TDS_H__
 #define __TDS_H__
 
+#include "push_warnings.h"
 #include <Python.h>
+#include "pop_warnings.h"
+
 #include <stdlib.h>
 
 extern PyObject* PyExc_tds_Warning;

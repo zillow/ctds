@@ -1,7 +1,9 @@
 #ifndef __PYUTILS_H__
 #define __PYUTILS_H__
 
+#include "push_warnings.h"
 #include <Python.h>
+#include "pop_warnings.h"
 
 /* Wrapper around PyObject_SetAttrString; returns -1 on failure. */
 int PyObject_SetAttrStringLongValue(PyObject* o, const char* name, long v);
