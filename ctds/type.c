@@ -1,17 +1,24 @@
-#include <Python.h>
-#include "structmember.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wlong-long"
+#  include <Python.h>
+#  include "structmember.h"
+#  include <sybdb.h>
+#pragma GCC diagnostic pop
 
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
-
-#include <sybdb.h>
 
 #include "include/connection.h"
 #include "include/macros.h"
 #include "include/pyutils.h"
 #include "include/tds.h"
 #include "include/type.h"
+
+/* Ignore "ISO C90 does not support ‘long long’ [-Werror=long-long]". */
+#pragma GCC diagnostic ignored "-Wlong-long"
+
 
 #define SqlType_init_base(_type, _value, _tdstype) \
     Py_INCREF((_value)); \
@@ -118,7 +125,7 @@ int SqlType_Check(PyObject* o)
 }
 
 #define SqlType_HEAD \
-    struct SqlType type;
+    struct SqlType type
 
 #if PY_VERSION_HEX >= 0x03040000
 #  define _TP_FINALIZE NULL
@@ -204,15 +211,17 @@ int SqlType_Check(PyObject* o)
 
 static int SqlIntN_parse(PyObject* args, const char* format, ...)
 {
+    va_list vargs;
+    int error;
+
     if ((PyTuple_GET_SIZE(args) == 1) &&
         (PyTuple_GET_ITEM(args, 0) == Py_None))
     {
         return 1;
     }
 
-    va_list vargs;
     va_start(vargs, format);
-    int error = PyArg_VaParse(args, format, vargs);
+    error = PyArg_VaParse(args, format, vargs);
     va_end(vargs);
 
     return error;
@@ -571,7 +580,6 @@ static const char s_SqlDecimal_doc[] =
     "    This must be between 1 and 38.\n"
     ":param int scale: The maximum number of digits stored to the right\n"
     "    of the decimal point. 0 <= `scale` <= `precision`.\n";
-;
 
 static int SqlDecimal_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -608,6 +616,7 @@ static int SqlDecimal_init(PyObject* self, PyObject* args, PyObject* kwargs)
         PyObject* ostr = PyObject_Str(value);
         if (ostr)
         {
+            DBTYPEINFO dbtypeinfo;
             Py_ssize_t nutf8;
 #if PY_MAJOR_VERSION < 3
             const char* str = PyString_AS_STRING(ostr);
@@ -616,7 +625,6 @@ static int SqlDecimal_init(PyObject* self, PyObject* args, PyObject* kwargs)
             const char* str = PyUnicode_AsUTF8AndSize(ostr, &nutf8);
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
-            DBTYPEINFO dbtypeinfo;
             dbtypeinfo.precision = (DBINT)precision;
             dbtypeinfo.scale = (DBINT)scale;
 
@@ -736,9 +744,9 @@ static PyObject* SQLINT_topython(enum TdsType tdstype, const void* data, size_t 
 
 static PyObject* SQLBIT_topython(enum TdsType tdstype, const void* data, size_t ndata)
 {
+    long l = 0;
     if (!ndata) Py_RETURN_NONE;
 
-    long l = 0;
     memcpy(&l, data, ndata);
     return PyBool_FromLong(l);
     UNUSED(tdstype);
@@ -763,16 +771,18 @@ static PyObject* FLOAT_topython(enum TdsType tdstype, const void* data, size_t n
 static PyObject* NUMERIC_topython(enum TdsType tdstype, const void* data, size_t ndata)
 {
     char buffer[100];
+    DBINT size;
+
     if (!ndata) Py_RETURN_NONE;
 
 
-    DBINT size = dbconvert(NULL,
-                           tdstype,
-                           data,
-                           (DBINT)ndata,
-                           SYBCHAR,
-                           (BYTE*)buffer,
-                           (DBINT)sizeof(buffer));
+    size = dbconvert(NULL,
+                     tdstype,
+                     data,
+                     (DBINT)ndata,
+                     SYBCHAR,
+                     (BYTE*)buffer,
+                     (DBINT)sizeof(buffer));
     if (-1 == size)
     {
         PyErr_Format(PyExc_tds_InternalError, "failed to convert NUMERIC to string");
@@ -965,11 +975,10 @@ sql_topython sql_topython_lookup(enum TdsType tdstype)
 PyObject* translate_to_ucs2(PyObject* o)
 {
     PyObject* translated = NULL;
-
-    assert(PyUnicode_Check(o));
-
     Py_ssize_t len;
     wchar_t* ucs2;
+
+    assert(PyUnicode_Check(o));
 #if PY_MAJOR_VERSION < 3
     len = PyUnicode_GetSize(o);
     do

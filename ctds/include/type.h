@@ -100,7 +100,7 @@ enum TdsType {
     TDSXML = 241,
 #define TDSXML TDSXML
 
-    TDSVOID = SYBVOID,
+    TDSVOID = SYBVOID
 #define TDSVOID TDSVOID
 };
 
@@ -147,7 +147,7 @@ int SqlType_Check(PyObject* o);
 
 #define DECLARE_SQL_TYPE(_type) \
     PyTypeObject* Sql ## _type ## Type_init(void); \
-    PyObject* Sql ## _type ## _create(PyObject* self, PyObject* args, PyObject* kwargs);
+    PyObject* Sql ## _type ## _create(PyObject* self, PyObject* args, PyObject* kwargs)
 
 DECLARE_SQL_TYPE(TinyInt);
 DECLARE_SQL_TYPE(SmallInt);

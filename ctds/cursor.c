@@ -1,11 +1,14 @@
-#include <Python.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wlong-long"
+#  include <Python.h>
+#  include <sybdb.h>
+#pragma GCC diagnostic pop
 
 #include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-
-#include <sybdb.h>
 
 #include "include/cursor.h"
 #include "include/connection.h"
@@ -14,6 +17,16 @@
 #include "include/pyutils.h"
 #include "include/tds.h"
 #include "include/type.h"
+
+/*
+    Ignore "string length ‘1189’ is greater than the length ‘509’ ISO C90
+    compilers are required to support [-Werror=overlength-strings]".
+*/
+#pragma GCC diagnostic ignored "-Woverlength-strings"
+
+/* Ignore "ISO C90 does not support ‘long long’ [-Werror=long-long]". */
+#pragma GCC diagnostic ignored "-Wlong-long"
+
 
 /*
     Use `sp_executesql` when possible for the execute*() methods. This method
@@ -47,8 +60,11 @@ struct ResultSetDescription {
     */
     size_t ncolumns;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
     /* A dynamically-sized array of columns, of length `ncolumns`. */
     struct Column columns[];
+#pragma GCC diagnostic pop
 };
 
 #define ResultSetDescription_size(_ncolumns) \
@@ -912,6 +928,7 @@ static PyObject* Cursor_unbind(PyObject* rpcparams,
             {
                 const struct OutputParameter* outputparam = NULL;
                 const char* name;
+                size_t ix;
 #if PY_MAJOR_VERSION < 3
                 PyObject* utf8key;
                 if (PyUnicode_Check(key))
@@ -932,7 +949,6 @@ static PyObject* Cursor_unbind(PyObject* rpcparams,
 #else /* if PY_MAJOR_VERSION < 3 */
                 name = PyUnicode_AsUTF8(key);
 #endif /* else if PY_MAJOR_VERSION < 3 */
-                size_t ix;
                 for (ix = 0; ix < noutputparams; ++ix)
                 {
                     if (strcmp(name, outputparams[ix].name) == 0)
@@ -1269,11 +1285,10 @@ static PyObject* build_executesql_stmt(const char* format, Py_ssize_t nparameter
                     {
                         if (paramnum < nparameters)
                         {
-                            nchunk = (size_t)(format - chunk);
-
                             char param[ARRAYSIZE("@param" STRINGIFY(UINT64_MAX))];
-
                             size_t nparam = (size_t)sprintf(param, "@param%lu", (size_t)paramnum);
+
+                            nchunk = (size_t)(format - chunk);
 
                             /* Append the prior chunk. */
                             sql = strappend(sql, nsql, chunk, nchunk);
@@ -1479,6 +1494,8 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             }
             else
             {
+                PyObject* stmt;
+
                 /* Create the callproc arguments on the first (and possibly only) iteration. */
                 nparameters = (parameters) ? PySequence_Fast_GET_SIZE(parameters) : 0;
                 callprocargs = PyTuple_New(1 + ((nparameters) ? 1 : 0) + nparameters);
@@ -1487,7 +1504,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
                     break;
                 }
 
-                PyObject* stmt = build_executesql_stmt(sqlfmt, nparameters);
+                stmt = build_executesql_stmt(sqlfmt, nparameters);
                 if (!stmt)
                 {
                     break;
@@ -1812,12 +1829,15 @@ static const char s_Cursor_execute_doc[] =
 
 static PyObject* Cursor_execute(PyObject* self, PyObject* args)
 {
+    char* sqlfmt;
+    PyObject* parameters = NULL;
+    PyObject* sequence;
+    int error;
+
     struct Cursor* cursor = (struct Cursor*)self;
     Cursor_verify_open(cursor);
     Cursor_verify_connection_open(cursor);
 
-    char* sqlfmt = NULL;
-    PyObject* parameters = NULL;
     if (!PyArg_ParseTuple(args, "s|O", &sqlfmt, &parameters))
     {
         return NULL;
@@ -1828,7 +1848,7 @@ static PyObject* Cursor_execute(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    PyObject* sequence = PyTuple_New((parameters) ? 1 : 0);
+    sequence = PyTuple_New((parameters) ? 1 : 0);
     if (!sequence)
     {
         return NULL;
@@ -1840,7 +1860,7 @@ static PyObject* Cursor_execute(PyObject* self, PyObject* args)
         PyTuple_SET_ITEM(sequence, 0, parameters); /* parameters reference stolen by PyTuple_SET_ITEM */
     }
 
-    int error = Cursor_execute_internal(cursor, sqlfmt, sequence);
+    error = Cursor_execute_internal(cursor, sqlfmt, sequence);
     Py_DECREF(sequence);
     if (error)
     {
@@ -1866,12 +1886,13 @@ static const char s_Cursor_executemany_doc[] =
 
 PyObject* Cursor_executemany(PyObject* self, PyObject* args)
 {
+    char* sqlfmt;
+    PyObject* iterable;
+
     struct Cursor* cursor = (struct Cursor*)self;
     Cursor_verify_open(cursor);
     Cursor_verify_connection_open(cursor);
 
-    char* sqlfmt = NULL;
-    PyObject* iterable;
     if (!PyArg_ParseTuple(args, "sO", &sqlfmt, &iterable))
     {
         return NULL;
@@ -1936,7 +1957,11 @@ struct RowBuffer
         Iterating column buffers requires use of ColumnBuffer_size() to
         determine the actual size of the ColumnBuffer.
     */
+#pragma GCC diagnostic push
+/* Ignore "ISO C90 does not support flexible array members". */
+#pragma GCC diagnostic ignored "-Wpedantic"
     struct ColumnBuffer columns[];
+#pragma GCC diagnostic pop
 };
 
 /*
@@ -1989,7 +2014,7 @@ static void ResultSetDescription_RowBuffer_free(const struct ResultSetDescriptio
                 tds_mem_free(column->data.variable);
                 column->data.variable = 0;
             }
-            column = (struct ColumnBuffer*)((void*)column + ColumnBuffer_size(dbcol));
+            column = (struct ColumnBuffer*)((char*)column + ColumnBuffer_size(dbcol));
         }
         tds_mem_free(rowbuffer);
         rowbuffer = next;
@@ -2037,7 +2062,7 @@ static struct Row* Row_create(struct ResultSetDescription* description,
 
             if (column->topython)
             {
-                const struct ColumnBuffer* colbuffer = (const struct ColumnBuffer*)(((const void*)rowbuffer->columns) + offset);
+                const struct ColumnBuffer* colbuffer = (const struct ColumnBuffer*)(((const char*)rowbuffer->columns) + offset);
 
                 const void* data = (Column_IsVariableLength(&column->dbcol)) ?
                     colbuffer->data.variable : &colbuffer->data.fixed;
@@ -2128,6 +2153,7 @@ static PyObject* Row_lookup_column(PyObject* self, PyObject* item, PyObject* err
     struct Row* row = (struct Row*)self;
     PyObject* value = NULL;
     const char* name;
+    size_t ix;
 
 #if PY_MAJOR_VERSION < 3
     PyObject* utf8item = NULL;
@@ -2148,7 +2174,6 @@ static PyObject* Row_lookup_column(PyObject* self, PyObject* item, PyObject* err
     name = PyUnicode_AsUTF8(item);
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
-    size_t ix;
     for (ix = 0; ix < row->description->ncolumns; ++ix)
     {
         if (0 == strcmp(name, row->description->columns[ix].dbcol.ActualName))
@@ -2517,7 +2542,7 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
             for (colnum = 1; colnum <= description->ncolumns; ++colnum)
             {
                 const struct Column* column = &description->columns[colnum - 1];
-                struct ColumnBuffer* colbuffer = (struct ColumnBuffer*)(((void*)last_rowbuffer->columns) + offset);
+                struct ColumnBuffer* colbuffer = (struct ColumnBuffer*)(((char*)last_rowbuffer->columns) + offset);
 
                 const BYTE* data;
                 DBINT ndata;
@@ -2888,7 +2913,7 @@ PyObject* Cursor_create(struct Connection* connection)
     struct Cursor* cursor = PyObject_New(struct Cursor, &CursorType);
     if (NULL != cursor)
     {
-        memset((void*)cursor + offsetof(struct Cursor, connection), 0,
+        memset((char*)cursor + offsetof(struct Cursor, connection), 0,
                (sizeof(struct Cursor) - offsetof(struct Cursor, connection)));
 
         /*

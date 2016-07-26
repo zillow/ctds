@@ -1,5 +1,9 @@
-#include <Python.h>
-#include "structmember.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wlong-long"
+#  include <Python.h>
+#  include "structmember.h"
+#pragma GCC diagnostic pop
 
 #include <stddef.h>
 #include <float.h>
@@ -11,6 +15,13 @@
 #include "include/pyutils.h"
 #include "include/tds.h"
 #include "include/type.h"
+
+/* Ignore "ISO C90 does not support ‘long long’ [-Werror=long-long]". */
+#pragma GCC diagnostic ignored "-Wlong-long"
+
+/* Ignore "ISO C90 does not support the ‘ll’ gnu_printf length modifier [-Werror=format=]" */
+#pragma GCC diagnostic ignored "-Wformat="
+
 
 struct Parameter
 {
@@ -218,6 +229,11 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
         {
             if (PyUnicode_Check(value))
             {
+#if PY_MAJOR_VERSION < 3
+                PyObject* utf8value;
+#else /* if PY_MAJOR_VERSION < 3 */
+                Py_ssize_t size;
+#endif /* else if PY_MAJOR_VERSION < 3 */
                 /*
                     FreeTDS will only convert strings to UCS-2, so translate all
                     strings to UCS-2 prior to binding.
@@ -229,7 +245,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 }
 
 #if PY_MAJOR_VERSION < 3
-                PyObject* utf8value = PyUnicode_AsUTF8String(ucs2value);
+                utf8value = PyUnicode_AsUTF8String(ucs2value);
                 Py_DECREF(ucs2value);
                 if (!utf8value)
                 {
@@ -244,7 +260,6 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 Py_XDECREF(parameter->source);
                 parameter->source = ucs2value; /* claim reference */
 
-                Py_ssize_t size;
                 parameter->input = (void*)PyUnicode_AsUTF8AndSize(ucs2value, &size);
                 parameter->ninput = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
@@ -455,13 +470,15 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 PyObject* uuidstr = PyObject_Str(value);
                 if (uuidstr)
                 {
+#if PY_MAJOR_VERSION >= 3
+                    Py_ssize_t size;
+#endif /* if PY_MAJOR_VERSION >= 3 */
                     Py_XDECREF(parameter->source);
                     parameter->source = uuidstr; /* claim reference */
 #if PY_MAJOR_VERSION < 3
                     parameter->input = (void*)PyString_AS_STRING(uuidstr);
                     parameter->ninput = (size_t)PyString_GET_SIZE(uuidstr);
 #else /* if PY_MAJOR_VERSION < 3 */
-                    Py_ssize_t size;
                     parameter->input = (void*)PyUnicode_AsUTF8AndSize(uuidstr, &size);
                     parameter->ninput = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
@@ -514,7 +531,7 @@ struct Parameter* Parameter_create(PyObject* value, bool output)
     struct Parameter* parameter = PyObject_New(struct Parameter, &ParameterType);
     if (NULL != parameter)
     {
-        memset((((void*)parameter) + offsetof(struct Parameter, value)),
+        memset((((char*)parameter) + offsetof(struct Parameter, value)),
                0,
                (sizeof(struct Parameter) - offsetof(struct Parameter, value)));
         if (0 == Parameter_bind(parameter, value))

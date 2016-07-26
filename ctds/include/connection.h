@@ -6,7 +6,10 @@
 
 #include <Python.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 #include <sybdb.h>
+#pragma GCC diagnostic pop
 
 
 PyTypeObject* ConnectionType_init(void);

@@ -6,6 +6,7 @@ except:
     pass
 
 import os
+import platform
 import setuptools
 import setuptools.dist
 import sys
@@ -24,16 +25,38 @@ if (sys.version_info < (3, 3)):
     tests_require.append('mock >= 0.7.2')
 
 debug = os.environ.get('DEBUG')
-extra_compile_args = ['-g', '-O0'] if debug else ['-O3'] # setuptools specifies -O2 -- override it
-extra_link_args = ['-O1'] if debug else ['-O3'] # setuptools specifies -O2 -- override it
+windows = platform.system() == 'Windows'
 
-if os.environ.get('TDS_PROFILE'):
-    extra_compile_args.append('-pg')
-    extra_link_args.append('-pg')
+if not windows:
+    extra_compile_args = [
+        '-ansi',
+        '-Wall',
+        '-Wextra',
+        '-Werror',
+        '-Wconversion',
+        '-Wpedantic',
+        '-std=c90',
+    ]
+    if debug:
+        extra_compile_args += [
+            '-O0', # setuptools specifies -O2 -- override it
+        ]
+    else:
+        extra_compile_args += [
+            '-O3', # setuptools specifies -O2 -- override it
+        ]
+    extra_link_args = ['-O1'] if debug else ['-O3'] # setuptools specifies -O2 -- override it
 
-if os.environ.get('TDS_COVER'):
-    extra_compile_args += ['-fprofile-arcs', '-ftest-coverage']
-    extra_link_args.append('-fprofile-arcs')
+    if os.environ.get('TDS_PROFILE'):
+        extra_compile_args.append('-pg')
+        extra_link_args.append('-pg')
+
+    if os.environ.get('TDS_COVER'):
+        extra_compile_args += ['-fprofile-arcs', '-ftest-coverage']
+        extra_link_args.append('-fprofile-arcs')
+else:
+    extra_compile_args = ['/Zi'] if debug else []
+    extra_link_args = []
 
 # pthread is required on OS X for thread-local storage support.
 if sys.platform == 'darwin':
@@ -120,9 +143,6 @@ setuptools.setup(
             extra_compile_args=[
                 '-DPY_SSIZE_T_CLEAN',
                 '-DMSDBLIB',
-                '-Wall',
-                '-Wextra',
-                '-Wconversion'
             ] + extra_compile_args,
             extra_link_args=[
                 '-lsybdb',

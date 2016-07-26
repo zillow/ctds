@@ -1,6 +1,10 @@
-#include <Python.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wlong-long"
+#  include <Python.h>
 /* `datetime.h` must only be included here. */
-#include <datetime.h>
+#  include <datetime.h>
+#pragma GCC diagnostic pop
 
 #include <sys/types.h>
 
@@ -48,8 +52,9 @@ static PyObject* PyDecimalType = NULL;
 
 int PyDecimalType_init(void)
 {
-    assert(!PyDecimalType);
-    PyObject* moddecimal = PyImport_ImportModule("decimal");
+    PyObject* moddecimal;
+    assert(!PyDecimalType); /* should not be importing multiple times. */
+    moddecimal = PyImport_ImportModule("decimal");
     if (moddecimal)
     {
         PyDecimalType = PyObject_GetAttrString(moddecimal, "Decimal");
@@ -78,8 +83,9 @@ static PyObject* PyUuidType = NULL;
 
 int PyUuidType_init(void)
 {
+    PyObject* moduuid;
     assert(!PyUuidType);
-    PyObject* moduuid = PyImport_ImportModule("uuid");
+    moduuid = PyImport_ImportModule("uuid"); /* should not be importing multiple times. */
     if (moduuid)
     {
         PyUuidType = PyObject_GetAttrString(moduuid, "UUID");

@@ -1,8 +1,11 @@
-#include <Python.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wlong-long"
+#  include <Python.h>
+#  include <sybdb.h>
+#pragma GCC diagnostic pop
 
 #include <stddef.h>
-
-#include <sybdb.h>
 
 #include "include/macros.h"
 #include "include/tds.h"
@@ -11,6 +14,11 @@
 #include "include/pyutils.h"
 #include "include/parameter.h"
 
+/*
+    Ignore "string length ‘1189’ is greater than the length ‘509’ ISO C90
+    compilers are required to support [-Werror=overlength-strings]".
+*/
+#pragma GCC diagnostic ignored "-Woverlength-strings"
 
 /* Platform-specific thread-local storage support. */
 #ifdef __clang__
@@ -164,10 +172,12 @@ static PyObject* build_lastdberr_dict(const struct LastError* lasterror)
 
 static PyObject* build_lastoserr_dict(const struct LastError* lasterror)
 {
+    PyObject* dict;
+
     /* dblib sets oserr to DBNOERR for some errors... */
     if ((lasterror->oserr == DBNOERR) || (lasterror->oserr == 0)) Py_RETURN_NONE;
 
-    PyObject* dict = PyDict_New();
+    dict = PyDict_New();
     if (dict)
     {
         if (-1 == PyDict_SetItemStringLongValue(dict, "number", (long)lasterror->oserr) ||
@@ -182,9 +192,11 @@ static PyObject* build_lastoserr_dict(const struct LastError* lasterror)
 
 static PyObject* build_lastmessage_dict(const struct LastMsg* lastmsg)
 {
+    PyObject* dict;
+
     if (0 == lastmsg->msgno) Py_RETURN_NONE;
 
-    PyObject* dict = PyDict_New();
+    dict = PyDict_New();
     if (dict)
     {
         if (-1 == PyDict_SetItemStringLongValue(dict, "number", (long)lastmsg->msgno) ||
@@ -206,6 +218,8 @@ static PyObject* build_lastmessage_dict(const struct LastMsg* lastmsg)
 static void raise_lasterror(PyObject* exception, const struct LastError* lasterror,
                             const struct LastMsg* lastmsg)
 {
+    PyObject* args;
+
     /* Was the last error a database error or lower level? */
     const char* message;
     switch (lasterror->dberr)
@@ -235,7 +249,7 @@ static void raise_lasterror(PyObject* exception, const struct LastError* lasterr
         }
     }
 
-    PyObject* args = Py_BuildValue("(s)", message);
+    args = Py_BuildValue("(s)", message);
     if (args)
     {
         PyObject* error = PyEval_CallObject(exception, args);
@@ -1441,11 +1455,35 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
     {
         char* servername = NULL;
 
-        memset((((void*)connection) + offsetof(struct Connection, login)),
+        memset((((char*)connection) + offsetof(struct Connection, login)),
                0,
                (sizeof(struct Connection) - offsetof(struct Connection, login)));
         do
         {
+            /* Only support SQL Server 7.0 and up. */
+            static const struct {
+                const char* tds_version;
+                DBINT dbversion;
+            } s_supported_tds_versions[] = {
+                /* Note: The versions MUST be kept in descending order. */
+#ifdef DBVERSION_74
+                { "7.4", DBVERSION_74 },
+#endif
+#ifdef DBVERSION_73
+                { "7.3", DBVERSION_73 },
+#endif
+#ifdef DBVERSION_72
+                { "7.2", DBVERSION_72 },
+#endif
+#ifdef DBVERSION_71
+                { "7.1", DBVERSION_71 },
+#endif
+#ifdef DBVERSION_70
+                { "7.0", DBVERSION_70 }
+#endif
+            };
+            DBINT dbversion = DBVERSION_UNKNOWN;
+
             int written;
 
             /* Determine the maximum size the server connection string may require. */
@@ -1514,29 +1552,6 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 }
             }
 
-            /* Only support SQL Server 7.0 and up. */
-            static const struct {
-                const char* tds_version;
-                DBINT dbversion;
-            } s_supported_tds_versions[] = {
-                /* Note: The versions MUST be kept in descending order. */
-#ifdef DBVERSION_74
-                { "7.4", DBVERSION_74 },
-#endif
-#ifdef DBVERSION_73
-                { "7.3", DBVERSION_73 },
-#endif
-#ifdef DBVERSION_72
-                { "7.2", DBVERSION_72 },
-#endif
-#ifdef DBVERSION_71
-                { "7.1", DBVERSION_71 },
-#endif
-#ifdef DBVERSION_70
-                { "7.0", DBVERSION_70 }
-#endif
-            };
-            DBINT dbversion = DBVERSION_UNKNOWN;
             if (tds_version)
             {
                 size_t ix;

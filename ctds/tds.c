@@ -1,9 +1,12 @@
-#include <Python.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wlong-long"
+#  include <Python.h>
+#  include <sybdb.h>
+#  include <ctpublic.h>
+#pragma GCC diagnostic pop
 
 #include <stdint.h>
-
-#include <sybdb.h>
-#include <ctpublic.h>
 
 #include "include/connection.h"
 #include "include/cursor.h"
@@ -12,6 +15,12 @@
 #include "include/pyutils.h"
 #include "include/tds.h"
 #include "include/type.h"
+
+/*
+    Ignore "string length ‘1189’ is greater than the length ‘509’ ISO C90
+    compilers are required to support [-Werror=overlength-strings]".
+*/
+#pragma GCC diagnostic ignored "-Woverlength-strings"
 
 PyObject* PyExc_tds_Warning = NULL;
 PyObject* PyExc_tds_Error = NULL;
@@ -461,6 +470,124 @@ static PyObject* PyErr_NewExceptionWithDoc_(const char* name, const char* doc, P
 #endif /* else if PY_MAJOR_VERSION >= 3 */
 
 
+/**
+   https://www.python.org/dev/peps/pep-0249/#warning
+*/
+static const char s_tds_Warning_doc[] =
+    "Warning\n"
+    "\n"
+    ":pep:`0249#warning`\n"
+    "\n"
+    "Exception raised for important warnings like data truncations while\n"
+    "inserting, etc.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#error
+*/
+static const char s_tds_Error_doc[] =
+    "Error\n"
+    "\n"
+    ":pep:`0249#error`\n"
+    "\n"
+    "Exception that is the base class of all other error exceptions. You\n"
+    "can use this to catch all errors with one single except statement.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#interfaceerror
+*/
+static const char s_tds_InterfaceError_doc[] =
+    "InterfaceError\n"
+    "\n"
+    ":pep:`0249#interfaceerror`\n"
+    "\n"
+    "Exception raised for errors that are related to the database interface\n"
+    "rather than the database itself.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#databaseerror
+*/
+static const char s_tds_DatabaseError_doc[] =
+    "DatabaseError\n"
+    "\n"
+    ":pep:`0249#databaseerror`\n"
+    "\n"
+    "Exception raised for errors that are related to the database.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#dataerror
+*/
+static const char s_tds_DataError_doc[] =
+    "DataError\n"
+    "\n"
+    ":pep:`0249#dataerror`\n"
+    "\n"
+    "Exception raised for errors that are due to problems with the\n"
+    "processed data like division by zero, numeric value out of range,\n"
+    "etc.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#operationalerror
+*/
+static const char s_tds_OperationalError_doc[] =
+    "OperationalError\n"
+    "\n"
+    ":pep:`0249#operationalerror`\n"
+    "\n"
+    "Exception raised for errors that are related to the database's\n"
+    "operation and not necessarily under the control of the programmer,\n"
+    "e.g. an unexpected disconnect occurs, the data source name is not\n"
+    "found, a transaction could not be processed, a memory allocation\n"
+    "error occurred during processing, etc.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#integrityerror
+*/
+static const char s_tds_IntegrityError_doc[] =
+    "IntegrityError\n"
+    "\n"
+    ":pep:`0249#integrityerror`\n"
+    "\n"
+    "Exception raised when the relational integrity of the database is\n"
+    "affected, e.g. a foreign key check fails.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#programmingerror
+*/
+static const char s_tds_ProgrammingError_doc[] =
+    "ProgrammingError\n"
+    "\n"
+    ":pep:`0249#programmingerror`\n"
+    "\n"
+    "Exception raised for programming errors, e.g. table not found or\n"
+    "already exists, syntax error in the SQL statement, wrong number of\n"
+    "parameters specified, etc.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#internalerror
+*/
+static const char s_tds_InternalError_doc[] =
+    "InternalError\n"
+    "\n"
+    ":pep:`0249#internalerror`\n"
+    "\n"
+    "Exception raised when the database encounters an internal error,\n"
+    "e.g. the cursor is not valid anymore, the transaction is out of\n"
+    "sync, etc.\n";
+
+/**
+   https://www.python.org/dev/peps/pep-0249/#notsupportederror
+*/
+static const char s_tds_NotSupportedError_doc[] =
+    "NotSupportedError\n"
+    "\n"
+    ":pep:`0249#notsupportederror`\n"
+    "\n"
+    "Exception raised in case a method or database API was used which is\n"
+    "not supported by the database, e.g. requesting a .rollback() on a\n"
+    "connection that does not support transaction or has transactions\n"
+    "turned off.\n";
+
+
 #if PY_MAJOR_VERSION < 3
 PyMODINIT_FUNC init_tds(void)
 {
@@ -470,6 +597,9 @@ PyMODINIT_FUNC PyInit__tds(void)
 {
 #  define FAIL_MODULE_INIT do { Py_XDECREF(module); return NULL; } while (0)
 #endif /* else if PY_MAJOR_VERSION < 3 */
+
+    char freetds_version[100];
+    int written;
 
     /* Create module object. */
 #if PY_MAJOR_VERSION < 3
@@ -550,140 +680,24 @@ PyMODINIT_FUNC PyInit__tds(void)
 #  define PyExc_StandardError PyExc_Exception
 #endif
 
-    /**
-       https://www.python.org/dev/peps/pep-0249/#warning
-    */
-    static const char s_tds_Warning_doc[] =
-        "Warning\n"
-        "\n"
-        ":pep:`0249#warning`\n"
-        "\n"
-        "Exception raised for important warnings like data truncations while\n"
-        "inserting, etc.\n";
     if (!(PyExc_tds_Warning = PyErr_NewExceptionWithDoc_("_tds.Warning", s_tds_Warning_doc, PyExc_StandardError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(Warning);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#error
-    */
-    static const char s_tds_Error_doc[] =
-        "Error\n"
-        "\n"
-        ":pep:`0249#error`\n"
-        "\n"
-        "Exception that is the base class of all other error exceptions. You\n"
-        "can use this to catch all errors with one single except statement.\n";
     if (!(PyExc_tds_Error = PyErr_NewExceptionWithDoc_("_tds.Error", s_tds_Error_doc, PyExc_StandardError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(Error);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#interfaceerror
-    */
-    static const char s_tds_InterfaceError_doc[] =
-        "InterfaceError\n"
-        "\n"
-        ":pep:`0249#interfaceerror`\n"
-        "\n"
-        "Exception raised for errors that are related to the database interface\n"
-        "rather than the database itself.\n";
     if (!(PyExc_tds_InterfaceError = PyErr_NewExceptionWithDoc_("_tds.InterfaceError", s_tds_InterfaceError_doc, PyExc_tds_Error, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(InterfaceError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#databaseerror
-    */
-    static const char s_tds_DatabaseError_doc[] =
-        "DatabaseError\n"
-        "\n"
-        ":pep:`0249#databaseerror`\n"
-        "\n"
-        "Exception raised for errors that are related to the database.\n";
     if (!(PyExc_tds_DatabaseError = PyErr_NewExceptionWithDoc_("_tds.DatabaseError", s_tds_DatabaseError_doc, PyExc_tds_Error, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(DatabaseError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#dataerror
-    */
-    static const char s_tds_DataError_doc[] =
-        "DataError\n"
-        "\n"
-        ":pep:`0249#dataerror`\n"
-        "\n"
-        "Exception raised for errors that are due to problems with the\n"
-        "processed data like division by zero, numeric value out of range,\n"
-        "etc.\n";
     if (!(PyExc_tds_DataError = PyErr_NewExceptionWithDoc_("_tds.DataError", s_tds_DataError_doc, PyExc_tds_DatabaseError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(DataError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#operationalerror
-    */
-    static const char s_tds_OperationalError_doc[] =
-        "OperationalError\n"
-        "\n"
-        ":pep:`0249#operationalerror`\n"
-        "\n"
-        "Exception raised for errors that are related to the database's\n"
-        "operation and not necessarily under the control of the programmer,\n"
-        "e.g. an unexpected disconnect occurs, the data source name is not\n"
-        "found, a transaction could not be processed, a memory allocation\n"
-        "error occurred during processing, etc.\n";
     if (!(PyExc_tds_OperationalError = PyErr_NewExceptionWithDoc_("_tds.OperationalError", s_tds_OperationalError_doc, PyExc_tds_DatabaseError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(OperationalError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#integrityerror
-    */
-    static const char s_tds_IntegrityError_doc[] =
-        "IntegrityError\n"
-        "\n"
-        ":pep:`0249#integrityerror`\n"
-        "\n"
-        "Exception raised when the relational integrity of the database is\n"
-        "affected, e.g. a foreign key check fails.\n";
     if (!(PyExc_tds_IntegrityError = PyErr_NewExceptionWithDoc_("_tds.IntegrityError", s_tds_IntegrityError_doc, PyExc_tds_DatabaseError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(IntegrityError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#internalerror
-    */
-    static const char s_tds_InternalError_doc[] =
-        "InternalError\n"
-        "\n"
-        ":pep:`0249#internalerror`\n"
-        "\n"
-        "Exception raised when the database encounters an internal error,\n"
-        "e.g. the cursor is not valid anymore, the transaction is out of\n"
-        "sync, etc.\n";
     if (!(PyExc_tds_InternalError = PyErr_NewExceptionWithDoc_("_tds.InternalError", s_tds_InternalError_doc, PyExc_tds_DatabaseError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(InternalError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#programmingerror
-    */
-    static const char s_tds_ProgrammingError_doc[] =
-        "ProgrammingError\n"
-        "\n"
-        ":pep:`0249#programmingerror`\n"
-        "\n"
-        "Exception raised for programming errors, e.g. table not found or\n"
-        "already exists, syntax error in the SQL statement, wrong number of\n"
-        "parameters specified, etc.\n";
     if (!(PyExc_tds_ProgrammingError = PyErr_NewExceptionWithDoc_("_tds.ProgrammingError", s_tds_ProgrammingError_doc, PyExc_tds_DatabaseError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(ProgrammingError);
-
-    /**
-       https://www.python.org/dev/peps/pep-0249/#notsupportederror
-    */
-    static const char s_tds_NotSupportedError_doc[] =
-        "NotSupportedError\n"
-        "\n"
-        ":pep:`0249#notsupportederror`\n"
-        "\n"
-        "Exception raised in case a method or database API was used which is\n"
-        "not supported by the database, e.g. requesting a .rollback() on a\n"
-        "connection that does not support transaction or has transactions\n"
-        "turned off.\n";
     if (!(PyExc_tds_NotSupportedError = PyErr_NewExceptionWithDoc_("_tds.NotSupportedError", s_tds_NotSupportedError_doc, PyExc_tds_DatabaseError, NULL))) FAIL_MODULE_INIT;
     ADD_EXCEPTION_TO_MODULE(NotSupportedError);
 
@@ -737,8 +751,6 @@ PyMODINIT_FUNC PyInit__tds(void)
         Use the CT-library API since older versions of FreeTDS don't return
         a proper version string from dbversion()
     */
-    char freetds_version[100];
-    int written;
     (void)ct_config(NULL, CS_GET, CS_VERSION, freetds_version, sizeof(freetds_version), &written);
     if (0 != PyModule_AddStringConstant(module, "freetds_version", freetds_version)) FAIL_MODULE_INIT;
 
