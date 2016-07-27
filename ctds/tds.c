@@ -583,9 +583,9 @@ static const char s_tds_NotSupportedError_doc[] =
     ":pep:`0249#notsupportederror`\n"
     "\n"
     "Exception raised in case a method or database API was used which is\n"
-    "not supported by the database, e.g. requesting a .rollback() on a\n"
-    "connection that does not support transaction or has transactions\n"
-    "turned off.\n";
+    "not supported by the database, e.g. calling \n"
+    ":py:func:`~ctds.Connection.rollback()` on a connection that does not\n"
+    "support transactions or has transactions turned off.\n";
 
 
 #if PY_MAJOR_VERSION < 3

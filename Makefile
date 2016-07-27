@@ -126,8 +126,8 @@ define PYLINT_COMMANDS
 endef
 
 define DOC_COMMANDS
-	$(call ENV_PIP, $(1)) install -v -e .
-	$(ENV_PYTHON) -m sphinx -n -a -d $(BUILD_DIR)/$(strip $(1)) docs $(HTML_BUILD_DIR)
+	$(call ENV_PIP, $(1)) install --force-reinstall -v -e .
+	$(ENV_PYTHON) -m sphinx -n -a -E -d $(BUILD_DIR)/$(strip $(1)) docs $(HTML_BUILD_DIR)
 endef
 
 

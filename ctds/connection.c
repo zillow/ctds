@@ -796,9 +796,13 @@ static PyObject* Connection_tds_version_get(PyObject* self, void* closure)
 }
 
 static const char s_Connection_timeout_doc[] =
-    "The connection timeout.\n"
+    "The connection timeout, in seconds.\n"
     "\n"
-    ".. note:: Setting the timeout requires FreeTDS version 1.00 or later.\n";
+    ".. note:: Setting the timeout requires FreeTDS version 1.00 or later.\n"
+    "\n"
+    ":raises ctds.NotSupportedError: `cTDS` was compiled against a version of\n"
+    "    FreeTDS which does not support setting the timeout on a connection.\n"
+    "\n";
 
 static PyObject* Connection_timeout_get(PyObject* self, void* closure)
 {
