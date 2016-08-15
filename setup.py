@@ -14,7 +14,7 @@ import sys
 
 CTDS_MAJOR_VERSION = 1
 CTDS_MINOR_VERSION = 0
-CTDS_PATCH_VERSION = 6
+CTDS_PATCH_VERSION = 7
 
 install_requires = [
 ]
@@ -34,17 +34,19 @@ libraries = [
 
 if not windows:
     extra_compile_args = [
-        '-ansi',
-        '-Wall',
-        '-Wextra',
-        '-Werror',
-        '-Wconversion',
-        '-Wpedantic',
-        '-std=c90',
     ]
     if debug:
         extra_compile_args += [
             '-O0', # setuptools specifies -O2 -- override it
+
+            # Be very strict when compiling debug (i.e. development) builds.
+            '-ansi',
+            '-Wall',
+            '-Wextra',
+            '-Werror',
+            '-Wconversion',
+            '-Wpedantic',
+            '-std=c90',
         ]
     else:
         extra_compile_args += [

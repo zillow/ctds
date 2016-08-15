@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## [1.0.7] - 2016-08-15
+### Fixed
+- Only use strict compile options for debug/development builds. Allow
+the client (e.g. pip) specify the desired options when installing as an
+egg.
 
 ## [1.0.6] - 2016-08-15
 ### Fixed
