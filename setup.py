@@ -14,7 +14,7 @@ import sys
 
 CTDS_MAJOR_VERSION = 1
 CTDS_MINOR_VERSION = 0
-CTDS_PATCH_VERSION = 5
+CTDS_PATCH_VERSION = 6
 
 install_requires = [
 ]

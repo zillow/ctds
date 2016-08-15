@@ -474,15 +474,24 @@ int Connection_dbmsghandler(DBPROCESS* dbproc, DBINT msgno, int msgstate,
         lastmsg = LastMsg_get();
     }
 
-    LastMsg_clear(lastmsg);
+    /*
+        Only overwrite an existing message with one of greater severity.
+        For example, message 3621 ("The statement has been terminated.")
+        is returned after some other errors and shouldn't overwrite the prior,
+        more informative, error.
+    */
+    if (lastmsg->msgno == 0 /* no message */ || severity > lastmsg->severity)
+    {
+        LastMsg_clear(lastmsg);
 
-    lastmsg->msgno = msgno;
-    lastmsg->msgstate = msgstate;
-    lastmsg->severity = severity;
-    lastmsg->msgtext = (msgtext) ? strdup(msgtext) : NULL;
-    lastmsg->srvname = (srvname) ? strdup(srvname) : NULL;
-    lastmsg->proc = (proc) ? strdup(proc) : NULL;
-    lastmsg->line = line;
+        lastmsg->msgno = msgno;
+        lastmsg->msgstate = msgstate;
+        lastmsg->severity = severity;
+        lastmsg->msgtext = (msgtext) ? strdup(msgtext) : NULL;
+        lastmsg->srvname = (srvname) ? strdup(srvname) : NULL;
+        lastmsg->proc = (proc) ? strdup(proc) : NULL;
+        lastmsg->line = line;
+    }
 
     return 0;
 }

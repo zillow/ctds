@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+import re
 import warnings
 
 import ctds
@@ -134,6 +135,45 @@ specified in the SQL statement. Parameter notation is specified by
                     cursor.execute('SELECT @@VERSION')
                     self.assertTrue(cursor.fetchall())
                     self.assertEqual(len(warns), 0)
+
+    def test_statement_terminated(self):
+        # The purpose of this test is to cause multiple info messages to be returned
+        # to the client. The following SQL statement should cause two messages to be
+        # returned, the second of which is the useless "The statement has been terminated.".
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                try:
+                    cursor.execute(
+                        '''
+                        DECLARE @tTable TABLE (i int PRIMARY KEY);
+                        INSERT INTO
+                            @tTable
+                        VALUES
+                            (1);
+                        INSERT INTO
+                            @tTable
+                        VALUES
+                            (1);
+                        '''
+                    )
+                except ctds.ProgrammingError as ex:
+                    regex = r'''Violation of PRIMARY KEY constraint 'PK__[^']+'. ''' \
+                            r'''Cannot insert duplicate key in object 'dbo\.@tTable'. ''' \
+                            r'''The duplicate key value is \(1\).'''
+                    self.assertTrue(re.match(regex, str(ex)))
+                    self.assertEqual(ex.severity, 14)
+                    self.assertEqual(ex.os_error, None)
+                    self.assertTrue(self.server_name_and_instance in ex.last_message.pop('server'))
+                    self.assertTrue(re.match(regex, ex.last_message.pop('description')))
+                    self.assertEqual(ex.last_message, {
+                        'number': 2627,
+                        'state': 1,
+                        'severity': 14,
+                        'proc': '',
+                        'line': 7,
+                    })
+                else:
+                    self.fail('.execute() did not fail as expected') # pragma: nocover
 
     def test_no_arguments(self):
         with self.connect() as connection:
