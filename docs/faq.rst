@@ -14,7 +14,7 @@ Why don't :py:class:`str` values map to **VARCHAR** in Python 2?
 ----------------------------------------------------------------
 
 In Python 2 :py:class:`bytes` and :py:class:`str` are equivalent. As such it is
-difficult for `ctds` to infer a proper *SQL* type from the Python type.
+difficult for `cTDS` to infer a proper *SQL* type from the Python type.
 :py:class:`unicode` should be used in Python 2 when a **CHAR**-type parameter
 is desired. Alternatively, :py:class:`ctds.SqlVarChar` can be used to
 explicitly define the desired *SQL* type.
@@ -36,3 +36,27 @@ result in an error.
     SELECT 1 AS Column1;
 
 The error `some custom error` is reported as a Python :py:class:`Warning`.
+
+
+What does the `Unicode codepoint U+1F4A9 is not representable in UCS-2...` warning mean?
+----------------------------------------------------------------------------------------
+
+Until `FreeTDS`_ **1.00**, the default encoding used on the connection to
+the database was *UCS-2*. FreeTDS requires all text data be encodable in the
+connection's encoding. Therefore `cTDS` would replace non *UCS-2* characters in
+strings and generate a warning before sending the data to the database. Once
+support was added for configuring the connection to use *UTF-16* in `FreeTDS`_
+**1.00**, this behavior was no longer necessary.
+
+Upgrading the version of `FreeTDS`_ will resolve this warning and unicode
+codepoints outside the *UCS-2* range will no longer be replaced.
+
+.. note::
+
+   `FreeTDS`_ **0.95** does support using *UTF-16* on connections, however
+   the only way to configure it is via *freetds.conf*. The option is disabled
+   by default, and there is no way to determine if *UTF-16* is enabled for a
+   connection. Because of these limitations, `cTDS` cannot reliably determine
+   if the connection will support *UTF-16* and assumes it does not.
+
+.. _FreeTDS: http://www.freetds.org

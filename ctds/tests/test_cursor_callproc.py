@@ -880,32 +880,44 @@ parameters are replaced with output values.
                         ctds.Parameter(ctds.SqlVarChar(None, size=256), output=True),
                     )
 
-                    # The catface is not representable in UCS-2, and therefore is replaced.
-                    with warnings.catch_warnings(record=True) as warns:
+                    # If the connection supports UTF-16, unicode codepoints outside of the UCS-2
+                    # range are supported and not replaced by ctds.
+                    if self.use_utf16:
                         outputs = cursor.callproc(sproc, inputs)
-                        if ord(catface) > 2**16:
-                            self.assertEqual(len(warns), 1)
-                            msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
-                                ord(catface),
-                                ord(self.UNICODE_REPLACEMENT)
-                            )
-                            self.assertEqual(
-                                [str(warn.message) for warn in warns],
-                                [msg] * len(warns)
-                            )
-                            self.assertEqual(warns[0].category, ctds.Warning)
-                        else:
-                            self.assertEqual(len(warns), 0) # pragma: nocover
+                        # SQL server will improperly convert the values to single-byte, which corrupts them.
+                        # FreeTDS will replace them on reads with a '?'.
+                        # The catface is a multi-byte UTF-16 character, and therefore is replaced by two '?'.
+                        self.assertEqual(
+                            format_.format(unicode_('?'), unicode_('??')),
+                            outputs[1]
+                        )
+                    else:
+                        # The catface is not representable in UCS-2, and therefore is replaced.
+                        with warnings.catch_warnings(record=True) as warns:
+                            outputs = cursor.callproc(sproc, inputs)
+                            if ord(catface) > 2**16:
+                                self.assertEqual(len(warns), 1)
+                                msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
+                                    ord(catface),
+                                    ord(self.UNICODE_REPLACEMENT)
+                                )
+                                self.assertEqual(
+                                    [str(warn.message) for warn in warns],
+                                    [msg] * len(warns)
+                                )
+                                self.assertEqual(warns[0].category, ctds.Warning)
+                            else:
+                                self.assertEqual(len(warns), 0) # pragma: nocover
+
+                        # SQL server will improperly convert the values to single-byte, which corrupts them.
+                        # FreeTDS will replace them on reads with a '?'.
+                        self.assertEqual(
+                            format_.format(unicode_('?'), unicode_('?')),
+                            outputs[1]
+                        )
 
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
-                    self.assertNotEqual(id(outputs[1]), id(inputs[1]))
-
-                    # SQL server will improperly convert the values to single-byte, which corrupts them.
-                    # FreeTDS will replace them on reads with a '?'.
-                    self.assertEqual(
-                        format_.format(unicode_('?'), unicode_('?')),
-                        outputs[1]
-                    )
+                    self.assertNotEqual(id(inputs[1]), id(outputs[1]))
 
     def test_char_max(self):
         with self.connect() as connection:
@@ -1002,33 +1014,39 @@ parameters are replaced with output values.
                         ctds.Parameter(ctds.SqlVarChar(None, size=256), output=True),
                     )
 
-                    # The catface is not representable in UCS-2, and therefore is replaced.
-                    with warnings.catch_warnings(record=True) as warns:
+                    # If the connection supports UTF-16, unicode codepoints outside of the UCS-2
+                    # range are supported and not replaced by ctds.
+                    if self.use_utf16:
                         outputs = cursor.callproc(sproc, inputs)
-                        if ord(catface) > 2**16:
-                            self.assertEqual(len(warns), 1)
-                            msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
-                                ord(catface),
-                                ord(self.UNICODE_REPLACEMENT)
-                            )
-                            self.assertEqual(
-                                [str(warn.message) for warn in warns],
-                                [msg] * len(warns)
-                            )
-                            self.assertEqual(warns[0].category, ctds.Warning)
-                        else:
-                            self.assertEqual(len(warns), 0) # pragma: nocover
+                        self.assertEqual(inputs[0], outputs[1])
+                    else:
+                        # The catface is not representable in UCS-2, and therefore is replaced.
+                        with warnings.catch_warnings(record=True) as warns:
+                            outputs = cursor.callproc(sproc, inputs)
+                            if ord(catface) > 2**16:
+                                self.assertEqual(len(warns), 1)
+                                msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
+                                    ord(catface),
+                                    ord(self.UNICODE_REPLACEMENT)
+                                )
+                                self.assertEqual(
+                                    [str(warn.message) for warn in warns],
+                                    [msg] * len(warns)
+                                )
+                                self.assertEqual(warns[0].category, ctds.Warning)
+                            else:
+                                self.assertEqual(len(warns), 0) # pragma: nocover
+
+                        self.assertEqual(
+                            format_.format(
+                                snowman,
+                                self.UNICODE_REPLACEMENT if self.use_sp_executesql else unicode_('?')
+                            ),
+                            outputs[1]
+                        )
 
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
-                    self.assertNotEqual(id(outputs[1]), id(inputs[1]))
-
-                    self.assertEqual(
-                        format_.format(
-                            snowman,
-                            self.UNICODE_REPLACEMENT if self.use_sp_executesql else unicode_('?')
-                        ),
-                        outputs[1]
-                    )
+                    self.assertNotEqual(id(inputs[1]), id(outputs[1]))
 
     def test_nchar_max(self):
         with self.connect() as connection:

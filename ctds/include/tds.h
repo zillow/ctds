@@ -23,4 +23,12 @@ extern PyObject* PyExc_tds_NotSupportedError;
 #define tds_mem_calloc calloc
 #define tds_mem_free free
 
+/*
+    If the UTF-16 option can be set on the connection, use UTF-16.
+    This option was added in FreeTDS 1.00
+*/
+#if defined(DBSETUTF16)
+#  define TDS_USE_UTF16 1
+#endif
+
 #endif /* ifndef __TDS_H__ */

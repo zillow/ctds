@@ -189,6 +189,16 @@ PyTypeObject ParameterType = {
 
 };
 
+/*
+    Bind a python object to a parameter for use in a SQL statement.
+
+    An appropriate Python error is set on failure.
+
+    @param parameter [in] The parameter to bind the Python object to.
+    @param value [in] The Python object to bind.
+
+    @return -1 on error, 0 on success.
+*/
 static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 {
     assert(!parameter->value);
@@ -236,19 +246,26 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 #else /* if PY_MAJOR_VERSION < 3 */
                 Py_ssize_t size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
+
+#if TDS_USE_UTF16
+                /* The connection supports UTF-16, so the whole string is encodable. */
+                PyObject* encodable = value;
+                Py_INCREF(value);
+#else
                 /*
                     FreeTDS will only convert strings to UCS-2, so translate all
                     strings to UCS-2 prior to binding.
                 */
-                PyObject* ucs2value = translate_to_ucs2(value);
-                if (!ucs2value)
+                PyObject* encodable = translate_to_ucs2(value);
+                if (!encodable)
                 {
                     break;
                 }
+#endif /* else if TDS_USE_UTF16 */
 
 #if PY_MAJOR_VERSION < 3
-                utf8value = PyUnicode_AsUTF8String(ucs2value);
-                Py_DECREF(ucs2value);
+                utf8value = PyUnicode_AsUTF8String(encodable);
+                Py_DECREF(encodable);
                 if (!utf8value)
                 {
                     break;
@@ -260,9 +277,9 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 parameter->ninput = (size_t)PyString_GET_SIZE(utf8value);
 #else /* if PY_MAJOR_VERSION < 3 */
                 Py_XDECREF(parameter->source);
-                parameter->source = ucs2value; /* claim reference */
+                parameter->source = encodable; /* claim reference */
 
-                parameter->input = (void*)PyUnicode_AsUTF8AndSize(ucs2value, &size);
+                parameter->input = (void*)PyUnicode_AsUTF8AndSize(encodable, &size);
                 parameter->ninput = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
 

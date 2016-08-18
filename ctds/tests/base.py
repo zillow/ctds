@@ -122,6 +122,10 @@ class TestExternalDatabase(unittest.TestCase):
     def use_sp_executesql(self):
         return self.freetds_version >= (0, 92, 405)
 
+    @property
+    def use_utf16(self):
+        return self.freetds_version >= (1, 0, 0)
+
     # Older versions of FreeTDS improperly round the money to the nearest hundredth.
     def round_money(self, money):
         if self.freetds_version > (0, 92, 405):

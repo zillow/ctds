@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## [1.0.8] - 2016-08-17
+### Fixed
+- Configure connections to use UTF-16 when supported (i.e. FreeTDS 1.00+).
+Don't replace codepoints outside of the UCS-2 range if the connection is
+using UTF-16 as it is no longer necessary and causes data loss.
+
 ## [1.0.7] - 2016-08-15
 ### Fixed
 - Only use strict compile options for debug/development builds. Allow
