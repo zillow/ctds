@@ -2,11 +2,6 @@
 
 PACKAGE_NAME = ctds
 
-# FreeTDS version to test against.
-ifndef FREETDS_VERSION
-    FREETDS_VERSION := 0.95.87
-endif
-
 # Python version support
 SUPPORTED_PYTHON_VERSIONS := \
     2.6 \
@@ -14,6 +9,22 @@ SUPPORTED_PYTHON_VERSIONS := \
     3.3 \
     3.4 \
     3.5
+
+# FreeTDS versions to test against. This should
+# be the latest of each minor release.
+# Note: These version strings *must* match the versions
+# on ftp://ftp.freetds.org/pub/freetds/stable/.
+CHECKED_FREETDS_VERSIONS := \
+    0.91.112 \
+    0.92.405 \
+    0.95.0 \
+    0.95.95 \
+    1.00.15
+
+# FreeTDS version to test against.
+ifndef FREETDS_VERSION
+    FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
+endif
 
 define CHECK_PYTHON
     $(if $(shell which python$(strip $(1))), $(strip $(1)))
@@ -52,48 +63,68 @@ FREETDS_ROOT = $(abspath $(BUILD_DIR)/freetds/$(strip $(1)))
 FREETDS_INCLUDE = $(call FREETDS_ROOT, $(1))/include
 FREETDS_LIB = $(call FREETDS_ROOT, $(1))/lib
 
-# FreeTDS build rule.
-# This will generate a target to build the specific version of FreeTDS as specified in
-# FREETDS_VERSION.
-$(BUILD_DIR)/freetds-$(FREETDS_VERSION):
+
+# Function to generate freetds-<version> rules to build local
+# copies of FreeTDS.
+#
+# $(eval $(call FREETDS_RULE, <freetds_version>))
+#
+define FREETDS_RULE
+# Download and extract the FreeTDS source code.
+$(BUILD_DIR)/freetds-$(strip $(1)):
 	mkdir -p $(BUILD_DIR)
-	curl -o "$(BUILD_DIR)/freetds-$(FREETDS_VERSION).tar.gz" \
-        'ftp://ftp.freetds.org/pub/freetds/stable/freetds-$(FREETDS_VERSION).tar.gz'
-	tar -xzf $(BUILD_DIR)/freetds-$(FREETDS_VERSION).tar.gz -C $(BUILD_DIR)
+	curl -o "$(BUILD_DIR)/freetds-$(strip $(1)).tar.gz" \
+        'ftp://ftp.freetds.org/pub/freetds/stable/freetds-$(strip $(1)).tar.gz'
+	tar -xzf $(BUILD_DIR)/freetds-$(strip $(1)).tar.gz -C $(BUILD_DIR)
 
 # The version-specific build sentinel.
-FREETDS_$(FREETDS_VERSION)_BUILD := $(BUILD_DIR)/freetds-$(FREETDS_VERSION).build
+FREETDS_$(strip $(1))_BUILD := $(BUILD_DIR)/freetds-$(strip $(1)).build
 
-$(FREETDS_$(FREETDS_VERSION)_BUILD): $(BUILD_DIR)/freetds-$(FREETDS_VERSION)
-	cd $< && \
-		CFLAGS="$$CFLAGS -g" make distclean; \
+# Configure, make, make install from FreeTDS source.
+$$(FREETDS_$(strip $(1))_BUILD): $(BUILD_DIR)/freetds-$(strip $(1))
+	cd $$< && \
+		CFLAGS="$$$$CFLAGS -g" make distclean; \
         ./configure \
-            --prefix="$(call FREETDS_ROOT, $(FREETDS_VERSION))" \
+            --prefix="$$(call FREETDS_ROOT, $(strip $(1)))" \
             --disable-odbc --disable-apps --disable-server --disable-pool \
 		    && \
         make && \
         make install
-	touch $@
+	touch $$@
 
-freetds-$(FREETDS_VERSION): $(FREETDS_$(FREETDS_VERSION)_BUILD)
+.PHONY: freetds-$(strip $(1))
+freetds-$(strip $(1)): $$(FREETDS_$(strip $(1))_BUILD)
+endef
+
 
 # Function to generate virtualenv rules
 #
-# $(eval $(call ENV_RULE, <env_name>, <python_version>, <packages>, <commands>))
+# $(eval $(call ENV_RULE, <env_name>, <python_version>, <freetds_version>, <packages>, <commands>))
 #
 define ENV_RULE
-BUILD_$(strip $(1)) := $(BUILD_DIR)/$(strip $(1)).build
+ENV_$(strip $(1))_BUILD := $(BUILD_DIR)/$(strip $(1)).build
 
-$$(BUILD_$(strip $(1)))_$(FREETDS_VERSION): freetds-$(FREETDS_VERSION)
+$$(ENV_$(strip $(1))_BUILD): freetds-$(strip $(3))
 	$$(VIRTUALENV) -p python$(strip $(2)) $(BUILD_DIR)/$(strip $(1))
 	$(call ENV_PIP, $(1)) install --upgrade pip
-	$(if $(strip $(3)),$(call ENV_PIP, $(1)) install $(strip $(3)))
+	$(if $(strip $(4)),$(call ENV_PIP, $(1)) install $(strip $(4)))
 	touch $$@
 
 .PHONY: $(strip $(1))
-$(strip $(1)): $$(BUILD_$(strip $(1)))_$(FREETDS_VERSION)
-$(call $(4), $(1))
+$(strip $(1)): $$(ENV_$(strip $(1))_BUILD)
+$(call $(5), $(1), $(3))
 endef
+
+
+# Function to generate check rules
+#
+# $(eval $(call CHECK_RULE, <freetds_version>))
+#
+define CHECK_RULE
+.PHONY: check-$(strip $(1))
+check-$(strip $(1)): test_config $(foreach PV, $(PYTHON_VERSIONS), test_$(PV)_$(strip $(1)))
+endef
+
 
 # Function to generate an environment rule's python interpreter.
 #   Usage: ENV_PYTHON(env_name)
@@ -111,13 +142,13 @@ define TEST_COMMANDS
         --global-option=build_ext \
         --global-option="-t$(BUILD_DIR)/$(strip $(1))" \
         --global-option=build_ext \
-        --global-option="-I$(call FREETDS_INCLUDE, $(FREETDS_VERSION))" \
+        --global-option="-I$(call FREETDS_INCLUDE, $(strip $(2)))" \
         --global-option=build_ext \
-        --global-option="-L$(call FREETDS_LIB, $(FREETDS_VERSION))" \
-        --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(FREETDS_VERSION))" \
+        --global-option="-L$(call FREETDS_LIB, $(strip $(2)))" \
+        --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(strip $(2)))" \
         --global-option=build_ext --global-option="-f"
 
-	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(FREETDS_VERSION)) \
+	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
         $(call ENV_PYTHON, $(1)) setup.py test $(if $(TEST),-s $(TEST))
 endef
 
@@ -137,7 +168,8 @@ help:
 	@echo "usage: make [check|clean|cover|pylint|setup|test]"
 	@echo
 	@echo "    check"
-	@echo "        Run tests against all versions of Python."
+	@echo "        Run tests against all installed versions of Python and"
+	@echo "        the following versions of FreeTDS: $(CHECKED_FREETDS_VERSIONS)."
 	@echo
 	@echo "    clean"
 	@echo "        Clean source tree."
@@ -159,7 +191,7 @@ help:
 	@echo
 	@echo "    test"
 	@echo "        Run tests using the default Python version ($(DEFAULT_PYTHON_VERSION)) and"
-	@echo "        the default version of FreeTDS ($(DEFAULT_FREETDS_VERSION))."
+	@echo "        the default version of FreeTDS ($(FREETDS_VERSION))."
 	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
@@ -168,7 +200,10 @@ help:
 
 # check
 .PHONY: check
-check: test_config $(foreach V, $(PYTHON_VERSIONS), test_$(V)_$(FREETDS_VERSION))
+check: test_config $(foreach PV, $(PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), test_$(PV)_$(FV)))
+
+# check-*
+$(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), $(eval $(call CHECK_RULE, $(FREETDS_VERSION))))
 
 # clean
 .PHONY: clean
@@ -180,7 +215,7 @@ cover: test
 	gcov -o $(BUILD_DIR)/test_$(DEFAULT_PYTHON_VERSION)_$(FREETDS_VERSION)/ctds ctds/*.c
 
 # doc
-$(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
+$(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
 
 publish: doc
 	git tag -a v$(CTDS_VERSION) -m "v$(CTDS_VERSION)"
@@ -189,7 +224,7 @@ publish: doc
 	python setup.py upload_docs --upload-dir=$(HTML_BUILD_DIR)
 
 # pylint
-$(eval $(call ENV_RULE, pylint, $(DEFAULT_PYTHON_VERSION), pylint, PYLINT_COMMANDS))
+$(eval $(call ENV_RULE, pylint, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), pylint, PYLINT_COMMANDS))
 
 # setup (debian-only)
 .PHONY: setup
@@ -213,5 +248,8 @@ ctds/tests/database.ini:
 	@echo "Test database configuration required in $@"
 	@/bin/false
 
+# freetds-*
+$(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_RULE, $(FV))))
+
 # test_*
-$(foreach V, $(PYTHON_VERSIONS), $(eval $(call ENV_RULE, test_$(V)_$(FREETDS_VERSION), $(V), , TEST_COMMANDS)))
+$(foreach PV, $(PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call ENV_RULE, test_$(PV)_$(FV), $(PV), $(FV), , TEST_COMMANDS))))

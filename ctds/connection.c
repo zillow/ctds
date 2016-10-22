@@ -1530,7 +1530,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 break;
             }
 
-#if TDS_USE_UTF16
+#if CTDS_USE_UTF16 != 0
             /*
                 Force the connections to use UTF-16 over UCS-2.
             */
@@ -1539,7 +1539,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 PyErr_SetString(PyExc_tds_InternalError, "failed to set connection encoding");
                 break;
             }
-#endif /* if TDS_USE_UTF16 */
+#endif /* if CTDS_USE_UTF16 != 0 */
 
             /*
                 Note: FreeTDS only supports single-byte encodings (e.g. latin-1, UTF-8).

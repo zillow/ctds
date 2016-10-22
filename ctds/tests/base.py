@@ -120,7 +120,7 @@ class TestExternalDatabase(unittest.TestCase):
 
     @property
     def use_sp_executesql(self):
-        return self.freetds_version >= (0, 92, 405)
+        return self.freetds_version >= (0, 95, 0)
 
     @property
     def use_utf16(self):

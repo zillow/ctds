@@ -27,20 +27,6 @@
 #  pragma GCC diagnostic ignored "-Wlong-long"
 #endif /* ifdef __GNUC__ */
 
-/*
-    Use `sp_executesql` when possible for the execute*() methods. This method
-    won't work on older versions of FreeTDS which don't properly support passing
-    NVARCHAR data.
-
-    Versions 0.92.405 and later of FreeTDS will support using the `sp_executesql`
-    implementation.
-
-    Detection is done via the DBVERSION_73 macro.
-*/
-#ifdef DBVERSION_73
-#  define CTDS_USE_SP_EXECUTESQL
-#endif
-
 
 struct Column {
     DBCOL dbcol;
@@ -1224,7 +1210,7 @@ static PyObject* Cursor_close(PyObject* self, PyObject* args)
 }
 
 
-#if defined(CTDS_USE_SP_EXECUTESQL)
+#if CTDS_USE_SP_EXECUTESQL != 0
 
 /*
     Append one string to an existing one by reallocating the existing string.
@@ -1570,7 +1556,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
     return (PyErr_Occurred()) ? -1 : 0;
 }
 
-#else /* if defined(CTDS_USE_SP_EXECUTESQL) */
+#else /* if CTDS_USE_SP_EXECUTESQL != 0 */
 
 /**
     Format a SQL string using the given parameters and add it to the SQL command buffer.
@@ -1808,7 +1794,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
     return (PyErr_Occurred()) ? -1 : 0;
 }
 
-#endif /* else if defined(CTDS_USE_SP_EXECUTESQL) */
+#endif /* else if CTDS_USE_SP_EXECUTESQL != 0 */
 
 
 /* https://www.python.org/dev/peps/pep-0249/#execute */

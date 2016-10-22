@@ -247,7 +247,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 Py_ssize_t size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
-#if TDS_USE_UTF16
+#if CTDS_USE_UTF16 != 0
                 /* The connection supports UTF-16, so the whole string is encodable. */
                 PyObject* encodable = value;
                 Py_INCREF(value);
@@ -261,7 +261,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 {
                     break;
                 }
-#endif /* else if TDS_USE_UTF16 */
+#endif /* else if CTDS_USE_UTF16 != 0 */
 
 #if PY_MAJOR_VERSION < 3
                 utf8value = PyUnicode_AsUTF8String(encodable);

@@ -26,12 +26,13 @@ Using `antipool <http://furius.ca/antiorm/>`_ is fairly straightforward.
 
     import antipool
     import ctds
+    import pprint
 
     config = {
         'server': 'my-host',
         'database': 'MyDefaultDatabase',
         'user': 'my-username',
-        'password": 'my-password',
+        'password': 'my-password',
         'appname': 'ctds-doc-pooling-example',
         'timeout': 5,
         'login_timeout': 5,

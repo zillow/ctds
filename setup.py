@@ -46,7 +46,7 @@ if not windows:
             '-Werror',
             '-Wconversion',
             '-Wpedantic',
-            '-std=c90',
+            '-std=c99',
         ]
     else:
         extra_compile_args += [

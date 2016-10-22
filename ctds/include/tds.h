@@ -3,6 +3,7 @@
 
 #include "push_warnings.h"
 #include <Python.h>
+#include <sybdb.h>
 #include "pop_warnings.h"
 
 #include <stdlib.h>
@@ -28,7 +29,21 @@ extern PyObject* PyExc_tds_NotSupportedError;
     This option was added in FreeTDS 1.00
 */
 #if defined(DBSETUTF16)
-#  define TDS_USE_UTF16 1
+#  define CTDS_USE_UTF16 1
+#endif
+
+/*
+    Use `sp_executesql` when possible for the execute*() methods. This method
+    won't work on older versions of FreeTDS which don't properly support passing
+    NVARCHAR data.
+
+    Versions 0.95 and later of FreeTDS will support using the `sp_executesql`
+    implementation.
+
+    Detection is done via the DATETIME2BIND macro.
+*/
+#if defined(DATETIME2BIND)
+#  define CTDS_USE_SP_EXECUTESQL 1
 #endif
 
 #endif /* ifndef __TDS_H__ */
