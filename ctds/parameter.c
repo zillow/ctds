@@ -799,7 +799,7 @@ PyObject* Parameter_value(struct Parameter* rpcparam)
     return rpcparam->value;
 }
 
-char* Parameter_serialize(struct Parameter* rpcparam)
+char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
 {
     char* serialized = NULL;
     char* value = NULL;
@@ -807,7 +807,11 @@ char* Parameter_serialize(struct Parameter* rpcparam)
     if (NULL == rpcparam->input)
     {
         value = strdup("NULL");
-        if (!value)
+        if (value)
+        {
+            *nserialized = ARRAYSIZE("NULL") - 1;
+        }
+        else
         {
             PyErr_NoMemory();
         }
@@ -872,6 +876,7 @@ char* Parameter_serialize(struct Parameter* rpcparam)
                     if (write) { value[written] = '\0'; }
                     ++written;
                 }
+                *nserialized = written - 1;
 
                 convert = ((TDSCHAR == rpcparam->tdstype) ||
                            ((size_t)rpcparam->tdstypesize != rpcparam->ninput));
@@ -897,6 +902,7 @@ char* Parameter_serialize(struct Parameter* rpcparam)
                     written += (size_t)sprintf(&value[written], "%02x", byte);
                 }
                 value[written] = '\0';
+                *nserialized = written - 1;
                 break;
             }
             case TDSDATE:
@@ -959,6 +965,7 @@ char* Parameter_serialize(struct Parameter* rpcparam)
                     value[written++] = '\'';
                 }
                 value[written] = '\0';
+                *nserialized = written - 1;
                 break;
             }
             case TDSBITN:
@@ -985,19 +992,19 @@ char* Parameter_serialize(struct Parameter* rpcparam)
                 memcpy(&ints, rpcparam->input, rpcparam->ninput);
                 if (TDSBIGINT == rpcparam->tdstype)
                 {
-                    (void)sprintf(value, "%lli", (long long int)ints.big);
+                    *nserialized = (size_t)sprintf(value, "%lli", (long long int)ints.big);
                 }
                 else if (TDSINT == rpcparam->tdstype)
                 {
-                    (void)sprintf(value, "%i", ints.int_);
+                    *nserialized = (size_t)sprintf(value, "%i", ints.int_);
                 }
                 else if (TDSSMALLINT == rpcparam->tdstype)
                 {
-                    (void)sprintf(value, "%i", ints.small);
+                    *nserialized = (size_t)sprintf(value, "%i", ints.small);
                 }
                 else
                 {
-                    (void)sprintf(value, "%u", ints.tiny);
+                    *nserialized = (size_t)sprintf(value, "%u", ints.tiny);
                 }
                 break;
             }
@@ -1021,7 +1028,7 @@ char* Parameter_serialize(struct Parameter* rpcparam)
                 );
                 if (serialized)
                 {
-                    (void)sprintf(serialized, "CONVERT(%s,%s)", type, value);
+                    *nserialized = (size_t)sprintf(serialized, "CONVERT(%s,%s)", type, value);
                 }
                 else
                 {
@@ -1041,6 +1048,7 @@ char* Parameter_serialize(struct Parameter* rpcparam)
     {
         tds_mem_free(serialized);
         serialized = NULL;
+        *nserialized = 0;
     }
 
     tds_mem_free(value);

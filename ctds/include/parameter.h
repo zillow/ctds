@@ -44,7 +44,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam);
 
 PyObject* Parameter_value(struct Parameter* rpcparam);
 
-char* Parameter_serialize(struct Parameter* rpcparam);
+char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized);
 
 
 #endif /* ifndef __PARAMETER_H__ */

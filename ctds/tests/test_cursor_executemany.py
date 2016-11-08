@@ -37,12 +37,17 @@ against all parameter sequences or mappings found in the sequence
     def test_missing_parameter(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                self.assertRaises(IndexError, cursor.executemany, 'SELECT :1 AS missing', ((1,),))
+                for index, args in (
+                        (0, [()]),
+                        (1, [(1,)]),
+                        (-1, [(1,)]),
+                ):
+                    self.assertRaises(IndexError, cursor.executemany, 'SELECT :{0} AS missing'.format(index), args)
 
     def test_invalid_format(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                for case in (':', ':a', ':ab12'):
+                for case in (':', ':a', ':ab12', ":'somestring'"):
                     try:
                         cursor.executemany('SELECT {0} AS missing'.format(case), ((1,),))
                     except ctds.InterfaceError as ex:
@@ -169,6 +174,24 @@ against all parameter sequences or mappings found in the sequence
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 self.assertRaises(TypeError, cursor.executemany, '''SELECT ':0';''')
+
+    def test_escape_paramstyle(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                for sqltype, constant, parameter in (
+                        ('DATETIME', '2016-01-02 03:04:05', datetime(2016, 1, 2, 3, 4, 5)),
+                        ('VARCHAR(100)', "'' foo '' :1 '' '':", "' foo ' :1 ' ':"),
+                ):
+                    cursor.executemany(
+                        '''
+                        SELECT
+                            CONVERT({0}, '{1}') AS Constant,
+                            :0 AS Parameter
+                        '''.format(sqltype, constant),
+                        ((parameter,),) * 2
+                    )
+                    for row in cursor.fetchall():
+                        self.assertEqual(row['Constant'], row['Parameter'])
 
     def test_format(self):
         with self.connect() as connection:
