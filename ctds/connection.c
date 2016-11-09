@@ -320,6 +320,11 @@ static void Connection_free(struct Connection* connection)
     {
         Connection_close_internal(connection);
 
+        /*
+            FreeTDS version prior to 0.95 leak the database name string in the LOGIN struct.
+            Explicitly clear it to avoid this.
+        */
+        dbsetlname(connection->login, "", DBSETDBNAME);
         dbloginfree(connection->login);
         connection->login = NULL;
 
@@ -1620,7 +1625,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 /*
                     If setting the database name in the login fails, this is likely due
                     to it exceeding the allowed DB name limit of 30 in older versions
-                    of FreeTDS. In this case, attemp to set it after connection.
+                    of FreeTDS. In this case, attempt to set it after connection.
                 */
                 if (FAIL != dbsetlname(connection->login, database, DBSETDBNAME))
                 {
