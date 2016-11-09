@@ -72,7 +72,7 @@
       static _type* _name ## _get(void) \
       { \
           return &(tls_ ## _name); \
-      }
+      } \
 
 #endif /* else ifdef __clang__ */
 
@@ -130,6 +130,14 @@ static void LastMsg_clear(struct LastMsg* lastmsg)
 }
 
 TLS_DECLARE(LastMsg, struct LastMsg, LastMsg_clear)
+
+#if defined(__GNUC__)
+__attribute__((destructor)) void fini(void)
+{
+    LastError_clear(LastError_get());
+    LastMsg_clear(LastMsg_get());
+}
+#endif
 
 
 struct Connection {
