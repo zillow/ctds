@@ -36,7 +36,10 @@ from _tds import (
     # Types
     TDSCHAR as CHAR,
     TDSVARCHAR as VARCHAR,
+    TDSNCHAR as NCHAR,
+    TDSNVARCHAR as NVARCHAR,
     TDSTEXT as TEXT,
+    TDSNTEXT as NTEXT,
     TDSBIT as BIT,
     TDSTINYINT as TINYINT,
     TDSSMALLINT as SMALLINT,
@@ -71,6 +74,7 @@ from _tds import (
     SqlChar,
     SqlDate,
     SqlDecimal,
+    SqlNVarChar,
     SqlInt,
     SqlSmallInt,
     SqlTinyInt,

@@ -24,6 +24,11 @@ extern PyObject* PyExc_tds_NotSupportedError;
 #define tds_mem_calloc calloc
 #define tds_mem_free free
 
+#define TDS_CHAR_MIN_SIZE 1
+#define TDS_CHAR_MAX_SIZE 8000
+#define TDS_NCHAR_MIN_SIZE 1
+#define TDS_NCHAR_MAX_SIZE 4000
+
 /*
     If the UTF-16 option can be set on the connection, use UTF-16.
     This option was added in FreeTDS 1.00
@@ -44,6 +49,7 @@ extern PyObject* PyExc_tds_NotSupportedError;
 */
 #if defined(DATETIME2BIND)
 #  define CTDS_USE_SP_EXECUTESQL 1
+#  define CTDS_USE_NCHARS 1
 #endif
 
 #endif /* ifndef __TDS_H__ */

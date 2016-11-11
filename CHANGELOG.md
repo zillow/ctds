@@ -2,7 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.1.0] - 2016-11-14
+### Added
+- `ctds.SqlNVarChar` type.
+- Ignore the replacement parameter markers inside of string literals in
+SQL statements passed to `ctds.Cursor.execute()` and
+`ctds.Cursor.executemany()`.
+
+### Fixed
+- Work around a Memory leak in FreeTDS when specifying the database at
+connection time.
+- Fixed failure in `ctds.Cursor.execute()` and `ctds.Cursor.executemany()`
+when passing a SQL statement longer than 4000 characters.
+
 ## [1.0.8] - 2016-08-17
 ### Fixed
 - Configure connections to use UTF-16 when supported (i.e. FreeTDS 1.00+).

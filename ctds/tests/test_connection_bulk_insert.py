@@ -1,10 +1,11 @@
 import datetime
 from decimal import Decimal
+import warnings
 
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import unicode_
+from .compat import PY3, PY35, unicode_
 
 
 class TestConnectionBulkInsert(TestExternalDatabase):
@@ -54,30 +55,15 @@ after `batch_size` rows have been copied to server.
 
         with self.connect() as connection:
             for args, kwargs in cases:
-                try:
-                    connection.bulk_insert(*args, **kwargs)
-                except TypeError:
-                    pass
-                else:
-                    self.fail('.bulk_insert() did not fail as expected') # pragma: nocover
+                self.assertRaises(TypeError, connection.bulk_insert, *args, **kwargs)
 
     def test_overflowerror(self):
         with self.connect() as connection:
-            try:
-                connection.bulk_insert('table', (), batch_size=2 ** 64)
-            except OverflowError:
-                pass
-            else:
-                self.fail('.bulk_insert() did not fail as expected') # pragma: nocover
+            self.assertRaises(OverflowError, connection.bulk_insert, 'table', (), batch_size=2 ** 64)
 
     def test_ctds_notsupported(self):
         with self.connect(enable_bcp=False) as connection:
-            try:
-                connection.bulk_insert('table', ())
-            except ctds.NotSupportedError:
-                pass
-            else:
-                self.fail('.bulk_insert() did not fail as expected') # pragma: nocover
+            self.assertRaises(ctds.NotSupportedError, connection.bulk_insert, 'table', ())
 
     def test_closed(self):
         connection = self.connect()
@@ -85,7 +71,125 @@ after `batch_size` rows have been copied to server.
 
         self.assertRaises(ctds.InterfaceError, connection.bulk_insert, 'temp', (1, 2))
 
+    def test_string(self):
+        parameter = unicode_(b'what DB encoding is used? \xc2\xbd', encoding='utf-8')
+        for index, param in enumerate(
+                (
+                    parameter,
+                    ctds.Parameter(parameter),
+                )
+        ):
+            with self.connect(autocommit=False) as connection:
+                try:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            '''
+                            CREATE TABLE {0}
+                            (
+                                String VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS
+                            )
+                            '''.format(self.test_string.__name__)
+                        )
+
+                    with warnings.catch_warnings(record=True) as warns:
+                        connection.bulk_insert(
+                            self.test_string.__name__,
+                            [
+                                (param,)
+                            ]
+                        )
+
+                    # Python 3.4 and lower has an issue recording the same warning multiple times.
+                    # See http://bugs.python.org/issue4180.
+                    if index == 0 or PY35:
+                        self.assertEqual(len(warns), 1)
+                        self.assertEqual(
+                            [str(warn.message) for warn in warns],
+                            [
+                                '''\
+Direct bulk insert of a Python str object may result in unexpected character \
+encoding. It is recommended to explicitly encode Python str values for bulk \
+insert.\
+'''
+                            ] * len(warns)
+                        )
+
+                    with connection.cursor() as cursor:
+                        cursor.execute('SELECT * FROM {0}'.format(self.test_string.__name__))
+                        self.assertEqual(
+                            [tuple(row) for row in cursor.fetchall()],
+                            [
+                                (parameter.encode('utf-8').decode('latin-1'),)
+                            ]
+                        )
+
+                finally:
+                    connection.rollback()
+
     def test_insert(self):
+        with self.connect(autocommit=False) as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0}
+                        (
+                            PrimaryKey INT NOT NULL PRIMARY KEY,
+                            Date       DATETIME,
+                            /*
+                                FreeTDS' bulk insert implementation doesn't seem to work
+                                properly with *VARCHAR(MAX) columns.
+                            */
+                            String     VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS,
+                            Unicode    NVARCHAR(100),
+                            Bytes      VARBINARY(1000),
+                            Decimal    DECIMAL(7,3)
+                        )
+                        '''.format(self.test_insert_tablock.__name__)
+                    )
+
+                rows = 100
+                inserted = connection.bulk_insert(
+                    self.test_insert_tablock.__name__,
+                    (
+                        (
+                            ix,
+                            datetime.datetime(2000 + ix, 1, 1) if ix % 2 else None,
+                            ctds.SqlVarChar(
+                                unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix).encode('latin-1')
+                            ),
+                            ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100).encode('utf-16le')),
+                            bytes(ix),
+                            Decimal(str(ix + .125))
+                        )
+                        for ix in range(0, rows)
+                    )
+                )
+
+                self.assertEqual(inserted, rows)
+
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT * FROM {0}'.format(self.test_insert_tablock.__name__))
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (
+                                ix,
+                                datetime.datetime(2000 + ix, 1, 1) if ix % 2 else None,
+                                unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix),
+                                unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100,
+                                # FreeTDS maps b'' -> NULL
+                                bytes(ix) if ix or not PY3 else None,
+                                Decimal(str(ix + .125))
+                            )
+                            for ix in range(0, rows)
+                        ]
+                    )
+
+            finally:
+                connection.rollback()
+
+    def test_insert_tablock(self):
         with self.connect(autocommit=False) as connection:
             try:
                 with connection.cursor() as cursor:
@@ -96,6 +200,7 @@ after `batch_size` rows have been copied to server.
                             PrimaryKey  INT NOT NULL PRIMARY KEY,
                             Date        DATETIME,
                             String      VARCHAR(1000),
+                            Unicode     NVARCHAR(1000),
                             Bytes       VARBINARY(1000),
                             Decimal     DECIMAL(7,3)
                         )
@@ -109,14 +214,17 @@ after `batch_size` rows have been copied to server.
                         (
                             ix,
                             datetime.datetime(2000 + ix, 1, 1) if ix < 1000 else None,
-                            unicode_('this is row {0}'.format(ix)),
+                            ctds.SqlVarChar(
+                                unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix).encode('utf-8')
+                            ),
+                            ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8')).encode('utf-16le')),
                             bytes(ix),
                             Decimal(str(ix + .125))
                         )
                         for ix in range(0, rows)
-                    )
+                    ),
+                    tablock=True
                 )
-
                 self.assertEqual(inserted, rows)
 
                 with connection.cursor() as cursor:
@@ -137,38 +245,40 @@ after `batch_size` rows have been copied to server.
                             PrimaryKey INT NOT NULL PRIMARY KEY,
                             Date       DATETIME,
                             String     VARCHAR(1000),
+                            Unicode    NVARCHAR(1000),
                             Bytes      VARBINARY(1000),
                             Decimal    DECIMAL(7,3)
                         )
-                        '''.format(self.test_insert.__name__)
+                        '''.format(self.test_insert_batch.__name__)
                     )
 
                 rows = 100
                 inserted = connection.bulk_insert(
-                    self.test_insert.__name__,
+                    self.test_insert_batch.__name__,
                     (
                         (
                             ix,
                             datetime.datetime(2000 + ix, 1, 1) if ix < 1000 else None,
-                            unicode_('this is row {0}'.format(ix)),
+                            ctds.SqlVarChar(unicode_(b'this is row {0}', encoding='utf-8').format(ix)),
+                            ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100).encode('utf-16le')),
                             bytes(ix),
                             Decimal(str(ix + .125))
                         )
                         for ix in range(0, rows)
                     ),
-                    batch_size=100
+                    batch_size=10
                 )
 
                 self.assertEqual(inserted, rows)
 
                 with connection.cursor() as cursor:
-                    cursor.execute('SELECT COUNT(1) FROM {0}'.format(self.test_insert.__name__))
+                    cursor.execute('SELECT COUNT(1) FROM {0}'.format(self.test_insert_batch.__name__))
                     self.assertEqual(cursor.fetchone()[0], rows)
 
             finally:
                 connection.rollback()
 
-    def test_insert_tablock(self):
+    def test_insert_invalid_encoding(self):
         with self.connect(autocommit=False) as connection:
             try:
                 with connection.cursor() as cursor:
@@ -176,36 +286,36 @@ after `batch_size` rows have been copied to server.
                         '''
                         CREATE TABLE {0}
                         (
-                            PrimaryKey INT NOT NULL PRIMARY KEY,
-                            Date       DATETIME,
-                            String     VARCHAR(1000),
-                            Bytes      VARBINARY(1000),
-                            Decimal    DECIMAL(7,3)
+                            String VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS
                         )
-                        '''.format(self.test_insert.__name__)
+                        '''.format(self.test_insert_invalid_encoding.__name__)
                     )
 
-                rows = 100
-                inserted = connection.bulk_insert(
-                    self.test_insert.__name__,
+                connection.bulk_insert(
+                    self.test_insert_invalid_encoding.__name__,
                     (
                         (
-                            ix,
-                            datetime.datetime(2000 + ix, 1, 1) if ix < 1000 else None,
-                            unicode_('this is row {0}'.format(ix)),
-                            bytes(ix),
-                            Decimal(str(ix + .125))
-                        )
-                        for ix in range(0, rows)
-                    ),
-                    tablock=True
+                            ctds.SqlVarChar(unicode_(b'\xc2\xbd', encoding='utf-8').encode('utf-8')),
+                        ),
+                    )
                 )
 
-                self.assertEqual(inserted, rows)
-
                 with connection.cursor() as cursor:
-                    cursor.execute('SELECT COUNT(1) FROM {0}'.format(self.test_insert.__name__))
-                    self.assertEqual(cursor.fetchone()[0], rows)
+                    cursor.execute(
+                        '''
+                        SELECT
+                            String,
+                            CONVERT(VARBINARY(1000), String) AS Bytes
+                        FROM
+                            {0}
+                        '''.format(self.test_insert_invalid_encoding.__name__)
+                    )
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (unicode_(b'\xc2\xbd', encoding='latin-1'), b'\xc2\xbd',)
+                        ]
+                    )
 
             finally:
                 connection.rollback()

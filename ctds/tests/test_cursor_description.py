@@ -62,13 +62,17 @@ result set. The tuple describes the column data as follows:
                     2 ** 45,
                     b'1234',
                     bytearray('1234', 'ascii'),
-                    unicode_("hello 'world' ") + unicode_(b'\xc4\x80', encoding='utf-8'),
+                    unicode_(
+                        b'hello \'world\' ' + (b'\xc4\x80' if self.nchars_supported else b''),
+                        encoding='utf-8'
+                    ),
                     datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
                     date(2010, 2, 14),
                     time(11, 12, 13, 140 * 1000),
                     Decimal('123.4567890'),
                     Decimal('1000000.0001')
                 )
+
                 cursor.execute(
                     '''
                     SELECT
@@ -90,31 +94,32 @@ result set. The tuple describes the column data as follows:
                     ''',
                     args
                 )
+
                 self.assertEqual(
                     cursor.description,
                     (
-                        ('none', ctds.CHAR, long_(4), long_(4), long_(0), long_(0), True),
-                        ('int', ctds.INT, long_(4), long_(4), long_(0), long_(0), True),
-                        ('bigint', ctds.BIGINT, long_(8), long_(8), long_(0), long_(0), True),
-                        ('bytes', ctds.BINARY, long_(4), long_(4), long_(0), long_(0), True),
-                        ('binary10', ctds.BINARY, long_(10), long_(10), long_(0), long_(0), True),
-                        ('varbinary10', ctds.BINARY, long_(10), long_(10), long_(0), long_(0), True),
-                        ('bytearray', ctds.BINARY, long_(4), long_(4), long_(0), long_(0), True),
+                        (unicode_('none'), long_(ctds.CHAR), long_(4), long_(4), long_(0), long_(0), True),
+                        (unicode_('int'), long_(ctds.INT), long_(4), long_(4), long_(0), long_(0), True),
+                        (unicode_('bigint'), long_(ctds.BIGINT), long_(8), long_(8), long_(0), long_(0), True),
+                        (unicode_('bytes'), long_(ctds.BINARY), long_(4), long_(4), long_(0), long_(0), True),
+                        (unicode_('binary10'), long_(ctds.BINARY), long_(10), long_(10), long_(0), long_(0), True),
+                        (unicode_('varbinary10'), long_(ctds.BINARY), long_(10), long_(10), long_(0), long_(0), True),
+                        (unicode_('bytearray'), long_(ctds.BINARY), long_(4), long_(4), long_(0), long_(0), True),
                         (
-                            'string',
-                            ctds.CHAR,
-                            long_((len(args[5]) + int(self.use_sp_executesql)) * 4),
-                            long_((len(args[5]) + int(self.use_sp_executesql)) * 4),
+                            unicode_('string'),
+                            long_(ctds.CHAR),
+                            long_((len(args[5])) * 4),
+                            long_((len(args[5])) * 4),
                             long_(0),
                             long_(0),
                             self.use_sp_executesql
                         ),
-                        ('char10', ctds.CHAR, long_(40), long_(40), long_(0), long_(0), True),
-                        ('varchar10', ctds.CHAR, long_(40), long_(40), long_(0), long_(0), True),
-                        ('datetime', ctds.DATETIME, long_(8), long_(8), long_(0), long_(0), True),
+                        (unicode_('char10'), long_(ctds.CHAR), long_(40), long_(40), long_(0), long_(0), True),
+                        (unicode_('varchar10'), long_(ctds.CHAR), long_(40), long_(40), long_(0), long_(0), True),
+                        (unicode_('datetime'), long_(ctds.DATETIME), long_(8), long_(8), long_(0), long_(0), True),
                         (
-                            'date',
-                            ctds.CHAR if connection.tds_version < '7.3' else ctds.DATE,
+                            unicode_('date'),
+                            long_(ctds.CHAR) if connection.tds_version < '7.3' else long_(ctds.DATE),
                             long_(40) if connection.tds_version < '7.3' else long_(16),
                             long_(40) if connection.tds_version < '7.3' else long_(16),
                             long_(0),
@@ -122,16 +127,16 @@ result set. The tuple describes the column data as follows:
                             True
                         ),
                         (
-                            'time',
-                            ctds.CHAR if connection.tds_version < '7.3' else ctds.TIME,
+                            unicode_('time'),
+                            long_(ctds.CHAR) if connection.tds_version < '7.3' else long_(ctds.TIME),
                             long_(64) if connection.tds_version < '7.3' else long_(16),
                             long_(64) if connection.tds_version < '7.3' else long_(16),
                             long_(0) if connection.tds_version < '7.3' else long_(7),
                             long_(0) if connection.tds_version < '7.3' else long_(7),
                             True
                         ),
-                        ('decimal', ctds.DECIMAL, long_(17), long_(17), long_(10), long_(7), True),
-                        ('money', ctds.MONEY, long_(8), long_(8), long_(0), long_(0), True)
+                        (unicode_('decimal'), long_(ctds.DECIMAL), long_(17), long_(17), long_(10), long_(7), True),
+                        (unicode_('money'), long_(ctds.MONEY), long_(8), long_(8), long_(0), long_(0), True)
                     )
                 )
                 if PY3:

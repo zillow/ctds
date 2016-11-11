@@ -37,6 +37,14 @@ ifndef VIRTUALENV
     VIRTUALENV = python -m virtualenv
 endif
 
+VALGRIND_FLAGS := \
+    --leak-check=summary \
+    --fullpath-after=/ \
+    --num-callers=24 \
+    --malloc-fill=0xa0 \
+    --free-fill=0xff \
+    --log-file=valgrind.log
+
 # Local directories
 BUILD_DIR := build
 HTML_BUILD_DIR := $(BUILD_DIR)/docs/html
@@ -149,6 +157,7 @@ define TEST_COMMANDS
         --global-option=build_ext --global-option="-f"
 
 	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
+        $(if $(VALGRIND), valgrind $(VALGRIND_FLAGS)) \
         $(call ENV_PYTHON, $(1)) setup.py test $(if $(TEST),-s $(TEST))
 endef
 
@@ -195,6 +204,7 @@ help:
 	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
+	@echo "      VALGRIND - Run tests under \`valgrind\`. e.g. \`make test VALGRIND=1\`"
 	@echo "      FREETDS_VERSION - Specify the version of FreeTDS to build and use. Defaults to $(FREETDS_VERSION)."
 
 

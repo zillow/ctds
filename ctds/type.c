@@ -20,27 +20,35 @@
 #endif /* ifdef __GNUC__ */
 
 
-#define SqlType_init_base(_type, _value, _tdstype) \
+#define _SqlType_init_base(_type, _value, _tdstype) \
     Py_INCREF((_value)); \
     ((struct SqlType*)(_type))->value = (_value); \
     ((struct SqlType*)(_type))->tdstype = (_tdstype)
 
 #define SqlType_init_fixed(_type, _value, _tdstype, _member) \
-    SqlType_init_base(_type, _value, _tdstype); \
+    _SqlType_init_base(_type, _value, _tdstype); \
     ((struct SqlType*)(_type))->data = (Py_None == (_value)) ? NULL : (void*)&(_member); \
     ((struct SqlType*)(_type))->ndata = (Py_None == (_value)) ? 0 : sizeof(_member); \
+    ((struct SqlType*)(_type))->data_free = NULL; \
     ((struct SqlType*)(_type))->size = -1
 
-#define SqlType_init_variable(_type, _value, _tdstype, _size, _data, _ndata) \
-    SqlType_init_base(_type, _value, _tdstype); \
+#define SqlType_init_variable(_type, _value, _tdstype, _size, _data, _ndata, _data_free) \
+    _SqlType_init_base(_type, _value, _tdstype); \
     ((struct SqlType*)(_type))->data = _data; \
     ((struct SqlType*)(_type))->ndata = _ndata; \
+    ((struct SqlType*)(_type))->data_free = _data_free; \
     ((struct SqlType*)(_type))->size = _size
 
 static void SqlType_dealloc(PyObject* self)
 {
     struct SqlType* type = (struct SqlType*)self;
     Py_XDECREF(type->value);
+
+    if (type->data_free)
+    {
+        type->data_free(type->data);
+        type->data = NULL;
+    }
 
     self->ob_type->tp_free(self);
 }
@@ -366,7 +374,8 @@ static int SqlBinary_init(PyObject* self, PyObject* args, PyObject* kwargs)
                           TDSBINARY,
                           (int)MAX(1, nbytes), /* BINARY type size must be >= 1 */
                           (void*)bytes,
-                          (size_t)nbytes);
+                          (size_t)nbytes,
+                          NULL);
     return 0;
     UNUSED(kwargs);
 }
@@ -414,7 +423,8 @@ static int SqlVarBinary_init(PyObject* self, PyObject* args, PyObject* kwargs)
                           */
                           (int)MAX(1, (((Py_ssize_t)-1 == size) ? nbytes : size)),
                           (void*)bytes,
-                          (size_t)nbytes);
+                          (size_t)nbytes,
+                          NULL);
     return 0;
     UNUSED(kwargs);
 }
@@ -429,25 +439,46 @@ struct SqlChar
 static const char s_SqlChar_doc[] =
     "SqlChar(value)\n"
     "\n"
-    "SQL CHAR type wrapper.\n"
+    "SQL CHAR type wrapper. The value's UTF-8-encoded length must be <= " STRINGIFY(TDS_CHAR_MAX_SIZE) ".\n"
     "\n"
     ":param object value: The value to wrap or `None`.\n";
 
 static int SqlChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
-    const char* bytes = NULL;
-    Py_ssize_t nbytes;
-    if (!PyArg_ParseTuple(args, "z#", &bytes, &nbytes))
+    char* utf8bytes = NULL;
+    Py_ssize_t nutf8bytes = 0;
+    if (!PyArg_ParseTuple(args, "et#", "utf-8", &utf8bytes, &nutf8bytes))
     {
+        PyObject* none;
+
+        PyErr_Clear();
+
+        if (!PyArg_ParseTuple(args, "O", &none))
+        {
+            return -1;
+        }
+        if (Py_None != none)
+        {
+            PyErr_SetObject(PyExc_TypeError, none);
+            return -1;
+        }
+    }
+
+    if (nutf8bytes > TDS_CHAR_MAX_SIZE)
+    {
+        PyMem_Free((void*)utf8bytes);
+        PyErr_SetObject(PyExc_ValueError, PyTuple_GET_ITEM(args, 0));
         return -1;
     }
 
     SqlType_init_variable(self,
                           PyTuple_GET_ITEM(args, 0),
                           TDSCHAR,
-                          (int)MAX(1, nbytes), /* CHAR type size must be >= 1 */
-                          (void*)bytes,
-                          (size_t)nbytes);
+                          (int)(int)MAX(1, nutf8bytes), /* CHAR type size must be >= 1 */
+                          (void*)utf8bytes,
+                          (size_t)nutf8bytes,
+                          PyMem_Free);
+
     return 0;
     UNUSED(kwargs);
 }
@@ -465,6 +496,8 @@ static const char s_SqlVarChar_doc[] =
     "\n"
     "SQL VARCHAR type wrapper.\n"
     "\n"
+    ".. note:: Byte strings are passed through unchanged to the database.\n"
+    "\n"
     ":param object value: The value to wrap or `None`.\n"
     ":param int size: An optional size override. This value will be used for\n"
     "    the output parameter buffer size. It can also be used to truncate the\n"
@@ -472,8 +505,8 @@ static const char s_SqlVarChar_doc[] =
 
 static int SqlVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
-    const char* bytes = NULL;
-    Py_ssize_t nbytes;
+    char* utf8bytes = NULL;
+    Py_ssize_t nutf8bytes = 0;
     Py_ssize_t size = (Py_ssize_t)-1;
     static char* s_kwlist[] =
     {
@@ -481,9 +514,21 @@ static int SqlVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
         "size",
         NULL
     };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "z#|n", s_kwlist, &bytes, &nbytes, &size))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "et#|n", s_kwlist, "utf-8", &utf8bytes, &nutf8bytes, &size))
     {
-        return -1;
+        PyObject* none;
+
+        PyErr_Clear();
+
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|n", s_kwlist, &none, &size))
+        {
+            return -1;
+        }
+        if (Py_None != none)
+        {
+            PyErr_SetObject(PyExc_TypeError, none);
+            return -1;
+        }
     }
 
     SqlType_init_variable(self,
@@ -493,14 +538,110 @@ static int SqlVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
                               If the size is not explicitly specified, infer it from the value.
                               The VARCHAR type size must be >= 1.
                           */
-                          (int)MAX(1, (((Py_ssize_t)-1 == size) ? nbytes : size)),
-                          (void*)bytes,
-                          (size_t)nbytes);
+                          (int)MAX(1, (((Py_ssize_t)-1 == size) ? nutf8bytes : size)),
+                          (void*)utf8bytes,
+                          (size_t)nutf8bytes,
+                          PyMem_Free);
     return 0;
-    UNUSED(kwargs);
 }
 
 SQL_TYPE_DEF(VarChar, s_SqlVarChar_doc);
+
+
+struct SqlNVarChar
+{
+    SqlType_HEAD;
+};
+
+static const char s_SqlNVarChar_doc[] =
+    "SqlNVarChar(value, size=None)\n"
+    "\n"
+    "SQL NVARCHAR type wrapper.\n"
+    "\n"
+    ".. versionadded:: 1.1\n"
+    "\n"
+    ":param object value: The value to wrap or `None`.\n"
+    ":param int size: An optional size override. This value will be used for\n"
+    "    the output parameter buffer size. It can also be used to truncate the\n"
+    "    input parameter.\n";
+
+static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
+{
+    char* utf8bytes = NULL;
+    size_t nutf8bytes = 0;
+    PyObject* encoded;
+    enum TdsType tdstype;
+
+    PyObject* unicode = NULL;
+    Py_ssize_t nchars = 0;
+    Py_ssize_t size = (Py_ssize_t)-1;
+    static char* s_kwlist[] =
+    {
+        "value",
+        "size",
+        NULL
+    };
+    /* Z# would be ideal here, but is not supported prior to Python 3. */
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|n", s_kwlist, &unicode, &size))
+    {
+        return -1;
+    }
+
+    if (Py_None == unicode)
+    {
+        /* `None` passed as argument. */
+        encoded = PyTuple_GET_ITEM(args, 0);
+        Py_INCREF(encoded);
+        utf8bytes = NULL;
+    }
+    else if (PyUnicode_Check(unicode))
+    {
+#if PY_VERSION_HEX >= 0x03030000
+        nchars = PyUnicode_GET_LENGTH(unicode);
+#else
+        nchars = PyUnicode_GET_SIZE(unicode);
+#endif
+        encoded = encode_for_dblib(unicode, &utf8bytes, &nutf8bytes);
+        if (!encoded)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        PyErr_SetObject(PyExc_TypeError, unicode);
+        return -1;
+    }
+    /*
+        FreeTDS doesn't have good support for NCHAR types prior
+        to 0.95. Fallback to VARCHAR with somewhat crippled
+        functionality.
+    */
+#if CTDS_USE_NCHARS != 0
+    tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
+#else /* if CTDS_USE_NCHARS != 0 */
+    tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
+#endif /* else if CTDS_USE_NCHARS != 0 */
+
+    SqlType_init_variable(self,
+                          encoded,
+                          tdstype,
+                          /*
+                              If the size is not explicitly specified, infer it from the value.
+                              The NVARCHAR type size must be >= 1.
+                          */
+                          (int)MAX(1, (((Py_ssize_t)-1 == size) ? nchars : size)),
+                          (void*)utf8bytes,
+                          nutf8bytes,
+                          NULL);
+
+    Py_DECREF(encoded);
+
+    return 0;
+}
+
+SQL_TYPE_DEF(NVarChar, s_SqlNVarChar_doc);
+
 
 struct SqlDate
 {
@@ -967,12 +1108,14 @@ sql_topython sql_topython_lookup(enum TdsType tdstype)
     return NULL;
 }
 
+#if CTDS_USE_UTF16 == 0
+
 /* $TODO: support other widths of wchar_t */
 #if __WCHAR_MAX__ < 0x10000000
 #  error Unsupported sizeof wchar_t
 #endif
 
-PyObject* translate_to_ucs2(PyObject* o)
+static PyObject* translate_to_ucs2(PyObject* o)
 {
     PyObject* translated = NULL;
     Py_ssize_t len;
@@ -995,9 +1138,9 @@ PyObject* translate_to_ucs2(PyObject* o)
         }
     }
     while (0);
-#else
+#else /* if PY_MAJOR_VERSION < 3 */
     ucs2 = PyUnicode_AsWideCharString(o, &len);
-#endif /* PY_MAJOR_VERSION < 3 */
+#endif /* else if PY_MAJOR_VERSION < 3 */
 
     if (!PyErr_Occurred())
     {
@@ -1020,11 +1163,63 @@ PyObject* translate_to_ucs2(PyObject* o)
     }
 #if PY_MAJOR_VERSION < 3
     tds_mem_free(ucs2);
-#else
+#else /* if PY_MAJOR_VERSION < 3 */
     PyMem_Free(ucs2);
-#endif /* PY_MAJOR_VERSION < 3 */
+#endif /* else if PY_MAJOR_VERSION < 3 */
 
     return translated;
+}
+
+#endif /* if CTDS_USE_UTF16 == 0 */
+
+PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes)
+{
+    PyObject* encoded = NULL;
+
+    do
+    {
+#if PY_MAJOR_VERSION >= 3
+        Py_ssize_t size;
+#endif /* if PY_MAJOR_VERSION >= 3 */
+
+        PyObject* encodable;
+
+#if CTDS_USE_UTF16 != 0
+        /* FreeTDS supports encoding to UTF-16, so the whole string is encodable. */
+        encodable = unicode;
+        Py_INCREF(encodable);
+#else /* if CTDS_USE_UTF16 != 0 */
+        /*
+            FreeTDS will only convert strings to UCS-2, so translate all
+            strings to UCS-2 prior to binding.
+        */
+        encodable = translate_to_ucs2(unicode);
+        if (!encodable)
+        {
+            break;
+        }
+#endif /* else if CTDS_USE_UTF16 != 0 */
+
+#if PY_MAJOR_VERSION < 3
+        encoded = PyUnicode_AsUTF8String(encodable);
+        Py_DECREF(encodable);
+        if (!encoded)
+        {
+            break;
+        }
+
+        *utf8bytes = PyString_AS_STRING(encoded);
+        *nutf8bytes = (size_t)PyString_GET_SIZE(encoded);
+#else /* if PY_MAJOR_VERSION < 3 */
+        encoded = encodable; /* steal reference */
+
+        *utf8bytes = PyUnicode_AsUTF8AndSize(encoded, &size);
+        *nutf8bytes = (size_t)size;
+#endif /* else if PY_MAJOR_VERSION < 3 */
+    }
+    while (0);
+
+    return encoded;
 }
 
 int datetime_to_sql(PyObject* o, DBDATETIME* dbdatetime)

@@ -21,6 +21,9 @@ SQL Type Wrappers
 .. autoclass:: ctds.SqlInt
     :members:
 
+.. autoclass:: ctds.SqlNVarChar
+    :members:
+
 .. autoclass:: ctds.SqlSmallInt
     :members:
 

@@ -463,7 +463,7 @@ static PyObject* Cursor_description_get(PyObject* self, void* closure)
     description = PyTuple_New((Py_ssize_t)cursor->description->ncolumns);
     if (description)
     {
-        int error = 0;
+        bool error = false;
 
         size_t ix;
         for (ix = 0; ix < cursor->description->ncolumns; ++ix)
@@ -475,7 +475,7 @@ static PyObject* Cursor_description_get(PyObject* self, void* closure)
             }
             else
             {
-                error = 1;
+                error = true;
                 break;
             }
         }
@@ -1434,6 +1434,7 @@ static PyObject* build_executesql_params(PyObject* parameters)
     {
         char* sqltype = NULL;
         char* paramN = NULL;
+        size_t nparamN = 0;
         struct Parameter* rpcparam = Parameter_create(PySequence_Fast_GET_ITEM(parameters, ix), 0);
         if (!rpcparam)
         {
@@ -1443,6 +1444,7 @@ static PyObject* build_executesql_params(PyObject* parameters)
         do
         {
             int written;
+            size_t required;
             sqltype = Parameter_sqltype(rpcparam);
             if (!sqltype)
             {
@@ -1456,22 +1458,32 @@ static PyObject* build_executesql_params(PyObject* parameters)
 
                     @paramN data_type [ OUT | OUTPUT ]
             */
-            paramN = (char*)tds_mem_malloc(STRLEN("@param" STRINGIFY(UINT64_MAX)) +
-                                           STRLEN(" ") +
-                                           strlen(sqltype) +
-                                           STRLEN(" OUTPUT") +
-                                           1 /* '\0' */);
-            if (!paramN)
+            required = ((ix) ? STRLEN(", ") : STRLEN("")) +
+                       STRLEN("@param" STRINGIFY(UINT64_MAX)) +
+                       STRLEN(" ") +
+                       strlen(sqltype) +
+                       STRLEN(" OUTPUT") +
+                       1 /* '\0' */;
+            if (required > nparamN)
             {
-                PyErr_NoMemory();
-                break;
+                char* tmp = (char*)tds_mem_realloc(paramN, required);
+                if (!tmp)
+                {
+                    PyErr_NoMemory();
+                    break;
+                }
+                free(paramN);
+                paramN = tmp;
+                nparamN = required;
             }
-            written = sprintf(paramN,
-                              "%s@param%lu %s%s",
-                              (ix) ? ", " : "",
-                              ix,
-                              sqltype,
-                              (Parameter_output(rpcparam)) ? " OUTPUT" : "");
+            written = snprintf(paramN,
+                               nparamN,
+                               "%s@param%lu %s%s",
+                               (ix) ? ", " : "",
+                               ix,
+                               sqltype,
+                               (Parameter_output(rpcparam)) ? " OUTPUT" : "");
+            assert(written < nparamN);
             params = strappend(params, (size_t)nparams, paramN, (size_t)written);
             if (!params)
             {

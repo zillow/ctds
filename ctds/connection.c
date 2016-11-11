@@ -1112,6 +1112,13 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
                 rpcparams[ix] = (struct Parameter*)value;
             }
 
+            if (PyUnicode_Check(Parameter_value(rpcparams[ix])))
+            {
+                (void)PyErr_Warn(PyExc_tds_Warning,
+                                 "Direct bulk insert of a Python str object may result in unexpected character encoding. "
+                                 "It is recommended to explicitly encode Python str values for bulk insert.");
+            }
+
             /* bcp_bind does not make a network request, so no need to release the GIL. */
 
             /* bcp_bind expects a 1-based column index. */

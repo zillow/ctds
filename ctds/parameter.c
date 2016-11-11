@@ -241,54 +241,40 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
         {
             if (PyUnicode_Check(value))
             {
-#if PY_MAJOR_VERSION < 3
-                PyObject* utf8value;
-#else /* if PY_MAJOR_VERSION < 3 */
-                Py_ssize_t size;
-#endif /* else if PY_MAJOR_VERSION < 3 */
+                Py_ssize_t nchars; /* number of unicode characters in the string */
 
-#if CTDS_USE_UTF16 != 0
-                /* The connection supports UTF-16, so the whole string is encodable. */
-                PyObject* encodable = value;
-                Py_INCREF(value);
+                char* utf8bytes;
+
+                Py_XDECREF(parameter->source);
+                parameter->source = encode_for_dblib(value, &utf8bytes, &parameter->ninput);
+                if (!parameter->source)
+                {
+                    break;
+                }
+                parameter->input = (void*)utf8bytes;
+
+#if PY_VERSION_HEX >= 0x03030000
+                nchars = PyUnicode_GET_LENGTH(value);
 #else
-                /*
-                    FreeTDS will only convert strings to UCS-2, so translate all
-                    strings to UCS-2 prior to binding.
-                */
-                PyObject* encodable = translate_to_ucs2(value);
-                if (!encodable)
-                {
-                    break;
-                }
-#endif /* else if CTDS_USE_UTF16 != 0 */
-
-#if PY_MAJOR_VERSION < 3
-                utf8value = PyUnicode_AsUTF8String(encodable);
-                Py_DECREF(encodable);
-                if (!utf8value)
-                {
-                    break;
-                }
-                Py_XDECREF(parameter->source);
-                parameter->source = utf8value; /* claim reference */
-
-                parameter->input = (void*)PyString_AS_STRING(utf8value);
-                parameter->ninput = (size_t)PyString_GET_SIZE(utf8value);
-#else /* if PY_MAJOR_VERSION < 3 */
-                Py_XDECREF(parameter->source);
-                parameter->source = encodable; /* claim reference */
-
-                parameter->input = (void*)PyUnicode_AsUTF8AndSize(encodable, &size);
-                parameter->ninput = (size_t)size;
-#endif /* else if PY_MAJOR_VERSION < 3 */
+                nchars = PyUnicode_GET_SIZE(value);
+#endif
 
                 /*
-                    FreeTDS 0.95.74 does not support passing VARCHAR types larger
-                    than 8000 characters. Use the TEXT type instead.
+                    FreeTDS does not support passing *VARCHAR(MAX) types.
+                    Use the *TEXT types instead.
                 */
-                parameter->tdstype = (parameter->ninput > 8000) ? TDSTEXT : TDSVARCHAR;
-                parameter->tdstypesize = (DBINT)parameter->ninput;
+
+                /*
+                    FreeTDS doesn't have good support for NCHAR types prior
+                    to 0.95. Fallback to VARCHAR with somewhat crippled
+                    functionality.
+                */
+#if CTDS_USE_NCHARS != 0
+                parameter->tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
+#else /* if CTDS_USE_NCHARS != 0 */
+                parameter->tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
+#endif /* else if CTDS_USE_NCHARS != 0 */
+                parameter->tdstypesize = (DBINT)nchars;
             }
             /* Check for bools prior to integers, which are treated as a boolean type by Python. */
             else if (PyBool_Check(value))
@@ -665,13 +651,31 @@ RETCODE Parameter_dbrpcparam(struct Parameter* parameter, DBPROCESS* dbproc, con
 
 RETCODE Parameter_bcp_bind(struct Parameter* parameter, DBPROCESS* dbproc, size_t column)
 {
+    /*
+        FreeTDS' bulk insert does not support passing Unicode types. If the caller
+        has requested a Unicode type, map it to the equivalent single-byte representation.
+    */
+    enum TdsType tdstype;
+    if ((parameter->tdstype == TDSNTEXT) || (parameter->tdstype == TDSNVARCHAR))
+    {
+        /*
+            FreeTDS does not support passing *VARCHAR(MAX) types.
+            Use the *TEXT types instead.
+        */
+        tdstype = (parameter->ninput > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
+    }
+    else
+    {
+        tdstype = parameter->tdstype;
+    }
     return bcp_bind(dbproc,
                     (BYTE*)parameter->input,
                     0,
-                    parameter->tdstypesize,
+                    /* Use the input byte count for non-NULL, variable-length types. */
+                    (parameter->tdstypesize > 0) ? (DBINT)parameter->ninput : parameter->tdstypesize,
                     NULL,
                     0,
-                    parameter->tdstype,
+                    tdstype,
                     (int)column);
 }
 
@@ -688,9 +692,32 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
 #define CONST_CASE(_type) \
         case TDS ## _type: { sql = strdup(STRINGIFY(_type)); break; }
 
+        case TDSNVARCHAR:
+        {
+            if (rpcparam->tdstypesize > TDS_NCHAR_MAX_SIZE)
+            {
+                sql = strdup("NVARCHAR(MAX)");
+                break;
+            }
+            /* Intentional fall-though. */
+        }
+        case TDSNCHAR:
+        {
+            /* The typesize will be 0 for NULL values, but the SQL type size must be 1. */
+            assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_NCHAR_MAX_SIZE);
+            sql = (char*)tds_mem_malloc(ARRAYSIZE("NVARCHAR(" STRINGIFY(TDS_NCHAR_MAX_SIZE) ")"));
+            if (sql)
+            {
+                (void)sprintf(sql,
+                              "N%sCHAR(%d)",
+                              (TDSNCHAR == rpcparam->tdstype) ? "" : "VAR",
+                              MAX(rpcparam->tdstypesize, 1));
+            }
+            break;
+        }
         case TDSVARCHAR:
         {
-            if (rpcparam->tdstypesize > 8000)
+            if (rpcparam->tdstypesize > TDS_CHAR_MAX_SIZE)
             {
                 sql = strdup("VARCHAR(MAX)");
                 break;
@@ -700,8 +727,8 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
         case TDSCHAR:
         {
             /* The typesize will be 0 for NULL values, but the SQL type size must be 1. */
-            assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= 8000);
-            sql = (char*)tds_mem_malloc(ARRAYSIZE("VARCHAR(8000)"));
+            assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_CHAR_MAX_SIZE);
+            sql = (char*)tds_mem_malloc(ARRAYSIZE("VARCHAR(" STRINGIFY(TDS_CHAR_MAX_SIZE) ")"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -711,6 +738,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
             }
             break;
         }
+        CONST_CASE(NTEXT)
         CONST_CASE(TEXT)
 
         case TDSBITN:
@@ -820,8 +848,11 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
     {
         switch (rpcparam->tdstype)
         {
+            case TDSNCHAR:
             case TDSCHAR:
+            case TDSNVARCHAR:
             case TDSVARCHAR:
+            case TDSNTEXT:
             case TDSTEXT:
             {
                 const char* input = (const char*)rpcparam->input;
@@ -879,6 +910,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
                 *nserialized = written - 1;
 
                 convert = ((TDSCHAR == rpcparam->tdstype) ||
+                           (TDSNCHAR == rpcparam->tdstype) ||
                            ((size_t)rpcparam->tdstypesize != rpcparam->ninput));
                 break;
             }

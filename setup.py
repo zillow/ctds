@@ -13,8 +13,8 @@ import sys
 
 
 CTDS_MAJOR_VERSION = 1
-CTDS_MINOR_VERSION = 0
-CTDS_PATCH_VERSION = 8
+CTDS_MINOR_VERSION = 1
+CTDS_PATCH_VERSION = 0
 
 install_requires = [
 ]
@@ -29,7 +29,7 @@ windows = platform.system() == 'Windows'
 
 libraries = [
     'sybdb',
-    'ct',
+    'ct', # required for ct_config only
 ]
 
 if not windows:

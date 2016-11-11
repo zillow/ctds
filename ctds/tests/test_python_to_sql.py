@@ -113,13 +113,22 @@ class TestPythonToSQL(TestExternalDatabase):
             with connection.cursor() as cursor:
                 values = [
                     unicode_('*'),
-                    unicode_('*' * 8001),
-                    unicode_('*' * 8000),
+                    unicode_('*' * 3999),
+                    unicode_('*' * 4000),
+                    unicode_('*' * 4001),
                     unicode_('*' * 7999),
-                    unicode_('\u0153' * 8001),
-                    unicode_('\u0153' * 8000),
-                    unicode_('\u0153' * 7999),
+                    unicode_('*' * 8000),
+                    unicode_('*' * 8001),
                 ]
+                if self.nchars_supported:
+                    values.extend([
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4001,
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000,
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 3999,
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 8001,
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 8000,
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 7999,
+                    ])
                 for value in values:
                     cursor.execute('SELECT :0 AS Value', (value,))
                     row = cursor.fetchone()

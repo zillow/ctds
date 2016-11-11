@@ -96,7 +96,7 @@ class TestSqlChar(TestExternalDatabase):
             '''\
 SqlChar(value)
 
-SQL CHAR type wrapper.
+SQL CHAR type wrapper. The value's UTF-8-encoded length must be <= 8000.
 
 :param object value: The value to wrap or `None`.
 '''
@@ -107,16 +107,22 @@ SQL CHAR type wrapper.
             with connection.cursor() as cursor:
                 for value in (
                         b'1234',
+                        b'*' * 8000,
                         unicode_('1234'),
+                        unicode_('*') * 8000,
+                        unicode_(b'\xc2\xa9', encoding='utf-8') * 4000,
                         None
                 ):
                     wrapper = ctds.SqlChar(value)
                     self.assertEqual(id(value), id(wrapper.value))
-                    self.assertEqual(wrapper.size, len(value) if value is not None else 1)
+                    encoded = value.encode('utf-8') if isinstance(value, unicode_) else value
+                    self.assertEqual(wrapper.size, len(encoded) if encoded is not None else 1)
                     row = self.parameter_type(cursor, wrapper)
                     self.assertEqual(row.Type, 'char' if value is not None else None)
-                    expected = wrapper.value.decode() if isinstance(value, bytes) else wrapper.value
-                    self.assertEqual(row.Value, expected)
+                    expected = encoded.decode('utf-8') if encoded is not None else encoded
+
+                    # Ignore any padding added by the database with `rstip()`.
+                    self.assertEqual(row.Value.rstrip() if row.Value is not None else row.Value, expected)
 
     def test_typeerror(self):
         for value in (
@@ -125,6 +131,14 @@ SQL CHAR type wrapper.
                 long_(1234),
         ):
             self.assertRaises(TypeError, ctds.SqlChar, value)
+
+    def test_valueerror(self):
+        for value in (
+                b'*' * 8001,
+                unicode_('*') * 8001,
+                unicode_(b'\xc2\xa9', encoding='utf-8') * 4000 + unicode_('?'),
+        ):
+            self.assertRaises(ValueError, ctds.SqlChar, value)
 
 
 class TestSqlDate(TestExternalDatabase):
@@ -378,6 +392,8 @@ SqlVarChar(value, size=None)
 
 SQL VARCHAR type wrapper.
 
+.. note:: Byte strings are passed through unchanged to the database.
+
 :param object value: The value to wrap or `None`.
 :param int size: An optional size override. This value will be used for
     the output parameter buffer size. It can also be used to truncate the
@@ -405,11 +421,15 @@ SQL VARCHAR type wrapper.
     def test_size(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
+                # The parameter_type method does not work with NVARCHAR(MAX) and
+                # will fail with "Operand type clash: varchar(max) is incompatible with sql_variant"
+                # Therefore, limit input sizes to 8000 or less.
                 for value, size in (
                         (b'1234', 14),
                         (b'1234', 1),
                         (unicode_('*'), 5000),
                         (unicode_('*' * 5000), 5000),
+                        (unicode_('*' * 8000), 8000),
                         (None, 14),
                 ):
                     wrapper = ctds.SqlVarChar(value, size=size)
@@ -438,6 +458,112 @@ SQL VARCHAR type wrapper.
                 '1234'
         ):
             self.assertRaises(TypeError, ctds.SqlVarChar, None, size)
+
+
+class TestSqlNVarChar(TestExternalDatabase):
+
+    def test___doc__(self):
+        self.assertEqual(
+            ctds.SqlNVarChar.__doc__,
+            '''\
+SqlNVarChar(value, size=None)
+
+SQL NVARCHAR type wrapper.
+
+.. versionadded:: 1.1
+
+:param object value: The value to wrap or `None`.
+:param int size: An optional size override. This value will be used for
+    the output parameter buffer size. It can also be used to truncate the
+    input parameter.
+'''
+        )
+
+    def test_wrapper(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                inputs = [
+                    None,
+                    unicode_(b'*', encoding='utf-8'),
+                    unicode_(b'*', encoding='utf-8') * 4000,
+                ]
+                if self.nchars_supported:
+                    inputs.extend([
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8'),
+                        unicode_(b' \xe3\x83\x9b ', encoding='utf-8'),
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000,
+                    ])
+                for value in inputs:
+                    wrapper = ctds.SqlNVarChar(value)
+                    self.assertEqual(wrapper.size, len(value) if value is not None else 1)
+                    row = self.parameter_type(cursor, wrapper)
+                    self.assertEqual(
+                        row.Type,
+                        '{0}varchar'.format('n' if self.nchars_supported else '') if value is not None else None
+                    )
+                    self.assertEqual(row.Value, value)
+                    self.assertEqual(
+                        row.MaxLength,
+                        len(value) * (1 + int(self.nchars_supported)) if value is not None else None
+                    )
+
+    def test_size(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                # The parameter_type method does not work with NVARCHAR(MAX) and
+                # will fail with "Operand type clash: nvarchar(max) is incompatible with sql_variant"
+                # Therefore, limit input sizes to 4000 or less.
+                inputs = [
+                    (None, 14),
+                    (unicode_(b'*', encoding='utf-8'), 4000),
+                    (unicode_(b'*', encoding='utf-8') * 4000, 4000),
+                ]
+                if self.nchars_supported:
+                    inputs.extend([
+                        (unicode_(b'\xe3\x83\x9b', encoding='utf-8'), 4000),
+                        (unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000, 4000),
+                    ])
+
+                for value, size in inputs:
+                    wrapper = ctds.SqlNVarChar(value, size=size)
+                    self.assertEqual(wrapper.size, size)
+                    row = self.parameter_type(cursor, wrapper)
+                    self.assertEqual(
+                        row.Type,
+                        '{0}varchar'.format('n' if self.nchars_supported else '') if value is not None else None
+                    )
+                    if value is not None:
+                        self.assertEqual(len(row.Value), min(size, len(value)))
+                    self.assertEqual(row.Value, value[:size] if value is not None else None)
+                    self.assertEqual(
+                        row.MaxLength,
+                        size * (1 + int(self.nchars_supported)) if value is not None else None
+                    )
+
+                # Manually check NVARCHAR(MAX) types due to sql_variant limitation.
+                value = unicode_(b'\xe3\x83\x9b' if self.nchars_supported else b'&', encoding='utf-8') * 4001
+                wrapper = ctds.SqlNVarChar(value)
+                cursor.execute('SELECT DATALENGTH(:0)', (wrapper,))
+                row = cursor.fetchone()
+                self.assertEqual(row[0], len(value) * (1 + int(self.nchars_supported)))
+
+    def test_typeerror(self):
+        for value in (
+                object(),
+                int_(1234),
+                long_(1234),
+                b'1234',
+        ):
+            self.assertRaises(TypeError, ctds.SqlNVarChar, value)
+
+    def test_size_typeerror(self):
+        for size in (
+                None,
+                object(),
+                '1234'
+        ):
+            self.assertRaises(TypeError, ctds.SqlNVarChar, None, size)
+
 
 class TestSqlDecimal(TestExternalDatabase):
 

@@ -123,6 +123,10 @@ class TestExternalDatabase(unittest.TestCase):
         return self.freetds_version >= (0, 95, 0)
 
     @property
+    def nchars_supported(self):
+        return self.use_sp_executesql
+
+    @property
     def use_utf16(self):
         return self.freetds_version >= (1, 0, 0)
 

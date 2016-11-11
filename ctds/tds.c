@@ -642,7 +642,10 @@ PyMODINIT_FUNC PyInit__tds(void)
 
     if (0 != PyModule_AddIntMacro(module, TDSCHAR)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSVARCHAR)) FAIL_MODULE_INIT;
+    if (0 != PyModule_AddIntMacro(module, TDSNCHAR)) FAIL_MODULE_INIT;
+    if (0 != PyModule_AddIntMacro(module, TDSNVARCHAR)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSTEXT)) FAIL_MODULE_INIT;
+    if (0 != PyModule_AddIntMacro(module, TDSNTEXT)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSBIT)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSBITN)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSINTN)) FAIL_MODULE_INIT;
@@ -720,6 +723,7 @@ PyMODINIT_FUNC PyInit__tds(void)
     SQL_TYPE_INIT(Date);
     SQL_TYPE_INIT(Decimal);
     SQL_TYPE_INIT(Int);
+    SQL_TYPE_INIT(NVarChar);
     SQL_TYPE_INIT(SmallInt);
     SQL_TYPE_INIT(TinyInt);
     SQL_TYPE_INIT(VarBinary);

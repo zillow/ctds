@@ -68,34 +68,22 @@ etc. required for running the tests.
 Additionally, the hostname for the SQL Server instance to use for the tests must
 be configured in the **ctds/tests/database.ini** configuration file.
 
-To run the tests against the default version of Python, use:
+To run the tests against the default version of Python and FreeTDS, use:
 
 .. code-block::
 
     make test
 
 
-To run the tests against an arbitrary version of Python:
+To run the tests against an arbitrary version of Python and FreeTDS:
 
 .. code-block::
 
-    make test_X.Y
+    make test_X.Y-Z.ZZ.ZZ
 
 
-To run tests against all versions of Python:
+To run tests against all versions of Python and FreeTDS:
 
 .. code-block::
 
     make check
-
-
-The tests are only run against one version of FreeTDS (*0.95.87*) by default.
-However, they can easily be run against any version of FreeTDS using the
-**FREETDS_VERSION** value. For example,
-
-.. code-block::
-
-    make test FREETDS_VERSION=0.92.408
-
-This will download the *0.92.408* version of FreeTDS, compile it, and then run
-the tests.

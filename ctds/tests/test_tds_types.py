@@ -48,7 +48,7 @@ class TestCursorTypes(TestExternalDatabase):
                         None,
                         unicode_(' '),
                         unicode_('one'),
-                        unicode_('hola \u0153')
+                        unicode_(b'hola \xc2\xa9', encoding='utf-8')
                 ):
                     for size in (None, 1, 3, 500):
                         kwargs = {}
@@ -68,6 +68,52 @@ class TestCursorTypes(TestExternalDatabase):
                             SELECT :0
                             ''',
                             (varchar,)
+                        )
+
+                        # TODO: fix this once supported by FreeTDS
+                        # Currently FreeTDS (really the db-lib API) will
+                        # turn empty string to NULL
+                        if value == '' and self.use_sp_executesql:
+                            value = None
+                        self.assertEqual(
+                            [tuple(row) for row in cursor.fetchall()],
+                            [
+                                (value if value is None else value[0:expected_size],)
+                            ]
+                        )
+
+    def test_nvarchar(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                inputs = [
+                    None,
+                    unicode_(''),
+                    unicode_(' '),
+                    unicode_('one'),
+                ]
+                if self.nchars_supported:
+                    inputs.extend([
+                        unicode_(b'hola \xc5\x93 \xe3\x83\x9b', encoding='utf-8'),
+                        unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000
+                    ])
+                for value in inputs:
+                    for size in (None, 1, 3, 500):
+                        kwargs = {}
+                        if size is not None:
+                            kwargs['size'] = size
+                            expected_size = size
+                        else:
+                            expected_size = 1 if value is None else max(1, len(value))
+
+                        nvarchar = ctds.SqlNVarChar(value, **kwargs)
+                        self.assertEqual(nvarchar.size, expected_size)
+                        self.assertEqual(nvarchar.tdstype, ctds.NVARCHAR if self.nchars_supported else ctds.VARCHAR)
+
+                        cursor.execute(
+                            '''
+                            SELECT :0
+                            ''',
+                            (nvarchar,)
                         )
 
                         # TODO: fix this once supported by FreeTDS

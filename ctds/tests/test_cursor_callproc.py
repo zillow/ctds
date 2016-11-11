@@ -839,10 +839,10 @@ parameters are replaced with output values.
                     else:
                         self.fail('.callproc() did not fail as expected') # pragma: nocover
 
-    def test_char(self):
+    def test_varchar(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                sproc = self.test_char.__name__
+                sproc = self.test_varchar.__name__
                 with self.stored_procedure(
                     cursor,
                     sproc,
@@ -919,10 +919,10 @@ parameters are replaced with output values.
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
                     self.assertNotEqual(id(inputs[1]), id(outputs[1]))
 
-    def test_char_max(self):
+    def test_varchar_max(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                sproc = self.test_char_max.__name__
+                sproc = self.test_varchar_max.__name__
                 with self.stored_procedure(
                     cursor,
                     sproc,
@@ -932,17 +932,25 @@ parameters are replaced with output values.
                         SELECT LEN(@pVarChar), @pVarChar;
                     '''
                     ):
-                    # Test strings > 8000 characters
-                    inputs = (unicode_('*') * 50000,)
-                    cursor.callproc(sproc, inputs)
-                    row = cursor.fetchone()
-                    self.assertEqual(len(inputs[0]), row[0])
-                    self.assertEqual(inputs[0], row[1])
+                    lengths = [
+                        1, 2, 3, 3999, 4000
+                    ]
+                    # FreeTDS 0.92.x doesn't properly handle VARCHAR types > 4000 characters.
+                    if self.freetds_version[:2] != (0, 92):
+                        lengths.extend([
+                            4001, 7999, 8000, 8001
+                        ])
+                    for length in lengths:
+                        inputs = (unicode_('*') * length,)
+                        cursor.callproc(sproc, inputs)
+                        row = cursor.fetchone()
+                        self.assertEqual(len(inputs[0]), row[0])
+                        self.assertEqual(inputs[0], row[1])
 
-    def test_char_null(self):
+    def test_varchar_null(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                sproc = self.test_char_null.__name__
+                sproc = self.test_varchar_null.__name__
                 with self.stored_procedure(
                     cursor,
                     sproc,
@@ -968,15 +976,15 @@ parameters are replaced with output values.
                         )
                         outputs = cursor.callproc(sproc, inputs)
 
-                        # TODO: fix this once supported by FreeTDS
+                        # $future: fix this once supported by FreeTDS
                         # Currently FreeTDS (really the db-lib API) will
-                        # turn empty string to NULL
+                        # turn the empty string to NULL
                         self.assertEqual(outputs[1], inputs[0] is None or inputs[0] == '')
 
-    def test_nchar(self):
+    def test_nvarchar(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                sproc = self.test_char.__name__
+                sproc = self.test_nvarchar.__name__
                 with self.stored_procedure(
                     cursor,
                     sproc,
@@ -1048,10 +1056,10 @@ parameters are replaced with output values.
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
                     self.assertNotEqual(id(inputs[1]), id(outputs[1]))
 
-    def test_nchar_max(self):
+    def test_nvarchar_max(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                sproc = self.test_char_max.__name__
+                sproc = self.test_nvarchar_max.__name__
                 with self.stored_procedure(
                     cursor,
                     sproc,
@@ -1061,12 +1069,23 @@ parameters are replaced with output values.
                         SELECT LEN(@pVarChar), @pVarChar;
                     '''
                     ):
-                    # Test strings > 8000 characters
-                    inputs = (unicode_('*') * 50000,)
-                    cursor.callproc(sproc, inputs)
-                    row = cursor.fetchone()
-                    self.assertEqual(len(inputs[0]), row[0])
-                    self.assertEqual(inputs[0], row[1])
+                    lengths = [
+                        1, 2, 3, 3999, 4000
+                    ]
+                    # FreeTDS 0.92.x doesn't properly handle NVARCHAR types > 4000 characters.
+                    if self.freetds_version[:2] != (0, 92):
+                        lengths.extend([
+                            4001, 7999, 8000, 8001
+                        ])
+
+                    for length in lengths:
+                        inputs = (
+                            unicode_(b'\xe3\x83\x9b' if self.nchars_supported else b'&', encoding='utf-8') * length,
+                        )
+                        cursor.callproc(sproc, inputs)
+                        row = cursor.fetchone()
+                        self.assertEqual(len(inputs[0]), row[0])
+                        self.assertEqual(inputs[0], row[1])
 
     def test_guid(self):
         with self.connect() as connection:

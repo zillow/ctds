@@ -202,7 +202,10 @@ against all parameter sequences or mappings found in the sequence
                     2 ** 45,
                     b'1234',
                     bytearray('1234', 'ascii'),
-                    unicode_('hello \'world\' \u0153'), # pylint: disable=anomalous-unicode-escape-in-string
+                    unicode_(
+                        b'hello \'world\' ' + (b'\xe3\x83\x9b' if self.nchars_supported else b''),
+                        encoding='utf-8'
+                    ),
                     datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
                     Decimal('123.4567890'),
                     Decimal('1000000.4532')

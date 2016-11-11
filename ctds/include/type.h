@@ -20,14 +20,14 @@ enum TdsType {
 #define TDSTEXT TDSTEXT
 
 /*
-    MS SQL Unicode types are converted to UTF-8 on the client
-    by FreeTDS.
-
-    TDSNVARCHAR = SYBNVARCHAR,
+    FreeTDS defines the incorrect TDS data type values for N*CHAR types.
+*/
+    TDSNCHAR = 239 /* 0xef */,
+#define TDSNCHAR TDSNCHAR
+    TDSNVARCHAR = 231 /* 0xe7 */,
 #define TDSNVARCHAR TDSNVARCHAR
     TDSNTEXT = SYBNTEXT,
 #define TDSNTEXT TDSNTEXT
-*/
 
     TDSBIT = SYBBIT,
 #define TDSBIT TDSBIT
@@ -133,13 +133,18 @@ struct SqlType
         by `value` or to another memory location in part of this struct.
         For NULL values, this is NULL.
     */
-    const void* data;
+    void* data;
 
     /*
         The length of `data`, in bytes.
         For NULL values, this is 0.
     */
     size_t ndata;
+
+    /*
+        An optional method to free the `data` member when no longer necessary.
+    */
+    void (*data_free)(void*);
 };
 
 int SqlTypes_init(void);
@@ -160,6 +165,7 @@ DECLARE_SQL_TYPE(VarBinary);
 
 DECLARE_SQL_TYPE(Char);
 DECLARE_SQL_TYPE(VarChar);
+DECLARE_SQL_TYPE(NVarChar);
 
 DECLARE_SQL_TYPE(Date);
 
@@ -180,7 +186,25 @@ sql_topython sql_topython_lookup(enum TdsType tdstype);
 
     @return The translated unicode string.
 */
-PyObject* translate_to_ucs2(PyObject* o);
+
+/**
+    Encode a Python Unicode string object for parameter binding in DB-Lib.
+
+    This includes:
+      * translating the Unicode string to UCS-2, if necessary
+      * encoding the string to UTF-8, if necessary
+
+    @note This returns a new reference.
+
+    @param unicode [in] The Unicode string to encode.
+    @param utf8bytes [out] A reference to the raw UTF-8-encoded bytes. This
+        references a buffer internal to the returned Python object and therefore
+        should only be used while a reference to that object is held.
+    @param nutf8bytes [out] The length of the encoded string, in bytes.
+
+    @return The Python string object which owns the buffer `utf8bytes`.
+*/
+PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes);
 
 /**
     Convert a Python datetime, date or time to a DBDATETIME.

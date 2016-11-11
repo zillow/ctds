@@ -232,7 +232,10 @@ specified in the SQL statement. Parameter notation is specified by
                     2 ** 45,
                     b'1234',
                     bytearray('1234', 'ascii'),
-                    unicode_('hello \'world\' \u0153'), # pylint: disable=anomalous-unicode-escape-in-string
+                    unicode_(
+                        b'hello \'world\' ' + (b'\xe3\x83\x9b' if self.nchars_supported else b''),
+                        encoding='utf-8'
+                    ),
                     datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
                     Decimal('123.4567890'),
                     Decimal('1000000.4532')
@@ -288,6 +291,16 @@ specified in the SQL statement. Parameter notation is specified by
                     ]
                 )
                 self.assertEqual(cursor.nextset(), None)
+
+    def test_long_statement(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    /* {0} */
+                    SELECT 1;
+                    '''.format('?' * 8000)
+                )
 
     def test_compute(self):
         # COMPUTE clauses are only supported in SQL Server 2005 & 2008
