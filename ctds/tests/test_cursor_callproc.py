@@ -919,6 +919,25 @@ parameters are replaced with output values.
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
                     self.assertNotEqual(id(inputs[1]), id(outputs[1]))
 
+    def test_varchar_bytes(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                sproc = self.test_varchar_bytes.__name__
+                with self.stored_procedure(
+                    cursor,
+                    sproc,
+                    '''
+                        @pVarChar VARCHAR(MAX)
+                    AS
+                        SELECT LEN(@pVarChar), @pVarChar;
+                    '''
+                    ):
+                    inputs = (b'some bytes for a VARCHAR parameter',)
+                    cursor.callproc(sproc, inputs)
+                    row = cursor.fetchone()
+                    self.assertEqual(len(inputs[0]), row[0])
+                    self.assertEqual(unicode_(inputs[0], encoding='ascii'), row[1])
+
     def test_varchar_max(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:

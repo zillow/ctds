@@ -195,7 +195,21 @@ specified in the SQL statement. Parameter notation is specified by
             with connection.cursor() as cursor:
                 for sqltype, constant, parameter in (
                         ('DATETIME', '2016-01-02 03:04:05', datetime(2016, 1, 2, 3, 4, 5)),
-                        ('VARCHAR(100)', "'' foo '' :1 '' '':", "' foo ' :1 ' ':"),
+                        (
+                            'VARCHAR(100)',
+                            unicode_(b"'' foo '' :1 '' '':", encoding='utf-8'),
+                            unicode_(b"' foo ' :1 ' ':", encoding='utf-8')
+                        ),
+                        (
+                            'VARCHAR(100)',
+                            unicode_(b" ", encoding='utf-8'),
+                            unicode_(b" ", encoding='utf-8')
+                        ),
+                        (
+                            'VARCHAR(100)',
+                            unicode_(b"'' ''", encoding='utf-8'),
+                            unicode_(b"' '", encoding='utf-8')
+                        ),
                 ):
                     cursor.execute(
                         '''

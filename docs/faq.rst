@@ -5,19 +5,20 @@ Why can't I pass an empty string to `callproc`?
 -----------------------------------------------
 
 The definition of the `dblib` API implemented by `FreeTDS` does
-not define a way to specify a **VARCHAR** with length *0*. This
+not define a way to specify a **(N)VARCHAR** with length *0*. This
 is a known deficiency of the `dblib` API. String parameters with
 length *0* are interpreted as `NULL` by the `dblib` API.
 
 
-Why don't :py:class:`str` values map to **VARCHAR** in Python 2?
-----------------------------------------------------------------
+Why don't :py:class:`str` values map to **(N)VARCHAR** in Python 2?
+-------------------------------------------------------------------
 
-In Python 2 :py:class:`bytes` and :py:class:`str` are equivalent. As such it is
-difficult for `cTDS` to infer a proper *SQL* type from the Python type.
-:py:class:`unicode` should be used in Python 2 when a **CHAR**-type parameter
-is desired. Alternatively, :py:class:`ctds.SqlVarChar` can be used to
-explicitly define the desired *SQL* type.
+In Python 2 :py:class:`bytes` and :py:class:`str` are equivalent. As such, it
+is difficult for `cTDS` to infer a proper *SQL* type from the Python type.
+:py:class:`unicode` should be used in Python 2 when a **(N)CHAR**-type parameter
+is desired. Alternatively, :py:class:`ctds.SqlVarChar` and
+:py:class:`ctds.SqlNVarChar` can be used to explicitly define the desired
+*SQL* type.
 
 
 Why doesn't `RAISERROR` raise a Python exception?

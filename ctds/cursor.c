@@ -1252,7 +1252,6 @@ static char* build_executesql_stmt(const char* format,
     do
     {
         bool literal = false; /* currently in a string literal? */
-        bool escaped = false; /* last character seen was a \'? */
 
         /* Construct the SQL query string. */
         const char* chunk = format; /* the start of the next chunk to copy */
@@ -1260,25 +1259,9 @@ static char* build_executesql_stmt(const char* format,
         while ('\0' != *format)
         {
             /* \' characters can only be escaped in string literals. */
-            assert(!escaped || (literal && escaped));
             if ('\'' == *format)
             {
-                if (literal)
-                {
-                    /* \' will terminate a string literal unless escaped */
-                    if (!escaped)
-                    {
-                        literal = false;
-                    }
-                    else
-                    {
-                        escaped = false;
-                    }
-                }
-                else
-                {
-                    literal = true;
-                }
+                literal = !literal;
                 format++;
             }
             else if (!literal && (':' == *format))
@@ -1380,7 +1363,6 @@ static char* build_executesql_stmt(const char* format,
             }
             else
             {
-                escaped = false;
                 format++;
             }
         }

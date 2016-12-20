@@ -119,6 +119,7 @@ class TestPythonToSQL(TestExternalDatabase):
                     unicode_('*' * 7999),
                     unicode_('*' * 8000),
                     unicode_('*' * 8001),
+                    b'this a string, but as bytes',
                 ]
                 if self.nchars_supported:
                     values.extend([

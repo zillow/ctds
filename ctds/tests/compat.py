@@ -1,6 +1,7 @@
 import sys
 
 PY3 = sys.version_info[0] >= 3
+PY33 = sys.version_info >= (3, 3)
 PY34 = sys.version_info >= (3, 4)
 PY35 = sys.version_info >= (3, 5)
 PY27 = sys.version_info >= (2, 7)
@@ -32,3 +33,8 @@ if PY3: # pragma: nocover
     StandardError_ = Exception
 else: # pragma: nocover
     StandardError_ = StandardError
+
+if PY33: # pragma: nocover
+    import unittest.mock as mock
+else: # pragma: nocover
+    import mock as mock
