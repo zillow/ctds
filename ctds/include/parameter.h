@@ -44,7 +44,10 @@ char* Parameter_sqltype(struct Parameter* rpcparam);
 
 PyObject* Parameter_value(struct Parameter* rpcparam);
 
+#if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0))
+
 char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized);
 
+#endif /* if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0)) */
 
 #endif /* ifndef __PARAMETER_H__ */

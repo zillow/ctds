@@ -827,6 +827,8 @@ PyObject* Parameter_value(struct Parameter* rpcparam)
     return rpcparam->value;
 }
 
+#if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0))
+
 char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
 {
     char* serialized = NULL;
@@ -1087,6 +1089,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
 
     return serialized;
 }
+#endif /* if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0)) */
 
 PyTypeObject* ParameterType_init(void)
 {
