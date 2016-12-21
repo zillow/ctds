@@ -48,7 +48,7 @@ The connection timeout, in seconds.
                 ):
                     connection.timeout = timeout
                     self.assertEqual(connection.timeout, timeout)
-            else:
+            else: # pragma: nocover
                 try:
                     connection.timeout = 2
                 except ctds.NotSupportedError as ex:
@@ -86,12 +86,16 @@ The connection timeout, in seconds.
                         self.assertEqual(str(ex), 'DBPROCESS is dead or not enabled')
                     else:
                         self.fail('.timeout did not fail as expected') # pragma: nocover
+                else:
+                    pass # pragma: nocover
 
-        with self.connect(timeout=1) as connection:
-            with connection.cursor() as cursor:
-                if self.supports_timeout_set:
+        if self.supports_timeout_set:
+            with self.connect(timeout=1) as connection:
+                with connection.cursor() as cursor:
                     connection.timeout = 2
                     cursor.execute("WAITFOR DELAY '00:00:01.1';SELECT @@VERSION")
+        else:
+            pass # pragma: nocover
 
     def test_typeerror(self):
         with self.connect() as connection:

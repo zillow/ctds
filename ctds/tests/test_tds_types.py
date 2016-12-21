@@ -91,7 +91,7 @@ class TestCursorTypes(TestExternalDatabase):
                     unicode_(' '),
                     unicode_('one'),
                 ]
-                if self.nchars_supported:
+                if self.nchars_supported: # pragma: nobranch
                     inputs.extend([
                         unicode_(b'hola \xc5\x93 \xe3\x83\x9b', encoding='utf-8'),
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000

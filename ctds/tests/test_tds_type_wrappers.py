@@ -487,7 +487,7 @@ SQL NVARCHAR type wrapper.
                     unicode_(b'*', encoding='utf-8'),
                     unicode_(b'*', encoding='utf-8') * 4000,
                 ]
-                if self.nchars_supported:
+                if self.nchars_supported: # pragma: nobranch
                     inputs.extend([
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8'),
                         unicode_(b' \xe3\x83\x9b ', encoding='utf-8'),
@@ -518,12 +518,11 @@ SQL NVARCHAR type wrapper.
                     (unicode_(b'*', encoding='utf-8'), 4000),
                     (unicode_(b'*', encoding='utf-8') * 4000, 4000),
                 ]
-                if self.nchars_supported:
+                if self.nchars_supported: # pragma: nobranch
                     inputs.extend([
                         (unicode_(b'\xe3\x83\x9b', encoding='utf-8'), 4000),
                         (unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000, 4000),
                     ])
-
                 for value, size in inputs:
                     wrapper = ctds.SqlNVarChar(value, size=size)
                     self.assertEqual(wrapper.size, size)

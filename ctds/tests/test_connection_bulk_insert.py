@@ -101,7 +101,7 @@ after `batch_size` rows have been copied to server.
 
                     # Python 3.4 and lower has an issue recording the same warning multiple times.
                     # See http://bugs.python.org/issue4180.
-                    if index == 0 or PY35:
+                    if index == 0 or PY35: # pragma: nobranch
                         self.assertEqual(len(warns), 1)
                         self.assertEqual(
                             [str(warn.message) for warn in warns],

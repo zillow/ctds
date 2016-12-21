@@ -136,7 +136,11 @@ endef
 
 # Function to generate an environment rule's python interpreter.
 #   Usage: ENV_PYTHON(env_name)
-ENV_PYTHON = $(BUILD_DIR)/$(strip $(1))/bin/python -E
+ENV_PYTHON = $(abspath $(BUILD_DIR)/$(strip $(1))/bin/python) -E
+
+# Function to generate an environment rule's python interpreter.
+#   Usage: ENV_PYTHON(env_name)
+ENV_COVERAGE = $(abspath $(BUILD_DIR)/$(strip $(1))/bin/coverage)
 
 # Function to generate an environment rule's pip utility.
 #   Usage: ENV_PIP(env_name, freetds_version)
@@ -158,11 +162,19 @@ define TEST_COMMANDS
 
 	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
         $(if $(VALGRIND), valgrind $(VALGRIND_FLAGS)) \
-        $(call ENV_PYTHON, $(1)) setup.py test $(if $(TEST),-s $(TEST))
+        $(call ENV_COVERAGE, $(1)) run --branch --source '$(PACKAGE_NAME)' \
+            setup.py test $(if $(TEST),-s $(TEST))
 endef
 
 define PYLINT_COMMANDS
 	$(ENV_PYTHON) $(BUILD_DIR)/$(strip $(1))/bin/pylint $(PACKAGE_NAME)
+endef
+
+define PYTHON_COVERAGE_COMMANDS
+	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
+        $(call ENV_COVERAGE, $(1)) html -d $(abspath $(BUILD_DIR)/coverage)
+	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
+        $(call ENV_COVERAGE, $(1)) report --fail-under 100
 endef
 
 define DOC_COMMANDS
@@ -221,8 +233,13 @@ clean:
 	git clean -dfX
 
 .PHONY: cover
-cover: test
+cover: test python-cover
 	gcov -o $(BUILD_DIR)/test_$(DEFAULT_PYTHON_VERSION)_$(FREETDS_VERSION)/ctds ctds/*.c
+	mkdir -p $(abspath $(BUILD_DIR)/cover)
+	gcovr --delete --root=$(abspath .) --html --html-details --output=$(abspath $(BUILD_DIR)/cover/index.html)
+
+# python-cover
+$(eval $(call ENV_RULE, python-cover, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), coverage, PYTHON_COVERAGE_COMMANDS))
 
 # doc
 $(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
@@ -262,4 +279,4 @@ ctds/tests/database.ini:
 $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_RULE, $(FV))))
 
 # test_*
-$(foreach PV, $(PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call ENV_RULE, test_$(PV)_$(FV), $(PV), $(FV), , TEST_COMMANDS))))
+$(foreach PV, $(PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call ENV_RULE, test_$(PV)_$(FV), $(PV), $(FV), coverage, TEST_COMMANDS))))

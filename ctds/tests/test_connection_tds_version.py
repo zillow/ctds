@@ -18,11 +18,12 @@ The TDS version in use for the connection.
         )
 
     def test_read(self):
+        supports73 = False
         try:
             with self.connect(tds_version='7.3'):
                 supports73 = True
-        except ctds.InterfaceError:
-            supports73 = False
+        except ctds.InterfaceError: # pragma: nocover
+            pass
 
         versions = [
             ('7.0', '7.0'),
@@ -31,7 +32,7 @@ The TDS version in use for the connection.
             # FreeTDS versions without 7.3 support always downgrade 7.2 to 7.1.
             ('7.2', '7.2' if supports73 else '7.1'),
         ]
-        if supports73:
+        if supports73: # pragma: nobranch
             versions.append(('7.3', '7.3'))
 
         for tds_version, expected in versions:

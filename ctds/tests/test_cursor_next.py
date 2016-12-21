@@ -71,13 +71,12 @@ is raised when the result set is exhausted.
             with connection.cursor() as cursor:
                 with warnings.catch_warnings(record=True) as warns:
                     self.assertRaises(ctds.InterfaceError, cursor.next)
-                if PY3:
-                    if PY34:
-                        self.assertEqual(len(warns), 1)
-                        self.assertEqual(
-                            str(warns[0].message),
-                            'DB-API extension cursor.next() used'
-                        )
+                if PY34:
+                    self.assertEqual(len(warns), 1)
+                    self.assertEqual(
+                        str(warns[0].message),
+                        'DB-API extension cursor.next() used'
+                    )
                 else: # pragma: nocover
                     pass
 

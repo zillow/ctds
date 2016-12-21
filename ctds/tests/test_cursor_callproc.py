@@ -871,7 +871,7 @@ parameters are replaced with output values.
                     # Older versions of SQL server don't support passing codepoints outside
                     # of the server's code page. SQL Server defaults to latin-1, so assume
                     # non-latin-1 codepoints won't be supported.
-                    if not self.use_sp_executesql:
+                    if not self.use_sp_executesql: # pragma: nocover
                         catface = unicode_('?')
                         snowman = unicode_('?')
 
@@ -891,7 +891,7 @@ parameters are replaced with output values.
                             format_.format(unicode_('?'), unicode_('??')),
                             outputs[1]
                         )
-                    else:
+                    else: # pragma: nocover
                         # The catface is not representable in UCS-2, and therefore is replaced.
                         with warnings.catch_warnings(record=True) as warns:
                             outputs = cursor.callproc(sproc, inputs)
@@ -955,7 +955,7 @@ parameters are replaced with output values.
                         1, 2, 3, 3999, 4000
                     ]
                     # FreeTDS 0.92.x doesn't properly handle VARCHAR types > 4000 characters.
-                    if self.freetds_version[:2] != (0, 92):
+                    if self.freetds_version[:2] != (0, 92): # pragma: nocover
                         lengths.extend([
                             4001, 7999, 8000, 8001
                         ])
@@ -1032,7 +1032,7 @@ parameters are replaced with output values.
                     # Older versions of SQL server don't support passing codepoints outside
                     # of the server's code page. SQL Server defaults to latin-1, so assume
                     # non-latin-1 codepoints won't be supported.
-                    if not self.use_sp_executesql:
+                    if not self.use_sp_executesql: # pragma: nocover
                         catface = unicode_('?')
                         snowman = unicode_('?')
 
@@ -1046,7 +1046,7 @@ parameters are replaced with output values.
                     if self.use_utf16:
                         outputs = cursor.callproc(sproc, inputs)
                         self.assertEqual(inputs[0], outputs[1])
-                    else:
+                    else: # pragma: nocover
                         # The catface is not representable in UCS-2, and therefore is replaced.
                         with warnings.catch_warnings(record=True) as warns:
                             outputs = cursor.callproc(sproc, inputs)
@@ -1092,7 +1092,7 @@ parameters are replaced with output values.
                         1, 2, 3, 3999, 4000
                     ]
                     # FreeTDS 0.92.x doesn't properly handle NVARCHAR types > 4000 characters.
-                    if self.freetds_version[:2] != (0, 92):
+                    if self.freetds_version[:2] != (0, 92): # pragma: nocover
                         lengths.extend([
                             4001, 7999, 8000, 8001
                         ])

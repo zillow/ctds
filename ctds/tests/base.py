@@ -111,7 +111,7 @@ class TestExternalDatabase(unittest.TestCase):
             r'^freetds v(?P<major>[\d]+)\.(?P<minor>[\d]+)(?:\.(?P<patch>[\d]+))?$',
             ctds.freetds_version
         )
-        if matches:
+        if matches: # pragma: nobranch
             return (
                 int(matches.group('major')),
                 int(matches.group('minor') or 0),
@@ -132,7 +132,7 @@ class TestExternalDatabase(unittest.TestCase):
 
     # Older versions of FreeTDS improperly round the money to the nearest hundredth.
     def round_money(self, money):
-        if self.freetds_version > (0, 92, 405):
+        if self.freetds_version > (0, 92, 405): # pragma: nobranch
             return money
         else:
-            return money.quantize(Decimal('.01'))
+            return money.quantize(Decimal('.01')) # pragma: nocover
