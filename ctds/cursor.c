@@ -2062,6 +2062,62 @@ static struct Row* Row_create(struct ResultSetDescription* description,
     return row;
 }
 
+static PyObject* Row_lookup_column(PyObject* self, PyObject* item, PyObject* error)
+{
+    struct Row* row = (struct Row*)self;
+    PyObject* value = NULL;
+    const char* name = NULL;
+    size_t ix;
+
+#if PY_MAJOR_VERSION < 3
+    PyObject* utf8item = NULL;
+    if (PyUnicode_Check(item))
+    {
+        utf8item = PyUnicode_AsUTF8String(item);
+        if (!utf8item)
+        {
+            return NULL;
+        }
+        name = PyString_AS_STRING(utf8item);
+    }
+    else
+    {
+        if (PyString_Check(item))
+        {
+            name = PyString_AS_STRING(item);
+        }
+    }
+#else /* if PY_MAJOR_VERSION < 3 */
+    if (PyUnicode_Check(item))
+    {
+        name = PyUnicode_AsUTF8(item);
+    }
+#endif /* else if PY_MAJOR_VERSION < 3 */
+
+    if (name)
+    {
+        for (ix = 0; ix < row->description->ncolumns; ++ix)
+        {
+            if (0 == strcmp(name, row->description->columns[ix].dbcol.ActualName))
+            {
+                Py_INCREF(row->values[ix]);
+                value = row->values[ix];
+                break;
+            }
+        }
+    }
+
+#if PY_MAJOR_VERSION < 3
+    Py_XDECREF(utf8item);
+#endif /* if PY_MAJOR_VERSION < 3 */
+
+    if (!value && error != NULL)
+    {
+        PyErr_SetObject(error, item);
+    }
+    return value;
+}
+
 static Py_ssize_t Row_len(PyObject* self)
 {
     struct Row* row = (struct Row*)self;
@@ -2079,65 +2135,26 @@ static PyObject* Row_item(PyObject* self, Py_ssize_t ix)
     return row->values[ix];
 }
 
-static PySequenceMethods s_Row_as_sequence = {
-    Row_len,  /* sq_length */
-    NULL,     /* sq_concat */
-    NULL,     /* sq_repeat */
-    Row_item, /* sq_item */
-    NULL,     /* sq_ass_item */
-    NULL,     /* was_sq_slice */
-    NULL,     /* sq_contains */
-    NULL,     /* was_sq_ass_slice */
-    NULL,     /* sq_inplace_concat */
-    NULL,     /* sq_inplace_repeat */
-};
-
-static PyObject* Row_lookup_column(PyObject* self, PyObject* item, PyObject* error)
+static int Row_contains(PyObject* self, PyObject* value)
 {
-    struct Row* row = (struct Row*)self;
-    PyObject* value = NULL;
-    const char* name;
-    size_t ix;
-
-#if PY_MAJOR_VERSION < 3
-    PyObject* utf8item = NULL;
-    if (PyUnicode_Check(item))
-    {
-        utf8item = PyUnicode_AsUTF8String(item);
-        if (!utf8item)
-        {
-            return NULL;
-        }
-        name = PyString_AS_STRING(utf8item);
-    }
-    else
-    {
-        name = PyString_AS_STRING(item);
-    }
-#else /* if PY_MAJOR_VERSION < 3 */
-    name = PyUnicode_AsUTF8(item);
-#endif /* else if PY_MAJOR_VERSION < 3 */
-
-    for (ix = 0; ix < row->description->ncolumns; ++ix)
-    {
-        if (0 == strcmp(name, row->description->columns[ix].dbcol.ActualName))
-        {
-            Py_INCREF(row->values[ix]);
-            value = row->values[ix];
-            break;
-        }
-    }
-
-#if PY_MAJOR_VERSION < 3
-    Py_XDECREF(utf8item);
-#endif /* if PY_MAJOR_VERSION < 3 */
-
-    if (!value)
-    {
-        PyErr_SetObject(error, item);
-    }
-    return value;
+    PyObject* item = Row_lookup_column(self, value, NULL);
+    int contains = (NULL != item) ? 1 : 0;
+    Py_XDECREF(item);
+    return contains;
 }
+
+static PySequenceMethods s_Row_as_sequence = {
+    Row_len,      /* sq_length */
+    NULL,         /* sq_concat */
+    NULL,         /* sq_repeat */
+    Row_item,     /* sq_item */
+    NULL,         /* sq_ass_item */
+    NULL,         /* was_sq_slice */
+    NULL,         /* was_sq_ass_slice */
+    Row_contains, /* sq_contains */
+    NULL,         /* sq_inplace_concat */
+    NULL,         /* sq_inplace_repeat */
+};
 
 static PyObject* Row_subscript(PyObject* self, PyObject* item)
 {

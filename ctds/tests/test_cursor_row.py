@@ -22,19 +22,25 @@ class TestCursorRow(TestExternalDatabase):
         self.assertEqual(len(rows), 1)
 
         row = rows[0]
+        self.assertTrue('Col1' in row)
         self.assertEqual(row['Col1'], args[0])
         self.assertEqual(row[unicode_('Col1')], args[0])
 
+        self.assertTrue('Col2' in row)
         self.assertEqual(row['Col2'], args[1])
         self.assertEqual(row[unicode_('Col2')], args[1])
 
+        self.assertTrue('Col3' in row)
         self.assertEqual(row['Col3'], args[2])
         self.assertEqual(row[unicode_('Col3')], args[2])
 
+        self.assertTrue('Col4' in row)
         self.assertEqual(row['Col4'], args[3])
         self.assertEqual(row[unicode_('Col4')], args[3])
 
+        self.assertFalse(1 in row)
         for key in ('unknown', None, object()):
+            self.assertFalse(key in row)
             try:
                 row[key]
             except KeyError:
