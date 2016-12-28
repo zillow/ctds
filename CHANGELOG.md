@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - 2016-12-27
+### Fixed
+- Documentation improvements around *(N)VARCHAR* handling.
+
+### Added
+- `ctds.pool.ConnectionPool` class.
+- Support the `in` keyword for resultset rows.
+- Add code coverage support for Python code.
+- Improve code coverage support for c code.
+
 ## [1.1.0] - 2016-11-14
 ### Added
 - `ctds.SqlNVarChar` type.
