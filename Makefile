@@ -19,7 +19,8 @@ CHECKED_FREETDS_VERSIONS := \
     0.92.405 \
     0.95.0 \
     0.95.95 \
-    1.00.15
+    1.00.15 \
+    1.00.24
 
 # FreeTDS version to test against.
 ifndef FREETDS_VERSION
