@@ -14,7 +14,7 @@ import sys
 
 CTDS_MAJOR_VERSION = 1
 CTDS_MINOR_VERSION = 2
-CTDS_PATCH_VERSION = 0
+CTDS_PATCH_VERSION = 1
 
 install_requires = [
 ]
@@ -116,7 +116,8 @@ setuptools.setup(
     ],
 
     packages = [
-        'ctds'
+        'ctds',
+        'ctds.pool',
     ],
     package_data = {
         'ctds': [
