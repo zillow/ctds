@@ -38,7 +38,7 @@ using UTF-16 as it is no longer necessary and causes data loss.
 ## [1.0.7] - 2016-08-15
 ### Fixed
 - Only use strict compile options for debug/development builds. Allow
-the client (e.g. pip) specify the desired options when installing as an
+the client (e.g. pip) to specify the desired options when installing as an
 egg.
 
 ## [1.0.6] - 2016-08-15
@@ -59,6 +59,7 @@ when the option is supported, but the set fails.
 ### Fixed
 - Fix the `ctds.Connection.timeout` property to work with the **DBSETTIME**
 option added in [FreeTDS](http://freetds.org) version *1.00*.
+
 ### Added
 - Support for TDS version *7.4*, introduced with [FreeTDS](http://freetds.org)
 version *1.00*.
@@ -93,7 +94,14 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/zillow/ctds/compare/v1.2.1...v1.2.0
+[1.2.0]: https://github.com/zillow/ctds/compare/v1.2.0...v1.1.0
+[1.1.0]: https://github.com/zillow/ctds/compare/v1.1.0...v1.0.8
+[1.0.8]: https://github.com/zillow/ctds/compare/v1.0.8...v1.0.7
+[1.0.7]: https://github.com/zillow/ctds/compare/v1.0.7...v1.0.6
+[1.0.6]: https://github.com/zillow/ctds/compare/v1.0.6...v1.0.5
+[1.0.5]: https://github.com/zillow/ctds/compare/v1.0.5...v1.0.4
 [1.0.4]: https://github.com/zillow/ctds/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/zillow/ctds/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/zillow/ctds/compare/v1.0.2...v1.0.3
