@@ -92,11 +92,11 @@ FREETDS_$(strip $(1))_BUILD := $(BUILD_DIR)/freetds-$(strip $(1)).build
 # Configure, make, make install from FreeTDS source.
 $$(FREETDS_$(strip $(1))_BUILD): $(BUILD_DIR)/freetds-$(strip $(1))
 	cd $$< && \
-		CFLAGS="$$$$CFLAGS -g" make distclean; \
+        CFLAGS="$$$$CFLAGS -g" make distclean; \
         ./configure \
             --prefix="$$(call FREETDS_ROOT, $(strip $(1)))" \
             --disable-odbc --disable-apps --disable-server --disable-pool \
-		    && \
+            && \
         make && \
         make install
 	touch $$@
@@ -179,7 +179,15 @@ define PYTHON_COVERAGE_COMMANDS
 endef
 
 define DOC_COMMANDS
-	$(call ENV_PIP, $(1)) install --force-reinstall -v -e .
+	$(call ENV_PIP, $(1)) install --force-reinstall -v -e .  \
+        --global-option=build_ext \
+        --global-option="-t$(BUILD_DIR)/$(strip $(1))" \
+        --global-option=build_ext \
+        --global-option="-I$(call FREETDS_INCLUDE, $(strip $(2)))" \
+        --global-option=build_ext \
+        --global-option="-L$(call FREETDS_LIB, $(strip $(2)))" \
+        --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(strip $(2)))" \
+        --global-option=build_ext --global-option="-f"
 	$(ENV_PYTHON) -m sphinx -n -a -E -d $(BUILD_DIR)/$(strip $(1)) docs $(HTML_BUILD_DIR)
 endef
 
@@ -197,13 +205,13 @@ help:
 	@echo "        Clean source tree."
 	@echo
 	@echo "    cover"
-	@echo "        Generate code coverage for c source code."
+	@echo "        Generate code coverage for c and Python source code."
 	@echo
 	@echo "    doc"
 	@echo "        Generate documentation."
 	@echo
 	@echo "    publish"
-	@echo "        Publish egg and docs to pypi"
+	@echo "        Publish egg and docs to pypi."
 	@echo
 	@echo "    pylint"
 	@echo "        Run pylint over all *.py files."
