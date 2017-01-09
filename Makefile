@@ -110,6 +110,9 @@ endef
 #
 # $(eval $(call ENV_RULE, <env_name>, <python_version>, <freetds_version>, <packages>, <commands>))
 #
+# commands is function with the following signature:
+#    commands(env_name, freetds_version))
+#
 define ENV_RULE
 ENV_$(strip $(1))_BUILD := $(BUILD_DIR)/$(strip $(1)).build
 
@@ -144,14 +147,15 @@ ENV_PYTHON = $(abspath $(BUILD_DIR)/$(strip $(1))/bin/python) -E
 ENV_COVERAGE = $(abspath $(BUILD_DIR)/$(strip $(1))/bin/coverage)
 
 # Function to generate an environment rule's pip utility.
-#   Usage: ENV_PIP(env_name, freetds_version)
+#   Usage: ENV_PIP(env_name)
 # Note the bin/pip script is not launched directly to avoid the following
 # issue with #! length limits: https://github.com/pypa/virtualenv/issues/596.
 ENV_PIP = $(ENV_PYTHON) $(BUILD_DIR)/$(strip $(1))/bin/pip
 
-define TEST_COMMANDS
-	# Always rebuild with debugging symbols and coverage enabled.
-	TDS_COVER=1 DEBUG=1 $(call ENV_PIP, $(1)) install -v -e . -e .[tests] \
+# Function to install ctds into a virtualenv.
+#   Usage: INSTALL_CTDS(env_name, <freetds_version>, <additional_args>)
+define INSTALL_CTDS
+	$(call ENV_PIP, $(1)) install -v -e . $(strip $(3)) \
         --global-option=build_ext \
         --global-option="-t$(BUILD_DIR)/$(strip $(1))" \
         --global-option=build_ext \
@@ -160,6 +164,11 @@ define TEST_COMMANDS
         --global-option="-L$(call FREETDS_LIB, $(strip $(2)))" \
         --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(strip $(2)))" \
         --global-option=build_ext --global-option="-f"
+endef
+
+define TEST_COMMANDS
+	# Always rebuild with debugging symbols and coverage enabled.
+	TDS_COVER=1 DEBUG=1 $(call INSTALL_CTDS, $(1), $(2), -e .[tests])
 
 	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
         $(if $(VALGRIND), valgrind $(VALGRIND_FLAGS)) \
@@ -179,15 +188,7 @@ define PYTHON_COVERAGE_COMMANDS
 endef
 
 define DOC_COMMANDS
-	$(call ENV_PIP, $(1)) install --force-reinstall -v -e .  \
-        --global-option=build_ext \
-        --global-option="-t$(BUILD_DIR)/$(strip $(1))" \
-        --global-option=build_ext \
-        --global-option="-I$(call FREETDS_INCLUDE, $(strip $(2)))" \
-        --global-option=build_ext \
-        --global-option="-L$(call FREETDS_LIB, $(strip $(2)))" \
-        --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(strip $(2)))" \
-        --global-option=build_ext --global-option="-f"
+	$(call INSTALL_CTDS, $(1), $(2), --force-reinstall)
 	$(ENV_PYTHON) -m sphinx -n -a -E -d $(BUILD_DIR)/$(strip $(1)) docs $(HTML_BUILD_DIR)
 endef
 

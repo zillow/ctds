@@ -79,7 +79,7 @@ To run the tests against an arbitrary version of Python and FreeTDS:
 
 .. code-block::
 
-    make test_X.Y-Z.ZZ.ZZ
+    make test_X.Y_Z.ZZ.ZZ
 
 
 To run tests against all versions of Python and FreeTDS:
