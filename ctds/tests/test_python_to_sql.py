@@ -3,7 +3,7 @@ from decimal import Decimal
 import uuid
 
 from .base import TestExternalDatabase
-from .compat import long_, PY3, unicode_
+from .compat import long_, PY3, unichr_, unicode_
 
 class TestPythonToSQL(TestExternalDatabase):
     '''Unit tests related to Python to SQL type conversion.
@@ -105,6 +105,20 @@ class TestPythonToSQL(TestExternalDatabase):
                         row.Value
                     )
 
+    def test_datetime(self):
+        values = (
+            datetime.datetime(1753, 1, 1, 0, 0),
+            datetime.datetime(9999, 12, 31, 23, 59, 59, 997 * 1000),
+        )
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                for value in values:
+                    row = self.parameter_type(cursor, value)
+                    self.assertEqual('datetime', row.Type)
+                    self.assertEqual(row.Precision, 23)
+                    self.assertEqual(row.Scale, 3)
+                    self.assertEqual(value, row.Value)
+
     def test_float(self):
         self.assert_type('float', (0.0, -1.1234, 12345.67890))
 
@@ -130,6 +144,12 @@ class TestPythonToSQL(TestExternalDatabase):
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 8000,
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 7999,
                     ])
+                    if self.use_utf16: # pragma: nobranch
+                        values.extend([
+                            unichr_(127802) * 3999,
+                            unichr_(127802) * 4000,
+                            unichr_(127802) * 4001,
+                        ])
                 for value in values:
                     cursor.execute('SELECT :0 AS Value', (value,))
                     row = cursor.fetchone()

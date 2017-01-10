@@ -4,7 +4,7 @@ from decimal import Decimal
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import int_, long_, unicode_
+from .compat import int_, long_, unichr_, unicode_
 
 class TestSqlBigInt(TestExternalDatabase):
 
@@ -493,9 +493,17 @@ SQL NVARCHAR type wrapper.
                         unicode_(b' \xe3\x83\x9b ', encoding='utf-8'),
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000,
                     ])
+                    if self.use_utf16:
+                        inputs.extend([
+                            unichr_(127802),
+                            unichr_(127802) * 2000,
+                        ])
                 for value in inputs:
                     wrapper = ctds.SqlNVarChar(value)
-                    self.assertEqual(wrapper.size, len(value) if value is not None else 1)
+                    self.assertEqual(
+                        wrapper.size,
+                        self.nvarchar_width(value) if value is not None else 1
+                    )
                     row = self.parameter_type(cursor, wrapper)
                     self.assertEqual(
                         row.Type,
@@ -504,7 +512,7 @@ SQL NVARCHAR type wrapper.
                     self.assertEqual(row.Value, value)
                     self.assertEqual(
                         row.MaxLength,
-                        len(value) * (1 + int(self.nchars_supported)) if value is not None else None
+                        (self.nvarchar_width(value) * (1 + int(self.nchars_supported))) if value is not None else None
                     )
 
     def test_size(self):

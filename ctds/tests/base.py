@@ -5,7 +5,7 @@ import unittest
 
 import ctds
 
-from .compat import configparser, PY27, sysconfig
+from .compat import configparser, PY27, sysconfig, unicode_
 
 class TestExternalDatabase(unittest.TestCase):
 
@@ -136,3 +136,8 @@ class TestExternalDatabase(unittest.TestCase):
             return money
         else:
             return money.quantize(Decimal('.01')) # pragma: nocover
+
+    @staticmethod
+    def nvarchar_width(value):
+        assert isinstance(value, unicode_)
+        return sum(1 if ord(ch) < 0xFFFF else 2 for ch in value)

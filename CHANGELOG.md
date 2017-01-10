@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.2] - 2017-01-10
+### Fixed
+- Fix multi-byte UTF-16 character conversion.
+
 ## [1.2.1] - 2016-12-27
 ### Fixed
 - Include `ctds.pool` in egg package.
@@ -94,7 +98,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/zillow/ctds/compare/v1.2.2...v1.2.1
 [1.2.1]: https://github.com/zillow/ctds/compare/v1.2.1...v1.2.0
 [1.2.0]: https://github.com/zillow/ctds/compare/v1.2.0...v1.1.0
 [1.1.0]: https://github.com/zillow/ctds/compare/v1.1.0...v1.0.8

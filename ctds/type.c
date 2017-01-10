@@ -573,7 +573,7 @@ static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
     enum TdsType tdstype;
 
     PyObject* unicode = NULL;
-    Py_ssize_t nchars = 0;
+    size_t nchars = 0;
     Py_ssize_t size = (Py_ssize_t)-1;
     static char* s_kwlist[] =
     {
@@ -596,12 +596,7 @@ static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
     }
     else if (PyUnicode_Check(unicode))
     {
-#if PY_VERSION_HEX >= 0x03030000
-        nchars = PyUnicode_GET_LENGTH(unicode);
-#else
-        nchars = PyUnicode_GET_SIZE(unicode);
-#endif
-        encoded = encode_for_dblib(unicode, &utf8bytes, &nutf8bytes);
+        encoded = encode_for_dblib(unicode, &utf8bytes, &nutf8bytes, &nchars);
         if (!encoded)
         {
             return -1;
@@ -630,7 +625,7 @@ static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
                               If the size is not explicitly specified, infer it from the value.
                               The NVARCHAR type size must be >= 1.
                           */
-                          (int)MAX(1, (((Py_ssize_t)-1 == size) ? nchars : size)),
+                          (int)MAX(1, (((Py_ssize_t)-1 == size) ? nchars : (size_t)size)),
                           (void*)utf8bytes,
                           nutf8bytes,
                           NULL);
@@ -1172,7 +1167,7 @@ static PyObject* translate_to_ucs2(PyObject* o)
 
 #endif /* if CTDS_USE_UTF16 == 0 */
 
-PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes)
+PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes, size_t* width)
 {
     PyObject* encoded = NULL;
 
@@ -1185,6 +1180,8 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
         PyObject* encodable;
 
 #if CTDS_USE_UTF16 != 0
+        size_t ix;
+
         /* FreeTDS supports encoding to UTF-16, so the whole string is encodable. */
         encodable = unicode;
         Py_INCREF(encodable);
@@ -1198,6 +1195,15 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
         {
             break;
         }
+        /*
+            If the string was translated to UCS-2, the SQL NCHAR width is simply
+            the string length.
+        */
+#  if PY_VERSION_HEX >= 0x03030000
+        *width = (size_t)PyUnicode_GET_LENGTH(encodable);
+#  else
+        *width = (size_t)PyUnicode_GET_SIZE(encodable);
+#  endif
 #endif /* else if CTDS_USE_UTF16 != 0 */
 
 #if PY_MAJOR_VERSION < 3
@@ -1216,6 +1222,46 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
         *utf8bytes = PyUnicode_AsUTF8AndSize(encoded, &size);
         *nutf8bytes = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
+
+#if CTDS_USE_UTF16 != 0
+        /*
+            Compute the SQL type width, which is really the number of UTF-16
+            sequences.
+        */
+#define IS_UTF8_SINGLE_BYTE(b)       (((b) & 0x80) == 0)
+#define IS_UTF8_CONTINUATION_BYTE(b) (((b) & 0xC0) == 0x80)
+#define IS_UTF8_FIRST_BYTE_OF_2(b)   (((b) & 0xE0) == 0xC0)
+#define IS_UTF8_FIRST_BYTE_OF_3(b)   (((b) & 0xF0) == 0xE0)
+#define IS_UTF8_FIRST_BYTE_OF_4(b)   (((b) & 0xF8) == 0xF0)
+
+        *width = 0;
+        for (ix = 0; ix < *nutf8bytes;)
+        {
+            if (IS_UTF8_SINGLE_BYTE((*utf8bytes)[ix]))
+            {
+                ++(*width);
+                ix += 1;
+            }
+            else if (IS_UTF8_FIRST_BYTE_OF_2((*utf8bytes)[ix]))
+            {
+                ++(*width);
+                ix += 2;
+            }
+            else if (IS_UTF8_FIRST_BYTE_OF_3((*utf8bytes)[ix]))
+            {
+                ++(*width);
+                ix += 3;
+            }
+            else
+            {
+                /* Two-byte UTF-16 sequences require double the width. */
+                assert(IS_UTF8_FIRST_BYTE_OF_4((*utf8bytes)[ix]));
+                (*width) += 2;
+                ix += 4;
+            }
+        }
+#endif /* if CTDS_USE_UTF16 != 0 */
+
     }
     while (0);
 

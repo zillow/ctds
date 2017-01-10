@@ -392,11 +392,8 @@ static PyObject* create_column_description(const struct Column* column)
             }
             Description_SET_ITEM(tuple, ix++, item); /* item reference stolen by Description_SET_ITEM */
 
-            /* $TODO: figure this out: freetds seems to return 0x7fffffff or 0x3fffffff for max size */
-#define IS_COLUMN_MAX(_len) ((INT32_MAX == (_len)) || ((INT32_MAX >> 1) == (_len)))
-
             /* display_size */
-            item = PyLong_FromLongLong(IS_COLUMN_MAX(column->dbcol.MaxLength) ? -1 : (PY_LONG_LONG)column->dbcol.MaxLength);
+            item = PyLong_FromLongLong((PY_LONG_LONG)column->dbcol.MaxLength);
             if (!item)
             {
                 break;
@@ -405,7 +402,7 @@ static PyObject* create_column_description(const struct Column* column)
 
             /* internal_size */
             /* For now, just use the display_size value for this. */
-            item = PyLong_FromLongLong(IS_COLUMN_MAX(column->dbcol.MaxLength) ? -1 : (PY_LONG_LONG)column->dbcol.MaxLength);
+            item = PyLong_FromLongLong((PY_LONG_LONG)column->dbcol.MaxLength);
             if (!item)
             {
                 break;

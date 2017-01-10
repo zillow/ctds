@@ -52,7 +52,7 @@ class TestConnectionPool(unittest.TestCase):
             ]
         )
 
-    def test_release_exception(self):
+    def test_release_exception(self): # pylint: disable=no-self-use
         class MockDBAPI2Error(Exception):
             pass
 
@@ -109,7 +109,7 @@ class TestConnectionPool(unittest.TestCase):
             ]
         )
 
-    def test_finalize(self):
+    def test_finalize(self): # pylint: disable=no-self-use
         mock_dbapi2 = mock.MagicMock()
         pool = ConnectionPool(mock_dbapi2, {}, maxsize=10)
 
@@ -139,7 +139,7 @@ class TestConnectionPool(unittest.TestCase):
             ['finalize() called with unreleased connections'] * len(warns)
         )
 
-    def test_idlettl(self):
+    def test_idlettl(self): # pylint: disable=no-self-use
         idlettl = 10
 
         mock_dbapi2 = mock.MagicMock()
@@ -172,7 +172,7 @@ class TestConnectionPool(unittest.TestCase):
                 ]
             )
 
-    def test_maxsize(self):
+    def test_maxsize(self): # pylint: disable=no-self-use
         mock_dbapi2 = mock.MagicMock()
         pool = ConnectionPool(mock_dbapi2, {}, maxsize=1)
 
@@ -224,7 +224,7 @@ class TestConnectionPool(unittest.TestCase):
             ]
         )
 
-    def test_block(self):
+    def test_block(self): # pylint: disable=no-self-use
         mock_dbapi2 = mock.MagicMock()
         pool = ConnectionPool(mock_dbapi2, {}, maxsize=1, block=True)
 

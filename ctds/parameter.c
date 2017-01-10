@@ -241,23 +241,17 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
         {
             if (PyUnicode_Check(value))
             {
-                Py_ssize_t nchars; /* number of unicode characters in the string */
+                size_t nchars; /* number of unicode characters in the string */
 
                 char* utf8bytes;
 
                 Py_XDECREF(parameter->source);
-                parameter->source = encode_for_dblib(value, &utf8bytes, &parameter->ninput);
+                parameter->source = encode_for_dblib(value, &utf8bytes, &parameter->ninput, &nchars);
                 if (!parameter->source)
                 {
                     break;
                 }
                 parameter->input = (void*)utf8bytes;
-
-#if PY_VERSION_HEX >= 0x03030000
-                nchars = PyUnicode_GET_LENGTH(value);
-#else
-                nchars = PyUnicode_GET_SIZE(value);
-#endif
 
                 /*
                     FreeTDS does not support passing *VARCHAR(MAX) types.

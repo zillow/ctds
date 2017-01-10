@@ -86,6 +86,7 @@ result set. The tuple describes the column data as follows:
                         :5 AS string,
                         CONVERT(CHAR(10), :5) AS char10,
                         CONVERT(VARCHAR(10), :5) AS varchar10,
+                        CONVERT(NVARCHAR(MAX), :5) AS nvarchar,
                         CONVERT(DATETIME, :6) AS datetime,
                         CONVERT(DATE, :7) AS date,
                         CONVERT(TIME, :8) as time,
@@ -116,6 +117,15 @@ result set. The tuple describes the column data as follows:
                         ),
                         (unicode_('char10'), long_(ctds.CHAR), long_(40), long_(40), long_(0), long_(0), True),
                         (unicode_('varchar10'), long_(ctds.CHAR), long_(40), long_(40), long_(0), long_(0), True),
+                        (
+                            unicode_('nvarchar'),
+                            long_(ctds.TEXT) if connection.tds_version < '7.3' else long_(ctds.CHAR),
+                            long_(2**31 - 1),
+                            long_(2**31 - 1),
+                            long_(0),
+                            long_(0),
+                            True
+                        ),
                         (unicode_('datetime'), long_(ctds.DATETIME), long_(8), long_(8), long_(0), long_(0), True),
                         (
                             unicode_('date'),

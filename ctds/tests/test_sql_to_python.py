@@ -1,12 +1,13 @@
 from datetime import date, datetime, time
-from binascii import unhexlify
+from binascii import hexlify, unhexlify
 from decimal import Decimal
 import uuid
 
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import unicode_
+from .compat import unichr_, unicode_
+
 
 class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-methods
     '''Unit tests related to SQL to Python type conversion.
@@ -100,6 +101,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
         )
 
     def test_nchar(self):
+        non_ucs2_emoji = unichr_(127802)
         self.cursor.execute(
             '''
             SELECT
@@ -113,8 +115,9 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
                 REPLICATE(CONVERT(NVARCHAR(MAX), N'x'), 8001),
 
                 NCHAR(189),
-                NCHAR(256)
-            '''
+                NCHAR(256),
+                CONVERT(NVARCHAR(100), 0x{0})
+            '''.format(hexlify(non_ucs2_emoji.encode('utf-16le')).decode('ascii'))
         )
         self.assertEqual(
             tuple(self.cursor.fetchone()),
@@ -128,6 +131,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
                 unicode_('x' * 8001),
                 unicode_(b'\xc2\xbd', encoding='utf-8'),
                 unicode_(b'\xc4\x80', encoding='utf-8'),
+                non_ucs2_emoji if self.use_utf16 else unicode_('??')
             )
         )
 

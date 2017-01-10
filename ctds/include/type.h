@@ -201,10 +201,12 @@ sql_topython sql_topython_lookup(enum TdsType tdstype);
         references a buffer internal to the returned Python object and therefore
         should only be used while a reference to that object is held.
     @param nutf8bytes [out] The length of the encoded string, in bytes.
+    @param width [out] The minimum SQL NCHAR width required to hold the given
+        string.
 
     @return The Python string object which owns the buffer `utf8bytes`.
 */
-PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes);
+PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes, size_t* width);
 
 /**
     Convert a Python datetime, date or time to a DBDATETIME.

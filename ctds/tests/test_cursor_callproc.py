@@ -1017,13 +1017,19 @@ parameters are replaced with output values.
 
                     format_ = (
                         unichr_(191) + unicode_(' 8 ') +
-                        unichr_(247) + unicode_(' 2 = 4 ? {0} {1}')
+                        unichr_(247) + unicode_(' 2 = 4 ? {0} {1} {2}')
                     )
                     snowman = unichr_(9731)
 
                     # Python must be built with UCS4 support to test the large codepoints.
                     catface = (
                         unichr_(128568)
+                        if self.UCS4_SUPPORTED
+                        else
+                        self.UNICODE_REPLACEMENT
+                    )
+                    flower = (
+                        unichr_(127802)
                         if self.UCS4_SUPPORTED
                         else
                         self.UNICODE_REPLACEMENT
@@ -1035,9 +1041,10 @@ parameters are replaced with output values.
                     if not self.use_sp_executesql: # pragma: nocover
                         catface = unicode_('?')
                         snowman = unicode_('?')
+                        flower = unicode_('?')
 
                     inputs = (
-                        format_.format(snowman, catface),
+                        format_.format(snowman, catface, flower),
                         ctds.Parameter(ctds.SqlVarChar(None, size=256), output=True),
                     )
 
@@ -1051,14 +1058,11 @@ parameters are replaced with output values.
                         with warnings.catch_warnings(record=True) as warns:
                             outputs = cursor.callproc(sproc, inputs)
                             if ord(catface) > 2**16:
-                                self.assertEqual(len(warns), 1)
-                                msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
-                                    ord(catface),
-                                    ord(self.UNICODE_REPLACEMENT)
-                                )
+                                self.assertEqual(len(warns), 2)
+                                msg = unicode_('Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}') # pylint: disable=line-too-long
                                 self.assertEqual(
                                     [str(warn.message) for warn in warns],
-                                    [msg] * len(warns)
+                                    [msg.format(ord(char), ord(self.UNICODE_REPLACEMENT)) for char in (catface, flower)]
                                 )
                                 self.assertEqual(warns[0].category, ctds.Warning)
                             else:
@@ -1067,6 +1071,7 @@ parameters are replaced with output values.
                         self.assertEqual(
                             format_.format(
                                 snowman,
+                                self.UNICODE_REPLACEMENT if self.use_sp_executesql else unicode_('?'),
                                 self.UNICODE_REPLACEMENT if self.use_sp_executesql else unicode_('?')
                             ),
                             outputs[1]

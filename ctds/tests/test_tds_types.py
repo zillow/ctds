@@ -4,7 +4,8 @@ from decimal import Decimal
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import unicode_
+from .compat import unicode_, unichr_
+
 
 class TestCursorTypes(TestExternalDatabase):
     '''Unit tests related to the SQL type wrappers.
@@ -96,6 +97,10 @@ class TestCursorTypes(TestExternalDatabase):
                         unicode_(b'hola \xc5\x93 \xe3\x83\x9b', encoding='utf-8'),
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000
                     ])
+                    if self.use_utf16:
+                        inputs.extend([
+                            unicode_('multi-byte utf-16 chars') + unichr_(0x10000) + unichr_(0x1f33a),
+                        ])
                 for value in inputs:
                     for size in (None, 1, 3, 500):
                         kwargs = {}
@@ -103,7 +108,7 @@ class TestCursorTypes(TestExternalDatabase):
                             kwargs['size'] = size
                             expected_size = size
                         else:
-                            expected_size = 1 if value is None else max(1, len(value))
+                            expected_size = 1 if value is None else max(1, self.nvarchar_width(value))
 
                         nvarchar = ctds.SqlNVarChar(value, **kwargs)
                         self.assertEqual(nvarchar.size, expected_size)
