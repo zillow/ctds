@@ -4,34 +4,34 @@ SQL Type Wrappers
 =================
 
 .. autoclass:: ctds.SqlBigInt
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlBinary
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlChar
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlDate
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlDecimal
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlInt
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlNVarChar
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlSmallInt
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlTinyInt
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlVarBinary
-    :members:
+    :members: size, tdstype, value
 
 .. autoclass:: ctds.SqlVarChar
-    :members:
+    :members: size, tdstype, value

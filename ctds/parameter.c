@@ -410,7 +410,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                             static const char s_fmt[] =
                                 "Decimal('%s') exceeds SQL DECIMAL precision; truncating";
                             char buffer[ARRAYSIZE(s_fmt) + 100];
-                            (void)snprintf(buffer, ARRAYSIZE(buffer), s_fmt, str);
+                            (void)PyOS_snprintf(buffer, ARRAYSIZE(buffer), s_fmt, str);
                             buffer[ARRAYSIZE(buffer) - 1] = '\0';
                             (void)PyErr_Warn(PyExc_tds_Warning, buffer);
 

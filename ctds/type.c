@@ -53,6 +53,61 @@ static void SqlType_dealloc(PyObject* self)
     self->ob_type->tp_free(self);
 }
 
+static PyObject* SqlType_repr(PyObject* self)
+{
+    struct SqlType* type = (struct SqlType*)self;
+    PyObject* repr = NULL;
+
+#if PY_MAJOR_VERSION < 3
+    /*
+        Python2.6's implementation of `PyUnicode_FromFormat` is buggy and
+        will crash when the '%R' format specifier is used. Additionally
+        a conversion to the `str` type is required. Avoid all this in Python2.
+    */
+    PyObject* value = PyObject_Repr(type->value);
+    if (value)
+    {
+        if (-1 == type->size)
+        {
+            repr = PyString_FromFormat(
+                "%s(%s)",
+                Py_TYPE(self)->tp_name,
+                PyString_AS_STRING(value)
+            );
+        }
+        else
+        {
+            repr = PyString_FromFormat(
+                "%s(%s, size=%d)",
+                Py_TYPE(self)->tp_name,
+                PyString_AS_STRING(value),
+                type->size
+            );
+        }
+        Py_DECREF(value);
+    }
+#else /* if PY_MAJOR_VERSION < 3 */
+    if (-1 == type->size)
+    {
+        repr = PyUnicode_FromFormat(
+            "%s(%R)",
+            Py_TYPE(self)->tp_name,
+            type->value
+        );
+    }
+    else
+    {
+        repr = PyUnicode_FromFormat(
+            "%s(%R, size=%d)",
+            Py_TYPE(self)->tp_name,
+            type->value,
+            type->size
+        );
+    }
+#endif /* else if PY_MAJOR_VERSION < 3 */
+    return repr;
+}
+
 static const char s_SqlType_members_doc_size[] =
     "The size of the type. This will be -1 for fixed size values.";
 
@@ -84,7 +139,7 @@ PyTypeObject SqlTypeType = {
     NULL,                                     /* tp_getattr */
     NULL,                                     /* tp_setattr */
     NULL,                                     /* tp_reserved */
-    NULL,                                     /* tp_repr */
+    SqlType_repr,                             /* tp_repr */
     NULL,                                     /* tp_as_number */
     NULL,                                     /* tp_as_sequence */
     NULL,                                     /* tp_as_mapping */

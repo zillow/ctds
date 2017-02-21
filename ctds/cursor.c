@@ -6,7 +6,6 @@
 #include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 
 #include "include/cursor.h"
 #include "include/connection.h"
@@ -1455,13 +1454,13 @@ static PyObject* build_executesql_params(PyObject* parameters)
                 paramN = tmp;
                 nparamN = required;
             }
-            written = snprintf(paramN,
-                               nparamN,
-                               "%s@param%lu %s%s",
-                               (ix) ? ", " : "",
-                               ix,
-                               sqltype,
-                               (Parameter_output(rpcparam)) ? " OUTPUT" : "");
+            written = PyOS_snprintf(paramN,
+                                    nparamN,
+                                    "%s@param%lu %s%s",
+                                    (ix) ? ", " : "",
+                                    ix,
+                                    sqltype,
+                                    (Parameter_output(rpcparam)) ? " OUTPUT" : "");
             assert(written < nparamN);
             params = strappend(params, (size_t)nparams, paramN, (size_t)written);
             if (!params)

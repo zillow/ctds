@@ -4,7 +4,7 @@ from decimal import Decimal
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import int_, long_, unichr_, unicode_
+from .compat import int_, long_, unichr_, unicode_, PY3
 
 class TestSqlBigInt(TestExternalDatabase):
 
@@ -36,6 +36,12 @@ SQL BIGINT type wrapper.
                     row = self.parameter_type(cursor, wrapper)
                     self.assertEqual(row.Type, 'bigint' if value is not None else None)
                     self.assertEqual(row.Value, wrapper.value)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlBigInt({0!r})'.format(value)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_overflowerror(self):
         self.assertRaises(OverflowError, ctds.SqlBigInt, 2 ** 63)
@@ -78,6 +84,12 @@ SQL BINARY type wrapper.
                     self.assertEqual(row.Type, 'binary' if value is not None else None)
                     expected = wrapper.value.encode() if isinstance(value, unicode_) else wrapper.value
                     self.assertEqual(row.Value, expected)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlBinary({0!r}, size={1})'.format(value, wrapper.size)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_typeerror(self):
         for value in (
@@ -123,6 +135,12 @@ SQL CHAR type wrapper. The value's UTF-8-encoded length must be <= 8000.
 
                     # Ignore any padding added by the database with `rstip()`.
                     self.assertEqual(row.Value.rstrip() if row.Value is not None else row.Value, expected)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlChar({0!r}, size={1})'.format(value, wrapper.size)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_typeerror(self):
         for value in (
@@ -174,6 +192,12 @@ SQL DATE type wrapper.
                         datetime.datetime(value.year, value.month, value.day) if value is not None else None
                     )
 
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlDate({0!r})'.format(value)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
+
     def test_typeerror(self):
         for value in (
                 object(),
@@ -215,6 +239,12 @@ SQL INT type wrapper.
                     row = self.parameter_type(cursor, wrapper)
                     self.assertEqual(row.Type, 'int' if value is not None else None)
                     self.assertEqual(row.Value, value)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlInt({0!r})'.format(value)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_overflowerror(self):
         self.assertRaises(OverflowError, ctds.SqlInt, 2 ** 31)
@@ -259,6 +289,12 @@ SQL SMALLINT type wrapper.
                     self.assertEqual(row.Type, 'smallint' if value is not None else None)
                     self.assertEqual(row.Value, value)
 
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlSmallInt({0!r})'.format(value)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
+
     def test_overflowerror(self):
         self.assertRaises(OverflowError, ctds.SqlSmallInt, 2 ** 15)
 
@@ -299,6 +335,12 @@ SQL TINYINT type wrapper.
                     row = self.parameter_type(cursor, wrapper)
                     self.assertEqual(row.Type, 'tinyint' if value is not None else None)
                     self.assertEqual(row.Value, value)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlTinyInt({0!r})'.format(value)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_overflowerror(self):
         self.assertRaises(OverflowError, ctds.SqlTinyInt, 2 ** 8)
@@ -345,6 +387,12 @@ SQL VARBINARY type wrapper.
                     expected = wrapper.value.encode() if isinstance(value, unicode_) else wrapper.value
                     self.assertEqual(row.Value, expected)
                     self.assertEqual(row.MaxLength, len(value) if value is not None else None)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlVarBinary({0!r}, size={1})'.format(value, wrapper.size)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_size(self):
         with self.connect() as connection:
@@ -417,6 +465,12 @@ SQL VARCHAR type wrapper.
                     expected = wrapper.value.decode() if isinstance(value, bytes) else wrapper.value
                     self.assertEqual(row.Value, expected)
                     self.assertEqual(row.MaxLength, len(value) if value is not None else None)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlVarChar({0!r}, size={1})'.format(value, wrapper.size)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_size(self):
         with self.connect() as connection:
@@ -493,7 +547,7 @@ SQL NVARCHAR type wrapper.
                         unicode_(b' \xe3\x83\x9b ', encoding='utf-8'),
                         unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 4000,
                     ])
-                    if self.use_utf16:
+                    if self.use_utf16: # pragma: nobranch
                         inputs.extend([
                             unichr_(127802),
                             unichr_(127802) * 2000,
@@ -514,6 +568,15 @@ SQL NVARCHAR type wrapper.
                         row.MaxLength,
                         (self.nvarchar_width(value) * (1 + int(self.nchars_supported))) if value is not None else None
                     )
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlNVarChar({0!r}, size={1})'.format(
+                            value if PY3 else (value.encode('utf-8') if value is not None else value),
+                            wrapper.size
+                        )
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_size(self):
         with self.connect() as connection:
@@ -614,6 +677,12 @@ SQL DECIMAL type wrapper.
                     )
                     self.assertEqual(row.Precision, 18 if value is not None else None)
                     self.assertEqual(row.Scale, 0 if value is not None else None)
+
+                    self.assertEqual(
+                        repr(wrapper),
+                        'tds.SqlDecimal({0!r})'.format(value)
+                    )
+                    self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_precision(self):
         with self.connect() as connection:

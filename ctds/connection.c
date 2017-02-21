@@ -880,7 +880,7 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
 #ifdef DBVERSION_74 /* indicates FreeTDS 1.00+ */
             /* The timeout must be passed as a string. */
             char str[ARRAYSIZE("2147483648")];
-            (void)snprintf(str, sizeof(str), "%d", (int)timeout);
+            (void)PyOS_snprintf(str, sizeof(str), "%d", (int)timeout);
             if (FAIL == dbsetopt(connection->dbproc, DBSETTIME, str, (int)timeout))
             {
                 Connection_raise(connection);
@@ -1532,15 +1532,15 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 break;
             }
 
-            written = snprintf(servername, nservername, "%s", server);
+            written = PyOS_snprintf(servername, nservername, "%s", server);
 
             if (instance)
             {
-                (void)snprintf(&servername[written], nservername - (size_t)written, "\\%s", instance);
+                (void)PyOS_snprintf(&servername[written], nservername - (size_t)written, "\\%s", instance);
             }
             else
             {
-                (void)snprintf(&servername[written], nservername - (size_t)written, ":%d", port);
+                (void)PyOS_snprintf(&servername[written], nservername - (size_t)written, ":%d", port);
             }
 
             connection->login = dblogin();
