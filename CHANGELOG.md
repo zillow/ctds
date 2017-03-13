@@ -2,9 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.2.3] - 2017-03-13
 ### Fixed
 - Improve `repr` implementation for SQL type wrapper objects.
+- Fixed informational (warning) message reporting where many SQL Server
+reported messages were not reported as warnings due if not returned to
+the client promptly enough.
 
 ## [1.2.2] - 2017-01-10
 ### Fixed
@@ -102,7 +105,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/zillow/ctds/compare/v1.2.3...v1.2.2
 [1.2.2]: https://github.com/zillow/ctds/compare/v1.2.2...v1.2.1
 [1.2.1]: https://github.com/zillow/ctds/compare/v1.2.1...v1.2.0
 [1.2.0]: https://github.com/zillow/ctds/compare/v1.2.0...v1.1.0
