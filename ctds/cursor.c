@@ -2582,6 +2582,9 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
         return NULL;
     }
 
+    /* Raise any warning messages which may have occurred. */
+    Connection_raise_lastwarning(cursor->connection);
+
     return RowList_create(description, rows, rowbuffers);
 }
 

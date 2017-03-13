@@ -398,6 +398,8 @@ void Connection_raise_lastwarning(struct Connection* connection)
         (void)PyErr_Warn(PyExc_tds_Warning,
                          connection->lastmsg.msgtext);
     }
+
+    LastMsg_clear(&connection->lastmsg);
 }
 
 static int Connection_use_internal(struct Connection* connection, const char* database)
