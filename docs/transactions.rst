@@ -25,5 +25,5 @@ committed after an operation and calls to :py:meth:`ctds.Connection.commit()` ar
 unnecessary (`IMPLICIT_TRANSACTIONS`_ is set to **OFF**).
 
 
-.. _IMPLICIT_TRANSACTIONS: http://www.freetds.org
+.. _IMPLICIT_TRANSACTIONS: https://msdn.microsoft.com/en-us/library/ms187807.aspx
 .. _Microsoft SQL Server: http://www.microsoft.com/sqlserver/
