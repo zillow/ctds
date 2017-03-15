@@ -1203,13 +1203,19 @@ static PyObject* translate_to_ucs2(PyObject* o)
                     "Unicode codepoint U+%08X is not representable in UCS-2; replaced with U+FFFD";
                 char buffer[ARRAYSIZE(s_fmt) + 8 /* for codepoint chars */];
                 (void)sprintf(buffer, s_fmt, ucs2[ix]);
-                (void)PyErr_Warn(PyExc_tds_Warning, buffer);
+                if (0 != PyErr_WarnEx(PyExc_UnicodeWarning, buffer, 1))
+                {
+                    break;
+                }
 
                 ucs2[ix] = 0xFFFD; /* unicode replacement character */
             }
         }
 
-        translated = PyUnicode_FromWideChar(ucs2, len);
+        if (!PyErr_Occurred())
+        {
+            translated = PyUnicode_FromWideChar(ucs2, len);
+        }
     }
 #if PY_MAJOR_VERSION < 3
     tds_mem_free(ucs2);

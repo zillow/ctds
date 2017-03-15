@@ -118,7 +118,31 @@ is raised when the result set is exhausted.
                         [str(warn.message) for warn in warns],
                         ['DB-API extension cursor.next() used'] * len(warns)
                     )
+                    self.assertEqual(
+                        [warn.category for warn in warns],
+                        [Warning] * len(warns)
+                    )
                 else: # pragma: nocover
                     self.assertEqual(len(warns), 0)
 
                 self.assertEqual(cursor.nextset(), None)
+
+    def test_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    DECLARE @test_next TABLE(i INT);
+                    INSERT INTO @test_next(i) VALUES (1),(2),(3);
+                    SELECT * FROM @test_next;
+                    SELECT i * 2 FROM @test_next;
+                    '''
+                )
+                with warnings.catch_warnings():
+                    warnings.simplefilter('error')
+                    try:
+                        cursor.next()
+                    except Warning as warn:
+                        self.assertEqual('DB-API extension cursor.next() used', str(warn))
+                    else:
+                        self.assertFalse(PY3, '.next() did not fail as expected') # pragma: nocover

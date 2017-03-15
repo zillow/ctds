@@ -43,3 +43,5 @@ ctds
     .. autoexception:: InternalError
     .. autoexception:: ProgrammingError
     .. autoexception:: NotSupportedError
+
+    .. autoexception:: Warning

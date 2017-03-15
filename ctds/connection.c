@@ -384,8 +384,10 @@ void Connection_clear_lastwarning(struct Connection* connection)
     LastMsg_clear(&connection->lastmsg);
 }
 
-void Connection_raise_lastwarning(struct Connection* connection)
+int Connection_raise_lastwarning(struct Connection* connection)
 {
+    int error = 0;
+
     /*
         Ignore messages == 0, which includes informational things, e.g.
           * session property changes
@@ -395,11 +397,12 @@ void Connection_raise_lastwarning(struct Connection* connection)
     if (connection->lastmsg.msgno > 0)
     {
         /* $TODO: figure out some way to include the other metadata in the warning */
-        (void)PyErr_Warn(PyExc_tds_Warning,
-                         connection->lastmsg.msgtext);
+        error = PyErr_WarnEx(PyExc_tds_Warning, connection->lastmsg.msgtext, 1);
     }
 
     LastMsg_clear(&connection->lastmsg);
+
+    return error;
 }
 
 static int Connection_use_internal(struct Connection* connection, const char* database)
@@ -1116,9 +1119,13 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
 
             if (PyUnicode_Check(Parameter_value(rpcparams[ix])))
             {
-                (void)PyErr_Warn(PyExc_tds_Warning,
-                                 "Direct bulk insert of a Python str object may result in unexpected character encoding. "
-                                 "It is recommended to explicitly encode Python str values for bulk insert.");
+                if (0 != PyErr_WarnEx(PyExc_Warning,
+                                      "Direct bulk insert of a Python str object may result in unexpected character encoding. "
+                                      "It is recommended to explicitly encode Python str values for bulk insert.",
+                                      1))
+                {
+                    break;
+                }
             }
 
             /* bcp_bind does not make a network request, so no need to release the GIL. */

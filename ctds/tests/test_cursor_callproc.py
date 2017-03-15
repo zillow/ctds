@@ -157,14 +157,45 @@ parameters are replaced with output values.
                             [str(warn.message) for warn in warns],
                             [msg] * len(warns)
                         )
+                        self.assertEqual(
+                            [warn.category for warn in warns],
+                            [ctds.Warning] * len(warns)
+                        )
 
-                        self.assertEqual(warns[0].category, ctds.Warning)
                     self.assertEqual(
                         [tuple(row) for row in cursor.fetchall()],
                         [
                             (1,)
                         ]
                     )
+
+                # The cursor should be usable after a warning.
+                with warnings.catch_warnings(record=True) as warns:
+                    cursor.execute('SELECT @@VERSION')
+                    self.assertTrue(cursor.fetchall())
+                    self.assertEqual(len(warns), 0)
+
+    def test_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                sproc = self.test_warning_as_error.__name__
+                with self.stored_procedure(
+                    cursor,
+                    sproc,
+                    '''
+                    AS
+                        RAISERROR (N'some custom error %s', 16, -1, 'hello!');
+                        SELECT 1 As SomeResult
+                    '''
+                    ):
+                    with warnings.catch_warnings():
+                        warnings.simplefilter('error', ctds.Warning)
+                        try:
+                            cursor.callproc(sproc, ())
+                        except ctds.Warning as warn:
+                            self.assertEqual('some custom error hello!', str(warn))
+                        else:
+                            self.fail('.callproc() did not fail as expected') # pragma: nocover
 
                 # The cursor should be usable after a warning.
                 with warnings.catch_warnings(record=True) as warns:
@@ -261,8 +292,38 @@ parameters are replaced with output values.
                             [str(warn.message) for warn in warns],
                             [msg] * len(warns)
                         )
+                        self.assertEqual(
+                            [warn.category for warn in warns],
+                            [ctds.Warning] * len(warns)
+                        )
 
-                        self.assertEqual(warns[0].category, ctds.Warning)
+    def test_sql_conversion_warning_as_error(self): # pylint: disable=invalid-name
+        with self.connect(ansi_defaults=False) as connection:
+            with connection.cursor() as cursor:
+                sproc = self.test_sql_conversion_warning_as_error.__name__
+                with self.stored_procedure(
+                    cursor,
+                    sproc,
+                    '''
+                        @pInt TINYINT OUTPUT,
+                        @pBigInt BIGINT OUTPUT
+                    AS
+                        SELECT @pInt = @pInt * 255;
+                        SELECT @pBigInt = @pBigInt - 1000;
+                    '''
+                    ):
+                    with warnings.catch_warnings():
+                        warnings.simplefilter('error', ctds.Warning)
+                        inputs = (
+                            ctds.Parameter(10, output=True),
+                            ctds.Parameter(1234, output=True),
+                        )
+                        try:
+                            cursor.callproc(sproc, inputs)
+                        except ctds.Warning as warn:
+                            self.assertEqual('Arithmetic overflow occurred.', str(warn))
+                        else:
+                            self.fail('.callproc() did not fail as expected') # pragma: nocover
 
     def test_sql_conversion_error(self):
         with self.connect(ansi_defaults=True) as connection:
@@ -315,8 +376,33 @@ parameters are replaced with output values.
                             [str(warn.message) for warn in warns],
                             ['output parameters are not supported with result sets'] * len(warns)
                         )
+                        self.assertEqual(
+                            [warn.category for warn in warns],
+                            [Warning] * len(warns)
+                        )
 
-                        self.assertEqual(warns[0].category, ctds.Warning)
+    def test_output_with_resultset_as_error(self): # pylint: disable=invalid-name
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                sproc = self.test_output_with_resultset_as_error.__name__
+                with self.stored_procedure(
+                    cursor,
+                    sproc,
+                    '''
+                        @pOut INT OUTPUT
+                    AS
+                        SET @pOut = 5;
+                        SELECT 10;
+                    '''
+                    ):
+                    with warnings.catch_warnings():
+                        warnings.simplefilter('error')
+                        try:
+                            cursor.callproc(sproc, (ctds.Parameter(ctds.SqlInt(0), output=True),))
+                        except Warning as warn:
+                            self.assertEqual('output parameters are not supported with result sets', str(warn))
+                        else:
+                            self.fail('.callproc() did not fail as expected') # pragma: nocover
 
     def test_dict_invalid_name(self):
         with self.connect() as connection:
@@ -739,7 +825,7 @@ parameters are replaced with output values.
                                     [str(warn.message) for warn in warns],
                                     [msg] * len(warns)
                                 )
-                                self.assertEqual(warns[0].category, ctds.Warning)
+                                self.assertEqual(warns[0].category, Warning)
                             else:
                                 self.assertEqual(len(warns), 0)
 
@@ -905,7 +991,10 @@ parameters are replaced with output values.
                                     [str(warn.message) for warn in warns],
                                     [msg] * len(warns)
                                 )
-                                self.assertEqual(warns[0].category, ctds.Warning)
+                                self.assertEqual(
+                                    [warn.category for warn in warns],
+                                    [UnicodeWarning] * len(warns)
+                                )
                             else:
                                 self.assertEqual(len(warns), 0) # pragma: nocover
 
@@ -1064,7 +1153,10 @@ parameters are replaced with output values.
                                     [str(warn.message) for warn in warns],
                                     [msg.format(ord(char), ord(self.UNICODE_REPLACEMENT)) for char in (catface, flower)]
                                 )
-                                self.assertEqual(warns[0].category, ctds.Warning)
+                                self.assertEqual(
+                                    [warn.category for warn in warns],
+                                    [UnicodeWarning] * len(warns)
+                                )
                             else:
                                 self.assertEqual(len(warns), 0) # pragma: nocover
 

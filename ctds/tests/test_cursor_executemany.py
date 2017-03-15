@@ -161,8 +161,33 @@ against all parameter sequences or mappings found in the sequence
                         [str(warn.message) for warn in warns],
                         [msg] * len(warns)
                     )
+                    self.assertEqual(
+                        [warn.category for warn in warns],
+                        [ctds.Warning] * len(warns)
+                    )
 
                     self.assertEqual(warns[0].category, ctds.Warning)
+
+                # The cursor should be usable after a warning.
+                with warnings.catch_warnings(record=True) as warns:
+                    cursor.execute('SELECT @@VERSION')
+                    self.assertTrue(cursor.fetchall())
+                    self.assertEqual(len(warns), 0)
+
+    def test_sql_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                with warnings.catch_warnings():
+                    warnings.simplefilter('error', ctds.Warning)
+                    try:
+                        cursor.executemany(
+                            "RAISERROR (N'some custom non-severe error %s', 10, 111, :0);",
+                            ((unicode_('hello!'),),)
+                        )
+                    except ctds.Warning as warn:
+                        self.assertEqual('some custom non-severe error hello!', str(warn))
+                    else:
+                        self.fail('.executemany() did not fail as expected') # pragma: nocover
 
                 # The cursor should be usable after a warning.
                 with warnings.catch_warnings(record=True) as warns:

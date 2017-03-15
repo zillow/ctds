@@ -113,6 +113,10 @@ insert.\
 '''
                             ] * len(warns)
                         )
+                        self.assertEqual(
+                            [warn.category for warn in warns],
+                            [Warning] * len(warns)
+                        )
 
                     with connection.cursor() as cursor:
                         cursor.execute('SELECT * FROM {0}'.format(self.test_string.__name__))
@@ -125,6 +129,43 @@ insert.\
 
                 finally:
                     connection.rollback()
+
+    def test_string_warning_as_error(self):
+        parameter = unicode_(b'what DB encoding is used? \xc2\xbd', encoding='utf-8')
+        with self.connect(autocommit=False) as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0}
+                        (
+                            String VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS
+                        )
+                        '''.format(self.test_string_warning_as_error.__name__)
+                    )
+
+                with warnings.catch_warnings():
+                    warnings.simplefilter('error')
+                    try:
+                        connection.bulk_insert(
+                            self.test_string_warning_as_error.__name__,
+                            [
+                                (parameter,)
+                            ]
+                        )
+                    except Warning as warn:
+                        self.assertEqual(
+                            '''\
+Direct bulk insert of a Python str object may result in unexpected character \
+encoding. It is recommended to explicitly encode Python str values for bulk \
+insert.\
+''',
+                            str(warn)
+                        )
+                    else:
+                        self.fail('.bulk_insert() did not fail as expected') # pragma: nocover
+            finally:
+                connection.rollback()
 
     def test_insert(self):
         with self.connect(autocommit=False) as connection:

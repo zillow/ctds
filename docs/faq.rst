@@ -36,7 +36,22 @@ result in an error.
     /* This statement does not fail, hence a Python exception is not raised. */
     SELECT 1 AS Column1;
 
-The error `some custom error` is reported as a Python :py:class:`Warning`.
+The error `some custom error` is reported as a :py:obj:`ctds.Warning`.
+
+In `cTDS` v1.3.0 and later, this warning can be turned into an exception using the
+:py:mod:`warnings` module.
+
+.. code-block:: python
+
+    import warnings
+    import ctds
+
+    warnings.simplefilter('error', ctds.Warning)
+
+    with ctds.connect() as connection:
+        with connection.cursor() as cursor:
+            # The following will raise a `ctds.Warning` exception.
+            cursor.execute("RAISERROR (N'this will become a python exception', 16, -1);")
 
 
 What does the `Unicode codepoint U+1F4A9 is not representable in UCS-2...` warning mean?

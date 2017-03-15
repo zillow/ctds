@@ -24,6 +24,10 @@ class TestCursorNext(TestExternalDatabase):
                         [str(warn.message) for warn in warns],
                         ['DB-API extension cursor.__iter__() used'] * len(warns)
                     )
+                    self.assertEqual(
+                        [warn.category for warn in warns],
+                        [Warning] * len(warns)
+                    )
 
                 self.assertEqual(cursor.nextset(), True)
 
@@ -34,5 +38,29 @@ class TestCursorNext(TestExternalDatabase):
                         [str(warn.message) for warn in warns],
                         ['DB-API extension cursor.__iter__() used'] * len(warns)
                     )
+                    self.assertEqual(
+                        [warn.category for warn in warns],
+                        [Warning] * len(warns)
+                    )
 
                 self.assertEqual(cursor.nextset(), None)
+
+    def test_next_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                        DECLARE @test_fetchone TABLE(i INT);
+                        INSERT INTO @test_fetchone(i) VALUES (1),(2),(3);
+                        SELECT * FROM @test_fetchone;
+                        SELECT i * 2 FROM @test_fetchone;
+                    '''
+                )
+                with warnings.catch_warnings():
+                    warnings.simplefilter('error')
+                    try:
+                        self.assertEqual([tuple(row) for row in cursor], [(1,), (2,), (3,)])
+                    except Warning as warn:
+                        self.assertEqual('DB-API extension cursor.__iter__() used', str(warn))
+                    else:
+                        self.fail('.__iter__() did not fail as expected') # pragma: nocover

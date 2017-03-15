@@ -34,6 +34,10 @@ index cannot be determined.
                     [str(warn.message) for warn in warns],
                     ['DB-API extension cursor.rownumber used'] * len(warns)
                 )
+                self.assertEqual(
+                    [warn.category for warn in warns],
+                    [Warning] * len(warns)
+                )
 
     def test_premature(self):
         with self.connect() as connection:
@@ -45,8 +49,12 @@ index cannot be determined.
                         [str(warn.message) for warn in warns],
                         ['DB-API extension cursor.rownumber used'] * len(warns)
                     )
+                    self.assertEqual(
+                        [warn.category for warn in warns],
+                        [Warning] * len(warns)
+                    )
 
-    def test_rownumber(self):
+    def test(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -73,6 +81,10 @@ index cannot be determined.
                         [str(warn.message) for warn in warns],
                         ['DB-API extension cursor.rownumber used'] * len(warns)
                     )
+                    self.assertEqual(
+                        [warn.category for warn in warns],
+                        [Warning] * len(warns)
+                    )
 
                 cursor.execute(
                     '''
@@ -84,3 +96,22 @@ index cannot be determined.
                 with warnings.catch_warnings(record=True) as warns:
                     cursor.fetchmany(size=2)
                     self.assertEqual(cursor.rownumber, long_(2))
+
+    def test_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                        DECLARE @test_rownumber TABLE(i INT);
+                        INSERT INTO @test_rownumber(i) VALUES (1),(2),(3),(1),(2),(3);
+                        SELECT * FROM @test_rownumber
+                    '''
+                )
+                with warnings.catch_warnings():
+                    warnings.simplefilter('error')
+                    try:
+                        _ = cursor.rownumber
+                    except Warning as warn:
+                        self.assertEqual('DB-API extension cursor.rownumber used', str(warn))
+                    else:
+                        self.fail('.rownumber did not fail as expected') # pragma: nocover

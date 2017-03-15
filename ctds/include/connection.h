@@ -115,8 +115,11 @@ void Connection_clear_lastwarning(struct Connection* connection);
     notify the client of any non-error messages issued by the database.
 
     @param connection [in] The connection.
+
+    @retval 0 The warning was raised.
+    @retval -1 The caller requested the warning be turned into an error.
 */
-void Connection_raise_lastwarning(struct Connection* connection);
+int Connection_raise_lastwarning(struct Connection* connection);
 
 /**
     Commit a SQL transaction on a connection.

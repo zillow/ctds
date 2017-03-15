@@ -105,7 +105,7 @@ struct Cursor {
 };
 
 #define warn_extension_used(_method) \
-    PyErr_Warn(PyExc_tds_Warning, "DB-API extension " _method " used")
+    PyErr_WarnEx(PyExc_Warning, "DB-API extension " _method " used", 1)
 
 #define Cursor_verify_open(_cursor) \
     if (!(_cursor)->connection) \
@@ -529,7 +529,10 @@ static PyObject* Cursor_connection_get(PyObject* self, void* closure)
 {
     struct Cursor* cursor = (struct Cursor*)self;
 
-    (void)warn_extension_used("cursor.connection");
+    if (0 != warn_extension_used("cursor.connection"))
+    {
+        return NULL;
+    }
 
     Cursor_verify_open(cursor);
 
@@ -552,7 +555,10 @@ static PyObject* Cursor_rownumber_get(PyObject* self, void* closure)
 {
     struct Cursor* cursor = (struct Cursor*)self;
 
-    (void)warn_extension_used("cursor.rownumber");
+    if (0 != warn_extension_used("cursor.rownumber"))
+    {
+        return NULL;
+    }
 
     if (cursor->description)
     {
@@ -1108,14 +1114,25 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
                 the DB API 2.0 interface. If an attempt is made to use the API
                 in this way, return the resultsets and raise a warning.
             */
-            (void)PyErr_Warn(PyExc_tds_Warning,
-                             "output parameters are not supported with result sets");
+            if (0 != PyErr_WarnEx(PyExc_Warning,
+                                  "output parameters are not supported with result sets",
+                                  1))
+            {
+                Py_DECREF(results);
+                results = NULL;
+                break;
+            }
         }
     } while (0);
 
     if (!PyErr_Occurred())
     {
-        Connection_raise_lastwarning(cursor->connection);
+        if (0 != Connection_raise_lastwarning(cursor->connection))
+        {
+            assert(PyErr_Occurred());
+            Py_DECREF(results);
+            results = NULL;
+        }
     }
 
     tds_mem_free(outputparams);
@@ -1736,7 +1753,11 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             }
 
             /* Raise any warnings that may have occurred. */
-            Connection_raise_lastwarning(cursor->connection);
+            if (0 != Connection_raise_lastwarning(cursor->connection))
+            {
+                assert(PyErr_Occurred());
+                break;
+            }
         }
         while (NULL != (nextparams = PyIter_Next(isequence)));
 
@@ -2583,7 +2604,11 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
     }
 
     /* Raise any warning messages which may have occurred. */
-    Connection_raise_lastwarning(cursor->connection);
+    if (0 != Connection_raise_lastwarning(cursor->connection))
+    {
+        assert(PyErr_Occurred());
+        return NULL;
+    }
 
     return RowList_create(description, rows, rowbuffers);
 }
@@ -2785,7 +2810,10 @@ static PyObject* Cursor_next_internal(PyObject* self, PyObject* args)
 
 static PyObject* Cursor_next(PyObject* self, PyObject* args)
 {
-    (void)warn_extension_used("cursor.next()");
+    if (0 != warn_extension_used("cursor.next()"))
+    {
+        return NULL;
+    }
     return Cursor_next_internal(self, args);
 }
 
@@ -2858,7 +2886,10 @@ static PyMethodDef Cursor_methods[] = {
 
 static PyObject* Cursor_iter(PyObject* self)
 {
-    warn_extension_used("cursor.__iter__()");
+    if (0 != warn_extension_used("cursor.__iter__()"))
+    {
+        return NULL;
+    }
     Py_INCREF(self);
     return self;
 }
