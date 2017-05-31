@@ -1526,12 +1526,13 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             };
             DBINT dbversion = DBVERSION_UNKNOWN;
 
+            int flag;
+
             int written;
 
             /* Determine the maximum size the server connection string may require. */
-            size_t nservername = strlen(server) +
-                STRLEN(STRINGIFY(UINT16_MAX)) /* maximum port number length */ +
-                ((instance) ? (strlen(instance) + 1 /* for '\\' */) : 0) +
+            size_t nservername = strlen(server) + 1 /* for '\\' or ':' */ +
+                ((instance) ? strlen(instance) : STRLEN(STRINGIFY(UINT16_MAX)) /* maximum port number length */) +
                 1 /* for '\0' */;
 
             servername = (char*)tds_mem_malloc(nservername);
@@ -1656,15 +1657,29 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                     database = NULL;
                 }
             }
-            if (enable_bcp)
+            /*
+                Prior to 1.00.40 FreeTDS reversed the boolean for enabling BCP.
+                See https://github.com/FreeTDS/freetds/issues/119.
+
+                Try both true and false until the desired result is achieved.
+            */
+            for (flag = 1; flag >= 0; --flag)
             {
-                /* FreeTDS seems to reverse the boolean logic for enabling bcp. ?!?! */
-                if (FAIL == BCP_SETL(connection->login, 0))
+                if (FAIL == BCP_SETL(connection->login, flag))
                 {
                     PyErr_SetString(PyExc_tds_InternalError, "failed to enable bcp");
                     break;
                 }
+                if (bcp_getl(connection->login) == enable_bcp)
+                {
+                    break;
+                }
             }
+            if (PyErr_Occurred())
+            {
+                break;
+            }
+            assert(bcp_getl(connection->login) == enable_bcp);
 
             connection->autocommit = autocommit;
 

@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.1] - 2017-07-31
+### Fixed
+- Fix connection failures when connecting to high port numbers on OS X.
+- Fix unit test infrastructure to respect configured port number.
+- Work around inconsistencies between FreeTDS versions in the bcp_getl/
+BCP_SETL interfaces.
+
 ## [1.3.0] - 2017-03-15
 ### Fixed
 - Replace usage of the deprecated `PyErr_Warn` API with `PyErr_WarnEx`.

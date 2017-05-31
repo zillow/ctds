@@ -82,6 +82,7 @@ class TestExternalDatabase(unittest.TestCase):
                     ('instance', str),
                     ('login_timeout', int),
                     ('password', str),
+                    ('port', int),
                     ('tds_version', str),
                     ('timeout', int),
                     ('user', str),
