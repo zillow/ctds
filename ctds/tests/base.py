@@ -64,10 +64,13 @@ class TestExternalDatabase(unittest.TestCase):
     @property
     def server_name_and_instance(self):
         server = self.get_option('server')
+        # If running against localhost and the docker HOSTNAME var is set, use that.
+        if server.lower() == 'localhost' and 'HOSTNAME' in os.environ: # pragma: nobranch
+            server = os.environ['HOSTNAME'] # pragma: nocover
         instance = self.get_option('instance')
         if instance is not None: # pragma: nocover
             server += '\\' + instance
-        return server.upper()
+        return server
 
     def connect(self, **kwargs):
         '''Connect to the database using parameters defined in the config.
@@ -135,8 +138,7 @@ class TestExternalDatabase(unittest.TestCase):
     def round_money(self, money):
         if self.freetds_version > (0, 92, 405): # pragma: nobranch
             return money
-        else:
-            return money.quantize(Decimal('.01')) # pragma: nocover
+        return money.quantize(Decimal('.01')) # pragma: nocover
 
     @staticmethod
     def nvarchar_width(value):

@@ -4,11 +4,11 @@ PACKAGE_NAME = ctds
 
 # Python version support
 SUPPORTED_PYTHON_VERSIONS := \
-    2.6 \
     2.7 \
     3.3 \
     3.4 \
-    3.5
+    3.5 \
+    3.6
 
 # FreeTDS versions to test against. This should
 # be the latest of each minor release.
@@ -17,26 +17,11 @@ SUPPORTED_PYTHON_VERSIONS := \
 CHECKED_FREETDS_VERSIONS := \
     0.91.112 \
     0.92.405 \
-    0.95.0 \
     0.95.95 \
-    1.00.15 \
     1.00.40
 
-# FreeTDS version to test against.
-ifndef FREETDS_VERSION
-    FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
-endif
-
-define CHECK_PYTHON
-    $(if $(shell which python$(strip $(1))), $(strip $(1)))
-endef
-
-PYTHON_VERSIONS := $(strip $(foreach V, $(SUPPORTED_PYTHON_VERSIONS), $(call CHECK_PYTHON, $(V))))
-DEFAULT_PYTHON_VERSION := $(lastword $(PYTHON_VERSIONS))
-
-ifndef VIRTUALENV
-    VIRTUALENV = python -m virtualenv
-endif
+DEFAULT_PYTHON_VERSION := $(lastword $(SUPPORTED_PYTHON_VERSIONS))
+DEFAULT_FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
 
 VALGRIND_FLAGS := \
     --leak-check=summary \
@@ -46,160 +31,15 @@ VALGRIND_FLAGS := \
     --free-fill=0xff \
     --log-file=valgrind.log
 
-# Local directories
-BUILD_DIR := build
-HTML_BUILD_DIR := $(BUILD_DIR)/docs/html
-
 CTDS_VERSION := $(strip $(shell python setup.py --version))
-
-# Platform-specific values.
-ifeq "$(shell uname -s)" "Darwin"
-    FREETDS_MAC_OSX := 1
-endif
-
-ifdef FREETDS_MAC_OSX
-    LD_LIBRARY_PATH := DYLD_FALLBACK_LIBRARY_PATH
-else
-    LD_LIBRARY_PATH := LD_LIBRARY_PATH
-endif
-
-
-# Functions to generate the FreeTDS paths.
-#
-# $(eval $(call FREETDS_(ROOT|INCLUDE|LIB), <freetds_version>))
-#
-FREETDS_ROOT = $(abspath $(BUILD_DIR)/freetds/$(strip $(1)))
-FREETDS_INCLUDE = $(call FREETDS_ROOT, $(1))/include
-FREETDS_LIB = $(call FREETDS_ROOT, $(1))/lib
-
-
-# Function to generate freetds-<version> rules to build local
-# copies of FreeTDS.
-#
-# $(eval $(call FREETDS_RULE, <freetds_version>))
-#
-define FREETDS_RULE
-# Download and extract the FreeTDS source code.
-$(BUILD_DIR)/freetds-$(strip $(1)):
-	mkdir -p $(BUILD_DIR)
-	curl -o "$(BUILD_DIR)/freetds-$(strip $(1)).tar.gz" \
-        'ftp://ftp.freetds.org/pub/freetds/stable/freetds-$(strip $(1)).tar.gz'
-	tar -xzf $(BUILD_DIR)/freetds-$(strip $(1)).tar.gz -C $(BUILD_DIR)
-
-# The version-specific build sentinel.
-FREETDS_$(strip $(1))_BUILD := $(BUILD_DIR)/freetds-$(strip $(1)).build
-
-# Configure, make, make install from FreeTDS source.
-$$(FREETDS_$(strip $(1))_BUILD): $(BUILD_DIR)/freetds-$(strip $(1))
-	cd $$< && \
-        CFLAGS="$$$$CFLAGS -g" make distclean; \
-        ./configure \
-            --prefix="$$(call FREETDS_ROOT, $(strip $(1)))" \
-            --disable-odbc --disable-apps --disable-server --disable-pool \
-            && \
-        make && \
-        make install
-	touch $$@
-
-.PHONY: freetds-$(strip $(1))
-freetds-$(strip $(1)): $$(FREETDS_$(strip $(1))_BUILD)
-endef
-
-
-# Function to generate virtualenv rules
-#
-# $(eval $(call ENV_RULE, <env_name>, <python_version>, <freetds_version>, <packages>, <commands>))
-#
-# commands is function with the following signature:
-#    commands(env_name, freetds_version))
-#
-define ENV_RULE
-ENV_$(strip $(1))_BUILD := $(BUILD_DIR)/$(strip $(1)).build
-
-$$(ENV_$(strip $(1))_BUILD): freetds-$(strip $(3))
-	$$(VIRTUALENV) -p python$(strip $(2)) $(BUILD_DIR)/$(strip $(1))
-	$(call ENV_PIP, $(1)) install --upgrade pip
-	$(if $(strip $(4)),$(call ENV_PIP, $(1)) install $(strip $(4)))
-	touch $$@
-
-.PHONY: $(strip $(1))
-$(strip $(1)): $$(ENV_$(strip $(1))_BUILD)
-$(call $(5), $(1), $(3))
-endef
-
-
-# Function to generate check rules
-#
-# $(eval $(call CHECK_RULE, <freetds_version>))
-#
-define CHECK_RULE
-.PHONY: check-$(strip $(1))
-check-$(strip $(1)): test_config $(foreach PV, $(PYTHON_VERSIONS), test_$(PV)_$(strip $(1)))
-endef
-
-
-# Function to generate an environment rule's python interpreter.
-#   Usage: ENV_PYTHON(env_name)
-ENV_PYTHON = $(abspath $(BUILD_DIR)/$(strip $(1))/bin/python) -E
-
-# Function to generate an environment rule's python interpreter.
-#   Usage: ENV_PYTHON(env_name)
-ENV_COVERAGE = $(abspath $(BUILD_DIR)/$(strip $(1))/bin/coverage)
-
-# Function to generate an environment rule's pip utility.
-#   Usage: ENV_PIP(env_name)
-# Note the bin/pip script is not launched directly to avoid the following
-# issue with #! length limits: https://github.com/pypa/virtualenv/issues/596.
-ENV_PIP = $(ENV_PYTHON) $(BUILD_DIR)/$(strip $(1))/bin/pip
-
-# Function to install ctds into a virtualenv.
-#   Usage: INSTALL_CTDS(env_name, <freetds_version>, <additional_args>)
-define INSTALL_CTDS
-	$(call ENV_PIP, $(1)) install -v -e . $(strip $(3)) \
-        --global-option=build_ext \
-        --global-option="-t$(BUILD_DIR)/$(strip $(1))" \
-        --global-option=build_ext \
-        --global-option="-I$(call FREETDS_INCLUDE, $(strip $(2)))" \
-        --global-option=build_ext \
-        --global-option="-L$(call FREETDS_LIB, $(strip $(2)))" \
-        --global-option=build_ext --global-option="-R$(call FREETDS_LIB, $(strip $(2)))" \
-        --global-option=build_ext --global-option="-f"
-endef
-
-define TEST_COMMANDS
-	# Always rebuild with debugging symbols and coverage enabled.
-	TDS_COVER=1 DEBUG=1 $(call INSTALL_CTDS, $(1), $(2), -e .[tests])
-
-	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
-        $(if $(VALGRIND), valgrind $(VALGRIND_FLAGS)) \
-        $(call ENV_COVERAGE, $(1)) run --branch --source '$(PACKAGE_NAME)' \
-            setup.py test $(if $(TEST),-s $(TEST))
-endef
-
-define PYLINT_COMMANDS
-	$(ENV_PYTHON) $(BUILD_DIR)/$(strip $(1))/bin/pylint $(PACKAGE_NAME)
-endef
-
-define PYTHON_COVERAGE_COMMANDS
-	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
-        $(call ENV_COVERAGE, $(1)) html -d $(abspath $(BUILD_DIR)/coverage)
-	$(LD_LIBRARY_PATH)=$(call FREETDS_LIB, $(strip $(2))) \
-        $(call ENV_COVERAGE, $(1)) report --fail-under 100
-endef
-
-define DOC_COMMANDS
-	$(call INSTALL_CTDS, $(1), $(2), --force-reinstall)
-	$(ENV_PYTHON) -m sphinx -n -a -E -d $(BUILD_DIR)/$(strip $(1)) docs $(HTML_BUILD_DIR)
-endef
-
 
 # Help
 .PHONY: help
 help:
-	@echo "usage: make [check|clean|cover|pylint|setup|test]"
+	@echo "usage: make [check|clean|cover|pylint|test]"
 	@echo
 	@echo "    check"
-	@echo "        Run tests against all installed versions of Python and"
+	@echo "        Run tests against all supported versions of Python and"
 	@echo "        the following versions of FreeTDS: $(CHECKED_FREETDS_VERSIONS)."
 	@echo
 	@echo "    clean"
@@ -217,42 +57,22 @@ help:
 	@echo "    pylint"
 	@echo "        Run pylint over all *.py files."
 	@echo
-	@echo "    setup"
-	@echo "        Install required packages (Debian systems only)."
-	@echo
 	@echo "    test"
 	@echo "        Run tests using the default Python version ($(DEFAULT_PYTHON_VERSION)) and"
-	@echo "        the default version of FreeTDS ($(FREETDS_VERSION))."
+	@echo "        the default version of FreeTDS ($(DEFAULT_FREETDS_VERSION))."
 	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
 	@echo "      VALGRIND - Run tests under \`valgrind\`. e.g. \`make test VALGRIND=1\`"
-	@echo "      FREETDS_VERSION - Specify the version of FreeTDS to build and use. Defaults to $(FREETDS_VERSION)."
 
-
-# check
-.PHONY: check
-check: test_config $(foreach PV, $(PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), test_$(PV)_$(FV)))
-
-# check-*
-$(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), $(eval $(call CHECK_RULE, $(FREETDS_VERSION))))
 
 # clean
 .PHONY: clean
 clean:
 	git clean -dfX
 
-.PHONY: cover
-cover: test python-cover
-	gcov -o $(BUILD_DIR)/test_$(DEFAULT_PYTHON_VERSION)_$(FREETDS_VERSION)/ctds ctds/*.c
-	mkdir -p $(abspath $(BUILD_DIR)/cover)
-	gcovr --delete --root=$(abspath .) --html --html-details --output=$(abspath $(BUILD_DIR)/cover/index.html)
-
-# python-cover
-$(eval $(call ENV_RULE, python-cover, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), coverage, PYTHON_COVERAGE_COMMANDS))
-
 # doc
-$(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
+$(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
 
 publish: doc
 	git tag -a v$(CTDS_VERSION) -m "v$(CTDS_VERSION)"
@@ -260,33 +80,97 @@ publish: doc
 	python setup.py sdist upload
 	python setup.py upload_docs --upload-dir=$(HTML_BUILD_DIR)
 
-# pylint
-$(eval $(call ENV_RULE, pylint, $(DEFAULT_PYTHON_VERSION), $(FREETDS_VERSION), pylint, PYLINT_COMMANDS))
 
-# setup (debian-only)
-.PHONY: setup
-setup:
-	sudo add-apt-repository -y ppa:fkrull/deadsnakes
-	sudo apt-get update
-	sudo apt-get install -y \
-		python-pip \
-		python-virtualenv \
-		$(foreach P, $(PYTHON_VERSIONS),$(if $(shell which python$P),,python$P python$P-dev))
-	sudo pip install -U pip virtualenv
+UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
+SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
 
-# test
+.PHONY: start-sqlserver
+start-sqlserver:
+	@if [ -z `docker ps -f name=$(SQL_SERVER_DOCKER_IMAGE_NAME) -q` ]; then \
+        echo "MS SQL Server docker container not running; starting ..."; \
+        docker build $(if $(VERBOSE),,-q) -f Dockerfile-sqlserver -t $(SQL_SERVER_DOCKER_IMAGE_NAME) .; \
+        docker run -d \
+            -e 'ACCEPT_EULA=Y' \
+            -e 'SA_PASSWORD=cTDS-unitest!' \
+            -e 'MSSQL_PID=Developer' \
+            --rm \
+            --name $(SQL_SERVER_DOCKER_IMAGE_NAME) \
+            $(SQL_SERVER_DOCKER_IMAGE_NAME); \
+        sleep 5s; \
+    fi
+
+
+# Function to generate a rules for:
+#   * building a docker image with a specific Python/FreeTDS version
+#   * running unit tests for a specific Python/FreeTDS version
+#   * running code coverage for a specific Python/FreeTDS version
+#
+# $(eval $(call GENERATE_RULES, <python_version>, <freetds_version>))
+#
+define GENERATE_RULES
+.PHONY: docker_$(strip $(1))_$(strip $(2))
+docker_$(strip $(1))_$(strip $(2)):
+	docker build $(if $(VERBOSE),,-q) \
+        --build-arg "FREETDS_VERSION=$(strip $(2))" \
+        --build-arg "PYTHON_VERSION=$(strip $(1))" \
+        -f Dockerfile-unittest \
+        -t $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
+        .
+
+.PHONY: test_$(strip $(1))_$(strip $(2))
+test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
+	docker run --init --rm \
+        -e DEBUG=1 \
+        --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
+        $(if $(TDSDUMP), -e TDSDUMP=$(TDSDUMP)) \
+        $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
+        "./scripts/ctds-unittest.sh"
+
+.PHONY: coverage_$(strip $(1))_$(strip $(2))
+coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
+	docker run --init \
+        -e CTDS_COVER=1 \
+        -e DEBUG=1 \
+        --workdir /usr/src/ctds/ \
+        --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
+        --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage \
+        $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
+        "./scripts/ctds-coverage.sh"
+	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage $(abspath coverage)
+	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage
+endef
+
+$(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call GENERATE_RULES, $(PV), $(FV)))))
+
+define CHECK_RULE
+.PHONY: check_$(strip $(1))
+check_$(strip $(1)): $(foreach FV, $(CHECKED_FREETDS_VERSIONS), test_$(strip $(1))_$(FV))
+endef
+
+$(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECK_RULE, $(PV))))
+
+.PHONY: check
+check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV))
+
 .PHONY: test
-test: test_config test_$(DEFAULT_PYTHON_VERSION)_$(FREETDS_VERSION)
+test: test_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 
-test_config: ctds/tests/database.ini
+.PHONY: coverage
+coverage: coverage_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 
-ctds/tests/database.ini:
-	@cp ctds/tests/database.ini.in $@
-	@echo "Test database configuration required in $@"
-	@/bin/false
+.PHONY: pylint
+pylint: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
+	docker run --init --rm \
+        --workdir /usr/src/ctds/ \
+        $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
+        "./scripts/ctds-pylint.sh"
 
-# freetds-*
-$(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_RULE, $(FV))))
-
-# test_*
-$(foreach PV, $(PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call ENV_RULE, test_$(PV)_$(FV), $(PV), $(FV), coverage, TEST_COMMANDS))))
+.PHONY: doc
+doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
+	docker run --init \
+        --workdir /usr/src/ctds/ \
+        --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc \
+        $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
+        "./scripts/ctds-doc.sh"
+	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc:/usr/src/ctds/docs $(abspath docs)
+	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc

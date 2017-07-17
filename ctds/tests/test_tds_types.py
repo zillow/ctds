@@ -71,7 +71,7 @@ class TestCursorTypes(TestExternalDatabase):
                             (varchar,)
                         )
 
-                        # TODO: fix this once supported by FreeTDS
+                        # $future: fix this once supported by FreeTDS
                         # Currently FreeTDS (really the db-lib API) will
                         # turn empty string to NULL
                         if value == '' and self.use_sp_executesql:
@@ -121,7 +121,7 @@ class TestCursorTypes(TestExternalDatabase):
                             (nvarchar,)
                         )
 
-                        # TODO: fix this once supported by FreeTDS
+                        # $future: fix this once supported by FreeTDS
                         # Currently FreeTDS (really the db-lib API) will
                         # turn empty string to NULL
                         if value == '' and self.use_sp_executesql:

@@ -1,32 +1,12 @@
-language: python
-
-addons:
-  apt:
-    packages:
-    - freetds-dev
+language: generic
 
 matrix:
     include:
-        - os: linux
-          dist: trusty
+        - env: PYTHON_VERSION=3.6
+          os: linux
+          services: docker
           sudo: required
-          python: 2.6
-        - os: linux
-          dist: trusty
-          sudo: required
-          python: 2.7
-        - os: linux
-          dist: trusty
-          sudo: required
-          python: 3.3
-        - os: linux
-          dist: trusty
-          sudo: required
-          python: 3.4
-        - os: linux
-          dist: trusty
-          sudo: required
-          python: 3.5
+          after_script: docker stop ctds-unittest-sqlserver
         # Use generic language for osx
         - os: osx
           language: generic
@@ -39,8 +19,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
 
-install:
-    - pip install .
+# Travis-ci doesn't support docker support on OS X. Just verify ctds builds on OS X.
+install: if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install .; fi
 
-# No tests currently, as those require a running instance of SQL Server.
-script: true
+script: if [[ "$TRAVIS_OS_NAME" != "osx" ]]; make check_${PYTHON_VERSION}; fi
