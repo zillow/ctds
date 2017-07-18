@@ -8,8 +8,8 @@ matrix:
           sudo: required
           after_script: docker stop ctds-unittest-sqlserver
         # Use generic language for osx
-        - os: osx
-          language: generic
+        #- os: osx
+        #  language: generic
 
 before_install: travis/before_install.sh
 
