@@ -11,6 +11,9 @@ if [ "$TRAVIS_OS_NAME" != "osx" ]; then
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
     sudo apt-get update
     sudo apt-get -y install docker-ce
+
+    # Launch SQL Server
+    make start-sqlserver
 else
     # Travis-ci doesn't support Python on OS X. Install it manually for now.
     brew update

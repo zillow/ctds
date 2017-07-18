@@ -6,7 +6,7 @@ matrix:
           os: linux
           services: docker
           sudo: required
-          after_script: docker stop ctds-unittest-sqlserver
+          after_script: make stop-sqlserver
         # Use generic language for osx
         #- os: osx
         #  language: generic

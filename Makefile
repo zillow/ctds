@@ -99,6 +99,9 @@ start-sqlserver:
         sleep 5s; \
     fi
 
+.PHONY: stop-sqlserver
+stop-sqlserver:
+	docker stop $(SQL_SERVER_DOCKER_IMAGE_NAME)
 
 # Function to generate a rules for:
 #   * building a docker image with a specific Python/FreeTDS version
