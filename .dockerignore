@@ -3,5 +3,6 @@
 build/
 coverage/
 docs/
+travis/
 *.so
 Dockerfile*
