@@ -2,7 +2,7 @@
 
 CONTAINER=${1:-ctds-unittest-sqlserver}
 
-if [ -z `docker ps -f name=$CONTAINER -q` ]; then \
+if [ -z `docker ps -f name=$CONTAINER -q` ]; then
     echo "MS SQL Server docker container not running; starting ..."
     docker build -q -f Dockerfile-sqlserver -t "$CONTAINER" .
     docker run -d \
@@ -22,11 +22,14 @@ RETRIES=10
 USERNAME=TDSUnittest
 PASSWORD=TDSUnittest1
 
+docker ps
+
 until docker exec "$CONTAINER" \
              /bin/sh -c "/opt/mssql-tools/bin/sqlcmd -S $HOSTNAME -U $USERNAME -P $PASSWORD -Q 'SELECT @@VERSION'"
 do
     if [ "$RETRIES" -le 0 ]; then
-        echo "Retry count $RETRIES exceeded; exiting ..."
+        echo "Retry count exceeded; exiting ..."
+        docker ps
         exit 1
     fi
     RETRIES=$((RETRIES - 1))
