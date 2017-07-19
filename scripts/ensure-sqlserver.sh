@@ -29,7 +29,4 @@ do
     RETRIES=$((RETRIES - 1))
     echo "$(date) waiting 1s for $CONTAINER to start ..."
     sleep 1s
-
-    # Dump docker logs for the container to aid in debugging.
-    docker logs "$CONTAINER"
 done
