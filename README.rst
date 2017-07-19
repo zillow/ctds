@@ -39,9 +39,9 @@ Generate documentation using the following:
 .. code-block::
 
     make doc
-    # Generated to ./docs
+    # Generated to ./.gh-pages
 
-Documentation is hosted on `GitHub pages <https://pages.github.com/>`_.
+Documentation is hosted on `GitHub Pages <https://pages.github.com/>`_.
 As such, the source code for the documentation pages must be committed
 to the master branch in order to update the live documentation.
 

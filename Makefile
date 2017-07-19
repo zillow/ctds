@@ -118,7 +118,7 @@ coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-s
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         "./scripts/ctds-coverage.sh"
-	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage $(abspath coverage)
+	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage $(abspath .coverage)
 	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage
 endef
 
@@ -154,5 +154,5 @@ doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
         "./scripts/ctds-doc.sh"
-	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc:/usr/src/ctds/docs $(abspath docs)
+	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc:/usr/src/ctds/docs $(abspath .gh-pages)
 	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc

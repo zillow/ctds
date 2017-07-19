@@ -7,37 +7,31 @@ matrix:
           dist: trusty
           services: docker
           sudo: required
-          after_script: make stop-sqlserver
         - python: 3.5
           os: linux
           dist: trusty
           services: docker
           sudo: required
-          after_script: make stop-sqlserver
         - python: 3.4
           os: linux
           dist: trusty
           services: docker
           sudo: required
-          after_script: make stop-sqlserver
         - python: 3.3
           os: linux
           dist: trusty
           services: docker
           sudo: required
-          after_script: make stop-sqlserver
         - python: 2.7
           os: linux
           dist: trusty
           services: docker
           sudo: required
-          after_script: make stop-sqlserver
         - os: osx
           language: generic
 
 before_install: travis/before_install.sh
-
-# Travis-ci doesn't support docker support on OS X. Just verify ctds builds on OS X.
-install: if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install .; fi
-
-script: if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then make check_${TRAVIS_PYTHON_VERSION}; fi
+install: travis/install.sh
+script: travis/script.sh
+after_script: travis/after_script.sh
+after_failure: travis/after_failure.sh
