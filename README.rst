@@ -32,7 +32,7 @@ Documentation
 -------------
 
 The full documentation for `cTDS` can be found
-`here <http://pythonhosted.org/ctds/>`_.
+`here <https://zillow.github.io/ctds/>`_.
 
 Generate documentation using the following:
 
