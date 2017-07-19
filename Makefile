@@ -23,14 +23,6 @@ CHECKED_FREETDS_VERSIONS := \
 DEFAULT_PYTHON_VERSION := $(lastword $(SUPPORTED_PYTHON_VERSIONS))
 DEFAULT_FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
 
-VALGRIND_FLAGS := \
-    --leak-check=summary \
-    --fullpath-after=/ \
-    --num-callers=24 \
-    --malloc-fill=0xa0 \
-    --free-fill=0xff \
-    --log-file=valgrind.log
-
 CTDS_VERSION := $(strip $(shell python setup.py --version))
 
 # Help
@@ -45,7 +37,7 @@ help:
 	@echo "    clean"
 	@echo "        Clean source tree."
 	@echo
-	@echo "    cover"
+	@echo "    coverage"
 	@echo "        Generate code coverage for c and Python source code."
 	@echo
 	@echo "    doc"
@@ -63,26 +55,22 @@ help:
 	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
-	@echo "      VALGRIND - Run tests under \`valgrind\`. e.g. \`make test VALGRIND=1\`"
-
-
-# clean
-.PHONY: clean
-clean:
-	git clean -dfX
-
-# doc
-$(eval $(call ENV_RULE, doc, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION), sphinx sphinx_rtd_theme, DOC_COMMANDS))
-
-publish: doc
-	git tag -a v$(CTDS_VERSION) -m "v$(CTDS_VERSION)"
-	git push --tags
-	python setup.py sdist upload
-	python setup.py upload_docs --upload-dir=$(HTML_BUILD_DIR)
 
 
 UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
 SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
+
+.PHONY: clean
+clean: stop-sqlserver
+	git clean -dfX
+	docker images -q ctds-unittest-* | xargs -r docker rmi
+
+.PHONY: publish
+publish:
+	git tag -a v$(CTDS_VERSION) -m "v$(CTDS_VERSION)"
+	git push --tags
+	python setup.py sdist upload
+
 
 .PHONY: start-sqlserver
 start-sqlserver:
@@ -90,7 +78,9 @@ start-sqlserver:
 
 .PHONY: stop-sqlserver
 stop-sqlserver:
-	docker stop $(SQL_SERVER_DOCKER_IMAGE_NAME)
+	if [ `docker ps -f name=$(SQL_SERVER_DOCKER_IMAGE_NAME) -q` ]; then \
+        docker stop $(SQL_SERVER_DOCKER_IMAGE_NAME); \
+    fi
 
 # Function to generate a rules for:
 #   * building a docker image with a specific Python/FreeTDS version
