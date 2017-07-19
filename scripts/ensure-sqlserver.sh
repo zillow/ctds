@@ -3,7 +3,7 @@
 CONTAINER=${1:-ctds-unittest-sqlserver}
 
 HOSTNAME=localhost
-RETRIES=10
+RETRIES=30
 
 USERNAME=TDSUnittest
 PASSWORD=TDSUnittest1
@@ -27,6 +27,9 @@ do
         exit 1
     fi
     RETRIES=$((RETRIES - 1))
-    echo "$(date) waiting 5s for $CONTAINER to start ..."
-    sleep 5s
+    echo "$(date) waiting 1s for $CONTAINER to start ..."
+    sleep 1s
+
+    # Dump docker logs for the container to aid in debugging.
+    docker logs "$CONTAINER"
 done
