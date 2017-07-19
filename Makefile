@@ -86,18 +86,7 @@ SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
 
 .PHONY: start-sqlserver
 start-sqlserver:
-	@if [ -z `docker ps -f name=$(SQL_SERVER_DOCKER_IMAGE_NAME) -q` ]; then \
-        echo "MS SQL Server docker container not running; starting ..."; \
-        docker build $(if $(VERBOSE),,-q) -f Dockerfile-sqlserver -t $(SQL_SERVER_DOCKER_IMAGE_NAME) .; \
-        docker run -d \
-            -e 'ACCEPT_EULA=Y' \
-            -e 'SA_PASSWORD=cTDS-unitest!' \
-            -e 'MSSQL_PID=Developer' \
-            --rm \
-            --name $(SQL_SERVER_DOCKER_IMAGE_NAME) \
-            $(SQL_SERVER_DOCKER_IMAGE_NAME); \
-        sleep 5s; \
-    fi
+	scripts/ensure-sqlserver.sh $(SQL_SERVER_DOCKER_IMAGE_NAME)
 
 .PHONY: stop-sqlserver
 stop-sqlserver:
