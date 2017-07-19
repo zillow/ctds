@@ -21,7 +21,7 @@ Features
 
 * Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2008 and up.
 * Complete `DB API-2.0 <https://www.python.org/dev/peps/pep-0249>`_ support.
-* Python 2.6, Python 2.7, Python 3.3, Python 3.4, and Python 3.5 support.
+* Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, and Python 3.6 support.
 * Bulk insert (bcp) support.
 * Written entirely in C.
 
@@ -39,34 +39,23 @@ Generate documentation using the following:
 .. code-block::
 
     make doc
-    # Generated to build/docs/html
+    # Generated to docs
 
 
 Development
 -----------
 
-To setup a development environment, some system packages are required. On Debian
-systems these can be installed using:
+Local development and testing is supported linux-based systems running
+`Docker`_. Docker containers are used for both running a local instance
+of `SQL Server on Linux`_ and creating containers for each combination
+of Python and FreeTDS version supported.
 
-.. code-block::
+.. _`Docker`: https://www.docker.com/
+.. _`SQL Server on Linux`_: https://hub.docker.com/r/microsoft/mssql-server-linux/
 
-    make setup
-
-
-This will also install the supported Python versions for testing.
 
 Testing
 -------
-
-cTDS tests require an actual SQL Server instance to run. `SQL Server Express`_
-is a free, readily available variant should a paid version not be available. The
-included **test-setup.sql** script will create the necessary database, login,
-etc. required for running the tests.
-
-.. _`SQL Server Express`: https://www.microsoft.com/en-us/server-cloud/products/sql-server-editions/sql-server-express.aspx
-
-Additionally, the hostname for the SQL Server instance to use for the tests must
-be configured in the **ctds/tests/database.ini** configuration file.
 
 To run the tests against the default version of Python and FreeTDS, use:
 
@@ -79,10 +68,11 @@ To run the tests against an arbitrary version of Python and FreeTDS:
 
 .. code-block::
 
+    # Python X.Y & FreeTDS Z.ZZ.ZZ
     make test_X.Y_Z.ZZ.ZZ
 
 
-To run tests against all versions of Python and FreeTDS:
+To run tests against all supported versions of Python and FreeTDS:
 
 .. code-block::
 
