@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bulk Insert &mdash; ctds 1.3.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ctds 1.3.1 documentation" href="index.html"/>
+        <link rel="next" title="Connection Pooling" href="pooling.html"/>
+        <link rel="prev" title="Transactions" href="transactions.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ctds
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Basic Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="execute.html">Executing SQL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callproc.html">Calling Stored Procedures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results.html">Reading Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transactions.html">Transactions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Bulk Insert</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inserting-from-a-csv-file">Inserting from a CSV File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#batch-size">Batch Size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#text-columns">Text Columns</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pooling.html">Connection Pooling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ctds</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Bulk Insert</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/bulk_insert.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bulk-insert">
+<h1>Bulk Insert<a class="headerlink" href="#bulk-insert" title="Permalink to this headline">¶</a></h1>
+<p><cite>cTDS</cite> supports <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188365.aspx">BULK INSERT</a> for effeciently inserting large amounts of data
+into a table using <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.bulk_insert()</span></code></a>.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>A bulk insert is done by providing an <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typeiter" title="(in Python v3.6)"><span class="xref std std-ref">iterator</span></a> of
+rows to insert and the name of the table to insert the rows into. The iterator
+should return a sequence containing the values for each column in the table.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
+        <span class="s1">&#39;MyExampleTable&#39;</span><span class="p">,</span>
+        <span class="c1"># A generator of the rows.</span>
+        <span class="p">(</span>
+            <span class="c1"># The row values can be any python sequence type</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;hello world {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inserting-from-a-csv-file">
+<h2>Inserting from a CSV File<a class="headerlink" href="#inserting-from-a-csv-file" title="Permalink to this headline">¶</a></h2>
+<p>This example illustrates how to import data from a <em>CSV</em> file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;BulkInsertExample.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+    <span class="n">csvreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
+            <span class="s1">&#39;BulkInsertExample&#39;</span><span class="p">,</span>
+            <span class="nb">iter</span><span class="p">(</span><span class="n">csvreader</span><span class="p">)</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="batch-size">
+<h2>Batch Size<a class="headerlink" href="#batch-size" title="Permalink to this headline">¶</a></h2>
+<p>By default, <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.bulk_insert()</span></code></a> will push all data to the
+database before it is actually validated against the table’s schema. If any of
+the data is invalid, the entire <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188365.aspx">BULK INSERT</a> operation would fail. The
+<cite>batch_size</cite> parameter of <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.bulk_insert()</span></code></a> can be used
+to control how many rows should be copied before validating them.</p>
+</div>
+<div class="section" id="text-columns">
+<h2>Text Columns<a class="headerlink" href="#text-columns" title="Permalink to this headline">¶</a></h2>
+<p>Data specified for bulk insertion into text columns (e.g. <strong>VARCHAR</strong>,
+<strong>NVARCHAR</strong>, <strong>TEXT</strong>) is not encoded on the client in any way by FreeTDS.
+Because of this behavior it is possible to insert textual data with an invalid
+encoding and cause the column data to become corrupted.</p>
+<p>To prevent this, it is recommended the caller is explicitly wrap the the object
+with either <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a> (for <strong>CHAR</strong>, <strong>VARCHAR</strong> or <strong>TEXT</strong>
+columns) or <a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlNVarChar</span></code></a> (for <strong>NCHAR</strong>, <strong>NVARCHAR</strong> or
+<strong>NTEXT</strong> columns). For non-Unicode columns, the value should be first encoded
+to column’s encoding (e.g. <cite>latin-1</cite>). By default <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a>
+will encode <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> objects to <cite>utf-8</cite>, which is likely incorrect for
+most SQL Server configurations.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
+        <span class="c1">#</span>
+        <span class="c1"># Assumes a table with the following schema:</span>
+        <span class="c1">#</span>
+        <span class="c1"># CREATE TABLE MyExampleTableWithVarChar (</span>
+        <span class="c1">#     Latin1Column VARCHAR(100) COLLATE SQL_Latin1_General_CP1_CI_AS,</span>
+        <span class="c1">#     UnicodeColumn NVARCHAR(100)</span>
+        <span class="c1"># )</span>
+        <span class="c1">#</span>
+
+        <span class="s1">&#39;MyExampleTableWithVarChar&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="p">(</span>
+                <span class="c1"># Note the value passed to SqlVarChar is first encoded to</span>
+                <span class="c1"># match the server&#39;s encoding.</span>
+                <span class="n">ctds</span><span class="o">.</span><span class="n">SqlVarChar</span><span class="p">(</span>
+                    <span class="sa">b</span><span class="s1">&#39;a string with latin-1 -&gt; </span><span class="se">\xc2\xbd</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                        <span class="s1">&#39;utf-8&#39;</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">ctds</span><span class="o">.</span><span class="n">SqlVarChar</span><span class="p">(</span>
+                    <span class="sa">b</span><span class="s1">&#39;a string with Unicode -&gt; </span><span class="se">\xe3\x83\x9b</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-16le&#39;</span><span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pooling.html" class="btn btn-neutral float-right" title="Connection Pooling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="transactions.html" class="btn btn-neutral" title="Transactions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-, Zillow, Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.3.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

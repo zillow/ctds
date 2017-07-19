@@ -1,0 +1,583 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ctds &mdash; ctds 1.3.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ctds 1.3.1 documentation" href="index.html"/>
+        <link rel="up" title="API Reference" href="api.html"/>
+        <link rel="next" title="Parameter" href="parameter.html"/>
+        <link rel="prev" title="Cursor" href="cursor.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ctds
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Basic Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="execute.html">Executing SQL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callproc.html">Calling Stored Procedures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results.html">Reading Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bulk_insert.html">Bulk Insert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pooling.html">Connection Pooling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cursor.html">Cursor</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ctds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">SQL Type Wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pool.html">ctds.pool</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ctds</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="api.html">API Reference</a> &raquo;</li>
+        
+      <li>ctds</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ctds.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ctds">
+<span id="ctds"></span><h1>ctds<a class="headerlink" href="#module-ctds" title="Permalink to this headline">¶</a></h1>
+<p><em>cTDS</em> is a pure C implementation of the <a class="reference external" href="https://www.python.org/dev/peps/pep-0249">Python DB API 2.0</a>
+specification for Microsoft SQL Server.</p>
+<dl class="data">
+<dt id="ctds.apilevel">
+<code class="descclassname">ctds.</code><code class="descname">apilevel</code><a class="headerlink" href="#ctds.apilevel" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#apilevel"><strong>PEP 0249#apilevel</strong></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ctds.paramstyle">
+<code class="descclassname">ctds.</code><code class="descname">paramstyle</code><a class="headerlink" href="#ctds.paramstyle" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#paramstyle"><strong>PEP 0249#paramstyle</strong></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ctds.threadsafety">
+<code class="descclassname">ctds.</code><code class="descname">threadsafety</code><a class="headerlink" href="#ctds.threadsafety" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-2"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#threadsafety"><strong>PEP 0249#threadsafety</strong></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ctds.freetds_version">
+<code class="descclassname">ctds.</code><code class="descname">freetds_version</code><a class="headerlink" href="#ctds.freetds_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>The version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> in use at runtime.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="ctds.version_info">
+<code class="descclassname">ctds.</code><code class="descname">version_info</code><a class="headerlink" href="#ctds.version_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <em>cTDS</em> version, as a <strong>(MAJOR, MINOR, PATCH)</strong> tuple.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.Error">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">Error</code><a class="headerlink" href="#ctds.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-3"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#error"><strong>PEP 0249#error</strong></a></p>
+<p>Exception that is the base class of all other error exceptions. You
+can use this to catch all errors with one single except statement.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.InterfaceError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">InterfaceError</code><a class="headerlink" href="#ctds.InterfaceError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-4"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#interfaceerror"><strong>PEP 0249#interfaceerror</strong></a></p>
+<p>Exception raised for errors that are related to the database interface
+rather than the database itself.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.DatabaseError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">DatabaseError</code><a class="headerlink" href="#ctds.DatabaseError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-5"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#databaseerror"><strong>PEP 0249#databaseerror</strong></a></p>
+<p>Exception raised for errors that are related to the database.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.DataError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">DataError</code><a class="headerlink" href="#ctds.DataError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-6"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#dataerror"><strong>PEP 0249#dataerror</strong></a></p>
+<p>Exception raised for errors that are due to problems with the
+processed data like division by zero, numeric value out of range,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.OperationalError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">OperationalError</code><a class="headerlink" href="#ctds.OperationalError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-7"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#operationalerror"><strong>PEP 0249#operationalerror</strong></a></p>
+<p>Exception raised for errors that are related to the database’s
+operation and not necessarily under the control of the programmer,
+e.g. an unexpected disconnect occurs, the data source name is not
+found, a transaction could not be processed, a memory allocation
+error occurred during processing, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.IntegrityError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">IntegrityError</code><a class="headerlink" href="#ctds.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-8"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#integrityerror"><strong>PEP 0249#integrityerror</strong></a></p>
+<p>Exception raised when the relational integrity of the database is
+affected, e.g. a foreign key check fails.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.InternalError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">InternalError</code><a class="headerlink" href="#ctds.InternalError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-9"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#internalerror"><strong>PEP 0249#internalerror</strong></a></p>
+<p>Exception raised when the database encounters an internal error,
+e.g. the cursor is not valid anymore, the transaction is out of
+sync, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.ProgrammingError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">ProgrammingError</code><a class="headerlink" href="#ctds.ProgrammingError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-10"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#programmingerror"><strong>PEP 0249#programmingerror</strong></a></p>
+<p>Exception raised for programming errors, e.g. table not found or
+already exists, syntax error in the SQL statement, wrong number of
+parameters specified, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.NotSupportedError">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">NotSupportedError</code><a class="headerlink" href="#ctds.NotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-11"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#notsupportederror"><strong>PEP 0249#notsupportederror</strong></a></p>
+<p>Exception raised in case a method or database API was used which is
+not supported by the database, e.g. calling 
+<a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-func docutils literal"><span class="pre">rollback()</span></code></a> on a connection that does not
+support transactions or has transactions turned off.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ctds.Warning">
+<em class="property">exception </em><code class="descclassname">ctds.</code><code class="descname">Warning</code><a class="headerlink" href="#ctds.Warning" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="target" id="index-12"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#warning"><strong>PEP 0249#warning</strong></a></p>
+<p>Exception raised for important warnings like data truncations while
+inserting, etc.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.connect">
+<code class="descclassname">ctds.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>server</em>, <em>port=1433</em>, <em>instance=None</em>, <em>user=''</em>, <em>password=''</em>, <em>database=None</em>, <em>appname='ctds'</em>, <em>login_timeout=5</em>, <em>timeout=5</em>, <em>tds_version=None</em>, <em>autocommit=False</em>, <em>ansi_defaults=True</em>, <em>enable_bcp=True</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a database.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="connection.html#ctds.Connection.close" title="ctds.Connection.close"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.close()</span></code></a> should be called when the returned
+connection object is no longer required.</p>
+</div>
+<p><span class="target" id="index-13"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>server</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The database server host.</li>
+<li><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The database server port. This value is ignored if
+<cite>instance</cite> is provided.</li>
+<li><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – An optional database instance to connect to.</li>
+<li><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The database server username.</li>
+<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The database server password.</li>
+<li><strong>database</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – An optional database to initially connect to.</li>
+<li><strong>appname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – An optional application name to associate with
+the connection.</li>
+<li><strong>login_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – An optional login timeout, in seconds.</li>
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – An optional timeout for database requests, in seconds.</li>
+<li><strong>tds_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The TDS protocol version to use. If None is specified,
+the highest version supported by FreeTDS will be used.</li>
+<li><strong>autocommit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Autocommit transactions on the connection.</li>
+<li><strong>ansi_defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Set <cite>ANSI_DEFAULTS</cite> and related settings to mimic ODBC drivers.</li>
+<li><strong>enable_bcp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Enable bulk copy support on the connection. This is required for
+<a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">bulk_insert()</span></code></a> to function.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>Connection</cite> object connected to the database.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection">Connection</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.Date">
+<code class="descclassname">ctds.</code><code class="descname">Date</code><span class="sig-paren">(</span><em>year</em>, <em>month</em>, <em>day</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a date value.</p>
+<p><span class="target" id="index-14"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#date"><strong>PEP 0249#date</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The year.</li>
+<li><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The month.</li>
+<li><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The day.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>date</cite> object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.6)">datetime.date</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.Time">
+<code class="descclassname">ctds.</code><code class="descname">Time</code><span class="sig-paren">(</span><em>hour</em>, <em>minute</em>, <em>second</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time value.</p>
+<p><span class="target" id="index-15"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#time"><strong>PEP 0249#time</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The hour.</li>
+<li><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The minute.</li>
+<li><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The second.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>time</cite> object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.6)">datetime.time</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.Timestamp">
+<code class="descclassname">ctds.</code><code class="descname">Timestamp</code><span class="sig-paren">(</span><em>year</em>, <em>month</em>, <em>day</em>, <em>hour</em>, <em>minute</em>, <em>second</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time stamp value.</p>
+<p><span class="target" id="index-16"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timestamp"><strong>PEP 0249#timestamp</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The year.</li>
+<li><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The month.</li>
+<li><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The day.</li>
+<li><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The hour.</li>
+<li><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The minute.</li>
+<li><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The second.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>datetime</cite> object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)">datetime.datetime</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.DateFromTicks">
+<code class="descclassname">ctds.</code><code class="descname">DateFromTicks</code><span class="sig-paren">(</span><em>ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.DateFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a date value from the given
+ticks value (number of seconds since the epoch; see the documentation of
+the standard Python time module for details).</p>
+<p><span class="target" id="index-17"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#datefromticks"><strong>PEP 0249#datefromticks</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The number of seconds since the epoch.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new date object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.6)">datetime.date</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.TimeFromTicks">
+<code class="descclassname">ctds.</code><code class="descname">TimeFromTicks</code><span class="sig-paren">(</span><em>ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.TimeFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time value from the given
+ticks value (number of seconds since the epoch; see the documentation of
+the standard Python time module for details).</p>
+<p><span class="target" id="index-18"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timefromticks"><strong>PEP 0249#timefromticks</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The number of seconds since the epoch.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new <cite>time</cite> object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.6)">datetime.time</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.TimestampFromTicks">
+<code class="descclassname">ctds.</code><code class="descname">TimestampFromTicks</code><span class="sig-paren">(</span><em>ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.TimestampFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time stamp value from the
+given ticks value (number of seconds since the epoch; see the
+documentation of the standard Python time module for details).</p>
+<p><span class="target" id="index-19"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timestampfromticks"><strong>PEP 0249#timestampfromticks</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The number of seconds since the epoch.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new <cite>datetime</cite> object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)">datetime.datetime</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ctds.Binary">
+<code class="descclassname">ctds.</code><code class="descname">Binary</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object capable of holding a binary (long)
+string value.</p>
+<p><span class="target" id="index-20"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#binary"><strong>PEP 0249#binary</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The string value to convert to binary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new binary object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="types.html#ctds.SqlBinary" title="ctds.SqlBinary">SqlBinary</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="parameter.html" class="btn btn-neutral float-right" title="Parameter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cursor.html" class="btn btn-neutral" title="Cursor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-, Zillow, Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.3.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

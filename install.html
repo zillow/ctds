@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; ctds 1.3.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ctds 1.3.1 documentation" href="index.html"/>
+        <link rel="next" title="Basic Example" href="example.html"/>
+        <link rel="prev" title="cTDS" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ctds
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-freetds">Installing FreeTDS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation-from-source">Installation From Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-on-debian-based-systems">Installation On Debian-based Systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-on-mac-os-x">Installation On Mac OS X</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pip-installation">PIP Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Basic Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="execute.html">Executing SQL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callproc.html">Calling Stored Procedures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results.html">Reading Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bulk_insert.html">Bulk Insert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pooling.html">Connection Pooling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ctds</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p><cite>cTDS</cite> is built on top of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> and therefore is required to use <cite>cTDS</cite>.</p>
+<div class="section" id="installing-freetds">
+<h2>Installing FreeTDS<a class="headerlink" href="#installing-freetds" title="Permalink to this headline">¶</a></h2>
+<p>It is <strong>highly</strong> recommended to use the latest stable version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a>, if possible.
+If this is not possible, <a class="reference external" href="http://www.freetds.org">FreeTDS</a> can be installed using your system’s package
+manager.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Versions of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> prior to <em>0.95</em> contain defects which may affect
+<cite>cTDS</cite> functionality.</p>
+</div>
+<div class="section" id="installation-from-source">
+<h3>Installation From Source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://www.freetds.org">FreeTDS</a> can be easily built from the latest stable source for use in a
+<a class="reference external" href="http://virtualenv.readthedocs.org/en/latest/userguide.html">virtualenv</a> using the following:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Create the virtual environment.</span>
+virtualenv ctds-venv <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ctds-venv
+wget <span class="s1">&#39;ftp://ftp.freetds.org/pub/freetds/stable/freetds-patched.tar.gz&#39;</span>
+tar -xzf freetds-patched.tar.gz
+<span class="nb">pushd</span> freetds-*
+./configure --prefix <span class="s2">&quot;</span><span class="k">$(</span>dirname <span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">&quot;</span> <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install
+<span class="nb">popd</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installation-on-debian-based-systems">
+<h3>Installation On Debian-based Systems<a class="headerlink" href="#installation-on-debian-based-systems" title="Permalink to this headline">¶</a></h3>
+<p>Both <em>FreeTDS</em> and the <em>Python</em> development headers can easily be installed
+using the system package manager on Debian-based systems, such as Ubuntu.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo apt-get install freetds-dev python-dev
+</pre></div>
+</div>
+</div>
+<div class="section" id="installation-on-mac-os-x">
+<h3>Installation On Mac OS X<a class="headerlink" href="#installation-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
+<p>On OS X, <a class="reference external" href="http://brew.sh/">homebrew</a> is recommended for installing <a class="reference external" href="http://www.freetds.org">FreeTDS</a>.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>brew update
+brew install freetds
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pip-installation">
+<h2>PIP Installation<a class="headerlink" href="#pip-installation" title="Permalink to this headline">¶</a></h2>
+<p>Once <a class="reference external" href="http://www.freetds.org">FreeTDS</a> is installed, <em>cTDS</em> can be installed using <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.</p>
+<p>When using a non-system version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a>, use the following to specify
+which <cite>include</cite> and <cite>library</cite> directories to compile and link <em>cTDS</em> against.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Assuming . is the root of the virtualenv.</span>
+<span class="c1"># Note: In order to load the locally built version of the</span>
+<span class="c1"># FreeTDS libraries either the working directory must be</span>
+<span class="c1"># the same as when ctds was installed or LD_LIBRARY_PATH</span>
+<span class="c1"># must be set correctly.</span>
+pip install --global-option<span class="o">=</span>build_ext <span class="se">\</span>
+    --global-option<span class="o">=</span><span class="s2">&quot;--include-dirs=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/include&quot;</span> <span class="se">\</span>
+    --global-option<span class="o">=</span>build_ext <span class="se">\</span>
+    --global-option<span class="o">=</span><span class="s2">&quot;--library-dirs=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/lib&quot;</span> <span class="se">\</span>
+    --global-option<span class="o">=</span>build_ext --global-option<span class="o">=</span><span class="s2">&quot;--rpath=./lib&quot;</span> <span class="se">\</span>
+    ctds
+</pre></div>
+</div>
+<p>When using the system version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a>, use the following:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install ctds
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="example.html" class="btn btn-neutral float-right" title="Basic Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="cTDS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-, Zillow, Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.3.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
