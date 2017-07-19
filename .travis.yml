@@ -7,9 +7,29 @@ matrix:
           services: docker
           sudo: required
           after_script: make stop-sqlserver
-        # Use generic language for osx
-        #- os: osx
-        #  language: generic
+        - env: PYTHON_VERSION=3.5
+          os: linux
+          services: docker
+          sudo: required
+          after_script: make stop-sqlserver
+        - env: PYTHON_VERSION=3.4
+          os: linux
+          services: docker
+          sudo: required
+          after_script: make stop-sqlserver
+        - env: PYTHON_VERSION=3.3
+          os: linux
+          services: docker
+          sudo: required
+          after_script: make stop-sqlserver
+        - env: PYTHON_VERSION=2.7
+          os: linux
+          services: docker
+          sudo: required
+          after_script: make stop-sqlserver
+         Use generic language for osx
+        - os: osx
+          language: generic
 
 before_install: travis/before_install.sh
 
