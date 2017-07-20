@@ -2374,6 +2374,15 @@ static PyObject* RowList_item(PyObject* self, Py_ssize_t ix)
     return rowlist->rows[ix].row.python;
 }
 
+PyTypeObject* RowListType_init(void)
+{
+    if (0 != PyType_Ready(&RowListType))
+    {
+        return NULL;
+    }
+    return &RowListType;
+}
+
 static PySequenceMethods s_RowList_as_sequence = {
     RowList_len,  /* sq_length */
     NULL,         /* sq_concat */
