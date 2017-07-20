@@ -34,4 +34,5 @@ before_install: travis/before_install.sh
 install: travis/install.sh
 script: travis/script.sh
 after_script: travis/after_script.sh
+after_success: travis/after_success.sh
 after_failure: travis/after_failure.sh
