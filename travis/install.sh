@@ -5,7 +5,10 @@ if [ -z "$TRAVIS" ]; then
     exit 1
 fi
 
-# Travis-ci doesn't support docker support on OS X. Just verify ctds builds on OS X.
-if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+if [ "$TRAVIS_OS_NAME" != "osx" ]; then
+    # Install coverage, which codecov requires to generate report XML.
+    pip install coverage
+else
+    # Travis-ci doesn't support docker support on OS X. Just verify ctds builds on OS X.
     pip install .
 fi
