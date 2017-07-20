@@ -14,6 +14,7 @@
     @return The initialized Python type object.
 */
 PyTypeObject* CursorType_init(void);
+PyTypeObject* RowListType_init(void);
 
 struct Connection; /* forward declaration */
 
