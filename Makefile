@@ -117,8 +117,10 @@ coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-s
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
-        "./scripts/ctds-coverage.sh"
-	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage $(abspath .coverage)
+        "./scripts/ctds-coverage.sh" || docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage
+	mkdir -p $$@
+	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage \
+        $(abspath $$@)
 	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage
 endef
 
@@ -126,7 +128,7 @@ $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERS
 
 define CHECK_RULE
 .PHONY: check_$(strip $(1))
-check_$(strip $(1)): $(foreach FV, $(CHECKED_FREETDS_VERSIONS), test_$(strip $(1))_$(FV))
+check_$(strip $(1)): $(foreach FV, $(CHECKED_FREETDS_VERSIONS), coverage_$(strip $(1))_$(FV))
 endef
 
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECK_RULE, $(PV))))

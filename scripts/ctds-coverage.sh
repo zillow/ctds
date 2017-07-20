@@ -6,9 +6,7 @@ mkdir coverage
 
 # Outputs data to ".coverage"
 coverage run --branch --source 'ctds' setup.py test
-coverage report --fail-under 100
-
-mv .coverage coverage
+cp .coverage coverage
 
 # There should be one build directory of object files,
 # e.g. build/temp.linux-x86_64-3.6/ctds
@@ -16,5 +14,4 @@ for OBJDIR in build/*/ctds; do :; done;
 
 # Outputs data to "<source-file>.gcov"
 gcov -o $OBJDIR ctds/*.c
-
-mv *.gcov coverage
+cp *.gcov coverage
