@@ -3,8 +3,7 @@
 *.gcov
 *.pyc
 *.so
-.coverage
-.zpr/
+.gh-pages/
+coverage_*
 build/
 dist/
-ctds/tests/database.ini

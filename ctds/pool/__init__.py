@@ -133,7 +133,7 @@ class ConnectionPool(object): # pylint: disable=too-many-instance-attributes
                     self._condition.wait(timeout=None) # block indefinitely
 
             # Check the pool for a non-stale connection.
-            while len(self._pool) > 0:
+            while self._pool:
                 pooledconn = self._pool.pop(0) # get least recently used connection
                 if self._idlettl is not None and (pooledconn.released + self._idlettl) < time.time():
                     pooledconn.connection.close()

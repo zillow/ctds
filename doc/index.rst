@@ -31,4 +31,4 @@ Index
     Connection Pooling <pooling>
     faq
     api
-
+    Change Log <CHANGELOG>

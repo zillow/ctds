@@ -14,7 +14,7 @@ import sys
 
 CTDS_MAJOR_VERSION = 1
 CTDS_MINOR_VERSION = 3
-CTDS_PATCH_VERSION = 1
+CTDS_PATCH_VERSION = 2
 
 install_requires = [
 ]
@@ -54,11 +54,13 @@ if not windows:
         ]
     extra_link_args = ['-O1'] if debug else ['-O3'] # setuptools specifies -O2 -- override it
 
-    if os.environ.get('TDS_PROFILE'):
+    if os.environ.get('CTDS_PROFILE'):
         extra_compile_args.append('-pg')
+        if os.path.isdir(os.environ['CTDS_PROFILE']):
+            extra_compile_args += ['-fprofile-dir', '"{0}"'.format(os.environ['CTDS_PROFILE'])]
         extra_link_args.append('-pg')
 
-    if os.environ.get('TDS_COVER'):
+    if os.environ.get('CTDS_COVER'):
         extra_compile_args += ['-fprofile-arcs', '-ftest-coverage']
         extra_link_args.append('-fprofile-arcs')
 else:
@@ -110,6 +112,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: SQL',
         'Topic :: Database',

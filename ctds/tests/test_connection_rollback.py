@@ -54,7 +54,7 @@ Rollback any pending transaction to the database.
                 self.assertEqual(0, cursor.fetchone()[0])
 
     def test_rollback_autocommit(self):
-        with self.connect() as connection:
+        with self.connect(timeout=1) as connection:
             with connection.cursor() as cursor:
                 cursor.execute('SELECT @@TRANCOUNT')
                 self.assertEqual(0, cursor.fetchone()[0])

@@ -132,7 +132,7 @@ will be implicitly rolled back when the connection is closed.
             # Create a table and add values. On exit from the context, it should
             # be rolled back.
             try:
-                with self.connect(autocommit=False) as connection:
+                with self.connect(autocommit=False, timeout=1) as connection:
                     with connection.cursor() as cursor:
                         cursor.execute('CREATE TABLE {0} (ints INT)'.format(name))
                         cursor.execute('INSERT INTO {0} VALUES (1),(2),(3)'.format(name))

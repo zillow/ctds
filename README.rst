@@ -12,18 +12,29 @@ cTDS
 .. image:: http://img.shields.io/pypi/v/ctds.svg
         :target: https://pypi.python.org/pypi/ctds/
 
+.. image:: https://codecov.io/gh/zillow/ctds/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/zillow/ctds
+
 `cTDS` is a full Python `DB API-2.0 <https://www.python.org/dev/peps/pep-0249>`_-compliant
 SQL Server database library for `Linux` and `Mac OS X` supporting both Python 2
 and Python 3.
+
 
 Features
 --------
 
 * Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2008 and up.
 * Complete `DB API-2.0 <https://www.python.org/dev/peps/pep-0249>`_ support.
-* Python 2.6, Python 2.7, Python 3.3, Python 3.4, and Python 3.5 support.
+* Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, and Python 3.6 support.
 * Bulk insert (bcp) support.
 * Written entirely in C.
+
+Dependencies
+------------
+
+* `FreeTDS`_
+
+.. _`FreeTDS`: http://www.freetds.org/
 
 .. include-documentation-end-marker
 
@@ -36,54 +47,83 @@ The full documentation for `cTDS` can be found
 
 Generate documentation using the following:
 
-.. code-block::
+.. code-block:: console
 
     make doc
-    # Generated to build/docs/html
+    # Generated to ./.gh-pages
+
+Documentation is hosted on `GitHub Pages <https://pages.github.com/>`_.
+As such, the source code for the documentation pages must be committed
+to the master branch in order to update the live documentation.
 
 
 Development
 -----------
 
-To setup a development environment, some system packages are required. On Debian
-systems these can be installed using:
+Local development and testing is supported on linux-based systems running
+`Docker`_. Docker containers are used for both running a local instance
+of `SQL Server on Linux`_ and creating containers for each combination
+of Python and `FreeTDS`_ version supported.
 
-.. code-block::
+Local development *can* be done by simply installing **ctds** against the
+system versions of `FreeTDS`_ and `Python`_.
 
-    make setup
+.. code-block:: console
+
+    # Install as a "develop" egg
+    pip install -e .
+
+    # Install tests.
+    pip install -e .[tests]
+
+    # Run tests (requires SQL Server running)
+    python setup.py test
 
 
-This will also install the supported Python versions for testing.
+However, given the various supported combinations of `FreeTDS`_ and `Python`_,
+it is easier to create a separate `Docker`_ container for each.
+
+Development and testing will likely require an instance of
+`SQL Server on Linux`_ running for validation. A script is provided to
+start a `Docker`_ container running the database and create the login
+used by the tests.
+
+.. code-block:: console
+
+    # Start a docker-based SQL Server instance.
+    make start-sqlserver
+
 
 Testing
 -------
 
-cTDS tests require an actual SQL Server instance to run. `SQL Server Express`_
-is a free, readily available variant should a paid version not be available. The
-included **test-setup.sql** script will create the necessary database, login,
-etc. required for running the tests.
+Testing is designed to be relatively seemless, using `Docker`_ containers
+and `SQL Server on Linux`_. All *test* targets will ensure a running
+database instance docker container exists and is accessible prior to running.
 
-.. _`SQL Server Express`: https://www.microsoft.com/en-us/server-cloud/products/sql-server-editions/sql-server-express.aspx
+To run the tests against the most recent versions of `FreeTDS`_ and `Python`_,
+use:
 
-Additionally, the hostname for the SQL Server instance to use for the tests must
-be configured in the **ctds/tests/database.ini** configuration file.
-
-To run the tests against the default version of Python and FreeTDS, use:
-
-.. code-block::
+.. code-block:: console
 
     make test
 
 
-To run the tests against an arbitrary version of Python and FreeTDS:
+To run the tests against an arbitrary version of `FreeTDS`_ and `Python`_:
 
-.. code-block::
+.. code-block:: console
 
+    # Python X.Y & FreeTDS Z.ZZ.ZZ
     make test_X.Y_Z.ZZ.ZZ
 
 
-To run tests against all versions of Python and FreeTDS:
+To run tests against all supported versions of `FreeTDS`_ and `Python`_:
 
-.. code-block::
+.. code-block:: console
 
     make check
+
+
+.. _`Docker`: https://www.docker.com/
+.. _`SQL Server on Linux`: https://hub.docker.com/r/microsoft/mssql-server-linux/
+.. _`Python`: https://www.python.org/

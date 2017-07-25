@@ -1,0 +1,9 @@
+FROM microsoft/mssql-server-linux:latest
+
+COPY scripts/mssql-entrypoint.sh /
+
+COPY test-setup.sql /
+
+EXPOSE 1433
+
+CMD ["/mssql-entrypoint.sh"]

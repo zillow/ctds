@@ -426,7 +426,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
             ''',
             (
                 datetime(1, 1, 1),
-                # TODO: fix rounding issues. DB lib doesn't expose a good way to access
+                # $future: fix rounding issues. DB lib doesn't expose a good way to access
                 # the more precise DATETIME2 structure
                 datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
             )
@@ -441,7 +441,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
                     else datetime(2001, 1, 1)
                 ),
                 (
-                    '9999-12-31 23:59:59.9970000'
+                    '9999-12-31 23:59:59.9966667'
                     if self.connection.tds_version < '7.3'
                     else datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
                 ),

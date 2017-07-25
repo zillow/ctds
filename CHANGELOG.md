@@ -2,7 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.3.1] - 2017-07-31
+## [1.3.2] - 2017-07-25
+### Fixed
+- Register RowListType to support pickling/unpickling.
+### Added
+- Convert test framework to use Docker-based containers for
+SQL Server and for each supported combination of Python and FreeTDS.
+- Integrate [codecov](https://codecov.io/) support for code coverage
+tracking.
+- Move documentation hosting to [GitHub pages](https://pages.github.com/).
+- Include change log in generated documentation.
+
+## [1.3.1] - 2017-05-31
 ### Fixed
 - Fix connection failures when connecting to high port numbers on OS X.
 - Fix unit test infrastructure to respect configured port number.
@@ -118,7 +129,9 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/zillow/ctds/compare/v1.3.2...v1.3.1
+[1.3.1]: https://github.com/zillow/ctds/compare/v1.3.1...v1.3.0
 [1.3.0]: https://github.com/zillow/ctds/compare/v1.3.0...v1.2.3
 [1.2.3]: https://github.com/zillow/ctds/compare/v1.2.3...v1.2.2
 [1.2.2]: https://github.com/zillow/ctds/compare/v1.2.2...v1.2.1

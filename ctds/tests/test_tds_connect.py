@@ -155,7 +155,8 @@ Connect to a database.
             ctds.connect(
                 host,
                 login_timeout=1,
-                tds_version='7.1'
+                tds_version='7.1',
+                port=self.get_option('port', int) + 1000
             )
         except ctds.OperationalError as ex:
             # FreeTDS version 0.95+ adds a (<host>:<port) to this error.
