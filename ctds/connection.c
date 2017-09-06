@@ -343,32 +343,31 @@ static void Connection_free(struct Connection* connection)
 
 
 /* Raise the last seen error associated with a connection. */
-void Connection_raise_lasterror(PyObject* exception, struct Connection* connection)
+void Connection_raise_lasterror(struct Connection* connection)
 {
-    if (!exception)
-    {
-        /*
-            Attempt to map SQL Server error codes to the appropriate DB API
-            exception.
+    PyObject* exception;
 
-            https://technet.microsoft.com/en-us/library/cc645603(v=sql.105).aspx
-        */
-        if (
-            (101 <= connection->lastmsg.msgno && connection->lastmsg.msgno < 8000) ||
-            /* >= 50000 are user-defined errors. */
-            (50000 <= connection->lastmsg.msgno)
-            )
-        {
-            exception = PyExc_tds_ProgrammingError;
-        }
-        else if (8000 <= connection->lastmsg.msgno && connection->lastmsg.msgno < 9000)
-        {
-            exception = PyExc_tds_DataError;
-        }
-        else
-        {
-            exception = PyExc_tds_DatabaseError;
-        }
+    /*
+        Attempt to map SQL Server error codes to the appropriate DB API
+        exception.
+
+        https://technet.microsoft.com/en-us/library/cc645603(v=sql.105).aspx
+    */
+    if (
+        (101 <= connection->lastmsg.msgno && connection->lastmsg.msgno < 8000) ||
+        /* >= 50000 are user-defined errors. */
+        (50000 <= connection->lastmsg.msgno)
+        )
+    {
+        exception = PyExc_tds_ProgrammingError;
+    }
+    else if (8000 <= connection->lastmsg.msgno && connection->lastmsg.msgno < 9000)
+    {
+        exception = PyExc_tds_DataError;
+    }
+    else
+    {
+        exception = PyExc_tds_DatabaseError;
     }
     raise_lasterror(exception, &connection->lasterror, &connection->lastmsg);
 }
@@ -417,7 +416,7 @@ static int Connection_use_internal(struct Connection* connection, const char* da
 
     if (FAIL == retcode)
     {
-        Connection_raise(connection);
+        Connection_raise_lasterror(connection);
         return -1;
     }
     return 0;
@@ -579,7 +578,7 @@ static int Connection_execute(struct Connection* connection, size_t ncmds, ...)
 
     if (FAIL == retcode)
     {
-        Connection_raise(connection);
+        Connection_raise_lasterror(connection);
         return -1;
     }
 
@@ -888,7 +887,7 @@ static int Connection_timeout_set(PyObject* self, PyObject* value, void* closure
             (void)PyOS_snprintf(str, sizeof(str), "%d", (int)timeout);
             if (FAIL == dbsetopt(connection->dbproc, DBSETTIME, str, (int)timeout))
             {
-                Connection_raise(connection);
+                Connection_raise_lasterror(connection);
                 break;
             }
 
@@ -1134,7 +1133,7 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
             retcode = Parameter_bcp_bind(rpcparams[ix], connection->dbproc, (size_t)(ix + 1));
             if (FAIL == retcode)
             {
-                Connection_raise(connection);
+                Connection_raise_lasterror(connection);
                 break;
             }
         }
@@ -1170,7 +1169,7 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
 
         if (FAIL == retcode)
         {
-            Connection_raise(connection);
+            Connection_raise_lasterror(connection);
             break;
         }
     }
@@ -1316,7 +1315,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
 
             if (FAIL == retcode)
             {
-                Connection_raise(connection);
+                Connection_raise_lasterror(connection);
                 break;
             }
 
@@ -1365,7 +1364,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                 /* Don't overwrite a previous error if bcp_done fails. */
                 if (!PyErr_Occurred())
                 {
-                    Connection_raise(connection);
+                    Connection_raise_lasterror(connection);
                     break;
                 }
             }

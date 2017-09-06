@@ -54,6 +54,9 @@ class TestConnectionAutocommit(TestExternalDatabase):
                 cursor.execute('SELECT @@OPTIONS')
                 self.assertFalse(self.IMPLICIT_TRANSACTIONS & cursor.fetchone()[0])
 
+                connection.autocommit = True
+                self.assertEqual(connection.autocommit, True)
+
     def test_typeerror(self):
         with self.connect() as connection:
             for case in (None, '', 0, 1, ' ', 'True', 'False', object()):

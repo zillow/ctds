@@ -199,6 +199,7 @@ SQL DATE type wrapper.
                     self.assertEqual(repr(wrapper), str(wrapper))
 
     def test_typeerror(self):
+        self.assertRaises(TypeError, ctds.SqlDate)
         for value in (
                 object(),
                 unicode_('1234'),
@@ -772,3 +773,7 @@ SQL DECIMAL type wrapper.
                 self.assertEqual(str(ex), 'invalid scale: {0}'.format(scale))
             else:
                 self.fail('ctds.SqlDecimal did not fail as expected') # pragma: nocover
+
+    def test_internalerror(self):
+        value = '100000000000000000000000000000.123456789'
+        self.assertRaises(ctds.InternalError, ctds.SqlDecimal, value)

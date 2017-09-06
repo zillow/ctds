@@ -710,18 +710,10 @@ static int SqlDate_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
     struct SqlDate* date = (struct SqlDate*)self;
 
-    /* If `args` is not a tuple, assume this method is being called internally. */
     PyObject* value;
-    if (PyTuple_Check(args))
+    if (!PyArg_ParseTuple(args, "O", &value))
     {
-        if (!PyArg_ParseTuple(args, "O", &value))
-        {
-            return -1;
-        }
-    }
-    else
-    {
-        value = args;
+        return -1;
     }
 
     if (!PyDate_Check_(value) && (Py_None != value))

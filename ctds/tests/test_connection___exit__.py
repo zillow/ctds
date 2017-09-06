@@ -26,6 +26,11 @@ will be implicitly rolled back when the connection is closed.
 '''
         )
 
+    def test_typeerror(self):
+        connection = self.connect()
+        self.assertRaises(TypeError, connection.__exit__, 1, 2)
+        connection.close()
+
     def test_commit(self):
         name = self.test_commit.__name__
         try:

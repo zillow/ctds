@@ -7,9 +7,9 @@
 USE master;
 GO
 
--- Database name.
+-- Database name. It intentionally exceeds 30 characters for testing purposes.
 DECLARE @Database NVARCHAR(128); -- Note: must also be set in the USE statement below.
-SET @Database = N'TDSUnittest';
+SET @Database = N'TDSUnittest_12345678901234567890';
 
 /* Create the database if it doesn''t already exist. */
 IF NOT EXISTS(SELECT 1 FROM sys.databases WHERE name = @Database)
@@ -25,8 +25,6 @@ ELSE
         PRINT 'Database "' + @Database + '" already exists.';
     END
 
-GO
-USE TDSUnittest;
 GO
 
 -- Username/password
@@ -50,7 +48,9 @@ ELSE
     BEGIN
         PRINT 'Login "' + @Login + '" already exists.';
     END
+GO
 
+USE TDSUnittest_12345678901234567890;
 GO
 
 DECLARE @Username NVARCHAR(128);

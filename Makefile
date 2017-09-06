@@ -107,6 +107,7 @@ test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlse
         -e DEBUG=1 \
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         $(if $(TDSDUMP), -e TDSDUMP=$(TDSDUMP)) \
+        $(if $(TEST), -e TEST=$(TEST)) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         "./scripts/ctds-unittest.sh"
 

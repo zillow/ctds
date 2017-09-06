@@ -16,5 +16,5 @@ cp coverage.xml coverage
 for OBJDIR in build/*/ctds; do :; done;
 
 # Outputs data to "<source-file>.gcov"
-gcov -o $OBJDIR ctds/*.c
+gcov -b -o $OBJDIR ctds/*.c
 cp *.gcov coverage

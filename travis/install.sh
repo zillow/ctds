@@ -7,5 +7,5 @@ fi
 
 if [ "$TRAVIS_OS_NAME" = "osx" ]; then
     # Travis-ci doesn't support docker support on OS X. Just verify ctds builds on OS X.
-    pip install .
+    pip install -v .
 fi

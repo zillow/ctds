@@ -88,8 +88,7 @@ int Connection_closed(struct Connection* connection);
 
     @param connection [in] The connection.
 */
-#define Connection_raise(_connection) Connection_raise_lasterror(NULL, _connection)
-void Connection_raise_lasterror(PyObject* exception, struct Connection* connection);
+void Connection_raise_lasterror(struct Connection* connection);
 
 /**
     Raise the connection closed Python Exception.

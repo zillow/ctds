@@ -57,3 +57,15 @@ A reference to the Connection object on which the cursor was created.
                         pass
                     else:
                         self.fail('.connection did not fail as expected') # pragma: nocover
+
+    def test_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                with warnings.catch_warnings():
+                    warnings.simplefilter('error')
+                    try:
+                        _ = cursor.connection
+                    except Warning as warn:
+                        self.assertEqual('DB-API extension cursor.connection used', str(warn))
+                    else:
+                        self.fail('.connection did not fail as expected') # pragma: nocover

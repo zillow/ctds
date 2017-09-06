@@ -19,7 +19,12 @@ The current database.
 
     def test_database(self):
         with self.connect() as connection:
-            self.assertEqual(connection.database, self.get_option('database'))
+            # Versions prior to 0.95 had issues with database names > 30 characters.
+            if self.freetds_version[:2] > (0, 92):
+                database = self.get_option('database')
+            else: # pragma: nocover
+                database = self.get_option('database')[:30]
+            self.assertEqual(connection.database, database)
 
             for database in ('master', unicode_('master')):
                 connection.database = database

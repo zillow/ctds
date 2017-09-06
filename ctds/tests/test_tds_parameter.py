@@ -1,3 +1,6 @@
+from decimal import Decimal
+import warnings
+
 import ctds
 
 from .base import TestExternalDatabase
@@ -39,3 +42,9 @@ parameter.
 
         for case in (None, object(), 123, 'foobar'):
             self.assertRaises(TypeError, ctds.Parameter, b'123', output=case)
+
+    def test_decimal_warning_as_error(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', Warning)
+            value = Decimal('123456789012345678901234567890.123456789')
+            self.assertRaises(Warning, ctds.Parameter, value)

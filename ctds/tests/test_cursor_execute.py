@@ -270,7 +270,7 @@ specified in the SQL statement. Parameter notation is specified by
                     None,
                     -1234567890,
                     2 ** 45,
-                    b'1234',
+                    ctds.Parameter(b'1234'),
                     bytearray('1234', 'ascii'),
                     unicode_(
                         b'hello \'world\' ' + (b'\xe3\x83\x9b' if self.nchars_supported else b''),
@@ -304,7 +304,7 @@ specified in the SQL statement. Parameter notation is specified by
                         args[0],
                         args[1],
                         args[2],
-                        args[3],
+                        args[3].value,
                         bytes(args[4]),
                         args[5],
                         args[5],

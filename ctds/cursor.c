@@ -437,7 +437,10 @@ static PyObject* create_column_description(const struct Column* column)
 
         Py_DECREF(tuple);
     }
-    PyErr_NoMemory();
+    else
+    {
+        PyErr_NoMemory();
+    }
     return NULL;
 }
 
@@ -459,8 +462,6 @@ static PyObject* Cursor_description_get(PyObject* self, void* closure)
     description = PyTuple_New((Py_ssize_t)cursor->description->ncolumns);
     if (description)
     {
-        bool error = false;
-
         size_t ix;
         for (ix = 0; ix < cursor->description->ncolumns; ++ix)
         {
@@ -471,12 +472,11 @@ static PyObject* Cursor_description_get(PyObject* self, void* closure)
             }
             else
             {
-                error = true;
                 break;
             }
         }
 
-        if (error)
+        if (PyErr_Occurred())
         {
             Py_DECREF(description);
             description = NULL;
@@ -798,7 +798,7 @@ static PyObject* Cursor_bind(struct Cursor* cursor, PyObject* parameters)
     }
     if (FAIL == retcode)
     {
-        Connection_raise(cursor->connection);
+        Connection_raise_lasterror(cursor->connection);
     }
 
     if (PyErr_Occurred())
@@ -1028,7 +1028,7 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
 
         if (FAIL == dbrpcinit(dbproc, procname, 0 /* options */))
         {
-            Connection_raise(cursor->connection);
+            Connection_raise_lasterror(cursor->connection);
             break;
         }
 
@@ -1092,7 +1092,7 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
 
         if (FAIL == retcode)
         {
-            Connection_raise(cursor->connection);
+            Connection_raise_lasterror(cursor->connection);
             break;
         }
         if (error)
@@ -1430,7 +1430,18 @@ static PyObject* build_executesql_params(PyObject* parameters)
         char* sqltype = NULL;
         char* paramN = NULL;
         size_t nparamN = 0;
-        struct Parameter* rpcparam = Parameter_create(PySequence_Fast_GET_ITEM(parameters, ix), 0);
+        PyObject* oparam = PySequence_Fast_GET_ITEM(parameters, ix);
+        struct Parameter* rpcparam;
+        if (!Parameter_Check(oparam))
+        {
+            rpcparam = Parameter_create(oparam, 0);
+        }
+        else
+        {
+            /* `oparam` is a borrowed reference, so increment. */
+            Py_INCREF(oparam);
+            rpcparam = (struct Parameter*)oparam;
+        }
         if (!rpcparam)
         {
             break;
@@ -1711,7 +1722,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             tds_mem_free(sql);
             if (FAIL == retcode)
             {
-                Connection_raise(cursor->connection);
+                Connection_raise_lasterror(cursor->connection);
                 break;
             }
 
@@ -1742,7 +1753,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
 
             if (FAIL == retcode)
             {
-                Connection_raise(cursor->connection);
+                Connection_raise_lasterror(cursor->connection);
                 break;
             }
             if (error)
@@ -2144,7 +2155,8 @@ static Py_ssize_t Row_len(PyObject* self)
 static PyObject* Row_item(PyObject* self, Py_ssize_t ix)
 {
     struct Row* row = (struct Row*)self;
-    if (ix < 0 || ix >= (Py_ssize_t)row->description->ncolumns) {
+    if (ix < 0 || ix >= (Py_ssize_t)row->description->ncolumns)
+    {
         PyErr_SetString(PyExc_IndexError, "index is out of range");
         return NULL;
     }
@@ -2345,7 +2357,14 @@ static Py_ssize_t RowList_len(PyObject* self)
 static PyObject* RowList_item(PyObject* self, Py_ssize_t ix)
 {
     struct RowList* rowlist = (struct RowList*)self;
-    if (ix < 0 || ix >= Py_SIZE(self)) {
+    /*
+        ix should always be >= 0 because `sq_length` is provided.
+
+        See https://docs.python.org/3.6/c-api/typeobj.html#sequence-object-structures
+    */
+    assert(ix >= 0);
+    if (ix >= Py_SIZE(self))
+    {
         PyErr_SetString(PyExc_IndexError, "index is out of range");
         return NULL;
     }
@@ -2608,7 +2627,7 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
     if (FAIL == retcode)
     {
         ResultSetDescription_RowBuffer_free(description, rowbuffers);
-        Connection_raise(cursor->connection);
+        Connection_raise_lasterror(cursor->connection);
         return NULL;
     }
 
@@ -2744,7 +2763,7 @@ static PyObject* Cursor_nextset(PyObject* self, PyObject* args)
     {
         if (FAIL == retcode)
         {
-            Connection_raise(cursor->connection);
+            Connection_raise_lasterror(cursor->connection);
         }
         else
         {

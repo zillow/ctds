@@ -1008,6 +1008,46 @@ parameters are replaced with output values.
                     self.assertEqual(id(inputs[0]), id(outputs[0]))
                     self.assertNotEqual(id(inputs[1]), id(outputs[1]))
 
+    def test_ucs2_warning_as_error(self):
+        if not self.use_utf16 and self.use_sp_executesql and self.UCS4_SUPPORTED: # pragma: nocover
+            with self.connect() as connection:
+                with connection.cursor() as cursor:
+                    sproc = self.test_ucs2_warning_as_error.__name__
+                    with self.stored_procedure(
+                        cursor,
+                        sproc,
+                        '''
+                            @pVarChar VARCHAR(256),
+                            @pVarCharOut VARCHAR(256) OUTPUT
+                        AS
+                            SET @pVarCharOut = @pVarChar;
+                        '''
+                        ):
+
+                        format_ = (
+                            unichr_(191) + unicode_(' 8 ') +
+                            unichr_(247) + unicode_(' 2 = 4 ? {0}')
+                        )
+                        catface = unichr_(128568)
+
+                        inputs = (
+                            format_.format(catface),
+                            ctds.Parameter(ctds.SqlVarChar(None, size=256), output=True),
+                        )
+
+                        with warnings.catch_warnings():
+                            warnings.simplefilter('error', UnicodeWarning)
+                            try:
+                                cursor.callproc(sproc, inputs)
+                            except UnicodeWarning as warn:
+                                msg = 'Unicode codepoint U+{0:08X} is not representable in UCS-2; replaced with U+{1:04X}'.format( # pylint: disable=line-too-long
+                                    ord(catface),
+                                    ord(self.UNICODE_REPLACEMENT)
+                                )
+                                self.assertEqual(msg, str(warn))
+                            else:
+                                self.fail('.callproc() did not fail as expected') # pragma: nocover
+
     def test_varchar_bytes(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:

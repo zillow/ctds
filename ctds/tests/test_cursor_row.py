@@ -77,6 +77,8 @@ class TestCursorRow(TestExternalDatabase):
             for case, ex in (
                     (-1, IndexError),
                     (4, IndexError),
+                    (len(row), IndexError),
+                    (2 ** 32, IndexError),
                     (2 ** 64, OverflowError),
             ):
                 try:
@@ -84,7 +86,7 @@ class TestCursorRow(TestExternalDatabase):
                 except ex:
                     pass
                 else:
-                    self.fail('row[] lookup did not fail as expected') # pragma: nocover
+                    self.fail('row[{0}] lookup did not fail as expected'.format(case)) # pragma: nocover
 
     def test_attr(self):
         with self.connect() as connection:
