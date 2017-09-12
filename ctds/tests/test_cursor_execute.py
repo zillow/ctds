@@ -211,6 +211,7 @@ specified in the SQL statement. Parameter notation is specified by
             with connection.cursor() as cursor:
                 cursor.execute(
                     '''
+                    /* parameter markers, such as :1, should be ignored */
                     SELECT ':0';
                     '''
                 )

@@ -496,7 +496,7 @@ static const char s_Cursor_rowcount_doc[] =
     "\n"
     ".. note::\n"
     "\n"
-    "    This will currently always return -1.\n"
+    "    This value is unreliable when :py:meth:`.execute` is called with parameters.\n"
     "\n"
     ":pep:`0249#rowcount`\n"
     "\n"
@@ -509,8 +509,7 @@ static PyObject* Cursor_rowcount_get(PyObject* self, void* closure)
 
     /*
         Note: the affected row count is always -1 after an RPC call.
-        Because .execute*() is implemented using `sp_executesql`, this
-        value will always be -1.
+        When .execute*() utilizes `sp_executesql`, this value will be -1.
     */
     return PyLong_FromLong(dbcount(Connection_DBPROCESS(cursor->connection)));
 
@@ -1406,6 +1405,87 @@ static char* build_executesql_stmt(const char* format,
 }
 
 
+/*
+    Execute a raw SQL statement and fetch the first result set.
+
+    @note This does not check the cursor state (i.e. open, connected).
+
+    @param cursor [in] The Cursor.
+    @param sqlfmt [in] A SQL string to execute.
+
+    @return 0 on success, -1 on error.
+*/
+static int Cursor_execute_sql(struct Cursor* cursor, const char* sql)
+{
+    do
+    {
+        bool error = false;
+
+        DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
+        RETCODE retcode;
+
+        Connection_clear_lastwarning(cursor->connection);
+
+        /* Clear any existing command buffer. */
+        dbfreebuf(dbproc);
+
+        retcode = dbcmd(dbproc, sql);
+        if (FAIL == retcode)
+        {
+            Connection_raise_lasterror(cursor->connection);
+            break;
+        }
+
+        Py_BEGIN_ALLOW_THREADS
+
+            do
+            {
+                retcode = dbcancel(dbproc);
+                if (FAIL == retcode)
+                {
+                    break;
+                }
+                retcode = dbsqlsend(dbproc);
+                if (FAIL == retcode)
+                {
+                    break;
+                }
+                retcode = dbsqlok(dbproc);
+                if (FAIL == retcode)
+                {
+                    break;
+                }
+
+                error = (0 != Cursor_next_resultset(cursor, &retcode));
+            } while (0);
+
+        Py_END_ALLOW_THREADS
+
+        if (FAIL == retcode)
+        {
+            Connection_raise_lasterror(cursor->connection);
+            break;
+        }
+        if (error)
+        {
+            assert(FAIL != retcode);
+            PyErr_NoMemory();
+            break;
+        }
+
+        /* Raise any warnings that may have occurred. */
+        if (0 != Connection_raise_lastwarning(cursor->connection))
+        {
+            assert(PyErr_Occurred());
+            break;
+        }
+    }
+    while (0);
+
+    return (PyErr_Occurred()) ? -1 : 0;
+}
+
+
 #if CTDS_USE_SP_EXECUTESQL != 0
 
 /*
@@ -1511,6 +1591,7 @@ static PyObject* build_executesql_params(PyObject* parameters)
 
     return object;
 }
+
 
 /*
     Construct and execute a SQL statement. This will execute the SQL using the
@@ -1668,15 +1749,10 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
         PyObject* nextparams = PyIter_Next(isequence);
         do
         {
-            RETCODE retcode;
-            int error;
-
-            DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
+            bool error;
 
             char* sql;
             size_t nsql;
-
-            Connection_clear_lastwarning(cursor->connection);
 
             if (nextparams)
             {
@@ -1715,58 +1791,11 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
                 break;
             }
 
-            /* Clear any existing command buffer. */
-            dbfreebuf(dbproc);
-
-            retcode = dbcmd(dbproc, sql);
+            error = (0 != Cursor_execute_sql(cursor, sql));
             tds_mem_free(sql);
-            if (FAIL == retcode)
-            {
-                Connection_raise_lasterror(cursor->connection);
-                break;
-            }
 
-            Py_BEGIN_ALLOW_THREADS
-
-                do
-                {
-                    retcode = dbcancel(dbproc);
-                    if (FAIL == retcode)
-                    {
-                        break;
-                    }
-                    retcode = dbsqlsend(dbproc);
-                    if (FAIL == retcode)
-                    {
-                        break;
-                    }
-                    retcode = dbsqlok(dbproc);
-                    if (FAIL == retcode)
-                    {
-                        break;
-                    }
-
-                    error = Cursor_next_resultset(cursor, &retcode);
-                } while (0);
-
-            Py_END_ALLOW_THREADS
-
-            if (FAIL == retcode)
-            {
-                Connection_raise_lasterror(cursor->connection);
-                break;
-            }
             if (error)
             {
-                assert(FAIL != retcode);
-                PyErr_NoMemory();
-                break;
-            }
-
-            /* Raise any warnings that may have occurred. */
-            if (0 != Connection_raise_lastwarning(cursor->connection))
-            {
-                assert(PyErr_Occurred());
                 break;
             }
         }
@@ -1820,21 +1849,28 @@ static PyObject* Cursor_execute(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    sequence = PyTuple_New((parameters) ? 1 : 0);
-    if (!sequence)
-    {
-        return NULL;
-    }
-
     if (parameters)
     {
-        Py_INCREF(parameters);
-        PyTuple_SET_ITEM(sequence, 0, parameters); /* parameters reference stolen by PyTuple_SET_ITEM */
-    }
+        sequence = PyTuple_New((parameters) ? 1 : 0);
+        if (!sequence)
+        {
+            return NULL;
+        }
 
-    error = Cursor_execute_internal(cursor, sqlfmt, sequence);
-    Py_DECREF(sequence);
-    if (error)
+        if (parameters)
+        {
+            Py_INCREF(parameters);
+            PyTuple_SET_ITEM(sequence, 0, parameters); /* parameters reference stolen by PyTuple_SET_ITEM */
+        }
+
+        error = Cursor_execute_internal(cursor, sqlfmt, sequence);
+        Py_DECREF(sequence);
+    }
+    else
+    {
+        error = Cursor_execute_sql(cursor, sqlfmt);
+    }
+    if (0 != error)
     {
         return NULL;
     }

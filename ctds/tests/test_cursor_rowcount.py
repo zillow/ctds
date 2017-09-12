@@ -15,7 +15,7 @@ The number of rows that the last :py:meth:`.execute` produced or affected.
 
 .. note::
 
-    This will currently always return -1.
+    This value is unreliable when :py:meth:`.execute` is called with parameters.
 
 :pep:`0249#rowcount`
 
@@ -47,6 +47,16 @@ The number of rows that the last :py:meth:`.execute` produced or affected.
                         DECLARE @test_rowcount TABLE(i INT);
                         INSERT INTO @test_rowcount(i) VALUES (1),(2),(3);
                     '''
+                )
+                # When sp_executesql is not used, rowcount is always valid.
+                self.assertEqual(cursor.rowcount, 3)
+
+                cursor.execute(
+                    '''
+                        DECLARE @test_rowcount TABLE(i INT);
+                        INSERT INTO @test_rowcount(i) VALUES (:0),(:1),(:2);
+                    ''',
+                    (1, 2, 3)
                 )
                 self.assertEqual(
                     cursor.rowcount,
