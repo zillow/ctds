@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connection &mdash; ctds 1.3.2 documentation</title>
+  <title>Connection &mdash; ctds 1.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.3.2 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.4.0 documentation" href="index.html"/>
         <link rel="up" title="API Reference" href="api.html"/>
         <link rel="next" title="Cursor" href="cursor.html"/>
         <link rel="prev" title="API Reference" href="api.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.3
+                1.4
               </div>
             
           
@@ -330,6 +330,26 @@ other cursors.</p>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="ctds.Connection.messages">
+<code class="descname">messages</code><a class="headerlink" href="#ctds.Connection.messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of any informational messages received from the last executed SQL command.
+For example, this will include messages produced by the T-SQL <cite>PRINT</cite> statement.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)">list</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None if the connection is closed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="ctds.Connection.rollback">
 <code class="descname">rollback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Connection.rollback" title="Permalink to this definition">¶</a></dt>
@@ -448,7 +468,7 @@ FreeTDS which does not support setting the timeout on a connection.</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.3.2',
+            VERSION:'1.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
