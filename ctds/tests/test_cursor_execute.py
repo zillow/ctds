@@ -72,14 +72,17 @@ specified in the SQL statement. Parameter notation is specified by
                     self.assertEqual(ex.severity, 15)
                     self.assertEqual(ex.os_error, None)
                     self.assertTrue(self.server_name_and_instance in ex.last_message.pop('server'))
-                    self.assertEqual(ex.last_message, {
-                        'number': 102,
-                        'state': 1,
-                        'severity': 15,
-                        'description': msg,
-                        'proc': '',
-                        'line': 1,
-                    })
+                    self.assertEqual(
+                        ex.last_message,
+                        {
+                            'number': 102,
+                            'state': 1,
+                            'severity': 15,
+                            'description': msg,
+                            'proc': '',
+                            'line': 1,
+                        }
+                    )
                 else:
                     self.fail('.execute() did not fail as expected') # pragma: nocover
 
@@ -102,14 +105,17 @@ specified in the SQL statement. Parameter notation is specified by
                     self.assertEqual(ex.severity, 12)
                     self.assertEqual(ex.os_error, None)
                     self.assertTrue(self.server_name_and_instance in ex.last_message.pop('server'))
-                    self.assertEqual(ex.last_message, {
-                        'number': 50000,
-                        'state': 111,
-                        'severity': 12,
-                        'description': msg,
-                        'proc': '',
-                        'line': 2,
-                    })
+                    self.assertEqual(
+                        ex.last_message,
+                        {
+                            'number': 50000,
+                            'state': 111,
+                            'severity': 12,
+                            'description': msg,
+                            'proc': '',
+                            'line': 2,
+                        }
+                    )
                 else:
                     self.fail('.execute() did not fail as expected') # pragma: nocover
 
@@ -196,13 +202,16 @@ specified in the SQL statement. Parameter notation is specified by
                     self.assertEqual(ex.os_error, None)
                     self.assertTrue(self.server_name_and_instance in ex.last_message.pop('server'))
                     self.assertTrue(re.match(regex, ex.last_message.pop('description')))
-                    self.assertEqual(ex.last_message, {
-                        'number': 2627,
-                        'state': 1,
-                        'severity': 14,
-                        'proc': '',
-                        'line': 7,
-                    })
+                    self.assertEqual(
+                        ex.last_message,
+                        {
+                            'number': 2627,
+                            'state': 1,
+                            'severity': 14,
+                            'proc': '',
+                            'line': 7,
+                        }
+                    )
                 else:
                     self.fail('.execute() did not fail as expected') # pragma: nocover
 

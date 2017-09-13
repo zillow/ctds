@@ -2511,9 +2511,9 @@ PyTypeObject RowListType = {
 
     This method wil fetch and buffer all requested rows without holding
     the GIL. While this is more memory intensive, it does provide much better
-    throughput. In applications with many Python threads constantly acquiring
+    throughput. In applications with many Python threads, constantly acquiring
     and releasing the GIL can be expensive. Multiple threads, each requesting
-    large resultsets can lead to massive GIL churn and poor performance.
+    large resultsets, can lead to massive GIL churn and poor performance.
 
     @note This method sets an appropriate Python exception on error.
     @note This method returns a new reference.
@@ -2536,6 +2536,8 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
     size_t rows; /* count of rows processed */
 
     DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
+
+    Connection_clear_lastwarning(cursor->connection);
 
     /* Verify there are results */
     if (!cursor->description)
