@@ -130,26 +130,28 @@ specified in the SQL statement. Parameter notation is specified by
                     cursor.execute(
                         '''
                         RAISERROR (N'some custom non-severe error %s', 10, 111, 'hello!');
+                        RAISERROR (N'some custom non-severe error %s', 10, 222, 'world');
                         '''
                     )
-                    msg = "some custom non-severe error hello!"
-                    self.assertEqual(len(warns), 1)
-                    self.assertEqual(
-                        [str(warn.message) for warn in warns],
-                        [msg] * len(warns)
-                    )
-                    self.assertEqual(
-                        [warn.category for warn in warns],
-                        [ctds.Warning] * len(warns)
-                    )
+                fmt = unicode_('some custom non-severe error %s')
+                self.assertEqual(len(warns), 2)
+                self.assertEqual(
+                    [str(warn.message) for warn in warns],
+                    [fmt % args for args in (unicode_('hello!'), unicode_('world'))]
+                )
+                self.assertEqual(
+                    [warn.category for warn in warns],
+                    [ctds.Warning] * len(warns)
+                )
 
-                    self.assertEqual(warns[0].category, ctds.Warning)
+                self.assertEqual(warns[0].category, ctds.Warning)
 
                 # The cursor should be usable after a warning.
                 with warnings.catch_warnings(record=True) as warns:
                     cursor.execute('SELECT @@VERSION')
-                    self.assertTrue(cursor.fetchall())
-                    self.assertEqual(len(warns), 0)
+
+                self.assertTrue(cursor.fetchall())
+                self.assertEqual(len(warns), 0)
 
     def test_sql_warning_as_error(self):
         with self.connect() as connection:

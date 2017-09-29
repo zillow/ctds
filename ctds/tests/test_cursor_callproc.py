@@ -151,7 +151,7 @@ parameters are replaced with output values.
                     ):
                     with warnings.catch_warnings(record=True) as warns:
                         cursor.callproc(sproc, ())
-                        msg = "some custom error hello!"
+                        msg = unicode_('some custom error hello!')
                         self.assertEqual(len(warns), 1)
                         self.assertEqual(
                             [str(warn.message) for warn in warns],
@@ -161,6 +161,21 @@ parameters are replaced with output values.
                             [warn.category for warn in warns],
                             [ctds.Warning] * len(warns)
                         )
+
+                    expected = [
+                        {
+                            'description': msg,
+                            'line': 4,
+                            'number': 50000,
+                            'proc': sproc,
+                            'severity': 16,
+                            'state': 1,
+                        },
+                    ]
+
+                    for index, message in enumerate(connection.messages):
+                        self.assertTrue(self.server_name_and_instance in message.pop('server'))
+                        self.assertEqual(expected[index], message)
 
                     self.assertEqual(
                         [tuple(row) for row in cursor.fetchall()],
@@ -216,9 +231,25 @@ parameters are replaced with output values.
                         PRINT(@pMsg);
                     '''
                     ):
+                    msg = unicode_('hello world!')
                     with warnings.catch_warnings(record=True) as warns:
-                        cursor.callproc(sproc, (unicode_('hello world!'),))
+                        cursor.callproc(sproc, (msg,))
                         self.assertEqual(len(warns), 0)
+
+                    expected = [
+                        {
+                            'description': msg,
+                            'line': 5,
+                            'number': 0,
+                            'proc': sproc,
+                            'severity': 0,
+                            'state': 1,
+                        },
+                    ]
+
+                    for index, message in enumerate(connection.messages):
+                        self.assertTrue(self.server_name_and_instance in message.pop('server'))
+                        self.assertEqual(expected[index], message)
 
                 # The cursor should be usable after a warning.
                 with warnings.catch_warnings(record=True) as warns:

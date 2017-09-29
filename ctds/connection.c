@@ -110,6 +110,8 @@ struct DatabaseMsg
     char* proc;
     int line;
 
+    bool warned;
+
     struct DatabaseMsg* next;
 };
 
@@ -405,17 +407,20 @@ int Connection_raise_lastwarning(struct Connection* connection)
           * database change messages
           * PRINT statements
     */
-    const struct DatabaseMsg* lastmsg = connection->messages;
-    if ((NULL != lastmsg) && (lastmsg->msgno > 0))
+    struct DatabaseMsg* lastmsg;
+    for (lastmsg = connection->messages; lastmsg; lastmsg = lastmsg->next)
     {
-        /* $TODO: figure out some way to include the other metadata in the warning */
-        error = PyErr_WarnEx(PyExc_tds_Warning, lastmsg->msgtext, 1);
-    }
+        if ((lastmsg->msgno > 0) && (!lastmsg->warned))
+        {
+            lastmsg->warned = true;
 
-    if (error)
-    {
-        /* Clear messages if the warning generated an error. */
-        Connection_clear_messages(connection);
+            /* $TODO: figure out some way to include the other metadata in the warning */
+            error = PyErr_WarnEx(PyExc_tds_Warning, lastmsg->msgtext, 1);
+            if (error)
+            {
+                break;
+            }
+        }
     }
 
     return error;
@@ -756,8 +761,12 @@ static int Connection_database_set(PyObject* self, PyObject* value, void* closur
 }
 
 static const char s_Connection_messages_doc[] =
-    "A list of any informational messages received from the last executed SQL command.\n"
-    "For example, this will include messages produced by the T-SQL `PRINT` statement.\n"
+    "A list of any informational messages received from the last\n"
+    ":py:meth:`ctds.Cursor.execute`, :py:meth:`ctds.Cursor.executemany`, or\n"
+    ":py:meth:`ctds.Cursor.callproc` call.\n"
+    "For example, this will include messages produced by the T-SQL `PRINT` and\n"
+    "`RAISERROR` statements. Messages are preserved until the next call to any\n"
+    "of the above methods.\n"
     "\n"
     ".. versionadded:: 1.4\n"
     "\n"

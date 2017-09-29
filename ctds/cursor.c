@@ -1043,8 +1043,6 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
 
             do
             {
-                int ix;
-
                 retcode = dbcancel(dbproc);
                 if (FAIL == retcode)
                 {
@@ -1068,6 +1066,8 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
 
                     if (noutputparams)
                     {
+                        int ix;
+
                         outputparams = (struct OutputParameter*)tds_mem_calloc((size_t)noutputparams,
                                                                                sizeof(struct OutputParameter));
                         if (!outputparams)
@@ -2536,8 +2536,6 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
     size_t rows; /* count of rows processed */
 
     DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
-
-    Connection_clear_lastwarning(cursor->connection);
 
     /* Verify there are results */
     if (!cursor->description)
