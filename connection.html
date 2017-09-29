@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connection &mdash; ctds 1.4.0 documentation</title>
+  <title>Connection &mdash; ctds 1.4.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.4.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.4.1 documentation" href="index.html"/>
         <link rel="up" title="API Reference" href="api.html"/>
         <link rel="next" title="Cursor" href="cursor.html"/>
         <link rel="prev" title="API Reference" href="api.html"/> 
@@ -333,8 +333,12 @@ other cursors.</p>
 <dl class="attribute">
 <dt id="ctds.Connection.messages">
 <code class="descname">messages</code><a class="headerlink" href="#ctds.Connection.messages" title="Permalink to this definition">¶</a></dt>
-<dd><p>A list of any informational messages received from the last executed SQL command.
-For example, this will include messages produced by the T-SQL <cite>PRINT</cite> statement.</p>
+<dd><p>A list of any informational messages received from the last
+<a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.execute()</span></code></a>, <a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a>, or
+<a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.callproc()</span></code></a> call.
+For example, this will include messages produced by the T-SQL <cite>PRINT</cite> and
+<cite>RAISERROR</cite> statements. Messages are preserved until the next call to any
+of the above methods.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.4.</span></p>
 </div>
@@ -468,7 +472,7 @@ FreeTDS which does not support setting the timeout on a connection.</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.4.0',
+            VERSION:'1.4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
