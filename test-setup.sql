@@ -32,7 +32,8 @@ DECLARE @Login NVARCHAR(128);
 SET @Login = N'TDSUnittest';
 
 DECLARE @Password NVARCHAR(128);
-SET @Password = N'TDSUnittest1';
+-- Use a password which meets default complexity rules.
+SET @Password = N'S0methingSecret!';
 
 IF NOT EXISTS(SELECT 1 FROM sys.server_principals WHERE name = @Login)
     BEGIN

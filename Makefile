@@ -136,8 +136,19 @@ endef
 
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECK_RULE, $(PV))))
 
+define CHECKMETADATA_RULE
+.PHONY: checkmetadata_$(strip $(1))
+checkmetadata_$(strip $(1)): docker_$(strip $(1))_$(DEFAULT_FREETDS_VERSION)
+	docker run --init --rm \
+        --workdir /usr/src/ctds/ \
+        $(call UNITTEST_DOCKER_IMAGE_NAME, $(strip $(1)), $(DEFAULT_FREETDS_VERSION)) \
+        "./scripts/ctds-checkmetadata.sh"
+endef
+
+$(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECKMETADATA_RULE, $(PV))))
+
 .PHONY: check
-check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV))
+check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV) checkmetadata_$(PV))
 
 .PHONY: test
 test: test_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)

@@ -2,4 +2,4 @@
 
 pip install --no-cache-dir -v -e .
 
-pylint ctds
+pylint src

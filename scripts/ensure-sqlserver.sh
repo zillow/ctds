@@ -6,7 +6,7 @@ HOSTNAME=localhost
 RETRIES=30
 
 USERNAME=TDSUnittest
-PASSWORD=TDSUnittest1
+PASSWORD=S0methingSecret!
 
 until docker exec "$CONTAINER" \
              /bin/sh -c "/opt/mssql-tools/bin/sqlcmd -S $HOSTNAME -U $USERNAME -P $PASSWORD -Q 'SELECT @@VERSION'"

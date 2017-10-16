@@ -1,45 +1,43 @@
+#!/usr/bin/env python
 
-# Workaround an exception at shutdown in multiprocessing by importing it here.
-try:
-    import multiprocessing
-except:
-    pass
-
+import glob
+import io
 import os
+import os.path
 import platform
 import setuptools
 import setuptools.dist
 import sys
 
-
+# Version information is defined here and compiled into the extension.
 CTDS_MAJOR_VERSION = 1
-CTDS_MINOR_VERSION = 4
-CTDS_PATCH_VERSION = 1
+CTDS_MINOR_VERSION = 5
+CTDS_PATCH_VERSION = 0
 
-install_requires = [
-]
 
 tests_require = []
 if (sys.version_info < (3, 3)):
     # Mock is part of the Python 3.3+ stdlib.
     tests_require.append('mock >= 0.7.2')
 
-debug = os.environ.get('DEBUG')
+strict = os.environ.get('CTDS_STRICT')
 windows = platform.system() == 'Windows'
+coverage = os.environ.get('CTDS_COVER', False)
 
 libraries = [
     'sybdb',
     'ct', # required for ct_config only
 ]
 
+extra_compile_args = []
+extra_link_args = []
+
+
 if not windows:
     extra_compile_args = [
     ]
-    if debug:
+    if strict:
         extra_compile_args += [
-            '-O0', # setuptools specifies -O2 -- override it
-
-            # Be very strict when compiling debug (i.e. development) builds.
             '-ansi',
             '-Wall',
             '-Wextra',
@@ -48,11 +46,6 @@ if not windows:
             '-Wpedantic',
             '-std=c99',
         ]
-    else:
-        extra_compile_args += [
-            '-O3', # setuptools specifies -O2 -- override it
-        ]
-    extra_link_args = ['-O1'] if debug else ['-O3'] # setuptools specifies -O2 -- override it
 
     if os.environ.get('CTDS_PROFILE'):
         extra_compile_args.append('-pg')
@@ -60,19 +53,55 @@ if not windows:
             extra_compile_args += ['-fprofile-dir', '"{0}"'.format(os.environ['CTDS_PROFILE'])]
         extra_link_args.append('-pg')
 
-    if os.environ.get('CTDS_COVER'):
+    if coverage:
         extra_compile_args += ['-fprofile-arcs', '-ftest-coverage']
         extra_link_args.append('-fprofile-arcs')
+
+    # pthread is required on OS X for thread-local storage support.
+    if sys.platform == 'darwin':
+        extra_link_args.append('-lpthread')
 else:
-    extra_compile_args = ['/Zi'] if debug else []
-    extra_link_args = []
+    if strict:
+        extra_compile_args += [
+            '/WX',
+            '/w14242',
+            '/w14254',
+            '/w14263',
+            '/w14265',
+            '/w14287',
+            '/we4289',
+            '/w14296',
+            '/w14311',
+            '/w14545',
+            '/w14546',
+            '/w14547',
+            '/w14549',
+            '/w14555',
+            '/w14619',
+            '/w14640',
+            '/w14826',
+            '/w14905',
+            '/w14906',
+            '/w14928',
+            '/Zi'
+        ]
+    libraries += [
+        'shell32',
+        'ws2_32'
+    ]
 
-# pthread is required on OS X for thread-local storage support.
-if sys.platform == 'darwin':
-    extra_link_args.append('-lpthread')
 
-with open('README.rst') as readme:
-    long_description = readme.read()
+def splitdirs(name):
+    dirs = os.environ.get(name)
+    return dirs.split(os.pathsep) if dirs else []
+
+
+def read(*names, **kwargs):
+    return io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get('encoding', 'utf8')
+    ).read()
+
 
 setuptools.setup(
     name = 'ctds',
@@ -85,7 +114,7 @@ setuptools.setup(
     author = 'Joshua Lang',
     author_email = 'joshual@zillow.com',
     description = 'DB API 2.0-compliant Linux driver for SQL Server',
-    long_description = long_description,
+    long_description = read('README.rst'),
     keywords = [
         'freetds',
         'mssql',
@@ -105,6 +134,7 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: POSIX :: Linux',
+        'Operating System :: Microsoft :: Windows',
         'Programming Language :: C',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
@@ -118,34 +148,20 @@ setuptools.setup(
         'Topic :: Database',
     ],
 
-    packages = [
-        'ctds',
-        'ctds.pool',
-    ],
+    packages = setuptools.find_packages('src'),
     package_data = {
-        'ctds': [
-        ]
+        'ctds': []
     },
+    package_dir = {'': 'src'},
 
     entry_points = {
-        'console_scripts': [
-        ]
+        'console_scripts': []
     },
 
     ext_modules = [
         setuptools.Extension(
             '_tds',
-            [
-                os.path.join('ctds', file_)
-                for file_ in (
-                        'connection.c',
-                        'cursor.c',
-                        'parameter.c',
-                        'pyutils.c',
-                        'tds.c',
-                        'type.c',
-                )
-            ],
+            glob.glob(os.path.join('src', 'ctds', '*.c')),
             define_macros=[
                 ('CTDS_MAJOR_VERSION', CTDS_MAJOR_VERSION),
                 ('CTDS_MINOR_VERSION', CTDS_MINOR_VERSION),
@@ -153,18 +169,26 @@ setuptools.setup(
                 ('PY_SSIZE_T_CLEAN', '1'),
                 ('MSDBLIB', '1'),
             ],
+            include_dirs=splitdirs('CTDS_INCLUDE_DIRS'),
+            library_dirs=splitdirs('CTDS_LIBRARY_DIRS'),
+            # runtime_library_dirs is not supported on Windows.
+            runtime_library_dirs=[] if windows else splitdirs('CTDS_RUNTIME_LIBRARY_DIRS'),
             extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             libraries=libraries,
+            language='c',
         ),
     ],
 
-    install_requires = install_requires,
+    install_requires = [],
 
     tests_require = tests_require,
-    test_suite = 'ctds.tests',
+    test_suite = 'tests',
 
     extras_require = {
         'tests': tests_require,
     },
+
+    # Prevent easy_install from warning about use of __file__.
+    zip_safe = False
 )

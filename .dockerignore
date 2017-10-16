@@ -1,8 +1,10 @@
 .*
-.git/
+# .git is required by check-manifest
+!.git
 build/
 coverage/
 docs/
 travis/
+appveyor/
 *.so
 Dockerfile*

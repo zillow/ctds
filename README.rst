@@ -13,18 +13,22 @@ cTDS
         :target: https://pypi.python.org/pypi/ctds/
 
 .. image:: https://codecov.io/gh/zillow/ctds/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/zillow/ctds
+        :target: https://codecov.io/gh/zillow/ctds
 
-`cTDS` is a full Python `DB API-2.0 <https://www.python.org/dev/peps/pep-0249>`_-compliant
-SQL Server database library for `Linux` and `Mac OS X` supporting both Python 2
-and Python 3.
+.. image:: https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true
+        :target: https://ci.appveyor.com/project/joshuahlang/ctds/branch/master
+
+
+`cTDS` is a full Python `DB API-2.0`_-compliant
+SQL Server database library for `Linux`, `Windows`, and `Mac OS X` supporting
+both Python 2 and Python 3.
 
 
 Features
 --------
 
 * Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2008 and up.
-* Complete `DB API-2.0 <https://www.python.org/dev/peps/pep-0249>`_ support.
+* Complete `DB API-2.0`_ support.
 * Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, and Python 3.6 support.
 * Bulk insert (bcp) support.
 * Written entirely in C.
@@ -35,6 +39,7 @@ Dependencies
 * `FreeTDS`_
 
 .. _`FreeTDS`: http://www.freetds.org/
+.. _`DB API-2.0`: <https://www.python.org/dev/peps/pep-0249>
 
 .. include-documentation-end-marker
 
@@ -83,7 +88,8 @@ system versions of `FreeTDS`_ and `Python`_.
 However, given the various supported combinations of `FreeTDS`_ and `Python`_,
 it is easier to create a separate `Docker`_ container for each.
 
-Development and testing will likely require an instance of
+
+Development and testing will require an instance of
 `SQL Server on Linux`_ running for validation. A script is provided to
 start a `Docker`_ container running the database and create the login
 used by the tests.
@@ -92,6 +98,11 @@ used by the tests.
 
     # Start a docker-based SQL Server instance.
     make start-sqlserver
+
+    # Run tests as needed ...
+
+    # Stop the docker-base SQL Server instance.
+    make stop-sqlserver
 
 
 Testing
@@ -117,7 +128,8 @@ To run the tests against an arbitrary version of `FreeTDS`_ and `Python`_:
     make test_X.Y_Z.ZZ.ZZ
 
 
-To run tests against all supported versions of `FreeTDS`_ and `Python`_:
+To run tests against all supported versions of `FreeTDS`_ and `Python`_
+and additional linting and metadata checks:
 
 .. code-block:: console
 

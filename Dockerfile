@@ -25,13 +25,15 @@ RUN set -ex \
        /usr/src/freetds
 
 RUN pip install --no-cache-dir \
+    check-manifest \
     coverage \
+    docutils \
     pylint \
     recommonmark \
     sphinx \
     sphinx_rtd_theme
 
-COPY . /usr/src/ctds
+COPY . /usr/src/ctds/
 WORKDIR /usr/src/ctds
 
 CMD ["/bin/bash"]

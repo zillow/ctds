@@ -1,0 +1,63 @@
+skip_commits:
+  # Mimic Travis-ci skip behavior.
+  message: /ci skip/
+
+environment:
+
+  # As defined by Appveyor.
+  SA_PASSWORD: "Password12!"
+
+  BUILD_INSTALL_PREFIX: "C:\\usr\\local"
+
+  matrix:
+  - PYTHON: "C:\\Python26-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+
+  - PYTHON: "C:\\Python27-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+
+  - PYTHON: "C:\\Python33-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+    DISTUTILS_USE_SDK: "1"
+
+  - PYTHON: "C:\\Python34-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+    DISTUTILS_USE_SDK: "1"
+
+  - PYTHON: "C:\\Python35-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+
+  - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2008R2SP2"
+
+  - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2012SP1"
+
+  - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2014"
+
+  - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+
+# Note: Database services should *not* be specified in the services section.
+# The database service will be explicitly started by the script which enables
+# TCP/IP connections for the database.
+services:
+
+cache:
+  -  '%BUILD_INSTALL_PREFIX% -> appveyor.yml'
+
+install:
+  - "powershell appveyor\\install.ps1"
+
+build_script:
+  - "powershell appveyor\\build_script.ps1"
+
+before_test:
+  - "powershell appveyor\\before_test.ps1"
+
+test_script:
+  - "powershell appveyor\\test_script.ps1"
+
+after_test:
+  - "powershell appveyor\\after_test.ps1"

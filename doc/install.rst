@@ -52,6 +52,19 @@ On OS X, `homebrew`_ is recommended for installing `FreeTDS`_.
     brew install freetds
 
 
+Installation On Windows
+^^^^^^^^^^^^^^^^^^^^^^^
+
+On Windows, `FreeTDS`_ should be installed from the latest source code.
+A powershell script is include which may aid in this:
+
+.. code-block:: powershell
+
+    ./windows/freetds-install.ps1
+    # FreeTDS headers and include files are installed to ./build/include
+    # and ./build/lib
+
+
 PIP Installation
 ----------------
 
@@ -73,6 +86,13 @@ which `include` and `library` directories to compile and link *cTDS* against.
         --global-option="--library-dirs=$(pwd)/lib" \
         --global-option=build_ext --global-option="--rpath=./lib" \
         ctds
+
+    # Alternatively, use the CTDS-specifc environment variables to
+    # specify the include and library directories:
+    CTDS_INCLUDE_DIRS=$(pwd)/include \
+        CTDS_LIBRARY_DIRS=$(pwd)/lib \
+        CTDS_RUNTIME_LIBRARY_DIRS=$(pwd)/lib \
+        pip install ctds
 
 
 When using the system version of `FreeTDS`_, use the following:

@@ -1,8 +1,13 @@
 #!/bin/sh -e
 
-pip install --no-cache-dir -v -e . -e .[tests]
+# Install using setuptools directly so the local setup.cfg is used.
+CTDS_STRICT=1 python setup.py -v install
 
 if [ -n "$TEST" ]; then
     ARGS="-s $TEST"
 fi
-python setup.py test $ARGS
+
+# Install test dependencies using pip.
+pip install --no-cache-dir -v .[tests]
+
+python setup.py test -v $ARGS
