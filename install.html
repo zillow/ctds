@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; ctds 1.4.1 documentation</title>
+  <title>Getting Started &mdash; ctds 1.5.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.4.1 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.5.0 documentation" href="index.html"/>
         <link rel="next" title="Basic Example" href="example.html"/>
         <link rel="prev" title="cTDS" href="index.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.4
+                1.5
               </div>
             
           
@@ -97,6 +97,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#installation-from-source">Installation From Source</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installation-on-debian-based-systems">Installation On Debian-based Systems</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installation-on-mac-os-x">Installation On Mac OS X</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-on-windows">Installation On Windows</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pip-installation">PIP Installation</a></li>
@@ -218,6 +219,16 @@ brew install freetds
 </pre></div>
 </div>
 </div>
+<div class="section" id="installation-on-windows">
+<h3>Installation On Windows<a class="headerlink" href="#installation-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>On Windows, <a class="reference external" href="http://www.freetds.org">FreeTDS</a> should be installed from the latest source code.
+A powershell script is include which may aid in this:</p>
+<div class="highlight-powershell"><div class="highlight"><pre><span></span><span class="p">./</span><span class="n">windows</span><span class="p">/</span><span class="n">freetds-install</span><span class="p">.</span><span class="n">ps1</span>
+<span class="c"># FreeTDS headers and include files are installed to ./build/include</span>
+<span class="c"># and ./build/lib</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="pip-installation">
 <h2>PIP Installation<a class="headerlink" href="#pip-installation" title="Permalink to this headline">¶</a></h2>
@@ -235,6 +246,13 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
     --global-option<span class="o">=</span><span class="s2">&quot;--library-dirs=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/lib&quot;</span> <span class="se">\</span>
     --global-option<span class="o">=</span>build_ext --global-option<span class="o">=</span><span class="s2">&quot;--rpath=./lib&quot;</span> <span class="se">\</span>
     ctds
+
+<span class="c1"># Alternatively, use the CTDS-specifc environment variables to</span>
+<span class="c1"># specify the include and library directories:</span>
+<span class="nv">CTDS_INCLUDE_DIRS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/include <span class="se">\</span>
+    <span class="nv">CTDS_LIBRARY_DIRS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/lib <span class="se">\</span>
+    <span class="nv">CTDS_RUNTIME_LIBRARY_DIRS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/lib <span class="se">\</span>
+    pip install ctds
 </pre></div>
 </div>
 <p>When using the system version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a>, use the following:</p>
@@ -288,7 +306,7 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.4.1',
+            VERSION:'1.5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
