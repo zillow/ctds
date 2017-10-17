@@ -136,6 +136,7 @@ cp "$freetds_path\src\dblib\*.lib" "$install_prefix\lib"
 cp "$freetds_path\src\dblib\*.dll" "$install_prefix\lib"
 cp "$freetds_path\src\ctlib\*.lib" "$install_prefix\lib"
 cp "$freetds_path\src\ctlib\*.dll" "$install_prefix\lib"
+cp "$freetds_path\src\replacements\*.lib" "$install_prefix\lib"
 cp "$freetds_path\src\tds\*.lib" "$install_prefix\lib"
 cp "$freetds_path\src\tds\*.dll" "$install_prefix``\lib"
 

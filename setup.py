@@ -23,19 +23,29 @@ if (sys.version_info < (3, 3)):
 strict = os.environ.get('CTDS_STRICT')
 windows = platform.system() == 'Windows'
 coverage = os.environ.get('CTDS_COVER', False)
+static_link_freetds = os.environ.get('CTDS_STATIC_LINK_FREETDS', False)
+
+define_macros = [
+    ('CTDS_MAJOR_VERSION', CTDS_MAJOR_VERSION),
+    ('CTDS_MINOR_VERSION', CTDS_MINOR_VERSION),
+    ('CTDS_PATCH_VERSION', CTDS_PATCH_VERSION),
+    ('PY_SSIZE_T_CLEAN', '1'),
+    ('MSDBLIB', '1'),
+]
+if static_link_freetds:
+    define_macros += [
+        ('CTDS_STATIC_LINK_FREETDS', '1'),
+    ]
+
+extra_compile_args = []
+extra_link_args = []
 
 libraries = [
     'sybdb',
     'ct', # required for ct_config only
 ]
 
-extra_compile_args = []
-extra_link_args = []
-
-
 if not windows:
-    extra_compile_args = [
-    ]
     if strict:
         extra_compile_args += [
             '-ansi',
@@ -85,6 +95,14 @@ else:
             '/w14928',
             '/Zi'
         ]
+    if static_link_freetds:
+        libraries = [
+            'db-lib',
+            'iconv',
+            'replacements',
+            'tds',
+        ]
+
     libraries += [
         'shell32',
         'ws2_32'
@@ -162,13 +180,7 @@ setuptools.setup(
         setuptools.Extension(
             '_tds',
             glob.glob(os.path.join('src', 'ctds', '*.c')),
-            define_macros=[
-                ('CTDS_MAJOR_VERSION', CTDS_MAJOR_VERSION),
-                ('CTDS_MINOR_VERSION', CTDS_MINOR_VERSION),
-                ('CTDS_PATCH_VERSION', CTDS_PATCH_VERSION),
-                ('PY_SSIZE_T_CLEAN', '1'),
-                ('MSDBLIB', '1'),
-            ],
+            define_macros=define_macros,
             include_dirs=splitdirs('CTDS_INCLUDE_DIRS'),
             library_dirs=splitdirs('CTDS_LIBRARY_DIRS'),
             # runtime_library_dirs is not supported on Windows.
@@ -179,6 +191,8 @@ setuptools.setup(
             language='c',
         ),
     ],
+
+    python_requires='>=2.6, !=3.0.*, !=3.1.*, !=3.2.*, <4',
 
     install_requires = [],
 

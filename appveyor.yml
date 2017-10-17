@@ -28,6 +28,9 @@ environment:
     SQLSERVER_INSTANCENAME: "SQL2016"
 
   - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+
+  - PYTHON: "C:\\Python36-x64"
     SQLSERVER_INSTANCENAME: "SQL2008R2SP2"
 
   - PYTHON: "C:\\Python36-x64"
@@ -38,6 +41,7 @@ environment:
 
   - PYTHON: "C:\\Python36-x64"
     SQLSERVER_INSTANCENAME: "SQL2016"
+    CTDS_STATIC_LINK_FREETDS: "1"
 
 # Note: Database services should *not* be specified in the services section.
 # The database service will be explicitly started by the script which enables

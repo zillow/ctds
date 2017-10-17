@@ -1,5 +1,6 @@
 from decimal import Decimal
 import os
+import platform
 import re
 import sys
 import unittest
@@ -67,9 +68,15 @@ class TestExternalDatabase(unittest.TestCase):
     @property
     def server_name_and_instance(self):
         server = self.get_option('server')
-        # If running against localhost and the docker HOSTNAME var is set, use that.
-        if server.lower() == 'localhost' and 'HOSTNAME' in os.environ: # pragma: nobranch
-            server = os.environ['HOSTNAME'] # pragma: nocover
+        # If running against localhost use:
+        # 1. The `COMPUTERNAME` environment variable on Windows
+        # 2. The docker HOSTNAME environment variable, if present.
+        if server.lower() == 'localhost': # pragma: nocover
+            if platform.system() == 'Windows':
+                server = os.environ['COMPUTERNAME']
+            elif 'HOSTNAME' in os.environ:
+                server = os.environ['HOSTNAME']
+
         instance = self.get_option('instance')
         if instance is not None: # pragma: nocover
             server += '\\' + instance
