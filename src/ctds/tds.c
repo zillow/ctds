@@ -755,6 +755,7 @@ PyMODINIT_FUNC PyInit__tds(void)
 #if defined(CTDS_STATIC_LINK_FREETDS) && defined(_WIN32)
     strncpy(freetds_version, dbversion(), sizeof(freetds_version) - 1);
     freetds_version[sizeof(freetds_version) - 1] = '\0';
+    UNUSED(written);
 #else /* if defined(CTDS_STATIC_LINK_FREETDS) && defined(_WIN32) */
     /*
         FreeTDS version.
