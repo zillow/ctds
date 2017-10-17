@@ -85,8 +85,9 @@ supported:
 
 .. warning::
 
-    Currently `FreeTDS`_ does not support passing empty string parameters. Empty strings
-    are converted to `NULL` values internally before being transmitted to the database.
+    Currently `FreeTDS`_ does not support passing empty string parameters.
+    Empty strings are converted to `NULL` values internally before being
+    transmitted to the database.
 
 
 .. _FreeTDS: http://www.freetds.org

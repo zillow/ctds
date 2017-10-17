@@ -17,6 +17,7 @@ sequences. An empty sequence is returned when no more rows are available.
 :pep:`0249#fetchmany`
 
 :return: A sequence of result rows.
+:rtype: ctds.RowList
 '''
         )
 

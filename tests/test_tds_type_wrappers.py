@@ -16,7 +16,7 @@ SqlBigInt(value)
 
 SQL BIGINT type wrapper.
 
-:param int value: The integer value to wrap or `None`.
+:param int value: The integer value to wrap or :py:data:`None`.
 '''
         )
 
@@ -65,7 +65,7 @@ SqlBinary(value)
 
 SQL BINARY type wrapper.
 
-:param object value: The value to wrap or `None`.
+:param object value: The value to wrap or :py:data:`None`.
 '''
         )
 
@@ -110,7 +110,7 @@ SqlChar(value)
 
 SQL CHAR type wrapper. The value's UTF-8-encoded length must be <= 8000.
 
-:param object value: The value to wrap or `None`.
+:param object value: The value to wrap or :py:data:`None`.
 '''
         )
 
@@ -169,7 +169,7 @@ SqlDate(value)
 
 SQL DATE type wrapper.
 
-:param datetime.date value: The date value to wrap or `None`.
+:param datetime.date value: The date value to wrap or :py:data:`None`.
 '''
         )
 
@@ -220,7 +220,7 @@ SqlInt(value)
 
 SQL INT type wrapper.
 
-:param int value: The integer value to wrap or `None`.
+:param int value: The integer value to wrap or :py:data:`None`.
 '''
         )
 
@@ -269,7 +269,7 @@ SqlSmallInt(value)
 
 SQL SMALLINT type wrapper.
 
-:param int value: The integer value to wrap or `None`.
+:param int value: The integer value to wrap or :py:data:`None`.
 '''
         )
 
@@ -317,7 +317,7 @@ SqlTinyInt(value)
 
 SQL TINYINT type wrapper.
 
-:param int value: The integer value to wrap or `None`.
+:param int value: The integer value to wrap or :py:data:`None`.
 '''
         )
 
@@ -365,10 +365,10 @@ SqlVarBinary(value, size=None)
 
 SQL VARBINARY type wrapper.
 
-:param object value: The value to wrap or `None`.
+:param object value: The value to wrap or :py:data:`None`.
 :param int size: An optional size override. This value will be used for
-    the output parameter buffer size. It can also be used to truncate the
-    input parameter.
+    the output parameter buffer size. It can also be used to truncate
+    the input parameter.
 '''
         )
 
@@ -443,10 +443,10 @@ SQL VARCHAR type wrapper.
 
 .. note:: Byte strings are passed through unchanged to the database.
 
-:param object value: The value to wrap or `None`.
+:param object value: The value to wrap or :py:data:`None`.
 :param int size: An optional size override. This value will be used for
-    the output parameter buffer size. It can also be used to truncate the
-    input parameter.
+    the output parameter buffer size. It can also be used to truncate
+    the input parameter.
 '''
         )
 
@@ -527,10 +527,10 @@ SQL NVARCHAR type wrapper.
 
 .. versionadded:: 1.1
 
-:param object value: The value to wrap or `None`.
+:param object value: The value to wrap or :py:data:`None`.
 :param int size: An optional size override. This value will be used for
-    the output parameter buffer size. It can also be used to truncate the
-    input parameter.
+    the output parameter buffer size. It can also be used to truncate
+    the input parameter.
 '''
         )
 
@@ -646,7 +646,7 @@ SqlDecimal(value, precision=18, scale=0)
 
 SQL DECIMAL type wrapper.
 
-:param object value: The value to wrap or `None`.
+:param object value: The value to wrap or :py:data:`None`.
 :param int precision: The maximum number of total digits stored.
     This must be between 1 and 38.
 :param int scale: The maximum number of digits stored to the right

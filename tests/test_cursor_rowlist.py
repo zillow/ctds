@@ -1,6 +1,18 @@
+import ctds
+
 from .base import TestExternalDatabase
 
 class TestCursorRowList(TestExternalDatabase):
+
+    def test___doc__(self):
+        self.assertEqual(
+            ctds.RowList.__doc__,
+            '''\
+A :ref:`sequence <python:sequence>` object which buffers result set rows
+in a lightweight manner. Python objects wrapping the columnar data are
+only created when the data is actually accessed.
+'''
+        )
 
     def test_indexerror(self):
         with self.connect() as connection:

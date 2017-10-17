@@ -16,7 +16,6 @@ A reference to the Connection object on which the cursor was created.
 
 :pep:`0249#id28`
 
-:return: The :py:class:`ctds.Connection` object which created this cursor.
 :rtype: ctds.Connection
 '''
         )

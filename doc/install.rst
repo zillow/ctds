@@ -6,12 +6,15 @@ Getting Started
 Installing FreeTDS
 ------------------
 
-It is **highly** recommended to use the latest stable version of `FreeTDS`_, if possible.
-If this is not possible, `FreeTDS`_ can be installed using your system's package
-manager.
+It is **highly** recommended to use the latest stable version of `FreeTDS`_, if
+possible. If this is not possible, `FreeTDS`_ can be installed using your
+system's package manager.
 
-.. warning:: Versions of `FreeTDS`_ prior to *0.95* contain defects which may affect
-    `cTDS` functionality.
+.. warning::
+
+    Versions of `FreeTDS`_ prior to *0.95* contain defects which may
+    affect `cTDS` functionality.
+
 
 Installation From Source
 ^^^^^^^^^^^^^^^^^^^^^^^^

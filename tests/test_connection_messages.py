@@ -16,14 +16,14 @@ class TestConnectionMessages(TestExternalDatabase):
 A list of any informational messages received from the last
 :py:meth:`ctds.Cursor.execute`, :py:meth:`ctds.Cursor.executemany`, or
 :py:meth:`ctds.Cursor.callproc` call.
-For example, this will include messages produced by the T-SQL `PRINT` and
-`RAISERROR` statements. Messages are preserved until the next call to any
-of the above methods.
+For example, this will include messages produced by the T-SQL `PRINT`
+and `RAISERROR` statements. Messages are preserved until the next call
+to any of the above methods. :py:data:`None` is returned if the
+connection is closed.
 
 .. versionadded:: 1.4
 
-:rtype: list
-:return: None if the connection is closed.
+:rtype: list(dict) or None
 '''
         )
 

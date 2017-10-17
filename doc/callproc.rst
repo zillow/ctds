@@ -8,9 +8,9 @@ Stored procedure parameters may be passed as either a :py:class:`tuple` or
 
 .. warning::
 
-    Currently `FreeTDS`_ does not support passing empty string parameters. Empty
-    strings are converted to `NULL` values internally before being transmitted
-    to the database.
+    Currently `FreeTDS`_ does not support passing empty string parameters.
+    Empty strings are converted to `NULL` values internally before being
+    transmitted to the database.
 
 
 Passing `tuple` parameters
@@ -66,10 +66,10 @@ object, with output parameters replaced.
 Output Parameters
 -----------------
 
-:pep:`0249#callproc` does not define a way to specify a stored procedure parameter
-as an `output` parameter. `cTDS` allows you to wrap a parameter with the
-:py:class:`ctds.Parameter` class in order to indicate that it is an output parameter.
-Output parameter values are available in the result returned from
+:pep:`0249#callproc` does not define a way to specify a stored procedure
+parameter as an `output` parameter. `cTDS` allows you to wrap a parameter with
+the :py:class:`ctds.Parameter` class in order to indicate that it is an output
+parameter. Output parameter values are available in the result returned from
 :py:meth:`ctds.Cursor.callproc`.
 
 .. code-block:: python

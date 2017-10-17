@@ -244,7 +244,9 @@ static void Cursor_dealloc(PyObject* self)
 static const char s_Cursor_arraysize_doc[] =
     "The number of rows to fetch at a time with :py:meth:`.fetchmany`.\n"
     "\n"
-    ":pep:`0249#arraysize`\n";
+    ":pep:`0249#arraysize`\n"
+    "\n"
+    ":rtype: int\n";
 
 static PyObject* Cursor_arraysize_get(PyObject* self, void* closure)
 {
@@ -316,8 +318,10 @@ static const char s_Cursor_description_doc[] =
     "\n"
     ":pep:`0249#description`\n"
     "\n"
-    ":return: A sequence of tuples or None if no results are available.\n"
-    ":rtype: tuple\n";
+    ":return:\n"
+    "    A sequence of tuples or :py:data:`None` if no results are\n"
+    "    available.\n"
+    ":rtype: tuple(tuple(str, int, int, int, int, int, bool))\n";
 
 #if PY_MAJOR_VERSION >= 3
 
@@ -533,7 +537,6 @@ static const char s_Cursor_connection_doc[] =
     "\n"
     ":pep:`0249#id28`\n"
     "\n"
-    ":return: The :py:class:`ctds.Connection` object which created this cursor.\n"
     ":rtype: ctds.Connection\n";
 
 static PyObject* Cursor_connection_get(PyObject* self, void* closure)
@@ -554,13 +557,12 @@ static PyObject* Cursor_connection_get(PyObject* self, void* closure)
 }
 
 static const char s_Cursor_rownumber_doc[] =
-    "The current 0-based index of the cursor in the result set or None if the\n"
-    "index cannot be determined.\n"
+    "The current 0-based index of the cursor in the result set or\n"
+    ":py:data:`None` if the index cannot be determined.\n"
     "\n"
     ":pep:`0249#rownumber`\n"
     "\n"
-    ":return: None if no results are available.\n"
-    ":rtype: int\n";
+    ":rtype: int or None\n";
 
 static PyObject* Cursor_rownumber_get(PyObject* self, void* closure)
 {
@@ -584,10 +586,10 @@ static PyObject* Cursor_rownumber_get(PyObject* self, void* closure)
 }
 
 static const char s_Cursor_spid_doc[] =
-    "Retrieve the SQL Server Session Process ID (SPID) for the connection.\n"
+    "Retrieve the SQL Server Session Process ID (SPID) for the connection or\n"
+    ":py:data:`None` if the connection is closed.\n"
     "\n"
-    ":return: None if the connection is closed.\n"
-    ":rtype: int\n";
+    ":rtype: int or None\n";
 
 static PyObject* Cursor_spid_get(PyObject* self, void* closure)
 {
@@ -2350,6 +2352,11 @@ struct LazilyCreatedRow {
     } row;
 };
 
+static const char s_RowList_description_doc[] =
+    "A :ref:`sequence <python:sequence>` object which buffers result set rows\n"
+    "in a lightweight manner. Python objects wrapping the columnar data are\n"
+    "only created when the data is actually accessed.\n";
+
 struct RowList {
     PyObject_VAR_HEAD
 
@@ -2497,7 +2504,7 @@ PyTypeObject RowListType = {
     NULL,                                     /* tp_setattro */
     NULL,                                     /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT,                       /* tp_flags */
-    NULL,                                     /* tp_doc */
+    s_RowList_description_doc,                /* tp_doc */
     NULL,                                     /* tp_traverse */
     NULL,                                     /* tp_clear */
     NULL,                                     /* tp_richcompare */
@@ -2708,11 +2715,11 @@ static const char s_Cursor_fetchone_doc[] =
     "fetchone()\n"
     "\n"
     "Fetch the next row of a query result set, returning a single sequence, or\n"
-    "None when no more data is available.\n"
+    ":py:data:`None` when no more data is available.\n"
     "\n"
     ":pep:`0249#fetchone`\n"
     "\n"
-    ":return: A result row or None.\n";
+    ":return: The next row or :py:data:`None`.\n";
 
 static PyObject* Cursor_fetchone(PyObject* self, PyObject* args)
 {
@@ -2751,7 +2758,8 @@ static const char s_Cursor_fetchmany_doc[] =
     "\n"
     ":pep:`0249#fetchmany`\n"
     "\n"
-    ":return: A sequence of result rows.\n";
+    ":return: A sequence of result rows.\n"
+    ":rtype: ctds.RowList\n";
 
 static PyObject* Cursor_fetchmany(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -2782,7 +2790,8 @@ static const char s_Cursor_fetchall_doc[] =
     "\n"
     ":pep:`0249#fetchall`\n"
     "\n"
-    ":return: A sequence of result rows.\n";
+    ":return: A sequence of result rows.\n"
+    ":rtype: ctds.RowList\n";
 
 static PyObject* Cursor_fetchall(PyObject* self, PyObject* args)
 {
@@ -2803,7 +2812,10 @@ static const char s_Cursor_nextset_doc[] =
     "\n"
     ":pep:`0249#nextset`\n"
     "\n"
-    ":return: True if there was another result set or None if not.\n";
+    ":return:\n"
+    "    :py:data:`True` if there was another result set or :py:data:`None`\n"
+    "    if not.\n"
+    ":rtype: bool or None\n";
 
 static PyObject* Cursor_nextset(PyObject* self, PyObject* args)
 {
@@ -2883,7 +2895,11 @@ static const char s_Cursor_next_doc[] =
     "same semantics as :py:meth:`.fetchone`. A :py:exc:`StopIteration` exception\n"
     "is raised when the result set is exhausted.\n"
     "\n"
-    ":pep:`0249#next`\n";
+    ":pep:`0249#next`\n"
+    "\n"
+    ":raises StopIteration: The result set is exhausted.\n"
+    "\n"
+    ":return: The next row.\n";
 
 static PyObject* Cursor_next_internal(PyObject* self, PyObject* args)
 {
@@ -2929,11 +2945,11 @@ static const char s_Cursor___exit___doc[] =
     "Exit the cursor's runtime context, closing the cursor.\n"
     "\n"
     ":param type exc_type: The exception type, if an exception\n"
-    "    is raised in the context, otherwise `None`.\n"
+    "    is raised in the context, otherwise :py:data:`None`.\n"
     ":param Exception exc_val: The exception value, if an exception\n"
-    "    is raised in the context, otherwise `None`.\n"
+    "    is raised in the context, otherwise :py:data:`None`.\n"
     ":param object exc_tb: The exception traceback, if an exception\n"
-    "    is raised in the context, otherwise `None`.\n"
+    "    is raised in the context, otherwise :py:data:`None`.\n"
     "\n"
     ":rtype: None\n";
 

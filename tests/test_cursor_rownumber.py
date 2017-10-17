@@ -13,13 +13,12 @@ class TestCursorRowNumber(TestExternalDatabase):
         self.assertEqual(
             ctds.Cursor.rownumber.__doc__,
             '''\
-The current 0-based index of the cursor in the result set or None if the
-index cannot be determined.
+The current 0-based index of the cursor in the result set or
+:py:data:`None` if the index cannot be determined.
 
 :pep:`0249#rownumber`
 
-:return: None if no results are available.
-:rtype: int
+:rtype: int or None
 '''
         )
 

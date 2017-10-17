@@ -15,13 +15,15 @@ class TestConnectionTimeout(TestExternalDatabase):
         self.assertEqual(
             ctds.Connection.timeout.__doc__,
             '''\
-The connection timeout, in seconds.
+The connection timeout, in seconds, or :py:data:`None` if the connection
+is closed.
 
 .. note:: Setting the timeout requires FreeTDS version 1.00 or later.
 
 :raises ctds.NotSupportedError: `cTDS` was compiled against a version of
     FreeTDS which does not support setting the timeout on a connection.
 
+:rtype: int or None
 '''
         )
 

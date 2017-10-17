@@ -302,7 +302,7 @@ static const char s_SqlTinyInt_doc[] =
     "\n"
     "SQL TINYINT type wrapper.\n"
     "\n"
-    ":param int value: The integer value to wrap or `None`.\n";
+    ":param int value: The integer value to wrap or :py:data:`None`.\n";
 
 static int SqlTinyInt_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -331,7 +331,7 @@ static const char s_SqlSmallInt_doc[] =
     "\n"
     "SQL SMALLINT type wrapper.\n"
     "\n"
-    ":param int value: The integer value to wrap or `None`.\n";
+    ":param int value: The integer value to wrap or :py:data:`None`.\n";
 
 static int SqlSmallInt_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -359,7 +359,7 @@ static const char s_SqlInt_doc[] =
     "\n"
     "SQL INT type wrapper.\n"
     "\n"
-    ":param int value: The integer value to wrap or `None`.\n";
+    ":param int value: The integer value to wrap or :py:data:`None`.\n";
 
 static int SqlInt_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -387,7 +387,7 @@ static const char s_SqlBigInt_doc[] =
     "\n"
     "SQL BIGINT type wrapper.\n"
     "\n"
-    ":param int value: The integer value to wrap or `None`.\n";
+    ":param int value: The integer value to wrap or :py:data:`None`.\n";
 
 static int SqlBigInt_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -414,7 +414,7 @@ static const char s_SqlBinary_doc[] =
     "\n"
     "SQL BINARY type wrapper.\n"
     "\n"
-    ":param object value: The value to wrap or `None`.\n";
+    ":param object value: The value to wrap or :py:data:`None`.\n";
 
 static int SqlBinary_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -449,10 +449,10 @@ static const char s_SqlVarBinary_doc[] =
     "\n"
     "SQL VARBINARY type wrapper.\n"
     "\n"
-    ":param object value: The value to wrap or `None`.\n"
+    ":param object value: The value to wrap or :py:data:`None`.\n"
     ":param int size: An optional size override. This value will be used for\n"
-    "    the output parameter buffer size. It can also be used to truncate the\n"
-    "    input parameter.\n";
+    "    the output parameter buffer size. It can also be used to truncate\n"
+    "    the input parameter.\n";
 
 static int SqlVarBinary_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -497,7 +497,7 @@ static const char s_SqlChar_doc[] =
     "\n"
     "SQL CHAR type wrapper. The value's UTF-8-encoded length must be <= " STRINGIFY(TDS_CHAR_MAX_SIZE) ".\n"
     "\n"
-    ":param object value: The value to wrap or `None`.\n";
+    ":param object value: The value to wrap or :py:data:`None`.\n";
 
 static int SqlChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -554,10 +554,10 @@ static const char s_SqlVarChar_doc[] =
     "\n"
     ".. note:: Byte strings are passed through unchanged to the database.\n"
     "\n"
-    ":param object value: The value to wrap or `None`.\n"
+    ":param object value: The value to wrap or :py:data:`None`.\n"
     ":param int size: An optional size override. This value will be used for\n"
-    "    the output parameter buffer size. It can also be used to truncate the\n"
-    "    input parameter.\n";
+    "    the output parameter buffer size. It can also be used to truncate\n"
+    "    the input parameter.\n";
 
 static int SqlVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -616,10 +616,10 @@ static const char s_SqlNVarChar_doc[] =
     "\n"
     ".. versionadded:: 1.1\n"
     "\n"
-    ":param object value: The value to wrap or `None`.\n"
+    ":param object value: The value to wrap or :py:data:`None`.\n"
     ":param int size: An optional size override. This value will be used for\n"
-    "    the output parameter buffer size. It can also be used to truncate the\n"
-    "    input parameter.\n";
+    "    the output parameter buffer size. It can also be used to truncate\n"
+    "    the input parameter.\n";
 
 static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -705,7 +705,7 @@ static const char s_SqlDate_doc[] =
     "\n"
     "SQL DATE type wrapper.\n"
     "\n"
-    ":param datetime.date value: The date value to wrap or `None`.\n";
+    ":param datetime.date value: The date value to wrap or :py:data:`None`.\n";
 
 static int SqlDate_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -759,7 +759,7 @@ static const char s_SqlDecimal_doc[] =
     "\n"
     "SQL DECIMAL type wrapper.\n"
     "\n"
-    ":param object value: The value to wrap or `None`.\n"
+    ":param object value: The value to wrap or :py:data:`None`.\n"
     ":param int precision: The maximum number of total digits stored.\n"
     "    This must be between 1 and 38.\n"
     ":param int scale: The maximum number of digits stored to the right\n"

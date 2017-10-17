@@ -36,7 +36,7 @@ Dependencies
 * `FreeTDS`_
 
 .. _`FreeTDS`: http://www.freetds.org/
-.. _`DB API-2.0`: <https://www.python.org/dev/peps/pep-0249>
+.. _`DB API-2.0`: https://www.python.org/dev/peps/pep-0249
 
 .. include-documentation-end-marker
 

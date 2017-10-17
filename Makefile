@@ -109,7 +109,7 @@ test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlse
         $(if $(TDSDUMP), -e TDSDUMP=$(TDSDUMP)) \
         $(if $(TEST), -e TEST=$(TEST)) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
-        "./scripts/ctds-unittest.sh"
+        ./scripts/ctds-unittest.sh
 
 .PHONY: coverage_$(strip $(1))_$(strip $(2))
 coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
@@ -120,7 +120,7 @@ coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-s
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
-        "./scripts/ctds-coverage.sh" || docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage
+        ./scripts/ctds-coverage.sh
 	mkdir -p $$@
 	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage \
         $(abspath $$@)
@@ -142,7 +142,7 @@ checkmetadata_$(strip $(1)): docker_$(strip $(1))_$(DEFAULT_FREETDS_VERSION)
 	docker run --init --rm \
         --workdir /usr/src/ctds/ \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(strip $(1)), $(DEFAULT_FREETDS_VERSION)) \
-        "./scripts/ctds-checkmetadata.sh"
+        ./scripts/ctds-checkmetadata.sh
 endef
 
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECKMETADATA_RULE, $(PV))))
@@ -161,7 +161,7 @@ pylint: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 	docker run --init --rm \
         --workdir /usr/src/ctds/ \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
-        "./scripts/ctds-pylint.sh"
+        ./scripts/ctds-pylint.sh
 
 .PHONY: doc
 doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)

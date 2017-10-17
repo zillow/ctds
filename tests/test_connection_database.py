@@ -11,9 +11,9 @@ class TestConnectionDatabase(TestExternalDatabase):
         self.assertEqual(
             ctds.Connection.database.__doc__,
             '''\
-The current database.
+The current database or :py:data:`None` if the connection is closed.
 
-:return: None if the connection is closed.
+:rtype: str or None
 '''
         )
 

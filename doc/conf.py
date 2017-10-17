@@ -47,6 +47,8 @@ source_parsers = {
    '.md': 'recommonmark.parser.CommonMarkParser',
 }
 
+nitpick_ignore = [('py:func', 'unicode')]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

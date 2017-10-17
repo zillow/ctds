@@ -689,8 +689,10 @@ static void Connection_dealloc(PyObject* self)
 static const char s_Connection_autocommit_doc[] =
     "Auto-commit transactions after :py:meth:`ctds.Cursor.execute`,\n"
     ":py:meth:`ctds.Cursor.executemany`, and :py:meth:`ctds.Cursor.callproc`.\n"
-    "If this is False, operations must be committed explicitly using\n"
-    ":py:meth:`.commit`.\n";
+    "If :py:data:`False`, operations must be committed explicitly using\n"
+    ":py:meth:`.commit`.\n"
+    "\n"
+    ":rtype: bool or None\n";
 
 static PyObject* Connection_autocommit_get(PyObject* self, void* closure)
 {
@@ -742,9 +744,9 @@ static int Connection_autocommit_set(PyObject* self, PyObject* value, void* clos
 }
 
 static const char s_Connection_database_doc[] =
-    "The current database.\n"
+    "The current database or :py:data:`None` if the connection is closed.\n"
     "\n"
-    ":return: None if the connection is closed.\n";
+    ":rtype: str or None\n";
 
 static PyObject* Connection_database_get(PyObject* self, void* closure)
 {
@@ -808,14 +810,14 @@ static const char s_Connection_messages_doc[] =
     "A list of any informational messages received from the last\n"
     ":py:meth:`ctds.Cursor.execute`, :py:meth:`ctds.Cursor.executemany`, or\n"
     ":py:meth:`ctds.Cursor.callproc` call.\n"
-    "For example, this will include messages produced by the T-SQL `PRINT` and\n"
-    "`RAISERROR` statements. Messages are preserved until the next call to any\n"
-    "of the above methods.\n"
+    "For example, this will include messages produced by the T-SQL `PRINT`\n"
+    "and `RAISERROR` statements. Messages are preserved until the next call\n"
+    "to any of the above methods. :py:data:`None` is returned if the\n"
+    "connection is closed.\n"
     "\n"
     ".. versionadded:: 1.4\n"
     "\n"
-    ":rtype: list\n"
-    ":return: None if the connection is closed.\n";
+    ":rtype: list(dict) or None\n";
 
 static PyObject* Connection_messages_get(PyObject* self, void* closure)
 {
@@ -876,9 +878,10 @@ static PyObject* Connection_messages_get(PyObject* self, void* closure)
 }
 
 static const char s_Connection_spid_doc[] =
-    "Retrieve the SQL Server Session Process ID (SPID) for the connection.\n"
+    "The SQL Server Session Process ID (SPID) for the connection or\n"
+    ":py:data:`None` if the connection is closed.\n"
     "\n"
-    ":return: None if the connection is closed.\n";
+    ":rtype: int or None\n";
 
 static PyObject* Connection_spid_get(PyObject* self, void* closure)
 {
@@ -897,9 +900,10 @@ static PyObject* Connection_spid_get(PyObject* self, void* closure)
 }
 
 static const char s_Connection_tds_version_doc[] =
-    "The TDS version in use for the connection.\n"
+    "The TDS version in use for the connection or :py:data:`None` if the\n"
+    "connection is closed.\n"
     "\n"
-    ":return: None if the connection is closed.\n";
+    ":rtype: str or None\n";
 
 static PyObject* Connection_tds_version_get(PyObject* self, void* closure)
 {
@@ -964,13 +968,15 @@ static PyObject* Connection_tds_version_get(PyObject* self, void* closure)
 }
 
 static const char s_Connection_timeout_doc[] =
-    "The connection timeout, in seconds.\n"
+    "The connection timeout, in seconds, or :py:data:`None` if the connection\n"
+    "is closed.\n"
     "\n"
     ".. note:: Setting the timeout requires FreeTDS version 1.00 or later.\n"
     "\n"
     ":raises ctds.NotSupportedError: `cTDS` was compiled against a version of\n"
     "    FreeTDS which does not support setting the timeout on a connection.\n"
-    "\n";
+    "\n"
+    ":rtype: int or None\n";
 
 static PyObject* Connection_timeout_get(PyObject* self, void* closure)
 {

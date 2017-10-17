@@ -6,9 +6,11 @@ performance. As of version 1.2, *cTDS* does provide a simple connection pool
 implementation: :py:class:`ctds.pool.ConnectionPool`. It can also be used with
 3rd party implementation, such as `antipool <http://furius.ca/antiorm/>`_.
 
-.. note:: Whatever connection pooling solution is used, it is important to remember that
-    :py:class:`ctds.Connection` and :py:class:`ctds.Cursor` objects must **not** be
-    shared across threads.
+.. note::
+
+    Whatever connection pooling solution is used, it is important to
+    remember that :py:class:`ctds.Connection` and :py:class:`ctds.Cursor`
+    objects must **not** be shared across threads.
 
 
 ctds.pool Example

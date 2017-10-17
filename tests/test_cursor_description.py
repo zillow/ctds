@@ -37,8 +37,10 @@ result set. The tuple describes the column data as follows:
 
 :pep:`0249#description`
 
-:return: A sequence of tuples or None if no results are available.
-:rtype: tuple
+:return:
+    A sequence of tuples or :py:data:`None` if no results are
+    available.
+:rtype: tuple(tuple(str, int, int, int, int, int, bool))
 '''
         )
 

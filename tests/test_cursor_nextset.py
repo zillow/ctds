@@ -14,7 +14,10 @@ current set.
 
 :pep:`0249#nextset`
 
-:return: True if there was another result set or None if not.
+:return:
+    :py:data:`True` if there was another result set or :py:data:`None`
+    if not.
+:rtype: bool or None
 '''
         self.assertEqual(
             ctds.Cursor.nextset.__doc__,

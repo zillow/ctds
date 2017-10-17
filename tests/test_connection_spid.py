@@ -11,9 +11,10 @@ class TestConnectionSpid(TestExternalDatabase):
         self.assertEqual(
             ctds.Connection.spid.__doc__,
             '''\
-Retrieve the SQL Server Session Process ID (SPID) for the connection.
+The SQL Server Session Process ID (SPID) for the connection or
+:py:data:`None` if the connection is closed.
 
-:return: None if the connection is closed.
+:rtype: int or None
 '''
         )
 

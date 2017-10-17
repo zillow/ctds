@@ -32,6 +32,7 @@ from _tds import (
     NotSupportedError,
 
     Parameter,
+    RowList,
 
     # Types
     TDSCHAR as CHAR,

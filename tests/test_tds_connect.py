@@ -31,13 +31,16 @@ Connect to a database.
 :param str appname: An optional application name to associate with
     the connection.
 :param int login_timeout: An optional login timeout, in seconds.
-:param int timeout: An optional timeout for database requests, in seconds.
-:param str tds_version: The TDS protocol version to use. If None is specified,
-    the highest version supported by FreeTDS will be used.
+:param int timeout: An optional timeout for database requests, in
+    seconds.
+:param str tds_version: The TDS protocol version to use. If
+    :py:data:`None` is specified, the highest version supported by
+    FreeTDS will be used.
 :param bool autocommit: Autocommit transactions on the connection.
-:param bool ansi_defaults: Set `ANSI_DEFAULTS` and related settings to mimic ODBC drivers.
-:param bool enable_bcp: Enable bulk copy support on the connection. This is required for
-    :py:meth:`.bulk_insert` to function.
+:param bool ansi_defaults: Set `ANSI_DEFAULTS` and related settings to
+    mimic ODBC drivers.
+:param bool enable_bcp: Enable bulk copy support on the connection. This
+    is required for :py:meth:`.bulk_insert` to function.
 :return: A new `Connection` object connected to the database.
 :rtype: Connection
 '''

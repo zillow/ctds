@@ -12,11 +12,11 @@ class TestCursorFetchOne(TestExternalDatabase):
 fetchone()
 
 Fetch the next row of a query result set, returning a single sequence, or
-None when no more data is available.
+:py:data:`None` when no more data is available.
 
 :pep:`0249#fetchone`
 
-:return: A result row or None.
+:return: The next row or :py:data:`None`.
 '''
         )
 

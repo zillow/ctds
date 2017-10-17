@@ -14,6 +14,8 @@ class TestCursorArraysize(TestExternalDatabase):
 The number of rows to fetch at a time with :py:meth:`.fetchmany`.
 
 :pep:`0249#arraysize`
+
+:rtype: int
 '''
         )
 

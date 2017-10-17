@@ -140,17 +140,20 @@ static const char s_tds_connect_doc[] =
 
     ":param int login_timeout: An optional login timeout, in seconds.\n"
 
-    ":param int timeout: An optional timeout for database requests, in seconds.\n"
+    ":param int timeout: An optional timeout for database requests, in\n"
+    "    seconds.\n"
 
-    ":param str tds_version: The TDS protocol version to use. If None is specified,\n"
-    "    the highest version supported by FreeTDS will be used.\n"
+    ":param str tds_version: The TDS protocol version to use. If\n"
+    "    :py:data:`None` is specified, the highest version supported by\n"
+    "    FreeTDS will be used.\n"
 
     ":param bool autocommit: Autocommit transactions on the connection.\n"
 
-    ":param bool ansi_defaults: Set `ANSI_DEFAULTS` and related settings to mimic ODBC drivers.\n"
+    ":param bool ansi_defaults: Set `ANSI_DEFAULTS` and related settings to\n"
+    "    mimic ODBC drivers.\n"
 
-    ":param bool enable_bcp: Enable bulk copy support on the connection. This is required for\n"
-    "    :py:meth:`.bulk_insert` to function.\n"
+    ":param bool enable_bcp: Enable bulk copy support on the connection. This\n"
+    "    is required for :py:meth:`.bulk_insert` to function.\n"
 
     ":return: A new `Connection` object connected to the database.\n"
     ":rtype: Connection\n";
