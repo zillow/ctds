@@ -10,6 +10,10 @@ environment:
   BUILD_INSTALL_PREFIX: "C:\\usr\\local"
 
   matrix:
+  - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+    CTDS_STATIC_LINK_FREETDS: "1"
+
   - PYTHON: "C:\\Python26-x64"
     SQLSERVER_INSTANCENAME: "SQL2016"
 
@@ -39,10 +43,6 @@ environment:
   - PYTHON: "C:\\Python36-x64"
     SQLSERVER_INSTANCENAME: "SQL2014"
 
-  - PYTHON: "C:\\Python36-x64"
-    SQLSERVER_INSTANCENAME: "SQL2016"
-    CTDS_STATIC_LINK_FREETDS: "1"
-
 # Note: Database services should *not* be specified in the services section.
 # The database service will be explicitly started by the script which enables
 # TCP/IP connections for the database.
@@ -52,16 +52,21 @@ cache:
   -  '%BUILD_INSTALL_PREFIX% -> appveyor.yml'
 
 install:
-  - "powershell appveyor\\install.ps1"
+  - cmd: set
+  - ps: "appveyor\\install.ps1"
 
 build_script:
-  - "powershell appveyor\\build_script.ps1"
+  - cmd: set
+  - ps: "appveyor\\build_script.ps1"
 
 before_test:
-  - "powershell appveyor\\before_test.ps1"
+  - cmd: set
+  - ps: "appveyor\\before_test.ps1"
 
 test_script:
-  - "powershell appveyor\\test_script.ps1"
+  - cmd: set
+  - ps: "appveyor\\test_script.ps1"
 
 after_test:
-  - "powershell appveyor\\after_test.ps1"
+  - cmd: set
+  - ps: "appveyor\\after_test.ps1"
