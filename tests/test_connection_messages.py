@@ -3,7 +3,7 @@ import warnings
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import unicode_
+from .compat import long_, unicode_
 
 class TestConnectionMessages(TestExternalDatabase):
     '''Unit tests related to the Connection.messages attribute.
@@ -43,40 +43,41 @@ connection is closed.
             expected = [
                 {
                     'description': unicode_(b'more severe message from RAISERROR', encoding='utf-8'),
-                    'line': 5,
-                    'number': 50000,
-                    'proc': '',
-                    'severity': 3,
-                    'state': 16,
+                    'line': long_(5),
+                    'number': long_(50000),
+                    'proc': unicode_(''),
+                    'severity': long_(3),
+                    'state': long_(16),
                 },
                 {
                     'description': unicode_(b'\xc2\xbf carpe diem!', encoding='utf-8'),
-                    'line': 2,
-                    'number': 0,
-                    'proc': '',
-                    'severity': 0,
-                    'state': 1,
+                    'line': long_(2),
+                    'number': long_(0),
+                    'proc': unicode_(''),
+                    'severity': long_(0),
+                    'state': long_(1),
                 },
                 {
                     'description': unicode_(b'message from RAISERROR', encoding='utf-8'),
-                    'line': 3,
-                    'number': 50000,
-                    'proc': '',
-                    'severity': 0,
-                    'state': 99,
+                    'line': long_(1),
+                    'number': long_(50000),
+                    'proc': unicode_(''),
+                    'severity': long_(0),
+                    'state': long_(99),
                 },
                 {
                     'description': unicode_(b'Hello World!', encoding='utf-8'),
-                    'line': 4,
-                    'number': 0,
-                    'proc': '',
-                    'severity': 0,
-                    'state': 1,
+                    'line': long_(4),
+                    'number': long_(0),
+                    'proc': unicode_(''),
+                    'severity': long_(0),
+                    'state': long_(1),
                 },
             ]
-            for index, message in enumerate(connection.messages):
+            messages = [msg.copy() for msg in connection.messages]
+            for message in messages:
                 self.assertTrue(self.server_name_and_instance in message.pop('server'))
-                self.assertEqual(expected[index], message)
+            self.assertEqual(expected, messages)
 
             with connection.cursor() as cursor:
                 cursor.execute(

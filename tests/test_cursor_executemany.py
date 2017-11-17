@@ -34,7 +34,7 @@ against all parameter sequences or mappings found in the sequence
             with connection.cursor() as cursor:
                 self.assertRaises(TypeError, cursor.executemany)
 
-    def test_missing_parameter(self):
+    def test_missing_numeric_parameter(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for index, args in (
@@ -44,7 +44,7 @@ against all parameter sequences or mappings found in the sequence
                 ):
                     self.assertRaises(IndexError, cursor.executemany, 'SELECT :{0} AS missing'.format(index), args)
 
-    def test_invalid_format(self):
+    def test_invalid_numeric_format(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for case in (':', ':a', ':ab12', ":'somestring'"):
@@ -55,7 +55,7 @@ against all parameter sequences or mappings found in the sequence
                     else:
                         self.fail('.executemany() did not fail as expected') # pragma: nocover
 
-    def test_invalid_parameter(self):
+    def test_invalid_numeric_parameter(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for case, ex, msg in (
@@ -200,7 +200,7 @@ against all parameter sequences or mappings found in the sequence
             with connection.cursor() as cursor:
                 self.assertRaises(TypeError, cursor.executemany, '''SELECT ':0';''')
 
-    def test_escape_paramstyle(self):
+    def test_escape_numeric(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for sqltype, constant, parameter in (
@@ -218,7 +218,25 @@ against all parameter sequences or mappings found in the sequence
                     for row in cursor.fetchall():
                         self.assertEqual(row['Constant'], row['Parameter'])
 
-    def test_format(self):
+    def test_escape_named(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                for sqltype, constant, parameter in (
+                        ('DATETIME', '2016-01-02 03:04:05', datetime(2016, 1, 2, 3, 4, 5)),
+                        ('VARCHAR(100)', "'' foo '' :1 '' '':", "' foo ' :1 ' ':"),
+                ):
+                    cursor.executemany(
+                        '''
+                        SELECT
+                            CONVERT({0}, '{1}') AS Constant,
+                            :arg AS Parameter
+                        '''.format(sqltype, constant),
+                        ({'arg': parameter},) * 2
+                    )
+                    for row in cursor.fetchall():
+                        self.assertEqual(row['Constant'], row['Parameter'])
+
+    def test_format_numeric(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 args = (
@@ -268,6 +286,87 @@ against all parameter sequences or mappings found in the sequence
                         self.round_money(args[8]),
                     )
                 )
+
+    def test_format_named(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                args = {
+                    unicode_('none'): None,
+                    'int': -1234567890,
+                    unicode_('bigint'): 2 ** 45,
+                    'bytes': ctds.Parameter(b'1234'),
+                    'byte_array': bytearray('1234', 'ascii'),
+                    'string': unicode_(
+                        b'hello \'world\' ' + (b'\xe3\x83\x9b' if self.nchars_supported else b''),
+                        encoding='utf-8'
+                    ),
+                    'datetime': datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
+                    'decimal': Decimal('123.4567890'),
+                    'money': Decimal('1000000.4532')
+                }
+                query = cursor.executemany(
+                    '''
+                    SELECT
+                        :none AS none,
+                        :int AS int,
+                        CONVERT(BIGINT, :bigint) AS bigint,
+                        :bytes AS bytes,
+                        :byte_array AS bytearray,
+                        :string AS string,
+                        :string AS string_again,
+                        CONVERT(DATETIME, :datetime) AS datetime,
+                        :decimal AS decimal,
+                        CONVERT(MONEY, :money) AS money
+                    ''',
+                    (args, args)
+                )
+                self.assertEqual(None, query)
+
+                while cursor.description:
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (
+                                args['none'],
+                                args['int'],
+                                args['bigint'],
+                                args['bytes'].value,
+                                bytes(args['byte_array']),
+                                args['string'],
+                                args['string'],
+                                args['datetime'],
+                                args['decimal'],
+                                self.round_money(args['money']),
+                            )
+                        ]
+                    )
+                    cursor.nextset()
+
+    def test_format_named_invalid_name(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                for arg in (
+                    None,
+                    object(),
+                    1,
+                    Decimal('1.0'),
+                ):
+                    args = {
+                        arg: 'value',
+                        'arg': 'value'
+                    }
+
+                    try:
+                        cursor.executemany(
+                            '''
+                            SELECT :arg
+                            ''',
+                            (args, args)
+                        )
+                    except TypeError as ex:
+                        self.assertEqual(str(ex), str(arg or ''))
+                    else:
+                        self.assertFalse(self.use_sp_executesql) # pragma: nocover
 
     def test_compute(self):
         # COMPUTE clauses are only supported in SQL Server 2005 & 2008
@@ -405,3 +504,31 @@ against all parameter sequences or mappings found in the sequence
             })
         else:
             self.fail('.executemany() did not fail as expected') # pragma: nocover
+
+    def test_identity_insert(self):
+        with self.connect(autocommit=False, paramstyle='named') as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0} (Ident INT IDENTITY(1,1));
+                        '''.format(self.test_identity_insert.__name__)
+                    )
+                    cursor.execute(
+                        '''
+                        SET IDENTITY_INSERT {0} ON;
+                        '''.format(self.test_identity_insert.__name__)
+                    )
+                    cursor.executemany(
+                        '''
+                        INSERT INTO {0}(Ident) VALUES (:ix);
+                        '''.format(self.test_identity_insert.__name__),
+                        ({'ix': ix} for ix in range(10))
+                    )
+                    cursor.execute(
+                        '''
+                        SET IDENTITY_INSERT {0} OFF;
+                        '''.format(self.test_identity_insert.__name__)
+                    )
+            finally:
+                connection.rollback()

@@ -114,6 +114,11 @@ struct Cursor {
 
     /* The number of rows read from the current result set. */
     size_t rowsread;
+
+    /*
+        The paramstyle to use on .execute*() calls.
+    */
+    enum ParamStyle paramstyle;
 };
 
 #define warn_extension_used(_method) \
@@ -315,6 +320,11 @@ static const char s_Cursor_description_doc[] =
     "+---------------+--------------------------------------+\n"
     "| null_ok       | Whether the column allows NULL.      |\n"
     "+---------------+--------------------------------------+\n"
+    "\n"
+    ".. note::\n"
+    "    In Python 3+, this is a :py:class:`tuple` of\n"
+    "    :py:func:`collections.namedtuple` objects whose members are defined\n"
+    "    above.\n"
     "\n"
     ":pep:`0249#description`\n"
     "\n"
@@ -697,10 +707,12 @@ static const char* Cursor_extract_parameter_name(PyObject* value, PyObject** utf
     @param cursor [in] A Cusor object.
     @param parameters [in] A Python dict or tuple object of parameters to bind.
         The parameters can be of any Python type.
+    @param kvpairs [in] Are the parameters passed as (key, value) pairs?
+        This is necessary to support ordered named parameters.
 
     @return A Python dict or tuple object containg the bound parameters.
 */
-static PyObject* Cursor_bind(struct Cursor* cursor, PyObject* parameters)
+static PyObject* Cursor_bind(struct Cursor* cursor, PyObject* parameters, bool kvpairs)
 {
     RETCODE retcode = SUCCEED;
 
@@ -720,26 +732,51 @@ static PyObject* Cursor_bind(struct Cursor* cursor, PyObject* parameters)
         for (ix = 0; ix < nparameters; ++ix)
         {
             struct Parameter* rpcparam;
-            PyObject* value = PyTuple_GET_ITEM(parameters, ix);
-            if (!Parameter_Check(value))
-            {
-                rpcparam = Parameter_create(value, 0 /* output */);
-                if (!rpcparam)
-                {
-                    break;
-                }
-            }
-            else
-            {
-                Py_INCREF(value);
-                rpcparam = (struct Parameter*)value;
-            }
-            PyTuple_SET_ITEM(rpcparams, ix, (PyObject*)rpcparam); /* rpcparam reference stolen by PyTuple_SET_ITEM */
+            PyObject* utf8key = NULL;
 
-            retcode = Parameter_dbrpcparam(rpcparam,
-                                           dbproc,
-                                           NULL /* pass arguments by position */);
-            if (FAIL == retcode)
+            do
+            {
+                const char* keystr = NULL;
+                PyObject* value;
+                if (kvpairs)
+                {
+                    PyObject* pair = PyTuple_GET_ITEM(parameters, ix);
+                    assert(PyTuple_Check(pair) && PyTuple_GET_SIZE(pair) == 2);
+
+                    keystr = Cursor_extract_parameter_name(PyTuple_GET_ITEM(pair, 0),
+                                                           &utf8key);
+
+                    assert(keystr);
+                    value = PyTuple_GET_ITEM(pair, 1);
+                }
+                else
+                {
+                    value = PyTuple_GET_ITEM(parameters, ix);
+                }
+
+                if (!Parameter_Check(value))
+                {
+                    rpcparam = Parameter_create(value, 0 /* output */);
+                    if (!rpcparam)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    Py_INCREF(value);
+                    rpcparam = (struct Parameter*)value;
+                }
+
+                PyTuple_SET_ITEM(rpcparams, ix, (PyObject*)rpcparam); /* rpcparam reference stolen by PyTuple_SET_ITEM */
+
+                retcode = Parameter_dbrpcparam(rpcparam, dbproc, keystr);
+            }
+            while (0);
+
+            Py_XDECREF(utf8key);
+
+            if (PyErr_Occurred() || (FAIL == retcode))
             {
                 break;
             }
@@ -1014,12 +1051,14 @@ static PyObject* Cursor_unbind(PyObject* rpcparams,
     @param procname [in] The stored procedure name, UTF-8 encoded.
     @param parameters [in] A Python dict or tuple containing the parameters
         to the stored procedure. The arguments can be of any Python type.
+    @param kvpairs [in] Are the parameters passed as (key, value) pairs?
+        This is necessary to support ordered named parameters.
 
     @return A copy of the input arguments, including any output parameters in
         place.
 */
 static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* procname,
-                                          PyObject* parameters)
+                                          PyObject* parameters, bool kvpairs)
 {
     PyObject* results = NULL;
 
@@ -1045,7 +1084,7 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
             break;
         }
 
-        rpcparams = Cursor_bind(cursor, parameters);
+        rpcparams = Cursor_bind(cursor, parameters, kvpairs);
         if (!rpcparams)
         {
             /* Clear the RPC call initialization if it fails to send. */
@@ -1171,9 +1210,8 @@ static const char s_Cursor_callproc_doc[] =
     ".. warning:: Due to `FreeTDS` implementation details, stored procedures\n"
     "    with both output parameters and resultsets are not supported.\n"
     "\n"
-    ".. warning:: Currently `FreeTDS` does not support passing empty string\n"
-    "    parameters. Empty strings are converted to `NULL` values internally\n"
-    "    before being transmitted to the database.\n"
+    ".. note::\n"
+    "    Empty strings ('') will be passed as a single BINARY `0x00` value.\n"
     "\n"
     ":pep:`0249#callproc`\n"
     "\n"
@@ -1212,7 +1250,7 @@ static PyObject* Cursor_callproc(PyObject* self, PyObject* args)
     Cursor_verify_open(cursor);
     Cursor_verify_connection_open(cursor);
 
-    return Cursor_callproc_internal(cursor, procname, parameters);
+    return Cursor_callproc_internal(cursor, procname, parameters, false);
 }
 
 /* https://www.python.org/dev/peps/pep-0249/#Cursor.close */
@@ -1260,15 +1298,16 @@ static char* strappend(char* existing, size_t nexisting, const char* suffix, siz
     Generate a SQL statement suitable for use as the `@stmt` parameter to
     sp_executesql or format the SQL statement for direct execution.
 
-    The format string uses the "numeric" format syntax, as defined here:
-    https://www.python.org/dev/peps/pep-0249/#paramstyle.
-
     @param format [in] The SQL command format string.
+    @param paramstyle [in] The paramstyle used in the format string.
+    @param parameters [in] The parameters available.
     @param nparameters [in] The number of parameters available.
+    @param nsql [out] The length of the generated SQL string, in bytes.
 
-    @return The formatted SQL statement. That caller is responsible freeing the returned value.
+    @return The utf-8 formatted SQL statement. The caller is responsible freeing the returned value.
 */
 static char* build_executesql_stmt(const char* format,
+                                   enum ParamStyle paramstyle,
                                    PyObject* parameters,
                                    Py_ssize_t nparameters,
                                    size_t* nsql)
@@ -1292,98 +1331,176 @@ static char* build_executesql_stmt(const char* format,
             }
             else if (!literal && (':' == *format))
             {
-                long int paramnum;
-                char* paramnum_end;
-                const char* paramnum_start = format + 1; /* skip over the ':' */
-                paramnum = strtol(paramnum_start, &paramnum_end, 10);
-                if (paramnum_start != paramnum_end)
+                char* param = NULL;
+                size_t nparam = 0;
+
+                do
                 {
-                    if ((0 <= paramnum) && (paramnum < nparameters))
+                    long int paramnum = -1;
+                    const char* parammarker_start = format + 1; /* skip over the ':' */
+                    char* parammarker_end = (char*)parammarker_start;
+
+#if !defined(CTDS_USE_SP_EXECUTESQL) || (CTDS_USE_SP_EXECUTESQL == 0)
+                    PyObject* oparam = NULL;
+#endif /* !defined(CTDS_USE_SP_EXECUTESQL) || (CTDS_USE_SP_EXECUTESQL == 0) */
+
+                    nchunk = (size_t)(format - chunk);
+
+                    /* Append the prior chunk. */
+                    sql = strappend(sql, *nsql, chunk, nchunk);
+                    if (!sql)
                     {
-                        nchunk = (size_t)(format - chunk);
+                        PyErr_NoMemory();
+                        break;
+                    }
 
-                        /* Append the prior chunk. */
-                        sql = strappend(sql, *nsql, chunk, nchunk);
-                        if (sql)
+                    if (ParamStyle_numeric == paramstyle)
+                    {
+                        paramnum = strtol(parammarker_start, &parammarker_end, 10);
+                        if (parammarker_start == parammarker_end)
                         {
-#if CTDS_USE_SP_EXECUTESQL != 0
-                            char param[ARRAYSIZE("@param" STRINGIFY(UINT64_MAX))];
-                            size_t nparam = (size_t)sprintf(param, "@param%u", (unsigned int)paramnum);
-                            UNUSED(parameters);
-#else /* if CTDS_USE_SP_EXECUTESQL != 0 */
-                            /* Serialize the parameter to a string. */
-                            PyObject* oparam = NULL;
-                            char* param = NULL;
-                            size_t nparam = 0;
-                            do
-                            {
-                                oparam = PySequence_Fast_GET_ITEM(parameters, paramnum);
-                                if (!Parameter_Check(oparam))
-                                {
-                                    /* `oparam` is a borrowed reference, so safe to overwrite. */
-                                    oparam = (PyObject*)Parameter_create(oparam, 0 /* output */);
-                                    if (!oparam)
-                                    {
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    /* `oparam` is a borrowed reference, so increment. */
-                                    Py_INCREF(oparam);
-                                }
-
-                                param = Parameter_serialize((struct Parameter*)oparam, &nparam);
-                                if (!param)
-                                {
-                                    break;
-                                }
-                            }
-                            while (0);
-
-                            Py_XDECREF(oparam);
-
-                            if (PyErr_Occurred())
-                            {
-                                assert(!param);
-                                break;
-                            }
-#endif /* else if CTDS_USE_SP_EXECUTESQL != 0 */
-
-                            *nsql += nchunk;
-                            nchunk = 0;
-
-                            format = chunk = paramnum_end;
-
-                            sql = strappend(sql, *nsql, param, nparam);
-
-#if !(CTDS_USE_SP_EXECUTESQL != 0)
-                            tds_mem_free(param);
-#endif /* if !(CTDS_USE_SP_EXECUTESQL != 0) */
-
-                            if (!sql)
-                            {
-                                PyErr_NoMemory();
-                                break;
-                            }
-                            *nsql += nparam;
+                            /* Missing the index following the parameter marker. */
+                            PyErr_Format(PyExc_tds_InterfaceError, "invalid parameter marker");
+                            break;
                         }
-                        else
+                        if ((0 > paramnum) || (paramnum >= nparameters))
                         {
-                            PyErr_NoMemory();
+                            PyErr_Format(PyExc_IndexError, "%ld", paramnum);
                             break;
                         }
                     }
                     else
                     {
-                        PyErr_Format(PyExc_IndexError, "%ld", paramnum);
+                        assert(ParamStyle_named == paramstyle);
+                        while (isalnum(*parammarker_end) || '_' == *parammarker_end)
+                        {
+                            ++parammarker_end;
+                        }
+                    }
+
+#if CTDS_USE_SP_EXECUTESQL != 0
+                    if (ParamStyle_numeric == paramstyle)
+                    {
+                        param = (char*)tds_mem_malloc(ARRAYSIZE("@param" STRINGIFY(UINT64_MAX)));
+                        if (param)
+                        {
+                            assert(-1 != paramnum);
+                            nparam = (size_t)sprintf(param, "@param%u", (unsigned int)paramnum);
+                        }
+                        UNUSED(parameters);
+                    }
+                    else
+                    {
+                        assert(parammarker_end >= parammarker_start);
+                        nparam = 1 /* @ */ + (size_t)(parammarker_end - parammarker_start);
+                        param = (char*)tds_mem_malloc(nparam + 1 /* '\0' */);
+                        if (param)
+                        {
+                            char* paramname;
+                            param[0] = '@';
+                            memcpy(param + 1, parammarker_start, (size_t)(parammarker_end - parammarker_start));
+                            param[nparam] = '\0';
+
+                            paramname = param + 1;
+
+                            if (!PyMapping_HasKeyString(parameters, paramname))
+                            {
+                                PyErr_Format(PyExc_LookupError, "unknown named parameter \"%s\"", paramname);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!param)
+                    {
+                        PyErr_NoMemory();
                         break;
                     }
+
+#else /* if CTDS_USE_SP_EXECUTESQL != 0 */
+                    /* Serialize the parameter to a string. */
+                    do
+                    {
+                        PyObject* item = NULL;
+                        if (ParamStyle_numeric == paramstyle)
+                        {
+                            item = PySequence_GetItem(parameters, paramnum);
+                        }
+                        else
+                        {
+                            size_t nparamname = (size_t)(parammarker_end - parammarker_start);
+                            char* paramname = (char*)tds_mem_malloc(nparamname + 1 /* '\0' */);
+                            if (!paramname)
+                            {
+                                PyErr_NoMemory();
+                                break;
+                            }
+                            strncpy(paramname, parammarker_start, nparamname);
+                            paramname[nparamname] = '\0';
+                            item = PyMapping_GetItemString(parameters, paramname);
+                            if (!item)
+                            {
+                                PyErr_Format(PyExc_LookupError, "unknown named parameter \"%s\"", paramname);
+                            }
+                            tds_mem_free(paramname);
+
+                            if (PyErr_Occurred())
+                            {
+                                break;
+                            }
+                        }
+
+                        if (!Parameter_Check(item))
+                        {
+                            oparam = (PyObject*)Parameter_create(item, 0 /* output */);
+                        }
+                        else
+                        {
+                            Py_INCREF(item);
+                            oparam = item;
+                        }
+                        Py_DECREF(item);
+
+                        if (!oparam)
+                        {
+                            break;
+                        }
+
+                        param = Parameter_serialize((struct Parameter*)oparam, &nparam);
+                        if (!param)
+                        {
+                            break;
+                        }
+                    }
+                    while (0);
+
+                    Py_XDECREF(oparam);
+
+                    if (PyErr_Occurred())
+                    {
+                        break;
+                    }
+#endif /* else if CTDS_USE_SP_EXECUTESQL != 0 */
+
+                    *nsql += nchunk;
+                    nchunk = 0;
+
+                    format = chunk = parammarker_end;
+
+                    sql = strappend(sql, *nsql, param, nparam);
+                    if (!sql)
+                    {
+                        PyErr_NoMemory();
+                        break;
+                    }
+                    *nsql += nparam;
                 }
-                else
+                while (0);
+
+                tds_mem_free(param);
+
+                if (PyErr_Occurred())
                 {
-                    /* Missing the index following the parameter marker. */
-                    PyErr_Format(PyExc_tds_InterfaceError, "invalid parameter marker");
                     break;
                 }
             }
@@ -1503,48 +1620,188 @@ static int Cursor_execute_sql(struct Cursor* cursor, const char* sql)
 #if CTDS_USE_SP_EXECUTESQL != 0
 
 /*
+    Generate a parameter name to use with `sp_executesql` from
+    the given Python string object. E.g. "@MyParameter"
+
+    @note The caller must free the returned value with `tds_mem_free`.
+
+    @param oname [in] A Python Unicode (or String) object.
+    @param nparamname [out] The length of the returned string.
+
+    @return A pointer to the utf-8 encoded name, or NULL on failure.
+*/
+static char* make_paramname(PyObject* oname, size_t* nparamname)
+{
+    char* paramname = NULL;
+    int written;
+
+    PyObject* oparamname = NULL;
+
+    const char* name;
+    size_t nname;
+    do
+    {
+        size_t required;
+#if PY_MAJOR_VERSION < 3
+        if (PyUnicode_Check(oname))
+        {
+            oparamname = PyUnicode_AsUTF8String(oname);
+            if (!oparamname)
+            {
+                break;
+            }
+        }
+        else if (PyString_CheckExact(oname))
+        {
+            Py_INCREF(oname);
+            oparamname = oname;
+        }
+        else
+        {
+            PyErr_SetObject(PyExc_TypeError, oname);
+            break;
+        }
+
+        nname = (size_t)PyString_GET_SIZE(oparamname);
+        name = PyString_AS_STRING(oparamname);
+#else /* if PY_MAJOR_VERSION < 3 */
+        Py_ssize_t size;
+        if (!PyUnicode_Check(oname))
+        {
+            PyErr_SetObject(PyExc_TypeError, oname);
+            break;
+        }
+        name = PyUnicode_AsUTF8AndSize(oname, &size);
+        if (!name)
+        {
+            break;
+        }
+        nname = (size_t)size;
+#endif /* else if PY_MAJOR_VERSION < 3 */
+
+        required = nname + 1 /* '@' */ + 1 /* '\0' */;
+        paramname = (char*)tds_mem_malloc(required);
+        if (!paramname)
+        {
+            PyErr_NoMemory();
+            break;
+        }
+
+        written = PyOS_snprintf(paramname, required, "@%s", name);
+        assert((size_t)written == (required - 1));
+
+        if (nparamname)
+        {
+            *nparamname = (size_t)written;
+        }
+    }
+    while (0);
+
+    Py_XDECREF(oparamname);
+
+    return paramname;
+}
+
+/*
     Generate a params string suitable for use as the `@params` parameter to
     sp_executesql.
 
-    @param parameters [in] A Python sequence of the parameters.
+    @param paramstyle [in] The paramstyle, indicating whether a mapping or sequence is expected.
+    @param parameters [in] A Python sequence or mapping of parameters.
 
     @return A new reference to a Python string object.
 */
-static PyObject* build_executesql_params(PyObject* parameters)
+static PyObject* build_executesql_params(enum ParamStyle paramstyle, PyObject* parameters)
 {
     PyObject* object = NULL;
+    PyObject* items = NULL;
 
-    Py_ssize_t nparameters = PySequence_Fast_GET_SIZE(parameters);
+    Py_ssize_t nparameters;
     char* params = NULL;
     Py_ssize_t nparams = 0;
 
     Py_ssize_t ix;
+
+    if (ParamStyle_named == paramstyle)
+    {
+        PyObject* tmp = PyMapping_Items(parameters);
+        if (!tmp)
+        {
+            return NULL;
+        }
+        items = PySequence_Fast(tmp, NULL);
+        assert(NULL != items);
+        parameters = items;
+        Py_DECREF(tmp);
+    }
+
+    nparameters = PySequence_Fast_GET_SIZE(parameters);
     for (ix = 0; ix < nparameters; ++ix)
     {
         char* sqltype = NULL;
-        char* paramN = NULL;
-        size_t nparamN = 0;
-        PyObject* oparam = PySequence_Fast_GET_ITEM(parameters, ix);
-        struct Parameter* rpcparam;
-        if (!Parameter_Check(oparam))
-        {
-            rpcparam = Parameter_create(oparam, 0);
-        }
-        else
-        {
-            /* `oparam` is a borrowed reference, so increment. */
-            Py_INCREF(oparam);
-            rpcparam = (struct Parameter*)oparam;
-        }
-        if (!rpcparam)
-        {
-            break;
-        }
+        char* paramdesc = NULL;
+        size_t nparamdesc;
 
+        char* paramname = NULL;
+        size_t nparamname = 0;
+
+        struct Parameter* rpcparam = NULL;
+        PyObject* oparam = NULL;
+
+        int written;
+
+        /* Determine parameter name for `sp_executesql` SQL statement. */
         do
         {
-            int written;
-            size_t required;
+            if (ParamStyle_named == paramstyle)
+            {
+                PyObject* item = PySequence_Fast_GET_ITEM(parameters, ix); /* borrowed reference */
+                PyObject* oname = PyTuple_GET_ITEM(item, 0); /* borrowed reference */
+
+                paramname = make_paramname(oname, &nparamname);
+                if (!paramname)
+                {
+                    break;
+                }
+                oparam = PyTuple_GET_ITEM(item, 1); /* borrowed reference */
+            }
+            else
+            {
+                size_t required = STRLEN("@param" STRINGIFY(UINT64_MAX)) + 1 /* '\0' */;
+                paramname = (char*)tds_mem_malloc(required);
+                if (!paramname)
+                {
+                    PyErr_NoMemory();
+                    break;
+                }
+                nparamname = (size_t)PyOS_snprintf(paramname,
+                                                   required,
+                                                   "@param%lu",
+                                                   ix);
+                oparam = PySequence_Fast_GET_ITEM(parameters, ix); /* borrowed reference */
+            }
+
+            if (PyErr_Occurred())
+            {
+                break;
+            }
+
+            if (!Parameter_Check(oparam))
+            {
+                rpcparam = Parameter_create(oparam, 0);
+            }
+            else
+            {
+                /* `oparam` is a borrowed reference, so increment. */
+                Py_INCREF(oparam);
+                rpcparam = (struct Parameter*)oparam;
+            }
+            if (!rpcparam)
+            {
+                assert(PyErr_Occurred());
+                break;
+            }
+
             sqltype = Parameter_sqltype(rpcparam);
             if (!sqltype)
             {
@@ -1556,35 +1813,29 @@ static PyObject* build_executesql_params(PyObject* parameters)
                 Generate the param description for this parameter using the
                 following format:
 
-                    @paramN data_type [ OUT | OUTPUT ]
+                    @paramname data_type [ OUTPUT ]
             */
-            required = ((ix) ? STRLEN(", ") : STRLEN("")) +
-                       STRLEN("@param" STRINGIFY(UINT64_MAX)) +
-                       STRLEN(" ") +
-                       strlen(sqltype) +
-                       STRLEN(" OUTPUT") +
-                       1 /* '\0' */;
-            if (required > nparamN)
+            nparamdesc = ((ix) ? STRLEN(", ") : STRLEN("")) +
+                          nparamname +
+                          STRLEN(" ") +
+                          strlen(sqltype) +
+                          STRLEN(" OUTPUT") +
+                          1 /* '\0' */;
+            paramdesc = (char*)tds_mem_malloc(nparamdesc);
+            if (!paramdesc)
             {
-                char* tmp = (char*)tds_mem_realloc(paramN, required);
-                if (!tmp)
-                {
-                    PyErr_NoMemory();
-                    break;
-                }
-                free(paramN);
-                paramN = tmp;
-                nparamN = required;
+                PyErr_NoMemory();
+                break;
             }
-            written = PyOS_snprintf(paramN,
-                                    nparamN,
-                                    "%s@param%lu %s%s",
+            written = PyOS_snprintf(paramdesc,
+                                    nparamdesc,
+                                    "%s%s %s%s",
                                     (ix) ? ", " : "",
-                                    ix,
+                                    paramname,
                                     sqltype,
                                     (Parameter_output(rpcparam)) ? " OUTPUT" : "");
-            assert(written < nparamN);
-            params = strappend(params, (size_t)nparams, paramN, (size_t)written);
+            assert((size_t)written < nparamdesc);
+            params = strappend(params, (size_t)nparams, paramdesc, (size_t)written);
             if (!params)
             {
                 PyErr_NoMemory();
@@ -1593,15 +1844,23 @@ static PyObject* build_executesql_params(PyObject* parameters)
             nparams += written;
         } while (0);
         tds_mem_free(sqltype);
-        tds_mem_free(paramN);
+        tds_mem_free(paramdesc);
+        tds_mem_free(paramname);
 
-        Py_DECREF((PyObject*)rpcparam);
+        Py_XDECREF((PyObject*)rpcparam);
+
+        if (PyErr_Occurred())
+        {
+            break;
+        }
     }
     if (!PyErr_Occurred())
     {
         object = PyUnicode_DecodeUTF8(params, nparams, "strict");
     }
     tds_mem_free(params);
+
+    Py_XDECREF(items);
 
     return object;
 }
@@ -1632,18 +1891,36 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
         PyObject* callprocargs = NULL;
         Py_ssize_t nparameters = 0;
 
+        bool namedparams = (ParamStyle_named == cursor->paramstyle);
+
         PyObject* nextparams = PyIter_Next(isequence);
         do
         {
             if (nextparams)
             {
-                static const char s_fmt[] = "invalid parameter sequence item %ld";
-
-                char msg[ARRAYSIZE(s_fmt) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
-                (void)sprintf(msg, s_fmt, ix);
-
                 Py_XDECREF(parameters);
-                parameters = PySequence_Fast(nextparams, msg);
+                if (!namedparams)
+                {
+                    static const char s_fmt[] = "invalid parameter sequence item %ld";
+
+                    char msg[ARRAYSIZE(s_fmt) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
+                    (void)sprintf(msg, s_fmt, ix);
+                    parameters = PySequence_Fast(nextparams, msg);
+                }
+                else
+                {
+                    if (PyMapping_Check(nextparams))
+                    {
+                        Py_INCREF(nextparams);
+                        parameters = nextparams;
+                    }
+                    else
+                    {
+                        PyErr_Format(PyExc_TypeError, "invalid parameter mapping item %ld", ix);
+                        assert(NULL == parameters);
+                    }
+                }
+
                 if (!parameters)
                 {
                     break;
@@ -1652,10 +1929,12 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             }
             if (callprocargs)
             {
-                if (nparameters != PySequence_Fast_GET_SIZE(parameters))
+                Py_ssize_t size = (namedparams) ? PyMapping_Size(parameters) : PySequence_Fast_GET_SIZE(parameters);
+                if (nparameters != size)
                 {
                     PyErr_Format(PyExc_tds_InterfaceError,
-                                 "unexpected parameter count in sequence item %ld",
+                                 "unexpected parameter count in %s item %ld",
+                                 (namedparams) ? "mapping" : "sequence",
                                  ix);
                     break;
                 }
@@ -1664,30 +1943,74 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             {
                 char* sql;
                 size_t nsql;
-                PyObject* stmt;
+                PyObject* value = NULL;
 
-                /* Create the callproc arguments on the first (and possibly only) iteration. */
-                nparameters = (parameters) ? PySequence_Fast_GET_SIZE(parameters) : 0;
+                /*
+                    Create the callproc arguments on the first (and possibly only) iteration.
+                    When passing named parameters, the `@stmt` and `@params` must be first.
+                    Therefore it is necessary to pass the named parameters to `sp_executesql`
+                    as a sequence of key-value pairs.
+                */
+                if (parameters)
+                {
+                    nparameters = (namedparams) ? PyMapping_Length(parameters) : PySequence_Fast_GET_SIZE(parameters);
+                }
+                else
+                {
+                    nparameters = 0;
+                }
                 callprocargs = PyTuple_New(1 + ((nparameters) ? 1 : 0) + nparameters);
                 if (!callprocargs)
                 {
                     break;
                 }
 
-                sql = build_executesql_stmt(sqlfmt, parameters, nparameters, &nsql);
-                if (!sql)
+                do
                 {
-                    break;
-                }
+                    PyObject* pair = NULL;
+                    sql = build_executesql_stmt(sqlfmt,
+                                                cursor->paramstyle,
+                                                parameters,
+                                                nparameters,
+                                                &nsql);
+                    if (!sql)
+                    {
+                        break;
+                    }
 
-                stmt = PyUnicode_DecodeUTF8(sql, (Py_ssize_t)nsql, "strict");
+                    value = PyUnicode_DecodeUTF8(sql, (Py_ssize_t)nsql, "strict");
+                    if (!value)
+                    {
+                        break;
+                    }
+
+                    if (namedparams)
+                    {
+                        pair = Py_BuildValue("(zO)", "@stmt", value);
+                        if (!pair)
+                        {
+                            break;
+                        }
+                        PyTuple_SET_ITEM(callprocargs, 0, pair);
+                    }
+                    else
+                    {
+                        PyTuple_SET_ITEM(callprocargs, 0, value);
+                        value = NULL; /* reference stolen by PyTuple_SET_ITEM */
+                    }
+                }
+                while (0);
+
                 tds_mem_free(sql);
-                if (!stmt)
+                sql = NULL;
+
+                Py_XDECREF(value);
+                value = NULL;
+
+                if (PyErr_Occurred())
                 {
                     break;
                 }
-
-                PyTuple_SET_ITEM(callprocargs, 0, stmt); /* stmt reference stolen by PyTuple_SET_ITEM */
 
                 /*
                     Construct the @params parameter based on the first parameters tuple
@@ -1695,12 +2018,36 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
                  */
                 if (nparameters)
                 {
-                    PyObject* params = build_executesql_params(parameters);
-                    if (params)
+                    do
                     {
-                        PyTuple_SET_ITEM(callprocargs, 1, params); /* params reference stolen by PyTuple_SET_ITEM */
+                        PyObject* pair = NULL;
+                        value = build_executesql_params(cursor->paramstyle, parameters);
+                        if (!value)
+                        {
+                            break;
+                        }
+
+                        if (namedparams)
+                        {
+                            pair = Py_BuildValue("(zO)", "@params", value);
+                            if (!pair)
+                            {
+                                break;
+                            }
+                            PyTuple_SET_ITEM(callprocargs, 1, pair);
+                        }
+                        else
+                        {
+                            PyTuple_SET_ITEM(callprocargs, 1, value);
+                            value = NULL; /* reference stolen by PyTuple_SET_ITEM */
+                        }
                     }
-                    else
+                    while (0);
+
+                    Py_XDECREF(value);
+                    value = NULL;
+
+                    if (PyErr_Occurred())
                     {
                         break;
                     }
@@ -1709,25 +2056,100 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
 
             if (parameters)
             {
-                Py_ssize_t ixparam;
-                for (ixparam = 0; ixparam < nparameters; ++ixparam)
+                if (!namedparams)
                 {
-                    PyObject* param = PySequence_Fast_GET_ITEM(parameters, ixparam);
-                    Py_INCREF(param); /* param reference stolen by PyTuple_SetItem */
-
-                    /* Use PyTuple_SetItem to properly overwrite existing values. */
-                    if (0 != PyTuple_SetItem(callprocargs, ixparam + 2 /* @stmt, @params */, param))
+                    Py_ssize_t ixparam;
+                    for (ixparam = 0; ixparam < nparameters; ++ixparam)
                     {
-                        Py_DECREF(param);
-                        break;
+                        PyObject* param = PySequence_Fast_GET_ITEM(parameters, ixparam);
+                        Py_INCREF(param); /* param reference stolen by PyTuple_SetItem */
+
+                        /* Use PyTuple_SetItem to properly overwrite existing values. */
+                        if (0 != PyTuple_SetItem(callprocargs, ixparam + 2 /* @stmt, @params */, param))
+                        {
+                            Py_DECREF(param);
+                            break;
+                        }
                     }
+                }
+                else
+                {
+                    /*
+                        Iterate over the parameters, prepending a '@' to the names,
+                        and adding to the callproc arguments.
+                    */
+                    PyObject* items = NULL;
+                    PyObject* seq = NULL;
+                    do
+                    {
+                        Py_ssize_t ixparam;
+                        items = PyMapping_Items(parameters);
+                        if (!items)
+                        {
+                            break;
+                        }
+                        seq = PySequence_Tuple(items);
+                        if (!items)
+                        {
+                            break;
+                        }
+
+                        assert(PySequence_Fast_GET_SIZE(seq) == nparameters);
+                        for (ixparam = 0; ixparam < nparameters; ++ixparam)
+                        {
+                            PyObject* item = PySequence_Fast_GET_ITEM(seq, ixparam); /* borrowed reference */
+                            PyObject* key = PyTuple_GET_ITEM(item, 0); /* borrowed reference */
+                            PyObject* value = PyTuple_GET_ITEM(item, 1); /* borrowed reference */
+
+                            char* paramname = NULL;
+                            PyObject* args = NULL;
+                            do
+                            {
+                                paramname = make_paramname(key, NULL);
+                                if (!paramname)
+                                {
+                                    break;
+                                }
+
+                                args = Py_BuildValue("(zO)", paramname, value);
+                                if (!args)
+                                {
+                                    break;
+                                }
+
+                                /* Use PyTuple_SetItem to properly overwrite existing values. */
+                                if (0 != PyTuple_SetItem(callprocargs, ixparam + 2 /* @stmt, @params */, args))
+                                {
+                                    break;
+                                }
+
+                                /* args reference stolen by PyTuple_SetItem */
+                                args = NULL;
+                            }
+                            while (0);
+
+                            tds_mem_free(paramname);
+                            Py_XDECREF(args);
+                            args = NULL;
+
+                            if (PyErr_Occurred())
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    while (0);
+
+                    Py_XDECREF(items);
+                    Py_XDECREF(seq);
                 }
             }
             if (!PyErr_Occurred())
             {
                 PyObject* output = Cursor_callproc_internal(cursor,
                                                             "sp_executesql",
-                                                            callprocargs);
+                                                            callprocargs,
+                                                            namedparams);
                 Py_XDECREF(output);
             }
             if (PyErr_Occurred())
@@ -1755,7 +2177,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
     PyObject* isequence = PyObject_GetIter(sequence);
     if (isequence)
     {
-        size_t ix = 0;
+        size_t paramN = 0;
 
         PyObject* parameters = NULL; /* current parameters, if any */
         Py_ssize_t nparameters = 0;
@@ -1768,36 +2190,70 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             char* sql;
             size_t nsql;
 
+            Py_ssize_t currnparameters;
+
             if (nextparams)
             {
-                static const char s_fmt[] = "invalid parameter sequence item %ld";
-
-                char msg[ARRAYSIZE(s_fmt) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
-                (void)sprintf(msg, s_fmt, ix);
-
                 assert(NULL == parameters);
-                parameters = PySequence_Fast(nextparams, msg);
+                if (ParamStyle_numeric == cursor->paramstyle)
+                {
+                    static const char s_fmt[] = "invalid parameter sequence item %ld";
+
+                    char msg[ARRAYSIZE(s_fmt) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
+                    (void)sprintf(msg, s_fmt, paramN);
+
+                    parameters = PySequence_Fast(nextparams, msg);
+                }
+                else
+                {
+                    if (PyMapping_Check(nextparams))
+                    {
+                        Py_INCREF(nextparams);
+                        parameters = nextparams;
+                    }
+                    else
+                    {
+                        PyErr_Format(PyExc_TypeError, "invalid parameter mapping item %ld", paramN);
+                        assert(NULL == parameters);
+                    }
+                }
+
                 if (!parameters)
                 {
                     break;
                 }
                 /* Set the expected parameter count based on the first sequence. */
-                if (0 == ix)
+                if (0 == paramN)
                 {
-                    nparameters = PySequence_Fast_GET_SIZE(parameters);
+                    nparameters = (ParamStyle_numeric == cursor->paramstyle) ?
+                        PySequence_Fast_GET_SIZE(parameters) : PyMapping_Size(parameters);
                 }
-                ix++;
+                paramN++;
             }
 
-            if (nparameters != ((parameters) ? PySequence_Fast_GET_SIZE(parameters) : 0))
+            if (parameters)
+            {
+                currnparameters = (ParamStyle_numeric == cursor->paramstyle) ?
+                    PySequence_Fast_GET_SIZE(parameters) : PyMapping_Size(parameters);
+            }
+            else
+            {
+                currnparameters = 0;
+            }
+            if (nparameters != currnparameters)
             {
                 PyErr_Format(PyExc_tds_InterfaceError,
-                             "unexpected parameter count in sequence item %ld",
-                             ix);
+                             "unexpected parameter count in %s item %ld",
+                             (ParamStyle_numeric == cursor->paramstyle) ? "sequence" : "mapping",
+                             paramN);
                 break;
             }
 
-            sql = build_executesql_stmt(sqlfmt, parameters, nparameters, &nsql);
+            sql = build_executesql_stmt(sqlfmt,
+                                        cursor->paramstyle,
+                                        parameters,
+                                        nparameters,
+                                        &nsql);
             Py_XDECREF(parameters);
             parameters = NULL;
             if (!sql)
@@ -1857,26 +2313,35 @@ static PyObject* Cursor_execute(PyObject* self, PyObject* args)
     {
         return NULL;
     }
-    if (parameters && !PySequence_Check(parameters))
-    {
-        PyErr_SetObject(PyExc_TypeError, parameters);
-        return NULL;
-    }
 
     if (parameters)
     {
-        sequence = PyTuple_New((parameters) ? 1 : 0);
+        if (!PySequence_Check(parameters) && !PyMapping_Check(parameters))
+        {
+            PyErr_SetObject(PyExc_TypeError, parameters);
+            return NULL;
+        }
+        if (PyObject_Length(parameters) > 0)
+        {
+            if (((ParamStyle_numeric == cursor->paramstyle) && !PySequence_Check(parameters)) ||
+                ((ParamStyle_named == cursor->paramstyle) && !PyMapping_Check(parameters)))
+            {
+                PyErr_SetObject(PyExc_TypeError, parameters);
+                return NULL;
+            }
+        }
+
+        sequence = PyTuple_New(PyObject_Length(parameters) ? 1 : 0);
         if (!sequence)
         {
             return NULL;
         }
 
-        if (parameters)
+        if (PyObject_Length(parameters))
         {
             Py_INCREF(parameters);
             PyTuple_SET_ITEM(sequence, 0, parameters); /* parameters reference stolen by PyTuple_SET_ITEM */
         }
-
         error = Cursor_execute_internal(cursor, sqlfmt, sequence);
         Py_DECREF(sequence);
     }
@@ -3004,7 +3469,7 @@ static PyObject* Cursor_iternext(PyObject* self)
     return Cursor_next_internal(self, NULL);
 }
 
-PyObject* Cursor_create(struct Connection* connection)
+PyObject* Cursor_create(struct Connection* connection, enum ParamStyle paramstyle)
 {
     struct Cursor* cursor = PyObject_New(struct Cursor, &CursorType);
     if (NULL != cursor)
@@ -3017,6 +3482,8 @@ PyObject* Cursor_create(struct Connection* connection)
             https://www.python.org/dev/peps/pep-0249/#arraysize
         */
         cursor->arraysize = 1;
+
+        cursor->paramstyle = paramstyle;
 
         Py_INCREF((PyObject*)connection);
         cursor->connection = connection;

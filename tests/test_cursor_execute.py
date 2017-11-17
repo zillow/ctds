@@ -35,17 +35,30 @@ specified in the SQL statement. Parameter notation is specified by
             with connection.cursor() as cursor:
                 self.assertRaises(TypeError, cursor.execute)
 
-    def test_missing_parameter(self):
+    def test_missing_numeric_parameter(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for index, args in (
-                        (0, ()),
                         (1, (1,)),
                         (-1, (1,)),
                 ):
                     self.assertRaises(IndexError, cursor.execute, 'SELECT :{0} AS missing'.format(index), args)
 
-    def test_invalid_format(self):
+    def test_missing_named_parameter(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                for args in (
+                        ({'name': 'value'}),
+                        ({'1': 'value'}),
+                ):
+                    try:
+                        cursor.execute('SELECT :missing AS missing', args)
+                    except LookupError as ex:
+                        self.assertEqual(str(ex), 'unknown named parameter "missing"')
+                    else:
+                        self.fail('.execute() did not fail as expected') # pragma: nocover
+
+    def test_invalid_numeric_format(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for case in (':', ':::', ':a', ':ab12', ":'somestring'"):
@@ -275,7 +288,7 @@ specified in the SQL statement. Parameter notation is specified by
                     else:
                         self.fail('.execute() did not fail as expected') # pragma: nocover
 
-    def test_format(self):
+    def test_format_numeric(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 args = (
@@ -292,6 +305,7 @@ specified in the SQL statement. Parameter notation is specified by
                     Decimal('123.4567890'),
                     Decimal('1000000.4532')
                 )
+
                 query = cursor.execute(
                     '''
                     SELECT
@@ -326,7 +340,129 @@ specified in the SQL statement. Parameter notation is specified by
                     )
                 )
 
-    def test_escape(self):
+    def test_format_named(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                args = {
+                    unicode_('none'): None,
+                    'int': -1234567890,
+                    'bigint': 2 ** 45,
+                    'bytes': ctds.Parameter(b'1234'),
+                    unicode_('byte_array'): bytearray('1234', 'ascii'),
+                    'string': unicode_(
+                        b'hello \'world\' ' + (b'\xe3\x83\x9b' if self.nchars_supported else b''),
+                        encoding='utf-8'
+                    ),
+                    'datetime': datetime(2001, 1, 1, 12, 13, 14, 150 * 1000),
+                    'decimal': Decimal('123.4567890'),
+                    'money': Decimal('1000000.4532')
+                }
+                query = cursor.execute(
+                    '''
+                    SELECT
+                        :none AS none,
+                        :int AS int,
+                        CONVERT(BIGINT, :bigint) AS bigint,
+                        :bytes AS bytes,
+                        :byte_array AS bytearray,
+                        :string AS string,
+                        :string AS string_again,
+                        CONVERT(DATETIME, :datetime) AS datetime,
+                        :decimal AS decimal,
+                        CONVERT(MONEY, :money) AS money
+                    ''',
+                    args
+                )
+                self.assertEqual(None, query)
+
+                self.assertEqual(
+                    tuple(cursor.fetchone()),
+                    (
+                        args['none'],
+                        args['int'],
+                        args['bigint'],
+                        args['bytes'].value,
+                        bytes(args['byte_array']),
+                        args['string'],
+                        args['string'],
+                        args['datetime'],
+                        args['decimal'],
+                        self.round_money(args['money']),
+                    )
+                )
+
+    def test_format_named_empty(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                query = cursor.execute(
+                    '''
+                    SELECT
+                        'test'
+                    ''',
+                    ()
+                )
+                self.assertEqual(None, query)
+
+                self.assertEqual(
+                    tuple(cursor.fetchone()),
+                    (
+                        unicode_('test'),
+                    )
+                )
+
+    def test_format_named_special(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                args = {
+                    unicode_('stmt'): 'the stmt parameter',
+                    unicode_('params'): 'the params parameter',
+
+                }
+                cursor.execute(
+                    '''
+                    SELECT
+                        :stmt,
+                        :params
+                    ''',
+                    args
+                )
+
+                self.assertEqual(
+                    tuple(cursor.fetchone()),
+                    (args['stmt'], args['params'])
+                )
+
+    def test_format_named_invalid_name(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                for arg in (
+                    None,
+                    object(),
+                    1,
+                    Decimal('1.0'),
+
+                ):
+                    args = {
+                        arg: 'value',
+                        'arg': 'value'
+                    }
+                    try:
+                        cursor.execute(
+                            '''
+                            SELECT :arg
+                            ''',
+                            args
+                        )
+                    except TypeError as ex:
+                        self.assertTrue(self.use_sp_executesql)
+                        self.assertEqual(str(ex), str(arg or ''))
+                    except LookupError as ex:
+                        self.assertFalse(self.use_sp_executesql)
+                        self.assertEqual(str(ex), str(arg or ''))
+                    else:
+                        self.assertFalse(self.use_sp_executesql) # pragma: nocover
+
+    def test_escape_numeric(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 args = ("''; SELECT @@VERSION;",)
@@ -340,6 +476,24 @@ specified in the SQL statement. Parameter notation is specified by
                     [tuple(row) for row in cursor.fetchall()],
                     [
                         args
+                    ]
+                )
+                self.assertEqual(cursor.nextset(), None)
+
+    def test_escape_named(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                args = {'arg': "''; SELECT @@VERSION;"}
+                cursor.execute(
+                    '''
+                    SELECT :arg
+                    ''',
+                    args
+                )
+                self.assertEqual(
+                    [tuple(row) for row in cursor.fetchall()],
+                    [
+                        (args['arg'],)
                     ]
                 )
                 self.assertEqual(cursor.nextset(), None)

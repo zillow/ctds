@@ -39,6 +39,6 @@ Start-Service "MSSQL`$$instanceName"
 & "sqlcmd" -S localhost\$env:SQLSERVER_INSTANCENAME `
     -U sa -P "$env:SA_PASSWORD" `
     -d master `
-    -i "$PSScriptRoot\..\test-setup.sql"
+    -i "$PSScriptRoot\..\misc\test-setup.sql"
 
 if ($LastExitCode -ne 0) { exit $LastExitCode }

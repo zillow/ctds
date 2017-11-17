@@ -16,7 +16,8 @@ Rows from the current result set can be read using any of
 :py:meth:`ctds.Cursor.fetchall()` methods. *cTDS* will cache all retrieved raw
 row data. However, to save memory, it is only converted to Python objects when
 first accessed from the Python client. This is done to minimize memory overhead
-when processing large result sets.
+when processing large result sets. Columns for the current resultset can be
+retrieved using the :py:attr:`ctds.Cursor.description` property.
 
 .. code-block:: python
 
@@ -26,7 +27,11 @@ when processing large result sets.
             cursor.callproc('GetSomeResults', (1,))
             rows = cursor.fetchall()
 
+            # Get column names.
+            columns = [column.name for column in cursor.description]
+
     # Process the rows after releasing the connection
+    print(columns)
     for row in rows:
         # Do stuff with the rows.
         print(tuple(row))

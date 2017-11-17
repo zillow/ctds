@@ -1,12 +1,15 @@
 from decimal import Decimal
 import os
+import platform
 import re
+import socket
 import sys
 import unittest
 
 import ctds
 
 from .compat import configparser, PY27, unichr_, unicode_
+
 
 class TestExternalDatabase(unittest.TestCase):
 
@@ -68,8 +71,11 @@ class TestExternalDatabase(unittest.TestCase):
     def server_name_and_instance(self):
         server = self.get_option('server')
         # If running against localhost and the docker HOSTNAME var is set, use that.
-        if server.lower() == 'localhost' and 'HOSTNAME' in os.environ: # pragma: nobranch
-            server = os.environ['HOSTNAME'] # pragma: nocover
+        if server.lower() == 'localhost':
+            if 'HOSTNAME' in os.environ: # pragma: nobranch
+                server = os.environ['HOSTNAME'] # pragma: nocover
+            elif platform.system() == 'Windows':
+                server = socket.gethostname()
         instance = self.get_option('instance')
         if instance is not None: # pragma: nocover
             server += '\\' + instance

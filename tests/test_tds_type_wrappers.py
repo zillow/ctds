@@ -774,6 +774,6 @@ SQL DECIMAL type wrapper.
             else:
                 self.fail('ctds.SqlDecimal did not fail as expected') # pragma: nocover
 
-    def test_internalerror(self):
+    def test_runtimeerror(self):
         value = '100000000000000000000000000000.123456789'
-        self.assertRaises(ctds.InternalError, ctds.SqlDecimal, value)
+        self.assertRaises(RuntimeError, ctds.SqlDecimal, value)

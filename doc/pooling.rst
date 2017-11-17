@@ -37,8 +37,7 @@ ctds.pool Example
         config
     )
 
-    connection = pool.connection()
-    try:
+    with pool.connection() as connection:
         with connection.cursor() as cursor:
             try:
                 cursor.execute('SELECT @@VERSION;')
@@ -47,8 +46,6 @@ ctds.pool Example
                 pprint.pprint([tuple(row) for row in rows])
             except ctds.Error as ex:
                 print(ex)
-    finally:
-        connection.release()
 
     # Explicitly cleanup the connection pool.
     pool.finalize()

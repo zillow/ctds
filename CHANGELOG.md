@@ -3,8 +3,20 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [1.6.0] - 2017-11-17
 ### Added
 - Documentation improvements.
+- Add an optional *paramstyle* argument to `ctds.connect`, with support
+for the `named` *paramstyle*.
+- Add valgrind support for memory leak detection and integrate it into the CI
+build process (Travis only).
+- Add optional `read_only` argument to `ctds.connect` for indication of
+read-only intent. Note: Requires as yet unreleased FreeTDS support.
+### Fixed
+- Pass a BINARY 0x00 byte instead of an empty string for (N)VARCHAR arguments.
+This is to work around the inability of the db-lib API to pass empty string
+parameters via RPC.
 
 ## [1.5.0] - 2017-10-16
 ### Added
@@ -154,7 +166,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/zillow/ctds/compare/v1.6.0...v1.5.0
 [1.5.0]: https://github.com/zillow/ctds/compare/v1.5.0...v1.4.1
 [1.4.1]: https://github.com/zillow/ctds/compare/v1.4.1...v1.4.0
 [1.4.0]: https://github.com/zillow/ctds/compare/v1.4.0...v1.3.2

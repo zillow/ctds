@@ -2,27 +2,37 @@ language: generic
 
 matrix:
     include:
-        - env: TRAVIS_PYTHON_VERSION=3.6
+        - env: CTDS_MAKE_TARGET=check_3.6
           os: linux
           dist: trusty
           services: docker
           sudo: required
-        - env: TRAVIS_PYTHON_VERSION=3.5
+        - env: CTDS_MAKE_TARGET=check_3.5
           os: linux
           dist: trusty
           services: docker
           sudo: required
-        - env: TRAVIS_PYTHON_VERSION=3.4
+        - env: CTDS_MAKE_TARGET=check_3.4
           os: linux
           dist: trusty
           services: docker
           sudo: required
-        - env: TRAVIS_PYTHON_VERSION=3.3
+        - env: CTDS_MAKE_TARGET=check_3.3
           os: linux
           dist: trusty
           services: docker
           sudo: required
-        - env: TRAVIS_PYTHON_VERSION=2.7
+        - env: CTDS_MAKE_TARGET=check_2.7
+          os: linux
+          dist: trusty
+          services: docker
+          sudo: required
+        - env: CTDS_MAKE_TARGET=valgrind_3.6.3
+          os: linux
+          dist: trusty
+          services: docker
+          sudo: required
+        - env: CTDS_MAKE_TARGET=valgrind_2.7.14
           os: linux
           dist: trusty
           services: docker

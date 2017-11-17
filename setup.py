@@ -11,7 +11,7 @@ import sys
 
 # Version information is defined here and compiled into the extension.
 CTDS_MAJOR_VERSION = 1
-CTDS_MINOR_VERSION = 5
+CTDS_MINOR_VERSION = 6
 CTDS_PATCH_VERSION = 0
 
 
@@ -97,10 +97,11 @@ def splitdirs(name):
 
 
 def read(*names, **kwargs):
-    return io.open(
+    with io.open(
         os.path.join(os.path.dirname(__file__), *names),
-        encoding=kwargs.get('encoding', 'utf8')
-    ).read()
+        encoding=kwargs.get('encoding', 'utf-8')
+    ) as file_:
+        return file_.read()
 
 
 setuptools.setup(

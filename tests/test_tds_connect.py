@@ -10,7 +10,9 @@ class TestTdsConnection(TestExternalDatabase):
             ctds.connect.__doc__,
             # pylint: disable=line-too-long
             '''\
-connect(server, port=1433, instance=None, user='', password='', database=None, appname='ctds', login_timeout=5, timeout=5, tds_version=None, autocommit=False, ansi_defaults=True, enable_bcp=True)
+connect(server, port=1433, instance=None, user='', password='', database=None, \
+appname='ctds', login_timeout=5, timeout=5, tds_version=None, autocommit=False, \
+ansi_defaults=True, enable_bcp=True, paramstyle=None, read_only=False)
 
 Connect to a database.
 
@@ -20,6 +22,9 @@ Connect to a database.
     connection object is no longer required.
 
 :pep:`0249#connect`
+
+.. versionadded:: 1.6
+    `paramstyle`
 
 :param str server: The database server host.
 :param int port: The database server port. This value is ignored if
@@ -41,6 +46,9 @@ Connect to a database.
     mimic ODBC drivers.
 :param bool enable_bcp: Enable bulk copy support on the connection. This
     is required for :py:meth:`.bulk_insert` to function.
+:param str paramstyle: Override the default :py:data:`ctds.paramstyle` value for
+    this connection. Supported values: `numeric`, `named`.
+:param bool read_only: Indicate 'read-only' application intent.
 :return: A new `Connection` object connected to the database.
 :rtype: Connection
 '''
@@ -112,7 +120,9 @@ Connect to a database.
             string_case('tds_version') +
             bool_case('autocommit') +
             bool_case('ansi_defaults') +
-            bool_case('enable_bcp')
+            bool_case('enable_bcp') +
+            string_case('paramstyle') +
+            bool_case('read_only')
         )
 
         for args, kwargs in cases:
@@ -138,7 +148,22 @@ Connect to a database.
             else:
                 self.fail('.connect() did not fail as expected') # pragma: nocover
 
-    def test_valueerror(self):
+    def test_paramstyle(self):
+        for paramstyle in (
+                'qmark',
+                'NUMERIC',
+                'nAmed',
+                'unknown'
+        ):
+            try:
+                connection = ctds.connect('hostname', paramstyle=paramstyle)
+                connection.close() # pragma: nocover
+            except ctds.InterfaceError as ex:
+                self.assertEqual(str(ex), 'unsupported paramstyle "{0}"'.format(paramstyle))
+            else:
+                self.fail('.connect() did not fail as expected') # pragma: nocover
+
+    def test_interfaceerror(self):
         for kwargs in (
                 {'user': '*' * 256},
                 {'password': '*' * 256},
@@ -147,7 +172,7 @@ Connect to a database.
             try:
                 connection = ctds.connect('hostname', **kwargs)
                 connection.close() # pragma: nocover
-            except ValueError as ex:
+            except ctds.InterfaceError as ex:
                 self.assertEqual(str(ex), next(iter(kwargs.values())))
             else:
                 self.fail('.connect() did not fail as expected') # pragma: nocover
@@ -282,3 +307,13 @@ Connect to a database.
                 self.assertFalse(self.QUOTED_IDENTIFIER & options)
                 self.assertFalse(self.ANSI_NULL_DFLT_ON & options)
                 self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
+
+    def test_read_only(self):
+        # $future: This should be supported once an official release of
+        # FreeTDS with the DBSETLREADONLY option is available.
+        try:
+            self.connect(read_only=True)
+        except NotImplementedError as ex:
+            self.assertEqual(str(ex), 'read-only intent is not supported')
+        else:
+            self.fail('.connect() did not fail as expected') # pragma: nocover

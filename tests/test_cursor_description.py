@@ -35,6 +35,11 @@ result set. The tuple describes the column data as follows:
 | null_ok       | Whether the column allows NULL.      |
 +---------------+--------------------------------------+
 
+.. note::
+    In Python 3+, this is a :py:class:`tuple` of
+    :py:func:`collections.namedtuple` objects whose members are defined
+    above.
+
 :pep:`0249#description`
 
 :return:

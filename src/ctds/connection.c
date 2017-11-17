@@ -208,6 +208,12 @@ struct Connection {
         retrieve it from dblib.
     */
     int query_timeout;
+
+    /*
+        The paramstyle to use on .execute*() calls on ctds.Cursor() objects created
+        by this connection.
+    */
+    enum ParamStyle paramstyle;
 };
 
 static PyObject* build_lastdberr_dict(const struct LastError* lasterror)
@@ -317,11 +323,11 @@ static void raise_lasterror(PyObject* exception, const struct LastError* lasterr
                 /* severity : int */
                 -1 != PyObject_SetAttrStringLongValue(error, "severity", (long)lasterror->severity) &&
 
-                /* db_error : {'code': int, 'description': string} */
+                /* db_error : {'number': int, 'description': string} */
                 NULL != (db_error = build_lastdberr_dict(lasterror)) &&
                 -1 != PyObject_SetAttrString(error, "db_error", db_error) &&
 
-                /* os_error : None | {'code': int, 'description': string} */
+                /* os_error : None | {'number': int, 'description': string} */
                 NULL != (os_error = build_lastoserr_dict(lasterror)) &&
                 -1 != PyObject_SetAttrString(error, "os_error", os_error) &&
 
@@ -513,8 +519,8 @@ int Connection_dberrhandler(DBPROCESS* dbproc, int severity, int dberr,
     lasterror->severity = severity;
     lasterror->dberr = dberr;
     lasterror->oserr = oserr;
-    lasterror->dberrstr = (dberrstr) ? strdup(dberrstr) : NULL;
-    lasterror->oserrstr = (oserrstr) ? strdup(oserrstr) : NULL;
+    lasterror->dberrstr = (dberrstr) ? tds_mem_strdup(dberrstr) : NULL;
+    lasterror->oserrstr = (oserrstr) ? tds_mem_strdup(oserrstr) : NULL;
 
     /*
         Possible return values included:
@@ -548,22 +554,37 @@ int Connection_dbmsghandler(DBPROCESS* dbproc, DBINT msgno, int msgstate,
         struct DatabaseMsg* msg = tds_mem_malloc(sizeof(struct DatabaseMsg));
         if (msg)
         {
-            struct DatabaseMsg** current;
+            struct DatabaseMsg* prev;
+            struct DatabaseMsg* curr;
+
             memset(msg, 0, sizeof(struct DatabaseMsg));
 
             msg->msgno = msgno;
             msg->msgstate = msgstate;
             msg->severity = severity;
-            msg->msgtext = (msgtext) ? strdup(msgtext) : NULL;
-            msg->srvname = (srvname) ? strdup(srvname) : NULL;
-            msg->proc = (proc) ? strdup(proc) : NULL;
+            msg->msgtext = (msgtext) ? tds_mem_strdup(msgtext) : NULL;
+            msg->srvname = (srvname) ? tds_mem_strdup(srvname) : NULL;
+            msg->proc = (proc) ? tds_mem_strdup(proc) : NULL;
             msg->line = line;
 
             /* Insert the message into the list in order of descending severity. */
-            current = &connection->messages;
-            while (*current && (*current)->severity >= severity) { current = &(*current)->next; }
+            prev = NULL;
+            curr = connection->messages;
+            while (NULL != curr && curr->severity >= severity)
+            {
+                prev = curr;
+                curr = curr->next;
+            }
 
-            (*current) = msg;
+            msg->next = curr;
+            if (!prev)
+            {
+                connection->messages = msg;
+            }
+            else
+            {
+                prev->next = msg;
+            }
         }
     }
     else
@@ -575,9 +596,9 @@ int Connection_dbmsghandler(DBPROCESS* dbproc, DBINT msgno, int msgstate,
         lastmsg->msgno = msgno;
         lastmsg->msgstate = msgstate;
         lastmsg->severity = severity;
-        lastmsg->msgtext = (msgtext) ? strdup(msgtext) : NULL;
-        lastmsg->srvname = (srvname) ? strdup(srvname) : NULL;
-        lastmsg->proc = (proc) ? strdup(proc) : NULL;
+        lastmsg->msgtext = (msgtext) ? tds_mem_strdup(msgtext) : NULL;
+        lastmsg->srvname = (srvname) ? tds_mem_strdup(srvname) : NULL;
+        lastmsg->proc = (proc) ? tds_mem_strdup(proc) : NULL;
         lastmsg->line = line;
     }
 
@@ -1199,7 +1220,7 @@ static PyObject* Connection_cursor(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    return Cursor_create(connection);
+    return Cursor_create(connection, connection->paramstyle);
     UNUSED(args);
 }
 
@@ -1638,7 +1659,9 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                             const char* database, const char* appname,
                             unsigned int login_timeout, unsigned int timeout,
                             const char* tds_version, bool autocommit,
-                            bool ansi_defaults, bool enable_bcp)
+                            bool ansi_defaults, bool enable_bcp,
+                            enum ParamStyle paramstyle,
+                            bool read_only)
 {
     struct Connection* connection = PyObject_New(struct Connection, &ConnectionType);
     if (NULL != connection)
@@ -1714,7 +1737,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             */
             if (FAIL == DBSETLUTF16(connection->login, 1))
             {
-                PyErr_SetString(PyExc_tds_InternalError, "failed to set connection encoding");
+                PyErr_SetString(PyExc_RuntimeError, "failed to set connection encoding");
                 break;
             }
 #endif /* if defined(CTDS_USE_UTF16) && (CTDS_USE_UTF16 != 0) */
@@ -1725,7 +1748,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             */
             if (FAIL == DBSETLCHARSET(connection->login, "UTF-8"))
             {
-                PyErr_SetString(PyExc_tds_InternalError, "failed to set client charset");
+                PyErr_SetString(PyExc_RuntimeError, "failed to set client charset");
                 break;
             }
 
@@ -1733,7 +1756,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             {
                 if (FAIL == DBSETLUSER(connection->login, username))
                 {
-                    PyErr_SetString(PyExc_ValueError, username);
+                    PyErr_SetString(PyExc_tds_InterfaceError, username);
                     break;
                 }
             }
@@ -1741,7 +1764,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             {
                 if (FAIL == DBSETLPWD(connection->login, password))
                 {
-                    PyErr_SetString(PyExc_ValueError, password);
+                    PyErr_SetString(PyExc_tds_InterfaceError, password);
                     break;
                 }
             }
@@ -1749,7 +1772,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             {
                 if (FAIL == DBSETLAPP(connection->login, appname))
                 {
-                    PyErr_SetString(PyExc_ValueError, appname);
+                    PyErr_SetString(PyExc_tds_InterfaceError, appname);
                     break;
                 }
             }
@@ -1788,9 +1811,23 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 }
                 if (FAIL == retcode)
                 {
-                    PyErr_Format(PyExc_tds_InternalError, "failed to set TDS version");
+                    PyErr_Format(PyExc_RuntimeError, "failed to set TDS version");
                     break;
                 }
+            }
+
+            if (read_only)
+            {
+#if defined(DBSETLREADONLY)
+                if (FAIL == DBSETLREADONLY(connection->login, (int)read_only))
+                {
+                    PyErr_SetString(PyExc_RuntimeError, "failed to set read-only intent");
+                    break;
+                }
+#else /* if defined defined(DBSETLREADONLY) */
+                PyErr_Format(PyExc_NotImplementedError, "read-only intent is not supported");
+                break;
+#endif /* else if defined defined(DBSETLREADONLY) */
             }
 
             if (database)
@@ -1815,7 +1852,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             {
                 if (FAIL == BCP_SETL(connection->login, flag))
                 {
-                    PyErr_SetString(PyExc_tds_InternalError, "failed to enable bcp");
+                    PyErr_SetString(PyExc_RuntimeError, "failed to enable bcp");
                     break;
                 }
                 if (bcp_getl(connection->login) == enable_bcp)
@@ -1856,6 +1893,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             }
 
             connection->query_timeout = (int)timeout;
+            connection->paramstyle = paramstyle;
 
             dbsetuserdata(connection->dbproc, (BYTE*)connection);
 

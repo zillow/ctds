@@ -4,6 +4,7 @@
 *.pyc
 *.so
 .gh-pages/
+.venv/
 coverage_*
 build/
 dist/

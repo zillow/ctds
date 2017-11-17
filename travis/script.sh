@@ -6,5 +6,5 @@ if [ -z "$TRAVIS" ]; then
 fi
 
 if [ "$TRAVIS_OS_NAME" != "osx" ]; then
-    make check_${TRAVIS_PYTHON_VERSION};
+    make ${CTDS_MAKE_TARGET};
 fi

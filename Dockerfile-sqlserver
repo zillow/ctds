@@ -1,8 +1,8 @@
-FROM microsoft/mssql-server-linux:latest
+FROM microsoft/mssql-server-linux:2017-latest
 
 COPY scripts/mssql-entrypoint.sh /
 
-COPY test-setup.sql /
+COPY misc/test-setup.sql /
 
 EXPOSE 1433
 

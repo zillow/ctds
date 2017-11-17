@@ -123,7 +123,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
 
         # Windows builds properly decode codepoints from the supplementary plane.
         # Possibly due to the iconv implementation??
-        decoded = self.use_utf16 or platform.system() == 'Windows'
+        decoded = self.use_utf16 or platform.system() == 'Windows' or not self.UCS4_SUPPORTED
         self.assertEqual(
             tuple(self.cursor.fetchone()),
             (

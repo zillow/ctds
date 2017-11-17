@@ -5,6 +5,8 @@
 #include <Python.h>
 #include "pop_warnings.h"
 
+#include "tds.h"
+
 /**
     Initialize the Cursor Python type object.
 
@@ -29,6 +31,6 @@ struct Connection; /* forward declaration */
     @return NULL indicating the creation failed.
     @return The created Cursor object, with a reference count of 1.
 */
-PyObject* Cursor_create(struct Connection* connection);
+PyObject* Cursor_create(struct Connection* connection, enum ParamStyle paramstyle);
 
 #endif /* ifndef __CURSOR_H__ */

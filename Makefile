@@ -10,6 +10,10 @@ SUPPORTED_PYTHON_VERSIONS := \
     3.5 \
     3.6
 
+VALGRIND_PYTHON_VERSIONS := \
+    2.7.14 \
+    3.6.3
+
 # FreeTDS versions to test against. This should
 # be the latest of each minor release.
 # Note: These version strings *must* match the versions
@@ -20,15 +24,26 @@ CHECKED_FREETDS_VERSIONS := \
     0.95.95 \
     1.00.55
 
+# Valgrind FreeTDS versions are limited to one without sp_executesql support
+# and one with.
+VALGRIND_FREETDS_VERSIONS := \
+    0.91.112 \
+    1.00.55
+
+
 DEFAULT_PYTHON_VERSION := $(lastword $(SUPPORTED_PYTHON_VERSIONS))
 DEFAULT_FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
 
+VIRTUALENV_FREETDS_VERSION ?= dev.1.00.310
+
 CTDS_VERSION := $(strip $(shell python setup.py --version))
+
+VIRTUALENV_DIR ?= .venv
 
 # Help
 .PHONY: help
 help:
-	@echo "usage: make [check|clean|coverage|doc|publish|pylint|test]"
+	@echo "usage: make [check|clean|coverage|doc|publish|pylint|test|valgrind|virtualenv]"
 	@echo
 	@echo "    check"
 	@echo "        Run tests against all supported versions of Python and"
@@ -53,12 +68,27 @@ help:
 	@echo "        Run tests using the default Python version ($(DEFAULT_PYTHON_VERSION)) and"
 	@echo "        the default version of FreeTDS ($(DEFAULT_FREETDS_VERSION))."
 	@echo
+	@echo "    valgrind"
+	@echo "        Run tests using a debug build of Python versions ($(VALGRIND_PYTHON_VERSIONS)) and"
+	@echo "        FreeTDS versions ($(VALGRIND_FREETDS_VERSIONS)) under valgrind."
+	@echo
+	@echo "    virtualenv"
+	@echo "        Create a local virtualenv in $(VIRTUALENV_DIR), install FreeTDS version"
+	@echo "        '$(VIRTUALENV_FREETDS_VERSION)', and ctds from local source."
+	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
 
 
 UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
 SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
+VALGRIND_DOCKER_IMAGE_NAME = ctds-valgrind-python$(strip $(1))-$(strip $(2))
+
+define DOCKER_RM
+	@if [ ! -z `docker ps -f name=$(strip $(1)) -q` ]; then \
+        docker rm $(strip $(1)); \
+    fi
+endef
 
 GH_PAGES_DIR := $(abspath .gh-pages)
 
@@ -84,7 +114,7 @@ stop-sqlserver:
         docker stop $(SQL_SERVER_DOCKER_IMAGE_NAME); \
     fi
 
-# Function to generate a rules for:
+# Function to generate rules for:
 #   * building a docker image with a specific Python/FreeTDS version
 #   * running unit tests for a specific Python/FreeTDS version
 #   * running code coverage for a specific Python/FreeTDS version
@@ -95,8 +125,8 @@ define GENERATE_RULES
 .PHONY: docker_$(strip $(1))_$(strip $(2))
 docker_$(strip $(1))_$(strip $(2)):
 	docker build $(if $(VERBOSE),,-q) \
-        --build-arg "FREETDS_VERSION=$(strip $(2))" \
         --build-arg "PYTHON_VERSION=$(strip $(1))" \
+        --build-arg "FREETDS_VERSION=$(strip $(2))" \
         -f Dockerfile \
         -t $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         .
@@ -113,6 +143,7 @@ test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlse
 
 .PHONY: coverage_$(strip $(1))_$(strip $(2))
 coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
+	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage)
 	docker run --init \
         -e CTDS_COVER=1 \
         -e DEBUG=1 \
@@ -128,6 +159,46 @@ coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-s
 endef
 
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(foreach FV, $(CHECKED_FREETDS_VERSIONS), $(eval $(call GENERATE_RULES, $(PV), $(FV)))))
+
+
+# Function to generate rules for:
+#   * building a docker image with a specific valgrind-Python/FreeTDS version
+#   * running unit tests for a specific Python/FreeTDS version under valgrind
+#
+# Note: Python version *must* be exact, as it is built from source.
+#
+# $(eval $(call GENERATE_VALGRIND_RULES, <python_version>, <freetds_version>))
+#
+define GENERATE_VALGRIND_RULES
+.PHONY: docker_valgrind_$(strip $(1))_$(strip $(2))
+docker_valgrind_$(strip $(1))_$(strip $(2)):
+	docker build $(if $(VERBOSE),,-q) \
+        --build-arg "PYTHON_VERSION=$(strip $(1))" \
+        --build-arg "FREETDS_VERSION=$(strip $(2))" \
+        -f Dockerfile-valgrind \
+        -t $(call VALGRIND_DOCKER_IMAGE_NAME, $(1), $(2)) \
+        .
+
+.PHONY: valgrind_$(strip $(1))_$(strip $(2))
+valgrind_$(strip $(1))_$(strip $(2)): docker_valgrind_$(strip $(1))_$(strip $(2)) start-sqlserver
+	docker run --init --rm \
+        -e DEBUG=1 \
+        --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
+        $(if $(TDSDUMP), -e TDSDUMP=$(TDSDUMP)) \
+        $(if $(TEST), -e TEST=$(TEST)) \
+        $(call VALGRIND_DOCKER_IMAGE_NAME, $(1), $(2)) \
+        ./scripts/ctds-valgrind.sh
+endef
+
+$(foreach PV, $(VALGRIND_PYTHON_VERSIONS), $(foreach FV, $(VALGRIND_FREETDS_VERSIONS), $(eval $(call GENERATE_VALGRIND_RULES, $(PV), $(FV)))))
+
+define VALGRIND_RULE
+.PHONY: valgrind_$(strip $(1))
+valgrind_$(strip $(1)): $(foreach FV, $(VALGRIND_FREETDS_VERSIONS), valgrind_$(strip $(1))_$(FV))
+endef
+
+$(foreach PV, $(VALGRIND_PYTHON_VERSIONS), $(eval $(call VALGRIND_RULE, $(PV))))
+
 
 define CHECK_RULE
 .PHONY: check_$(strip $(1))
@@ -153,6 +224,9 @@ check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV) checkmetad
 .PHONY: test
 test: test_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 
+.PHONY: valgrind
+valgrind: $(foreach PV, $(VALGRIND_PYTHON_VERSIONS), valgrind_$(PV))
+
 .PHONY: coverage
 coverage: coverage_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 
@@ -165,6 +239,7 @@ pylint: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 
 .PHONY: doc
 doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
+	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc)
 	docker run --init \
         --workdir /usr/src/ctds/ \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc \
@@ -190,3 +265,24 @@ _post_publish-doc:
 
 .PHONY: publish-doc
 publish-doc: _pre_publish-doc doc _post_publish-doc
+
+virtualenv: $(VIRTUALENV_DIR)/include/sybdb.h src/ctds/*.c
+	CTDS_INCLUDE_DIRS="$(abspath $(VIRTUALENV_DIR))/include" \
+        CTDS_LIBRARY_DIRS="$(abspath $(VIRTUALENV_DIR))/lib" \
+        CTDS_RUNTIME_LIBRARY_DIRS="$(abspath $(VIRTUALENV_DIR))/lib" \
+        CTDS_STRICT=1 \
+        $(VIRTUALENV_DIR)/bin/python setup.py -v install
+
+$(VIRTUALENV_DIR)/include/sybdb.h: | $(VIRTUALENV_DIR) $(VIRTUALENV_FREETDS_VERSION)
+	cd freetds-$(VIRTUALENV_FREETDS_VERSION) \
+        && ./configure --prefix "$(abspath $(VIRTUALENV_DIR))" \
+        && make \
+        && make install
+	rm -rf freetds-$(VIRTUALENV_FREETDS_VERSION)
+
+$(VIRTUALENV_DIR):
+	virtualenv $(VIRTUALENV_DIR)
+
+$(VIRTUALENV_FREETDS_VERSION):
+	wget 'ftp://ftp.freetds.org/pub/freetds/current/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz' -O freetds.tar.gz
+	tar -xzf freetds.tar.gz && rm freetds.tar.gz

@@ -822,7 +822,7 @@ static int SqlDecimal_init(PyObject* self, PyObject* args, PyObject* kwargs)
                                 &dbtypeinfo);
             if (-1 == size)
             {
-                PyErr_Format(PyExc_tds_InternalError, "failed to convert '%s'", str);
+                PyErr_Format(PyExc_RuntimeError, "failed to convert '%s'", str);
             }
             Py_DECREF(ostr);
         }
@@ -917,7 +917,7 @@ static PyObject* SQLINT_topython(enum TdsType tdstype, const void* data, size_t 
         }
         default:
         {
-            PyErr_Format(PyExc_tds_InternalError, "unsupported integer width %ld", ndata);
+            PyErr_Format(PyExc_RuntimeError, "unsupported integer width %ld", ndata);
             return NULL;
         }
     }
@@ -969,7 +969,7 @@ static PyObject* NUMERIC_topython(enum TdsType tdstype, const void* data, size_t
                      (DBINT)sizeof(buffer));
     if (-1 == size)
     {
-        PyErr_Format(PyExc_tds_InternalError, "failed to convert NUMERIC to string");
+        PyErr_Format(PyExc_RuntimeError, "failed to convert NUMERIC to string");
         return NULL;
     }
     return PyDecimal_FromString(buffer, (Py_ssize_t)size);
@@ -1002,7 +1002,7 @@ static PyObject* MONEY_topython(enum TdsType tdstype, const void* data, size_t n
                         &dbtypeinfo);
     if (-1 == size)
     {
-        PyErr_Format(PyExc_tds_InternalError, "failed to convert NUMERIC to MONEY");
+        PyErr_Format(PyExc_RuntimeError, "failed to convert NUMERIC to MONEY");
         return NULL;
     }
     return NUMERIC_topython(TDSNUMERIC,
@@ -1027,7 +1027,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
                                    (BYTE*)&dbdatetime, -1);
             if (-1 == size)
             {
-                PyErr_Format(PyExc_tds_InternalError, "failed to convert DATETIME");
+                PyErr_Format(PyExc_RuntimeError, "failed to convert DATETIME");
                 return NULL;
             }
 

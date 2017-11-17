@@ -78,6 +78,9 @@ static const char s_tds_doc[] =
 #ifndef DEFAULT_ENABLE_BCP
 #  define DEFAULT_ENABLE_BCP 1
 #endif
+#ifndef DEFAULT_READ_ONLY
+#  define DEFAULT_READ_ONLY 0
+#endif
 
 #if DEFAULT_AUTOCOMMIT
 #  define DEFAULT_AUTOCOMMIT_STR "True"
@@ -97,6 +100,14 @@ static const char s_tds_doc[] =
 #  define DEFAULT_ENABLE_BCP_STR "False"
 #endif
 
+#if DEFAULT_READ_ONLY
+#  define DEFAULT_READ_ONLY_STR "True"
+#else
+#  define DEFAULT_READ_ONLY_STR "False"
+#endif
+
+#define CTDS_DEFAULT_PARAMSTYLE "numeric"
+
 
 static const char s_tds_connect_doc[] =
     "connect(server, "
@@ -111,7 +122,9 @@ static const char s_tds_connect_doc[] =
             "tds_version=None, "
             "autocommit=" DEFAULT_AUTOCOMMIT_STR ", "
             "ansi_defaults=" DEFAULT_ANSI_DEFAULTS_STR ", "
-            "enable_bcp=" DEFAULT_ENABLE_BCP_STR ")\n"
+            "enable_bcp=" DEFAULT_ENABLE_BCP_STR ", "
+            "paramstyle=None, "
+            "read_only=" DEFAULT_READ_ONLY_STR ")\n"
     "\n"
     "Connect to a database.\n"
     "\n"
@@ -121,6 +134,9 @@ static const char s_tds_connect_doc[] =
     "    connection object is no longer required.\n"
     "\n"
     ":pep:`0249#connect`\n"
+    "\n"
+    ".. versionadded:: 1.6\n"
+    "    `paramstyle`\n"
     "\n"
     ":param str server: The database server host.\n"
 
@@ -155,6 +171,11 @@ static const char s_tds_connect_doc[] =
     ":param bool enable_bcp: Enable bulk copy support on the connection. This\n"
     "    is required for :py:meth:`.bulk_insert` to function.\n"
 
+    ":param str paramstyle: Override the default :py:data:`ctds.paramstyle` value for\n"
+    "    this connection. Supported values: `numeric`, `named`.\n"
+
+    ":param bool read_only: Indicate 'read-only' application intent.\n"
+
     ":return: A new `Connection` object connected to the database.\n"
     ":rtype: Connection\n";
 
@@ -178,8 +199,21 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
         "autocommit",
         "ansi_defaults",
         "enable_bcp",
+        "paramstyle",
+        "read_only",
         NULL
     };
+
+#define PARAMSTYLE(_paramstyle) { #_paramstyle, ParamStyle_ ## _paramstyle }
+    static const struct {
+        const char* serialized;
+        enum ParamStyle paramstyle;
+    } s_paramstyles[] = {
+        PARAMSTYLE(named),
+        PARAMSTYLE(numeric)
+    };
+#undef PARAMSTYLE
+    size_t ix;
 
     char* server = NULL;
     uint16_t port = DEFAULT_PORT;
@@ -194,21 +228,37 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
     PyObject* autocommit = (DEFAULT_AUTOCOMMIT) ? Py_True : Py_False;
     PyObject* ansi_defaults = (DEFAULT_ANSI_DEFAULTS) ? Py_True : Py_False;
     PyObject* enable_bcp = (DEFAULT_ENABLE_BCP) ? Py_True : Py_False;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|HzzzzzIIzO!O!O!", s_kwlist, &server,
+    PyObject* read_only = (DEFAULT_READ_ONLY) ? Py_True : Py_False;
+    char* paramstyle_str = CTDS_DEFAULT_PARAMSTYLE;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|HzzzzzIIzO!O!O!zO!", s_kwlist, &server,
                                      &port, &instance, &username, &password,
                                      &database, &appname, &login_timeout,
                                      &timeout, &tds_version, &PyBool_Type, &autocommit,
                                      &PyBool_Type, &ansi_defaults,
-                                     &PyBool_Type, &enable_bcp))
+                                     &PyBool_Type, &enable_bcp,
+                                     &paramstyle_str,
+                                     &PyBool_Type, &read_only))
     {
         return NULL;
     }
 
-    return Connection_create(server, port, instance, username, password,
-                             database, appname, login_timeout, timeout,
-                             tds_version, (Py_True == autocommit),
-                             (Py_True == ansi_defaults),
-                             (Py_True == enable_bcp));
+    for (ix = 0; ix < ARRAYSIZE(s_paramstyles); ++ix)
+    {
+        if (0 == strcmp(paramstyle_str, s_paramstyles[ix].serialized))
+        {
+            return Connection_create(server, port, instance, username, password,
+                                     database, appname, login_timeout, timeout,
+                                     tds_version, (Py_True == autocommit),
+                                     (Py_True == ansi_defaults),
+                                     (Py_True == enable_bcp),
+                                     s_paramstyles[ix].paramstyle,
+                                     (Py_True == read_only));
+        }
+    }
+
+    PyErr_Format(PyExc_tds_InterfaceError, "unsupported paramstyle \"%s\"", paramstyle_str);
+
+    return NULL;
 
     UNUSED(self);
 }
@@ -513,7 +563,55 @@ static const char s_tds_DatabaseError_doc[] =
     "\n"
     ":pep:`0249#databaseerror`\n"
     "\n"
-    "Exception raised for errors that are related to the database.\n";
+    "Exception raised for errors that are related to the database.\n"
+    "\n"
+    "The exception contains the following properties:\n"
+    "\n"
+    ".. py:attribute:: db_error\n"
+    "\n"
+    "    A :py:class:`dict` containing information relating to an\n"
+    "    error returned by the database.\n"
+    "\n"
+    "    .. code-block:: python\n"
+    "\n"
+    "        {\n"
+    "            'number': 123,\n"
+    "            'description': 'An error description'\n"
+    "        }\n"
+    "\n"
+    ".. py:attribute:: os_error\n"
+    "\n"
+    "    A :py:class:`dict` containing information relating to an\n"
+    "    error caused by a database connection issue.\n"
+    "    This will be :py:data:`None` if the error was not caused by a\n"
+    "    connection issue.\n"
+    "\n"
+    "    .. code-block:: python\n"
+    "\n"
+    "        {\n"
+    "            'number': 123,\n"
+    "            'description': 'An error description'\n"
+    "        }\n"
+    "\n"
+    ".. py:attribute:: last_message\n"
+    "\n"
+    "    A :py:class:`dict` containing more detailed information about.\n"
+    "    the error returned from the database.\n"
+    "    This may be :py:data:`None` if the error does not include more\n"
+    "    information from the database, e.g. a connection error.\n"
+    "\n"
+    "    .. code-block:: python\n"
+    "\n"
+    "        {\n"
+    "            'number': 123,\n"
+    "            'state': 0,\n"
+    "            'severity': 16,\n"
+    "            'description': 'An error description'\n"
+    "            'server': 'database-hostname'\n"
+    "            'proc': 'procedure_name'\n"
+    "            'line': 34\n"
+    "        }\n";
+
 
 /**
    https://www.python.org/dev/peps/pep-0249/#dataerror
@@ -585,7 +683,7 @@ static const char s_tds_NotSupportedError_doc[] =
     ":pep:`0249#notsupportederror`\n"
     "\n"
     "Exception raised in case a method or database API was used which is\n"
-    "not supported by the database, e.g. calling \n"
+    "not supported by the database, e.g. calling\n"
     ":py:func:`~ctds.Connection.rollback()` on a connection that does not\n"
     "support transactions or has transactions turned off.\n";
 
@@ -640,7 +738,7 @@ PyMODINIT_FUNC PyInit__tds(void)
     /**
        https://www.python.org/dev/peps/pep-0249/#pyformat
     */
-    if (0 != PyModule_AddStringConstant(module, "paramstyle", "numeric")) FAIL_MODULE_INIT;
+    if (0 != PyModule_AddStringConstant(module, "paramstyle", CTDS_DEFAULT_PARAMSTYLE)) FAIL_MODULE_INIT;
 
     if (0 != PyModule_AddIntMacro(module, TDSCHAR)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSVARCHAR)) FAIL_MODULE_INIT;

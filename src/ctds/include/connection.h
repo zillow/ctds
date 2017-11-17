@@ -9,6 +9,8 @@
 #include "c99bool.h"
 #include "c99int.h"
 
+#include "tds.h"
+
 
 PyTypeObject* ConnectionType_init(void);
 extern PyTypeObject ConnectionType;
@@ -60,6 +62,10 @@ extern PyTypeObject ConnectionType;
             Typically there is no harm in enabling it, aside from older databases
             not supporting it and failing the connection.
 
+    @param paramstyle [in] The paramstyle to associate with the connection.
+
+    @param read_only [in] Include read-only application intent in login request.
+
     @return NULL if the connection creation failed.
     @return The created connection object.
 
@@ -69,7 +75,9 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                             const char* database, const char* appname,
                             unsigned int login_timeout, unsigned int timeout,
                             const char* tds_version, bool autocommit,
-                            bool ansi_defaults, bool enable_bcp);
+                            bool ansi_defaults, bool enable_bcp,
+                            enum ParamStyle paramstyle,
+                            bool read_only);
 
 
 struct Connection; /* forward declaration */

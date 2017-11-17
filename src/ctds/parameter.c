@@ -263,12 +263,27 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     to 0.95. Fallback to VARCHAR with somewhat crippled
                     functionality.
                 */
+
+                /*
+                    The db-lib API doesn't support passing empty strings (they
+                    are treated as NULL). Instead pass empty strings as BINARY
+                    of length 1 (0x00).
+                */
+                if (nchars == 0)
+                {
+                    parameter->tdstype = TDSBINARY;
+                    parameter->ninput = 1;
+                    parameter->tdstypesize = 1;
+                }
+                else
+                {
 #if CTDS_USE_NCHARS != 0
-                parameter->tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
+                    parameter->tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
 #else /* if CTDS_USE_NCHARS != 0 */
-                parameter->tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
+                    parameter->tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
 #endif /* else if CTDS_USE_NCHARS != 0 */
-                parameter->tdstypesize = (DBINT)nchars;
+                    parameter->tdstypesize = (DBINT)nchars;
+                }
             }
             /* Check for bools prior to integers, which are treated as a boolean type by Python. */
             else if (PyBool_Check(value))
@@ -436,7 +451,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                                             &dbtypeinfo);
                         if (-1 == size)
                         {
-                            PyErr_Format(PyExc_tds_InternalError, "failed to convert Decimal('%s')", str);
+                            PyErr_Format(PyExc_tds_InterfaceError, "failed to convert Decimal('%s')", str);
                             break;
                         }
                         else
@@ -455,7 +470,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             {
                 if (-1 == datetime_to_sql(value, &parameter->buffer.dbdatetime))
                 {
-                    PyErr_Format(PyExc_tds_InternalError, "failed to convert datetime");
+                    PyErr_Format(PyExc_tds_InterfaceError, "failed to convert datetime");
                     break;
                 }
 
@@ -485,7 +500,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     parameter->ninput = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
-                    assert(16 == parameter->ninput);
+                    assert(36 == parameter->ninput);
 
                     parameter->tdstype = TDSCHAR;
                     parameter->tdstypesize = (DBINT)parameter->ninput;
@@ -687,13 +702,13 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
     switch (rpcparam->tdstype)
     {
 #define CONST_CASE(_type) \
-        case TDS ## _type: { sql = strdup(STRINGIFY(_type)); break; }
+        case TDS ## _type: { sql = tds_mem_strdup(STRINGIFY(_type)); break; }
 
         case TDSNVARCHAR:
         {
             if (rpcparam->tdstypesize > TDS_NCHAR_MAX_SIZE)
             {
-                sql = strdup("NVARCHAR(MAX)");
+                sql = tds_mem_strdup("NVARCHAR(MAX)");
                 break;
             }
             /* Intentional fall-though. */
@@ -716,7 +731,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
         {
             if (rpcparam->tdstypesize > TDS_CHAR_MAX_SIZE)
             {
-                sql = strdup("VARCHAR(MAX)");
+                sql = tds_mem_strdup("VARCHAR(MAX)");
                 break;
             }
             /* Intentional fall-though. */
@@ -752,7 +767,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
         case TDSFLOATN:
         {
             /* $TODO: support variable sized floats */
-            sql = strdup("FLOAT");
+            sql = tds_mem_strdup("FLOAT");
             break;
         }
         CONST_CASE(REAL)
@@ -789,7 +804,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
         {
             if (rpcparam->tdstypesize > 8000)
             {
-                sql = strdup("VARBINARY(MAX)");
+                sql = tds_mem_strdup("VARBINARY(MAX)");
                 break;
             }
             /* Intentional fall-though. */
@@ -833,7 +848,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
     bool convert = true;
     if (NULL == rpcparam->input)
     {
-        value = strdup("NULL");
+        value = tds_mem_strdup("NULL");
         if (value)
         {
             *nserialized = ARRAYSIZE("NULL") - 1;
@@ -1041,7 +1056,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
             }
             default:
             {
-                PyErr_Format(PyExc_tds_InternalError, "failed to serialize TDS type %d", rpcparam->tdstype);
+                PyErr_Format(PyExc_tds_InterfaceError, "failed to serialize TDS type %d", rpcparam->tdstype);
                 break;
             }
         }

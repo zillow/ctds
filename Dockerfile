@@ -6,11 +6,11 @@ ARG FREETDS_VERSION=1.00.40
 
 # FreeTDS (required by ctds)
 RUN set -ex \
-    && curl -vfkLo freetds-${FREETDS_VERSION}.tar.gz "ftp://ftp.freetds.org/pub/freetds/stable/freetds-${FREETDS_VERSION}.tar.gz" \
-    && mkdir -p /usr/src \
-    && tar -xzC /usr/src -f freetds-${FREETDS_VERSION}.tar.gz \
-    && rm freetds-${FREETDS_VERSION}.tar.gz \
-    && cd /usr/src/freetds-${FREETDS_VERSION} \
+    && wget -O freetds.tar.gz "ftp://ftp.freetds.org/pub/freetds/stable/freetds-${FREETDS_VERSION}.tar.gz" \
+    && mkdir -p /usr/src/freetds \
+    && tar -xzC /usr/src/freetds --strip-components=1 -f freetds.tar.gz \
+    && rm freetds.tar.gz \
+    && cd /usr/src/freetds \
     && ./configure \
         --disable-odbc \
         --disable-apps \
@@ -18,10 +18,9 @@ RUN set -ex \
         --disable-pool \
         --datarootdir=/usr/src/freetds/data \
         --prefix=/usr \
-    && make \
+    && make -j "$(nproc)" \
     && make install \
     && rm -rf \
-       /usr/src/freetds-${FREETDS_VERSION} \
        /usr/src/freetds
 
 RUN pip install --no-cache-dir \

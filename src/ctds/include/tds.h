@@ -23,11 +23,17 @@ extern PyObject* PyExc_tds_NotSupportedError;
 #define tds_mem_realloc realloc
 #define tds_mem_calloc calloc
 #define tds_mem_free free
+#define tds_mem_strdup strdup
 
 #define TDS_CHAR_MIN_SIZE 1
 #define TDS_CHAR_MAX_SIZE 8000
 #define TDS_NCHAR_MIN_SIZE 1
 #define TDS_NCHAR_MAX_SIZE 4000
+
+enum ParamStyle {
+    ParamStyle_named,
+    ParamStyle_numeric
+};
 
 /*
     If the UTF-16 option can be set on the connection, use UTF-16.
