@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cursor &mdash; ctds 1.5.0 documentation</title>
+  <title>Cursor &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.5.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
         <link rel="up" title="API Reference" href="api.html"/>
         <link rel="next" title="ctds" href="ctds.html"/>
         <link rel="prev" title="Connection" href="connection.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Cursor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ctds.html">ctds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rowlist.html">RowList</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">SQL Type Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pool.html">ctds.pool</a></li>
 </ul>
@@ -227,11 +228,11 @@ closed automatically.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>exc_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.6)"><em>type</em></a>) – The exception type, if an exception
-is raised in the context, otherwise <cite>None</cite>.</li>
+is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a>.</li>
 <li><strong>exc_val</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.6)"><em>Exception</em></a>) – The exception value, if an exception
-is raised in the context, otherwise <cite>None</cite>.</li>
+is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a>.</li>
 <li><strong>exc_tb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><em>object</em></a>) – The exception traceback, if an exception
-is raised in the context, otherwise <cite>None</cite>.</li>
+is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -259,6 +260,14 @@ is raised in the context, otherwise <cite>None</cite>.</li>
 <code class="descname">arraysize</code><a class="headerlink" href="#ctds.Cursor.arraysize" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of rows to fetch at a time with <a class="reference internal" href="#ctds.Cursor.fetchmany" title="ctds.Cursor.fetchmany"><code class="xref py py-meth docutils literal"><span class="pre">fetchmany()</span></code></a>.</p>
 <p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#arraysize"><strong>PEP 0249#arraysize</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -274,11 +283,9 @@ parameters are replaced with output values.</p>
 <p class="last">Due to <cite>FreeTDS</cite> implementation details, stored procedures
 with both output parameters and resultsets are not supported.</p>
 </div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Currently <cite>FreeTDS</cite> does not support passing empty string
-parameters. Empty strings are converted to <cite>NULL</cite> values internally
-before being transmitted to the database.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Empty strings (‘’) will be passed as a single BINARY <cite>0x00</cite> value.</p>
 </div>
 <p><span class="target" id="index-2"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#callproc"><strong>PEP 0249#callproc</strong></a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -321,9 +328,7 @@ the output values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The <a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection"><code class="xref py py-class docutils literal"><span class="pre">ctds.Connection</span></code></a> object which created this cursor.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection">ctds.Connection</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection">ctds.Connection</a></td>
 </tr>
 </tbody>
 </table>
@@ -366,14 +371,21 @@ columns.</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In Python 3+, this is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></a> of
+<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.namedtuple" title="(in Python v3.6)"><code class="xref py py-func docutils literal"><span class="pre">collections.namedtuple()</span></code></a> objects whose members are defined
+above.</p>
+</div>
 <p><span class="target" id="index-5"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#description"><strong>PEP 0249#description</strong></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A sequence of tuples or None if no results are available.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A sequence of tuples or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> if no results are
+available.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a>))</td>
 </tr>
 </tbody>
 </table>
@@ -434,6 +446,8 @@ sequence of sequences.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A sequence of result rows.</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="rowlist.html#ctds.RowList" title="ctds.RowList">ctds.RowList</a></td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -450,6 +464,8 @@ sequences. An empty sequence is returned when no more rows are available.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A sequence of result rows.</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="rowlist.html#ctds.RowList" title="ctds.RowList">ctds.RowList</a></td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -458,13 +474,13 @@ sequences. An empty sequence is returned when no more rows are available.</p>
 <dt id="ctds.Cursor.fetchone">
 <code class="descname">fetchone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the next row of a query result set, returning a single sequence, or
-None when no more data is available.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> when no more data is available.</p>
 <p><span class="target" id="index-10"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#fetchone"><strong>PEP 0249#fetchone</strong></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A result row or None.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The next row or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -477,6 +493,16 @@ None when no more data is available.</p>
 same semantics as <a class="reference internal" href="#ctds.Cursor.fetchone" title="ctds.Cursor.fetchone"><code class="xref py py-meth docutils literal"><span class="pre">fetchone()</span></code></a>. A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.6)"><code class="xref py py-exc docutils literal"><span class="pre">StopIteration</span></code></a> exception
 is raised when the result set is exhausted.</p>
 <p><span class="target" id="index-11"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#next"><strong>PEP 0249#next</strong></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.6)"><strong>StopIteration</strong></a> – The result set is exhausted.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The next row.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -489,7 +515,10 @@ current set.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if there was another result set or None if not.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">True</span></code></a> if there was another result set or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a>
+if not.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)">None</a></td>
 </tr>
 </tbody>
 </table>
@@ -517,16 +546,14 @@ current set.</p>
 <dl class="attribute">
 <dt id="ctds.Cursor.rownumber">
 <code class="descname">rownumber</code><a class="headerlink" href="#ctds.Cursor.rownumber" title="Permalink to this definition">¶</a></dt>
-<dd><p>The current 0-based index of the cursor in the result set or None if the
-index cannot be determined.</p>
+<dd><p>The current 0-based index of the cursor in the result set or
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> if the index cannot be determined.</p>
 <p><span class="target" id="index-14"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#rownumber"><strong>PEP 0249#rownumber</strong></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if no results are available.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)">None</a></td>
 </tr>
 </tbody>
 </table>
@@ -549,14 +576,13 @@ index cannot be determined.</p>
 <dl class="attribute">
 <dt id="ctds.Cursor.spid">
 <code class="descname">spid</code><a class="headerlink" href="#ctds.Cursor.spid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve the SQL Server Session Process ID (SPID) for the connection.</p>
+<dd><p>Retrieve the SQL Server Session Process ID (SPID) for the connection or
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> if the connection is closed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None if the connection is closed.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)">int</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)">None</a></td>
 </tr>
 </tbody>
 </table>
@@ -610,7 +636,7 @@ index cannot be determined.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.5.0',
+            VERSION:'1.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

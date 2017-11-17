@@ -80,7 +80,8 @@ most SQL Server configurations.
             # Assumes a table with the following schema:
             #
             # CREATE TABLE MyExampleTableWithVarChar (
-            #     Latin1Column VARCHAR(100) COLLATE SQL_Latin1_General_CP1_CI_AS,
+            #     Latin1Column VARCHAR(100) COLLATE
+            #         SQL_Latin1_General_CP1_CI_AS,
             #     UnicodeColumn NVARCHAR(100)
             # )
             #
@@ -96,7 +97,9 @@ most SQL Server configurations.
                         ).encode('latin-1')
                     ),
                     ctds.SqlVarChar(
-                        b'a string with Unicode -> \xe3\x83\x9b'.decode('utf-8').encode('utf-16le')
+                        b'a string with Unicode -> \xe3\x83\x9b'.decode(
+                            'utf-8'
+                        ).encode('utf-16le')
                     ),
                 )
             ]

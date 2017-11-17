@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bulk Insert &mdash; ctds 1.5.0 documentation</title>
+  <title>Bulk Insert &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.5.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
         <link rel="next" title="Connection Pooling" href="pooling.html"/>
         <link rel="prev" title="Transactions" href="transactions.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -239,7 +239,8 @@ most SQL Server configurations.</p>
         <span class="c1"># Assumes a table with the following schema:</span>
         <span class="c1">#</span>
         <span class="c1"># CREATE TABLE MyExampleTableWithVarChar (</span>
-        <span class="c1">#     Latin1Column VARCHAR(100) COLLATE SQL_Latin1_General_CP1_CI_AS,</span>
+        <span class="c1">#     Latin1Column VARCHAR(100) COLLATE</span>
+        <span class="c1">#         SQL_Latin1_General_CP1_CI_AS,</span>
         <span class="c1">#     UnicodeColumn NVARCHAR(100)</span>
         <span class="c1"># )</span>
         <span class="c1">#</span>
@@ -255,7 +256,9 @@ most SQL Server configurations.</p>
                     <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
                 <span class="p">),</span>
                 <span class="n">ctds</span><span class="o">.</span><span class="n">SqlVarChar</span><span class="p">(</span>
-                    <span class="sa">b</span><span class="s1">&#39;a string with Unicode -&gt; </span><span class="se">\xe3\x83\x9b</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-16le&#39;</span><span class="p">)</span>
+                    <span class="sa">b</span><span class="s1">&#39;a string with Unicode -&gt; </span><span class="se">\xe3\x83\x9b</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                        <span class="s1">&#39;utf-8&#39;</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-16le&#39;</span><span class="p">)</span>
                 <span class="p">),</span>
             <span class="p">)</span>
         <span class="p">]</span>
@@ -309,7 +312,7 @@ most SQL Server configurations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.5.0',
+            VERSION:'1.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

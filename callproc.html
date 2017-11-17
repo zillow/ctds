@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Calling Stored Procedures &mdash; ctds 1.5.0 documentation</title>
+  <title>Calling Stored Procedures &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.5.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
         <link rel="next" title="Reading Result Sets" href="results.html"/>
         <link rel="prev" title="Executing SQL Statements" href="execute.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -179,9 +179,9 @@ Stored procedure parameters may be passed as either a <a class="reference extern
 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters. Empty
-strings are converted to <cite>NULL</cite> values internally before being transmitted
-to the database.</p>
+<p class="last">Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
+Empty strings are converted to <cite>NULL</cite> values internally before being
+transmitted to the database.</p>
 </div>
 <div class="section" id="passing-tuple-parameters">
 <h2>Passing <cite>tuple</cite> parameters<a class="headerlink" href="#passing-tuple-parameters" title="Permalink to this headline">¶</a></h2>
@@ -228,10 +228,10 @@ form of <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" ti
 </div>
 <div class="section" id="output-parameters">
 <h2>Output Parameters<a class="headerlink" href="#output-parameters" title="Permalink to this headline">¶</a></h2>
-<p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#callproc"><strong>PEP 0249#callproc</strong></a> does not define a way to specify a stored procedure parameter
-as an <cite>output</cite> parameter. <cite>cTDS</cite> allows you to wrap a parameter with the
-<a class="reference internal" href="parameter.html#ctds.Parameter" title="ctds.Parameter"><code class="xref py py-class docutils literal"><span class="pre">ctds.Parameter</span></code></a> class in order to indicate that it is an output parameter.
-Output parameter values are available in the result returned from
+<p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#callproc"><strong>PEP 0249#callproc</strong></a> does not define a way to specify a stored procedure
+parameter as an <cite>output</cite> parameter. <cite>cTDS</cite> allows you to wrap a parameter with
+the <a class="reference internal" href="parameter.html#ctds.Parameter" title="ctds.Parameter"><code class="xref py py-class docutils literal"><span class="pre">ctds.Parameter</span></code></a> class in order to indicate that it is an output
+parameter. Output parameter values are available in the result returned from
 <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.callproc()</span></code></a>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">callproc</span><span class="p">(</span>
     <span class="s1">&#39;MyStoredProcedureWithOutputs&#39;</span><span class="p">,</span>
@@ -312,7 +312,7 @@ parameter:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.5.0',
+            VERSION:'1.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

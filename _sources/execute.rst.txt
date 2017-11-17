@@ -21,6 +21,10 @@ Parameters may be passed to the :py:meth:`ctds.Cursor.execute` and
 :py:meth:`ctds.Cursor.executemany` methods using the **numeric** parameter
 style as defined in :pep:`0249#paramstyle`.
 
+.. note::
+   Passing parameters using the **numeric** `paramstyle` assumes an initial
+   index of 0.
+
 .. code-block:: python
 
     cursor.execute(
@@ -38,6 +42,11 @@ style as defined in :pep:`0249#paramstyle`.
             (2000, 22, 'Jane Doe', datetime.date(1974, 12, 11)),
         )
     )
+
+.. note::
+   In `ctds` version **1.6.0** and later, the **named** `paramstyle` may be used instead
+   by specifying it in :py:meth:`ctds.connect`.
+
 
 Parameter Types
 ^^^^^^^^^^^^^^^
@@ -85,8 +94,9 @@ supported:
 
 .. warning::
 
-    Currently `FreeTDS`_ does not support passing empty string parameters. Empty strings
-    are converted to `NULL` values internally before being transmitted to the database.
+    Currently `FreeTDS`_ does not support passing empty string parameters.
+    Empty strings are converted to `NULL` values internally before being
+    transmitted to the database.
 
 
 .. _FreeTDS: http://www.freetds.org

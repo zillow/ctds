@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; ctds 1.5.0 documentation</title>
+  <title>Frequently Asked Questions &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.5.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
         <link rel="next" title="API Reference" href="api.html"/>
         <link rel="prev" title="Connection Pooling" href="pooling.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -104,7 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#why-can-t-i-pass-an-empty-string-to-callproc">Why can’t I pass an empty string to <cite>callproc</cite>?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-doesn-t-raiserror-raise-a-python-exception">Why doesn’t <cite>RAISERROR</cite> raise a Python exception?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-in-ucs-2-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable in UCS-2…</cite> warning mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
@@ -180,13 +180,18 @@
 not define a way to specify a <strong>(N)VARCHAR</strong> with length <em>0</em>. This
 is a known deficiency of the <cite>dblib</cite> API. String parameters with
 length <em>0</em> are interpreted as <cite>NULL</cite> by the <cite>dblib</cite> API.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.6.0.</span></p>
+</div>
+<p>Empty strings are passed as a single <cite>BINARY</cite> byte <strong>0x00</strong> to work around
+this limitation.</p>
 </div>
 <div class="section" id="why-don-t-str-values-map-to-n-varchar-in-python-2">
 <h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
 <p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> are equivalent. As such, it
 is difficult for <cite>cTDS</cite> to infer a proper <em>SQL</em> type from the Python type.
-<code class="xref py py-class docutils literal"><span class="pre">unicode</span></code> should be used in Python 2 when a <strong>(N)CHAR</strong>-type parameter
-is desired. Alternatively, <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a> and
+<code class="xref py py-func docutils literal"><span class="pre">unicode()</span></code> should be used in Python 2 when a <strong>(N)CHAR</strong>-type
+parameter is desired. Alternatively, <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a> and
 <a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlNVarChar</span></code></a> can be used to explicitly define the desired
 <em>SQL</em> type.</p>
 </div>
@@ -203,8 +208,8 @@ result in an error.</p>
 </pre></div>
 </div>
 <p>The error <cite>some custom error</cite> is reported as a <a class="reference internal" href="ctds.html#ctds.Warning" title="ctds.Warning"><code class="xref py py-obj docutils literal"><span class="pre">ctds.Warning</span></code></a>.</p>
-<p>In <cite>cTDS</cite> v1.3.0 and later, this warning can be turned into an exception using the
-<a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">warnings</span></code></a> module.</p>
+<p>In <cite>cTDS</cite> v1.3.0 and later, this warning can be turned into an exception using
+the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">warnings</span></code></a> module.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">ctds</span>
 
@@ -213,12 +218,14 @@ result in an error.</p>
 <span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
         <span class="c1"># The following will raise a `ctds.Warning` exception.</span>
-        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;RAISERROR (N&#39;this will become a python exception&#39;, 16, -1);&quot;</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;RAISERROR (N&#39;this will become a python exception&#39;, 16, -1);&quot;</span>
+        <span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-in-ucs-2-warning-mean">
-<h2>What does the <cite>Unicode codepoint U+1F4A9 is not representable in UCS-2…</cite> warning mean?<a class="headerlink" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-in-ucs-2-warning-mean" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">
+<h2>What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?<a class="headerlink" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean" title="Permalink to this headline">¶</a></h2>
 <p>Until <a class="reference external" href="http://www.freetds.org">FreeTDS</a> <strong>1.00</strong>, the default encoding used on the connection to
 the database was <em>UCS-2</em>. FreeTDS requires all text data be encodable in the
 connection’s encoding. Therefore <cite>cTDS</cite> would replace non <em>UCS-2</em> characters in
@@ -282,7 +289,7 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.5.0',
+            VERSION:'1.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

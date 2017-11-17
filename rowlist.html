@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API Reference &mdash; ctds 1.6.0 documentation</title>
+  <title>RowList &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -36,8 +36,9 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
-        <link rel="next" title="Connection" href="connection.html"/>
-        <link rel="prev" title="Frequently Asked Questions" href="faq.html"/> 
+        <link rel="up" title="API Reference" href="api.html"/>
+        <link rel="next" title="SQL Type Wrappers" href="types.html"/>
+        <link rel="prev" title="Parameter" href="parameter.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -101,12 +102,12 @@
 <li class="toctree-l1"><a class="reference internal" href="bulk_insert.html">Bulk Insert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pooling.html">Connection Pooling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="connection.html">Connection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cursor.html">Cursor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ctds.html">ctds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rowlist.html">RowList</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">RowList</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">SQL Type Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pool.html">ctds.pool</a></li>
 </ul>
@@ -156,13 +157,15 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>API Reference</li>
+          <li><a href="api.html">API Reference</a> &raquo;</li>
+        
+      <li>RowList</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/rowlist.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -175,19 +178,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="api-reference">
-<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cursor.html">Cursor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ctds.html">ctds</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rowlist.html">RowList</a></li>
-<li class="toctree-l1"><a class="reference internal" href="types.html">SQL Type Wrappers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pool.html">ctds.pool</a></li>
-</ul>
-</div>
+  <div class="section" id="rowlist">
+<h1>RowList<a class="headerlink" href="#rowlist" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ctds.RowList">
+<em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">RowList</code><a class="headerlink" href="#ctds.RowList" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/c-api/sequence.html#sequence" title="(in Python v3.6)"><span class="xref std std-ref">sequence</span></a> object which buffers result set rows
+in a lightweight manner. Python objects wrapping the columnar data are
+only created when the data is actually accessed.</p>
+<dl class="attribute">
+<dt id="ctds.RowList.__getitem__">
+<code class="descname">__getitem__</code><a class="headerlink" href="#ctds.RowList.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return self[key].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ctds.RowList.__len__">
+<code class="descname">__len__</code><a class="headerlink" href="#ctds.RowList.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return len(self).</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -200,10 +212,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="connection.html" class="btn btn-neutral float-right" title="Connection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="types.html" class="btn btn-neutral float-right" title="SQL Type Wrappers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="faq.html" class="btn btn-neutral" title="Frequently Asked Questions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="parameter.html" class="btn btn-neutral" title="Parameter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

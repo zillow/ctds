@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Executing SQL Statements &mdash; ctds 1.5.0 documentation</title>
+  <title>Executing SQL Statements &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.5.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
         <link rel="next" title="Calling Stored Procedures" href="callproc.html"/>
         <link rel="prev" title="Basic Example" href="example.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -191,6 +191,11 @@ of <a class="reference external" href="https://msdn.microsoft.com/en-us/library/
 <p>Parameters may be passed to the <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.execute()</span></code></a> and
 <a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a> methods using the <strong>numeric</strong> parameter
 style as defined in <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#paramstyle"><strong>PEP 0249#paramstyle</strong></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Passing parameters using the <strong>numeric</strong> <cite>paramstyle</cite> assumes an initial
+index of 0.</p>
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
     <span class="s1">&#39;SELECT * FROM MyTable WHERE Id = :0 AND OtherId = :1&#39;</span><span class="p">,</span>
     <span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="mi">5678</span><span class="p">)</span>
@@ -207,6 +212,11 @@ style as defined in <span class="target" id="index-0"></span><a class="pep refer
     <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In <cite>ctds</cite> version <strong>1.6.0</strong> and later, the <strong>named</strong> <cite>paramstyle</cite> may be used instead
+by specifying it in <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-meth docutils literal"><span class="pre">ctds.connect()</span></code></a>.</p>
 </div>
 <div class="section" id="parameter-types">
 <h3>Parameter Types<a class="headerlink" href="#parameter-types" title="Permalink to this headline">¶</a></h3>
@@ -248,8 +258,9 @@ supported:</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters. Empty strings
-are converted to <cite>NULL</cite> values internally before being transmitted to the database.</p>
+<p class="last">Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
+Empty strings are converted to <cite>NULL</cite> values internally before being
+transmitted to the database.</p>
 </div>
 </div>
 </div>
@@ -298,7 +309,7 @@ are converted to <cite>NULL</cite> values internally before being transmitted to
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.5.0',
+            VERSION:'1.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

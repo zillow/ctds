@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cTDS &mdash; ctds 1.5.0 documentation</title>
+  <title>cTDS &mdash; ctds 1.6.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.5.0 documentation" href="#"/>
+    <link rel="top" title="ctds 1.6.0 documentation" href="#"/>
         <link rel="next" title="Getting Started" href="install.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -173,14 +173,14 @@
 <a class="reference external image-reference" href="https://ci.appveyor.com/project/joshuahlang/ctds/branch/master"><img alt="https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true" src="https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true" /></a>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/ctds/"><img alt="http://img.shields.io/pypi/v/ctds.svg" src="http://img.shields.io/pypi/v/ctds.svg" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/zillow/ctds"><img alt="https://codecov.io/gh/zillow/ctds/branch/master/graph/badge.svg" src="https://codecov.io/gh/zillow/ctds/branch/master/graph/badge.svg" /></a>
-<p><cite>cTDS</cite> is a full Python <a class="reference external" href="&lt;https://www.python.org/dev/peps/pep-0249&gt;">DB API-2.0</a>-compliant
+<p><cite>cTDS</cite> is a full Python <a class="reference external" href="https://www.python.org/dev/peps/pep-0249">DB API-2.0</a>-compliant
 SQL Server database library for <cite>Linux</cite>, <cite>Windows</cite>, and <cite>Mac OS X</cite> supporting
 both Python 2 and Python 3.</p>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Supports <a class="reference external" href="http://www.microsoft.com/sqlserver/">Microsoft SQL Server</a> 2008 and up.</li>
-<li>Complete <a class="reference external" href="&lt;https://www.python.org/dev/peps/pep-0249&gt;">DB API-2.0</a> support.</li>
+<li>Complete <a class="reference external" href="https://www.python.org/dev/peps/pep-0249">DB API-2.0</a> support.</li>
 <li>Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, and Python 3.6 support.</li>
 <li>Bulk insert (bcp) support.</li>
 <li>Written entirely in C.</li>
@@ -244,7 +244,7 @@ both Python 2 and Python 3.</p>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-t-i-pass-an-empty-string-to-callproc">Why can’t I pass an empty string to <cite>callproc</cite>?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-doesn-t-raiserror-raise-a-python-exception">Why doesn’t <cite>RAISERROR</cite> raise a Python exception?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-in-ucs-2-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable in UCS-2…</cite> warning mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
@@ -252,12 +252,14 @@ both Python 2 and Python 3.</p>
 <li class="toctree-l2"><a class="reference internal" href="cursor.html">Cursor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ctds.html">ctds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rowlist.html">RowList</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">SQL Type Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pool.html">ctds.pool</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change Log</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#unreleased">Unreleased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.6.0 - 2017-11-17</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.5.0 - 2017-10-16</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.4.1 - 2017-09-29</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.4.0 - 2017-09-13</a></li>
@@ -327,7 +329,7 @@ both Python 2 and Python 3.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.5.0',
+            VERSION:'1.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

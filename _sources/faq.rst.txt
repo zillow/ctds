@@ -9,14 +9,18 @@ not define a way to specify a **(N)VARCHAR** with length *0*. This
 is a known deficiency of the `dblib` API. String parameters with
 length *0* are interpreted as `NULL` by the `dblib` API.
 
+.. versionchanged:: 1.6.0
+
+Empty strings are passed as a single `BINARY` byte **0x00** to work around
+this limitation.
 
 Why don't :py:class:`str` values map to **(N)VARCHAR** in Python 2?
 -------------------------------------------------------------------
 
 In Python 2 :py:class:`bytes` and :py:class:`str` are equivalent. As such, it
 is difficult for `cTDS` to infer a proper *SQL* type from the Python type.
-:py:class:`unicode` should be used in Python 2 when a **(N)CHAR**-type parameter
-is desired. Alternatively, :py:class:`ctds.SqlVarChar` and
+:py:func:`unicode` should be used in Python 2 when a **(N)CHAR**-type
+parameter is desired. Alternatively, :py:class:`ctds.SqlVarChar` and
 :py:class:`ctds.SqlNVarChar` can be used to explicitly define the desired
 *SQL* type.
 
@@ -38,8 +42,8 @@ result in an error.
 
 The error `some custom error` is reported as a :py:obj:`ctds.Warning`.
 
-In `cTDS` v1.3.0 and later, this warning can be turned into an exception using the
-:py:mod:`warnings` module.
+In `cTDS` v1.3.0 and later, this warning can be turned into an exception using
+the :py:mod:`warnings` module.
 
 .. code-block:: python
 
@@ -51,11 +55,13 @@ In `cTDS` v1.3.0 and later, this warning can be turned into an exception using t
     with ctds.connect() as connection:
         with connection.cursor() as cursor:
             # The following will raise a `ctds.Warning` exception.
-            cursor.execute("RAISERROR (N'this will become a python exception', 16, -1);")
+            cursor.execute(
+                "RAISERROR (N'this will become a python exception', 16, -1);"
+            )
 
 
-What does the `Unicode codepoint U+1F4A9 is not representable in UCS-2...` warning mean?
-----------------------------------------------------------------------------------------
+What does the `Unicode codepoint U+1F4A9 is not representable...` warning mean?
+-------------------------------------------------------------------------------
 
 Until `FreeTDS`_ **1.00**, the default encoding used on the connection to
 the database was *UCS-2*. FreeTDS requires all text data be encodable in the
