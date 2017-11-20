@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; ctds 1.6.0 documentation</title>
+  <title>Frequently Asked Questions &mdash; ctds 1.6.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.1 documentation" href="index.html"/>
         <link rel="next" title="API Reference" href="api.html"/>
         <link rel="prev" title="Connection Pooling" href="pooling.html"/> 
 
@@ -180,11 +180,6 @@
 not define a way to specify a <strong>(N)VARCHAR</strong> with length <em>0</em>. This
 is a known deficiency of the <cite>dblib</cite> API. String parameters with
 length <em>0</em> are interpreted as <cite>NULL</cite> by the <cite>dblib</cite> API.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.6.0.</span></p>
-</div>
-<p>Empty strings are passed as a single <cite>BINARY</cite> byte <strong>0x00</strong> to work around
-this limitation.</p>
 </div>
 <div class="section" id="why-don-t-str-values-map-to-n-varchar-in-python-2">
 <h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
@@ -289,7 +284,7 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.6.0',
+            VERSION:'1.6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

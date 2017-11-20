@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cursor &mdash; ctds 1.6.0 documentation</title>
+  <title>Cursor &mdash; ctds 1.6.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.6.0 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.1 documentation" href="index.html"/>
         <link rel="up" title="API Reference" href="api.html"/>
         <link rel="next" title="ctds" href="ctds.html"/>
         <link rel="prev" title="Connection" href="connection.html"/> 
@@ -283,9 +283,11 @@ parameters are replaced with output values.</p>
 <p class="last">Due to <cite>FreeTDS</cite> implementation details, stored procedures
 with both output parameters and resultsets are not supported.</p>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Empty strings (‘’) will be passed as a single BINARY <cite>0x00</cite> value.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Currently <cite>FreeTDS</cite> does not support passing empty string
+parameters. Empty strings are converted to <cite>NULL</cite> values internally
+before being transmitted to the database.</p>
 </div>
 <p><span class="target" id="index-2"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#callproc"><strong>PEP 0249#callproc</strong></a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -636,7 +638,7 @@ if not.</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.6.0',
+            VERSION:'1.6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

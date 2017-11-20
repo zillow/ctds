@@ -9,11 +9,6 @@ not define a way to specify a **(N)VARCHAR** with length *0*. This
 is a known deficiency of the `dblib` API. String parameters with
 length *0* are interpreted as `NULL` by the `dblib` API.
 
-.. versionchanged:: 1.6.0
-
-Empty strings are passed as a single `BINARY` byte **0x00** to work around
-this limitation.
-
 Why don't :py:class:`str` values map to **(N)VARCHAR** in Python 2?
 -------------------------------------------------------------------
 
