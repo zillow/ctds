@@ -50,8 +50,9 @@ parameters are replaced with output values.
 .. warning:: Due to `FreeTDS` implementation details, stored procedures
     with both output parameters and resultsets are not supported.
 
-.. note::
-    Empty strings ('') will be passed as a single BINARY `0x00` value.
+.. warning:: Currently `FreeTDS` does not support passing empty string
+    parameters. Empty strings are converted to `NULL` values internally
+    before being transmitted to the database.
 
 :pep:`0249#callproc`
 
@@ -1151,7 +1152,35 @@ parameters are replaced with output values.
                             ctds.Parameter(True, output=True),
                         )
                         outputs = cursor.callproc(sproc, inputs)
-                        self.assertEqual(outputs[1], inputs[0] is None)
+
+                        # $future: fix this once supported by FreeTDS
+                        # Currently FreeTDS (really the db-lib API) will
+                        # turn the empty string to NULL
+                        self.assertEqual(outputs[1], inputs[0] is None or inputs[0] == '')
+
+    def test_varchar_empty(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                sproc = self.test_varchar_null.__name__
+                with self.stored_procedure(
+                    cursor,
+                    sproc,
+                    '''
+                        @pVarChar VARCHAR(256)
+                    AS
+                        SELECT @pVarChar, LEN(@pVarChar) AS Length
+                    '''
+                    ):
+
+                    for value in (None, unicode_(''), unicode_('0'), unicode_('one')):
+                        inputs = (
+                            value,
+                        )
+                        outputs = cursor.callproc(sproc, inputs)
+                        self.assertEqual(
+                            tuple(cursor.fetchone()),
+                            (None, None) if value in (None, unicode_('')) else (value, len(value))
+                        )
 
     def test_nvarchar(self):
         with self.connect() as connection:
@@ -1289,7 +1318,7 @@ parameters are replaced with output values.
                             ctds.Parameter(True, output=True),
                         )
                         outputs = cursor.callproc(sproc, inputs)
-                        self.assertEqual(outputs[1], inputs[0] is None)
+                        self.assertEqual(outputs[1], inputs[0] in (None, unicode_('')))
 
     def test_guid(self):
         with self.connect() as connection:

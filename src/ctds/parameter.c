@@ -264,26 +264,12 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     functionality.
                 */
 
-                /*
-                    The db-lib API doesn't support passing empty strings (they
-                    are treated as NULL). Instead pass empty strings as BINARY
-                    of length 1 (0x00).
-                */
-                if (nchars == 0)
-                {
-                    parameter->tdstype = TDSBINARY;
-                    parameter->ninput = 1;
-                    parameter->tdstypesize = 1;
-                }
-                else
-                {
 #if CTDS_USE_NCHARS != 0
-                    parameter->tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
+                parameter->tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
 #else /* if CTDS_USE_NCHARS != 0 */
-                    parameter->tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
+                parameter->tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
 #endif /* else if CTDS_USE_NCHARS != 0 */
-                    parameter->tdstypesize = (DBINT)nchars;
-                }
+                parameter->tdstypesize = (DBINT)nchars;
             }
             /* Check for bools prior to integers, which are treated as a boolean type by Python. */
             else if (PyBool_Check(value))

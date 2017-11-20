@@ -498,6 +498,24 @@ specified in the SQL statement. Parameter notation is specified by
                 )
                 self.assertEqual(cursor.nextset(), None)
 
+    def test_empty_string(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                args = {'arg': unicode_('')}
+                cursor.execute(
+                    '''
+                    SELECT :arg
+                    ''',
+                    args
+                )
+                self.assertEqual(
+                    [tuple(row) for row in cursor.fetchall()],
+                    [
+                        (None if self.use_sp_executesql else unicode_(''),)
+                    ]
+                )
+                self.assertEqual(cursor.nextset(), None)
+
     def test_long_statement(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
