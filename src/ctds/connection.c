@@ -1731,7 +1731,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 break;
             }
 
-#if defined(CTDS_USE_UTF16) && (CTDS_USE_UTF16 != 0)
+#if defined(CTDS_USE_UTF16)
             /*
                 Force the connections to use UTF-16 over UCS-2.
             */
@@ -1740,7 +1740,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 PyErr_SetString(PyExc_RuntimeError, "failed to set connection encoding");
                 break;
             }
-#endif /* if defined(CTDS_USE_UTF16) && (CTDS_USE_UTF16 != 0) */
+#endif /* if defined(CTDS_USE_UTF16) */
 
             /*
                 Note: FreeTDS only supports single-byte encodings (e.g. latin-1, UTF-8).
@@ -1818,16 +1818,16 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
 
             if (read_only)
             {
-#if defined(DBSETLREADONLY)
+#if defined(CTDS_HAVE_READONLY_INTENT)
                 if (FAIL == DBSETLREADONLY(connection->login, (int)read_only))
                 {
                     PyErr_SetString(PyExc_RuntimeError, "failed to set read-only intent");
                     break;
                 }
-#else /* if defined defined(DBSETLREADONLY) */
+#else /* if defined defined(CTDS_HAVE_READONLY_INTENT) */
                 PyErr_Format(PyExc_NotImplementedError, "read-only intent is not supported");
                 break;
-#endif /* else if defined defined(DBSETLREADONLY) */
+#endif /* else if defined defined(CTDS_HAVE_READONLY_INTENT) */
             }
 
             if (database)

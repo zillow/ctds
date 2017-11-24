@@ -264,11 +264,11 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     functionality.
                 */
 
-#if CTDS_USE_NCHARS != 0
+#if defined(CTDS_USE_NCHARS)
                 parameter->tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
-#else /* if CTDS_USE_NCHARS != 0 */
+#else /* if defined(CTDS_USE_NCHARS) */
                 parameter->tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
-#endif /* else if CTDS_USE_NCHARS != 0 */
+#endif /* else if defined(CTDS_USE_NCHARS) */
                 parameter->tdstypesize = (DBINT)nchars;
             }
             /* Check for bools prior to integers, which are treated as a boolean type by Python. */
@@ -825,7 +825,7 @@ PyObject* Parameter_value(struct Parameter* rpcparam)
     return rpcparam->value;
 }
 
-#if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0))
+#if !defined(CTDS_USE_SP_EXECUTESQL)
 
 char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
 {
@@ -1087,7 +1087,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
 
     return serialized;
 }
-#endif /* if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0)) */
+#endif /* if !defined(CTDS_USE_SP_EXECUTESQL) */
 
 PyTypeObject* ParameterType_init(void)
 {

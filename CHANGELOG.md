@@ -3,10 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Support values longer than 8000 characters in `ctds.SqlVarChar`.
 
 ## [1.6.1] - 2017-11-20
 ### Fixed
-Revert passing BINARY 0x00 for (N)VARCHAR arguments.
+- Revert passing BINARY 0x00 for (N)VARCHAR arguments.
 
 ## [1.6.0] - 2017-11-17
 ### Added

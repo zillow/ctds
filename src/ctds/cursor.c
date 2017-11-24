@@ -1341,9 +1341,9 @@ static char* build_executesql_stmt(const char* format,
                     const char* parammarker_start = format + 1; /* skip over the ':' */
                     char* parammarker_end = (char*)parammarker_start;
 
-#if !defined(CTDS_USE_SP_EXECUTESQL) || (CTDS_USE_SP_EXECUTESQL == 0)
+#if !defined(CTDS_USE_SP_EXECUTESQL)
                     PyObject* oparam = NULL;
-#endif /* !defined(CTDS_USE_SP_EXECUTESQL) || (CTDS_USE_SP_EXECUTESQL == 0) */
+#endif /* !defined(CTDS_USE_SP_EXECUTESQL) */
 
                     nchunk = (size_t)(format - chunk);
 
@@ -1379,7 +1379,7 @@ static char* build_executesql_stmt(const char* format,
                         }
                     }
 
-#if CTDS_USE_SP_EXECUTESQL != 0
+#if defined(CTDS_USE_SP_EXECUTESQL)
                     if (ParamStyle_numeric == paramstyle)
                     {
                         param = (char*)tds_mem_malloc(ARRAYSIZE("@param" STRINGIFY(UINT64_MAX)));
@@ -1418,7 +1418,7 @@ static char* build_executesql_stmt(const char* format,
                         break;
                     }
 
-#else /* if CTDS_USE_SP_EXECUTESQL != 0 */
+#else /* if defined(CTDS_USE_SP_EXECUTESQL) */
                     /* Serialize the parameter to a string. */
                     do
                     {
@@ -1481,7 +1481,7 @@ static char* build_executesql_stmt(const char* format,
                     {
                         break;
                     }
-#endif /* else if CTDS_USE_SP_EXECUTESQL != 0 */
+#endif /* else if defined(CTDS_USE_SP_EXECUTESQL) */
 
                     *nsql += nchunk;
                     nchunk = 0;
@@ -1618,7 +1618,7 @@ static int Cursor_execute_sql(struct Cursor* cursor, const char* sql)
 }
 
 
-#if CTDS_USE_SP_EXECUTESQL != 0
+#if defined(CTDS_USE_SP_EXECUTESQL)
 
 /*
     Generate a parameter name to use with `sp_executesql` from
@@ -2171,7 +2171,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
     return (PyErr_Occurred()) ? -1 : 0;
 }
 
-#else /* if CTDS_USE_SP_EXECUTESQL != 0 */
+#else /* if defined(CTDS_USE_SP_EXECUTESQL) */
 
 static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, PyObject* sequence)
 {
@@ -2281,7 +2281,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
     return (PyErr_Occurred()) ? -1 : 0;
 }
 
-#endif /* else if CTDS_USE_SP_EXECUTESQL != 0 */
+#endif /* else if defined(CTDS_USE_SP_EXECUTESQL) */
 
 
 /* https://www.python.org/dev/peps/pep-0249/#execute */

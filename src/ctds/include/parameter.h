@@ -8,6 +8,8 @@
 
 #include "c99bool.h"
 
+#include "tds.h"
+
 PyTypeObject* ParameterType_init(void);
 int Parameter_Check(PyObject* o);
 PyTypeObject* ParameterType_get(void);
@@ -44,10 +46,10 @@ char* Parameter_sqltype(struct Parameter* rpcparam);
 
 PyObject* Parameter_value(struct Parameter* rpcparam);
 
-#if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0))
+#if !defined(CTDS_USE_SP_EXECUTESQL)
 
 char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized);
 
-#endif /* if !(defined(CTDS_USE_SP_EXECUTESQL) && (CTDS_USE_SP_EXECUTESQL != 0)) */
+#endif /* if !defined(CTDS_USE_SP_EXECUTESQL) */
 
 #endif /* ifndef __PARAMETER_H__ */

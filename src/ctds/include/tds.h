@@ -44,6 +44,13 @@ enum ParamStyle {
 #endif
 
 /*
+    Is the read-only intent options is supported?
+*/
+#if defined(DBSETLREADONLY)
+#  define CTDS_HAVE_READONLY_INTENT 1
+#endif
+
+/*
     Use `sp_executesql` when possible for the execute*() methods. This method
     won't work on older versions of FreeTDS which don't properly support passing
     NVARCHAR data.

@@ -473,6 +473,14 @@ SQL VARCHAR type wrapper.
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
+                for expected in (
+                        unicode_(b'*', encoding='utf-8') * 54321,
+                ):
+                    cursor.execute('SELECT :0', (ctds.SqlVarChar(expected),))
+                    actual = cursor.fetchone()[0]
+                    self.assertEqual(len(expected), len(actual))
+                    self.assertEqual(expected, actual)
+
     def test_size(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
@@ -578,6 +586,15 @@ SQL NVARCHAR type wrapper.
                         )
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
+
+
+                for expected in (
+                        unicode_(b'*', encoding='utf-8') * 54321,
+                ):
+                    cursor.execute('SELECT :0', (ctds.SqlNVarChar(expected),))
+                    actual = cursor.fetchone()[0]
+                    self.assertEqual(len(expected), len(actual))
+                    self.assertEqual(expected, actual)
 
     def test_size(self):
         with self.connect() as connection:

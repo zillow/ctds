@@ -589,7 +589,7 @@ static int SqlVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 
     SqlType_init_variable(self,
                           PyTuple_GET_ITEM(args, 0),
-                          TDSVARCHAR,
+                          (nutf8bytes > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR,
                           /*
                               If the size is not explicitly specified, infer it from the value.
                               The VARCHAR type size must be >= 1.
@@ -668,11 +668,11 @@ static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
         to 0.95. Fallback to VARCHAR with somewhat crippled
         functionality.
     */
-#if CTDS_USE_NCHARS != 0
+#if defined(CTDS_USE_NCHARS)
     tdstype = (nchars > TDS_NCHAR_MAX_SIZE) ? TDSNTEXT : TDSNVARCHAR;
-#else /* if CTDS_USE_NCHARS != 0 */
+#else /* if defined(CTDS_USE_NCHARS) */
     tdstype = (nchars > TDS_CHAR_MAX_SIZE) ? TDSTEXT : TDSVARCHAR;
-#endif /* else if CTDS_USE_NCHARS != 0 */
+#endif /* else if defined(CTDS_USE_NCHARS) */
 
     SqlType_init_variable(self,
                           encoded,
@@ -1151,7 +1151,7 @@ sql_topython sql_topython_lookup(enum TdsType tdstype)
     return NULL;
 }
 
-#if !defined(CTDS_USE_UTF16) || CTDS_USE_UTF16 == 0
+#if !defined(CTDS_USE_UTF16)
 
 #ifdef _MSC_VER
 #  include <wchar.h>
@@ -1241,7 +1241,7 @@ static PyObject* translate_to_ucs2(PyObject* o)
     return translated;
 }
 
-#endif /* if !defined(CTDS_USE_UTF16) || CTDS_USE_UTF16 == 0 */
+#endif /* if !defined(CTDS_USE_UTF16) */
 
 PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes, size_t* width)
 {
@@ -1255,13 +1255,13 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
 
         PyObject* encodable;
 
-#if defined(CTDS_USE_UTF16) && CTDS_USE_UTF16 != 0
+#if defined(CTDS_USE_UTF16)
         size_t ix;
 
         /* FreeTDS supports encoding to UTF-16, so the whole string is encodable. */
         encodable = unicode;
         Py_INCREF(encodable);
-#else /* if defined(CTDS_USE_UTF16) && CTDS_USE_UTF16 != 0 */
+#else /* if defined(CTDS_USE_UTF16) */
         /*
             FreeTDS will only convert strings to UCS-2, so translate all
             strings to UCS-2 prior to binding.
@@ -1280,7 +1280,7 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
 #  else
         *width = (size_t)PyUnicode_GET_SIZE(encodable);
 #  endif
-#endif /* else if CTDS_USE_UTF16 != 0 */
+#endif /* else if defined(CTDS_USE_UTF16) */
 
 #if PY_MAJOR_VERSION < 3
         encoded = PyUnicode_AsUTF8String(encodable);
@@ -1299,7 +1299,7 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
         *nutf8bytes = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
-#if defined(CTDS_USE_UTF16) && CTDS_USE_UTF16 != 0
+#if defined(CTDS_USE_UTF16)
         /*
             Compute the SQL type width, which is really the number of UTF-16
             sequences.
@@ -1336,7 +1336,7 @@ PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8byt
                 ix += 4;
             }
         }
-#endif /* if defined(CTDS_USE_UTF16) && CTDS_USE_UTF16 != 0 */
+#endif /* if defined(CTDS_USE_UTF16) */
 
     }
     while (0);
