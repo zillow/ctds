@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Change Log &mdash; ctds 1.6.1 documentation</title>
+  <title>Change Log &mdash; ctds 1.6.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.6.1 documentation" href="index.html"/>
+    <link rel="top" title="ctds 1.6.2 documentation" href="index.html"/>
         <link rel="prev" title="ctds.pool" href="pool.html"/> 
 
   
@@ -103,6 +103,10 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Change Log</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unreleased">Unreleased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#">1.6.2 - 2017-11-27</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#">1.6.1 - 2017-11-20</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
@@ -268,17 +272,28 @@
 <p>All notable changes to this project will be documented in this file.
 This project adheres to <a class="reference external" href="http://semver.org/">Semantic Versioning</a>.</p>
 <div class="section" id="unreleased">
-<span id="unreleased"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.1...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permalink to this headline">¶</a></h2>
+<span id="unreleased"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.2...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="">
-<span id="id1"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.1...v1.6.0">1.6.1</a> - 2017-11-20<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.2...v1.6.1">1.6.2</a> - 2017-11-27<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
 <span id="fixed"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
-<p>Revert passing BINARY 0x00 for (N)VARCHAR arguments.</p>
+<ul class="simple">
+<li>Support values longer than 8000 characters in <code class="docutils literal"><span class="pre">ctds.SqlVarChar</span></code>.</li>
+</ul>
 </div>
 </div>
 <div class="section" id="">
-<span id="id2"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.0...v1.5.0">1.6.0</a> - 2017-11-17<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.1...v1.6.0">1.6.1</a> - 2017-11-20<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fixed">
+<span id="id3"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Revert passing BINARY 0x00 for (N)VARCHAR arguments.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="">
+<span id="id4"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.6.0...v1.5.0">1.6.0</a> - 2017-11-17<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="added">
 <span id="added"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -292,7 +307,7 @@ read-only intent. Note: Requires as yet unreleased FreeTDS support.</li>
 </ul>
 </div>
 <div class="section" id="fixed">
-<span id="id3"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id5"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Pass a BINARY 0x00 byte instead of an empty string for (N)VARCHAR arguments.
 This is to work around the inability of the db-lib API to pass empty string
@@ -301,9 +316,9 @@ parameters via RPC.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id4"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.5.0...v1.4.1">1.5.0</a> - 2017-10-16<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.5.0...v1.4.1">1.5.0</a> - 2017-10-16<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="added">
-<span id="id5"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id7"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Windows support, with Appveyor continuous integration.</li>
 <li>Python egg-related metadata checks.</li>
@@ -312,9 +327,9 @@ parameters via RPC.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id6"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.4.1...v1.4.0">1.4.1</a> - 2017-09-29<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id8"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.4.1...v1.4.0">1.4.1</a> - 2017-09-29<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id7"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id9"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Only clear <code class="docutils literal"><span class="pre">Connection.messages</span></code> on calls to <code class="docutils literal"><span class="pre">execute</span></code>, <code class="docutils literal"><span class="pre">executemany</span></code>
 or <code class="docutils literal"><span class="pre">callproc</span></code>. Add support for raising multiple non-zero severity
@@ -323,9 +338,9 @@ messages as warnings.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id8"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.4.0...v1.3.2">1.4.0</a> - 2017-09-13<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id10"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.4.0...v1.3.2">1.4.0</a> - 2017-09-13<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id9"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id11"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Changed the implementation of <code class="docutils literal"><span class="pre">Cursor.execute</span></code> to only perform
 parameter substitution if parameters are provided. When no parameters
@@ -333,7 +348,7 @@ are passed, the SQL format string is treated as raw SQL.</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id10"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id12"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">Connection.messages</span></code> read-only property.</li>
 <li>Improved code coverage.</li>
@@ -341,15 +356,15 @@ are passed, the SQL format string is treated as raw SQL.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id11"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.3.2...v1.3.1">1.3.2</a> - 2017-07-25<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id13"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.3.2...v1.3.1">1.3.2</a> - 2017-07-25<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id12"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id14"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Register RowListType to support pickling/unpickling.</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id13"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id15"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Convert test framework to use Docker-based containers for
 SQL Server and for each supported combination of Python and FreeTDS.</li>
@@ -361,9 +376,9 @@ tracking.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id14"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.3.1...v1.3.0">1.3.1</a> - 2017-05-31<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id16"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.3.1...v1.3.0">1.3.1</a> - 2017-05-31<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id15"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id17"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix connection failures when connecting to high port numbers on OS X.</li>
 <li>Fix unit test infrastructure to respect configured port number.</li>
@@ -373,9 +388,9 @@ BCP_SETL interfaces.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id16"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.3.0...v1.2.3">1.3.0</a> - 2017-03-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id18"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.3.0...v1.2.3">1.3.0</a> - 2017-03-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id17"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id19"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Replace usage of the deprecated <code class="docutils literal"><span class="pre">PyErr_Warn</span></code> API with <code class="docutils literal"><span class="pre">PyErr_WarnEx</span></code>.
 This will allow clients to indicate that warnings should be raised as
@@ -384,9 +399,9 @@ exceptions.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id18"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.3...v1.2.2">1.2.3</a> - 2017-03-13<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id20"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.3...v1.2.2">1.2.3</a> - 2017-03-13<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id19"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id21"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Improve <code class="docutils literal"><span class="pre">repr</span></code> implementation for SQL type wrapper objects.</li>
 <li>Fixed informational (warning) message reporting where many SQL Server
@@ -396,33 +411,33 @@ the client promptly enough.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id20"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.2...v1.2.1">1.2.2</a> - 2017-01-10<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id22"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.2...v1.2.1">1.2.2</a> - 2017-01-10<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id21"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id23"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix multi-byte UTF-16 character conversion.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="">
-<span id="id22"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.1...v1.2.0">1.2.1</a> - 2016-12-27<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id24"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.1...v1.2.0">1.2.1</a> - 2016-12-27<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id23"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id25"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Include <code class="docutils literal"><span class="pre">ctds.pool</span></code> in egg package.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="">
-<span id="id24"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.0...v1.1.0">1.2.0</a> - 2016-12-27<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id26"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.2.0...v1.1.0">1.2.0</a> - 2016-12-27<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id25"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id27"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Documentation improvements around <em>(N)VARCHAR</em> handling.</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id26"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id28"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">ctds.pool.ConnectionPool</span></code> class.</li>
 <li>Support the <code class="docutils literal"><span class="pre">in</span></code> keyword for resultset rows.</li>
@@ -432,9 +447,9 @@ the client promptly enough.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id27"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.1.0...v1.0.8">1.1.0</a> - 2016-11-14<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id29"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.1.0...v1.0.8">1.1.0</a> - 2016-11-14<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="added">
-<span id="id28"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id30"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">ctds.SqlNVarChar</span></code> type.</li>
 <li>Ignore the replacement parameter markers inside of string literals in
@@ -443,7 +458,7 @@ SQL statements passed to <code class="docutils literal"><span class="pre">ctds.C
 </ul>
 </div>
 <div class="section" id="fixed">
-<span id="id29"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id31"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Work around a Memory leak in FreeTDS when specifying the database at
 connection time.</li>
@@ -453,9 +468,9 @@ when passing a SQL statement longer than 4000 characters.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id30"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.8...v1.0.7">1.0.8</a> - 2016-08-17<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id32"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.8...v1.0.7">1.0.8</a> - 2016-08-17<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id31"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id33"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Configure connections to use UTF-16 when supported (i.e. FreeTDS 1.00+).
 Don't replace codepoints outside of the UCS-2 range if the connection is
@@ -464,9 +479,9 @@ using UTF-16 as it is no longer necessary and causes data loss.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id32"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.7...v1.0.6">1.0.7</a> - 2016-08-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id34"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.7...v1.0.6">1.0.7</a> - 2016-08-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id33"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id35"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Only use strict compile options for debug/development builds. Allow
 the client (e.g. pip) to specify the desired options when installing as an
@@ -475,9 +490,9 @@ egg.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id34"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.6...v1.0.5">1.0.6</a> - 2016-08-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id36"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.6...v1.0.5">1.0.6</a> - 2016-08-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id35"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id37"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Compile under the <em>c90</em> standard for better future portability.</li>
 <li>Don't overwrite more useful error messages with the useless &quot;The statement
@@ -485,16 +500,16 @@ has been terminated.&quot; error.</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id36"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id38"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Minor documentation improvements.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="">
-<span id="id37"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.5...v1.0.4">1.0.5</a> - 2016-05-23<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id39"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.5...v1.0.4">1.0.5</a> - 2016-05-23<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id38"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id40"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix the <code class="docutils literal"><span class="pre">ctds.Connection.timeout</span></code> property to raise an appropriate error
 when the option is supported, but the set fails.</li>
@@ -502,16 +517,16 @@ when the option is supported, but the set fails.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id39"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.4...v1.0.5">1.0.4</a> - 2016-05-19<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id41"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.4...v1.0.5">1.0.4</a> - 2016-05-19<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id40"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id42"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix the <code class="docutils literal"><span class="pre">ctds.Connection.timeout</span></code> property to work with the <strong>DBSETTIME</strong>
 option added in <a class="reference external" href="http://freetds.org">FreeTDS</a> version <em>1.00</em>.</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id41"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id43"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Support for TDS version <em>7.4</em>, introduced with <a class="reference external" href="http://freetds.org">FreeTDS</a>
 version <em>1.00</em>.</li>
@@ -519,9 +534,9 @@ version <em>1.00</em>.</li>
 </div>
 </div>
 <div class="section" id="">
-<span id="id42"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.2...v1.0.3">1.0.3</a> - 2016-03-31<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id44"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.2...v1.0.3">1.0.3</a> - 2016-03-31<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id43"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id45"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fix <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/#execute">execute()</a> and
 <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/#executemany">executemany()</a> to work
@@ -532,7 +547,7 @@ older versions of <a class="reference external" href="http://freetds.org">FreeTD
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id44"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id46"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Transaction documentation</li>
 <li>Bulk insert documentation</li>
@@ -540,37 +555,37 @@ older versions of <a class="reference external" href="http://freetds.org">FreeTD
 </div>
 </div>
 <div class="section" id="">
-<span id="id45"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.1...v1.0.2">1.0.2</a> - 2016-03-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id47"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0.1...v1.0.2">1.0.2</a> - 2016-03-15<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id46"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id48"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Documentation typos and improvements</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id47"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id49"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="https://travis-ci.org/zillow/ctds">travis-ci</a> integration</li>
 </ul>
 </div>
 </div>
 <div class="section" id="">
-<span id="id48"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0...v1.0.1">1.0.1</a> - 2016-03-14<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id50"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/compare/v1.0...v1.0.1">1.0.1</a> - 2016-03-14<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fixed">
-<span id="id49"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<span id="id51"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Build on OS X</li>
 </ul>
 </div>
 <div class="section" id="added">
-<span id="id50"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<span id="id52"></span><h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Hypothetical integration with readthdocs.org</li>
 </ul>
 </div>
 </div>
 <div class="section" id="">
-<span id="id51"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/releases/tag/v1.0">1.0.0</a> - 2016-03-14<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<span id="id53"></span><h2><a class="reference external" href="https://github.com/zillow/ctds/releases/tag/v1.0">1.0.0</a> - 2016-03-14<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
 <p>Initial Release</p>
 </div>
 </div>
@@ -617,7 +632,7 @@ older versions of <a class="reference external" href="http://freetds.org">FreeTD
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.6.1',
+            VERSION:'1.6.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
