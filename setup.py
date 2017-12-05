@@ -116,7 +116,7 @@ setuptools.setup(
     author_email = 'joshual@zillow.com',
     description = 'DB API 2.0-compliant Linux driver for SQL Server',
     long_description = read('README.rst'),
-    keywords = [
+    keywords = ' '.join([
         'freetds',
         'mssql',
         'SQL',
@@ -126,7 +126,7 @@ setuptools.setup(
         'DB-API',
         'PEP-0249',
         'database',
-    ],
+    ]),
     license = 'MIT',
     url = 'https://github.com/zillow/ctds',
     classifiers=[

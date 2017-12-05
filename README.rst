@@ -105,7 +105,7 @@ used by the tests.
 Testing
 -------
 
-Testing is designed to be relatively seemless, using `Docker`_ containers
+Testing is designed to be relatively seamless, using `Docker`_ containers
 and `SQL Server on Linux`_. All *test* targets will ensure a running
 database instance docker container exists and is accessible prior to running.
 
