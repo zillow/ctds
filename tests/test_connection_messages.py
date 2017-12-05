@@ -21,6 +21,8 @@ and `RAISERROR` statements. Messages are preserved until the next call
 to any of the above methods. :py:data:`None` is returned if the
 connection is closed.
 
+:pep:`0249#connection-messages`
+
 .. versionadded:: 1.4
 
 :rtype: list(dict) or None
@@ -74,7 +76,19 @@ connection is closed.
                     'state': long_(1),
                 },
             ]
-            messages = [msg.copy() for msg in connection.messages]
+            with warnings.catch_warnings(record=True) as warns:
+                messages = [msg.copy() for msg in connection.messages]
+
+            self.assertEqual(len(warns), 1)
+            self.assertEqual(
+                [str(warn.message) for warn in warns],
+                ['DB-API extension connection.messages used'] * len(warns)
+            )
+            self.assertEqual(
+                [warn.category for warn in warns],
+                [Warning] * len(warns)
+            )
+
             for message in messages:
                 self.assertTrue(self.server_name_and_instance in message.pop('server'))
             self.assertEqual(expected, messages)
@@ -86,6 +100,8 @@ connection is closed.
                     PRINT(N'and yet another one')
                     '''
                 )
+
+            with warnings.catch_warnings(record=True):
                 self.assertEqual(
                     [
                         unicode_('Some other message'),
@@ -97,7 +113,26 @@ connection is closed.
                     ]
                 )
 
-        self.assertEqual(connection.messages, None)
+        with warnings.catch_warnings(record=True):
+            self.assertEqual(connection.messages, None)
+
+    def test_warning_as_error(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    PRINT(NCHAR(191) + N' carpe diem!');
+                    '''
+                )
+
+            with warnings.catch_warnings():
+                warnings.simplefilter('error')
+                try:
+                    unused = connection.messages
+                except Warning as warn:
+                    self.assertEqual('DB-API extension connection.messages used', str(warn))
+                else:
+                    self.fail('.messages did not fail as expected') # pragma: nocover
 
     def test_write(self):
         with self.connect() as connection:

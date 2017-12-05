@@ -172,9 +172,10 @@ parameters are replaced with output values.
                         },
                     ]
 
-                    for index, message in enumerate(connection.messages):
-                        self.assertTrue(self.server_name_and_instance in message.pop('server'))
-                        self.assertEqual(expected[index], message)
+                    with warnings.catch_warnings(record=True):
+                        for index, message in enumerate(connection.messages):
+                            self.assertTrue(self.server_name_and_instance in message.pop('server'))
+                            self.assertEqual(expected[index], message)
 
                     self.assertEqual(
                         [tuple(row) for row in cursor.fetchall()],
@@ -246,9 +247,10 @@ parameters are replaced with output values.
                         },
                     ]
 
-                    for index, message in enumerate(connection.messages):
-                        self.assertTrue(self.server_name_and_instance in message.pop('server'))
-                        self.assertEqual(expected[index], message)
+                    with warnings.catch_warnings(record=True):
+                        for index, message in enumerate(connection.messages):
+                            self.assertTrue(self.server_name_and_instance in message.pop('server'))
+                            self.assertEqual(expected[index], message)
 
                 # The cursor should be usable after a warning.
                 with warnings.catch_warnings(record=True) as warns:

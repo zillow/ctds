@@ -836,6 +836,8 @@ static const char s_Connection_messages_doc[] =
     "to any of the above methods. :py:data:`None` is returned if the\n"
     "connection is closed.\n"
     "\n"
+    ":pep:`0249#connection-messages`\n"
+    "\n"
     ".. versionadded:: 1.4\n"
     "\n"
     ":rtype: list(dict) or None\n";
@@ -843,6 +845,12 @@ static const char s_Connection_messages_doc[] =
 static PyObject* Connection_messages_get(PyObject* self, void* closure)
 {
     struct Connection* connection = (struct Connection*)self;
+
+    if (0 != PyErr_WarnEx(PyExc_Warning, "DB-API extension connection.messages used", 1))
+    {
+        return NULL;
+    }
+
     if (!Connection_closed(connection))
     {
         PyObject* messages = NULL;
