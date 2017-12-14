@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Compiler warnings on older version of gcc.
 
 ## [1.6.3] - 2017-12-05
 ### Fixed

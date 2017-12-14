@@ -15,7 +15,7 @@
 #include "include/tds.h"
 #include "include/type.h"
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && (__GNUC__ > 4)
 /*
     Ignore "string length '%d' is greater than the length '509' ISO C90
     compilers are required to support [-Werror=overlength-strings]".
@@ -24,7 +24,7 @@
 
 /* Ignore "ISO C90 does not support 'long long' [-Werror=long-long]". */
 #  pragma GCC diagnostic ignored "-Wlong-long"
-#endif /* ifdef __GNUC__ */
+#endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 
 
 struct Column {
@@ -44,10 +44,10 @@ struct ResultSetDescription {
     */
     size_t ncolumns;
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ > 4)
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
-#endif /* if defined(__GNUC__) */
+#endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 #if defined (_MSC_VER)
 #  pragma warning(disable: 4200)
 #endif /* if defined (_MSC_VER) */
@@ -58,9 +58,9 @@ struct ResultSetDescription {
 #if defined (_MSC_VER)
 #  pragma warning(default: 4200)
 #endif /* if defined (_MSC_VER) */
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ > 4)
 #  pragma GCC diagnostic pop
-#endif /* if defined(__GNUC__) */
+#endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 };
 
 #define ResultSetDescription_size(_ncolumns) \
@@ -2447,10 +2447,10 @@ struct RowBuffer
     */
 
 /* Ignore "ISO C90 does not support flexible array members". */
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ > 4)
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
-#endif /* if defined(__GNUC__) */
+#endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 #if defined (_MSC_VER)
 #  pragma warning(disable: 4200)
 #endif /* if defined (_MSC_VER) */
@@ -2460,9 +2460,9 @@ struct RowBuffer
 #if defined (_MSC_VER)
 #  pragma warning(default: 4200)
 #endif /* if defined (_MSC_VER) */
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ > 4)
 #  pragma GCC diagnostic pop
-#endif /* if defined(__GNUC__) */
+#endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 };
 
 /*

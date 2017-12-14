@@ -1,8 +1,8 @@
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ > 4)
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
 #  pragma GCC diagnostic ignored "-Wlong-long"
-#endif /* if defined(__GNUC__) */
+#endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 
 #if defined(_MSC_VER)
 #  pragma warning(push)
