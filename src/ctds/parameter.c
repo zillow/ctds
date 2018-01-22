@@ -118,6 +118,53 @@ static PyObject* Parameter_new(PyTypeObject* type, PyObject* args, PyObject* kwa
     UNUSED(type);
 }
 
+static PyObject* Parameter_repr(PyObject* self)
+{
+    const struct Parameter* parameter = (const struct Parameter*)self;
+    PyObject* repr = NULL;
+
+    bool output = (NULL != parameter->output);
+
+#if PY_MAJOR_VERSION < 3
+    /*
+        Python2.6's implementation of `PyUnicode_FromFormat` is buggy and
+        will crash when the '%R' format specifier is used. Additionally
+        a conversion to the `str` type is required. Avoid all this in Python2.
+    */
+    PyObject* value = PyObject_Repr(parameter->value);
+    if (value)
+    {
+        repr = PyString_FromFormat(
+            (output) ? "%s(%s, output=%s)" : "%s(%s)",
+            Py_TYPE(self)->tp_name,
+            PyString_AS_STRING(value),
+            (output) ? "True" : "False"
+        );
+        Py_DECREF(value);
+    }
+#else /* if PY_MAJOR_VERSION < 3 */
+    repr = PyUnicode_FromFormat(
+        (output) ? "%s(%R, output=%s)" : "%s(%R)",
+        Py_TYPE(self)->tp_name,
+        parameter->value,
+        (output) ? "True" : "False"
+    );
+#endif /* else if PY_MAJOR_VERSION < 3 */
+    return repr;
+}
+
+PyTypeObject ParameterType; /* forward declaration */
+
+static PyObject* Parameter_richcompare(PyObject* self, PyObject* other, int op)
+{
+    if (PyObject_TypeCheck(other, &ParameterType))
+    {
+        other = ((const struct Parameter*)other)->value;
+    }
+
+    return PyObject_RichCompare(((const struct Parameter*)self)->value, other, op);
+}
+
 static PyMemberDef s_Parameter_members[] = {
     /* name, type, offset, flags, doc */
     { (char*)"value",   T_OBJECT, offsetof(struct Parameter, value), READONLY, NULL },
@@ -137,7 +184,7 @@ static const char s_tds_Parameter_doc[] =
 
 PyTypeObject ParameterType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    STRINGIFY(tds) ".Parameter",  /* tp_name */
+    "ctds.Parameter",             /* tp_name */
     sizeof(struct Parameter),     /* tp_basicsize */
     0,                            /* tp_itemsize */
     Parameter_dealloc,            /* tp_dealloc */
@@ -145,7 +192,7 @@ PyTypeObject ParameterType = {
     NULL,                         /* tp_getattr */
     NULL,                         /* tp_setattr */
     NULL,                         /* tp_reserved */
-    NULL,                         /* tp_repr */
+    Parameter_repr,               /* tp_repr */
     NULL,                         /* tp_as_number */
     NULL,                         /* tp_as_sequence */
     NULL,                         /* tp_as_mapping */
@@ -159,7 +206,7 @@ PyTypeObject ParameterType = {
     s_tds_Parameter_doc,          /* tp_doc */
     NULL,                         /* tp_traverse */
     NULL,                         /* tp_clear */
-    NULL,                         /* tp_richcompare */
+    Parameter_richcompare,        /* tp_richcompare */
     0,                            /* tp_weaklistoffset */
     NULL,                         /* tp_iter */
     NULL,                         /* tp_iternext */

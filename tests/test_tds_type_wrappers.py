@@ -39,7 +39,7 @@ SQL BIGINT type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlBigInt({0!r})'.format(value)
+                        'ctds.SqlBigInt({0!r})'.format(value)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -87,7 +87,7 @@ SQL BINARY type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlBinary({0!r}, size={1})'.format(value, wrapper.size)
+                        'ctds.SqlBinary({0!r}, size={1})'.format(value, wrapper.size)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -138,7 +138,7 @@ SQL CHAR type wrapper. The value's UTF-8-encoded length must be <= 8000.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlChar({0!r}, size={1})'.format(value, wrapper.size)
+                        'ctds.SqlChar({0!r}, size={1})'.format(value, wrapper.size)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -194,7 +194,7 @@ SQL DATE type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlDate({0!r})'.format(value)
+                        'ctds.SqlDate({0!r})'.format(value)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -243,7 +243,7 @@ SQL INT type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlInt({0!r})'.format(value)
+                        'ctds.SqlInt({0!r})'.format(value)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -292,7 +292,7 @@ SQL SMALLINT type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlSmallInt({0!r})'.format(value)
+                        'ctds.SqlSmallInt({0!r})'.format(value)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -339,7 +339,7 @@ SQL TINYINT type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlTinyInt({0!r})'.format(value)
+                        'ctds.SqlTinyInt({0!r})'.format(value)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -391,7 +391,7 @@ SQL VARBINARY type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlVarBinary({0!r}, size={1})'.format(value, wrapper.size)
+                        'ctds.SqlVarBinary({0!r}, size={1})'.format(value, wrapper.size)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -469,7 +469,7 @@ SQL VARCHAR type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlVarChar({0!r}, size={1})'.format(value, wrapper.size)
+                        'ctds.SqlVarChar({0!r}, size={1})'.format(value, wrapper.size)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 
@@ -580,7 +580,7 @@ SQL NVARCHAR type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlNVarChar({0!r}, size={1})'.format(
+                        'ctds.SqlNVarChar({0!r}, size={1})'.format(
                             value if PY3 else (value.encode('utf-8') if value is not None else value),
                             wrapper.size
                         )
@@ -698,7 +698,7 @@ SQL DECIMAL type wrapper.
 
                     self.assertEqual(
                         repr(wrapper),
-                        'tds.SqlDecimal({0!r})'.format(value)
+                        'ctds.SqlDecimal({0!r})'.format(value)
                     )
                     self.assertEqual(repr(wrapper), str(wrapper))
 

@@ -1,9 +1,12 @@
 from decimal import Decimal
+import re
 import warnings
 
 import ctds
 
 from .base import TestExternalDatabase
+from .compat import PY3, PY36, unicode_
+
 
 class TestTdsParameter(TestExternalDatabase):
 
@@ -32,6 +35,169 @@ parameter.
         self.assertEqual(param1.value, b'123')
         self.assertEqual(type(param1), type(param2))
         self.assertTrue(isinstance(param2, ctds.Parameter))
+
+    def test___repr__(self):
+        for parameter, expected in (
+                (
+                    ctds.Parameter(b'123', output=True),
+                    "ctds.Parameter(b'123', output=True)" if PY3 else "ctds.Parameter('123', output=True)"
+                ),
+                (
+                    ctds.Parameter(unicode_('123'), output=False),
+                    "ctds.Parameter('123')" if PY3 else "ctds.Parameter(u'123')"
+                ),
+                (
+                    ctds.Parameter(None),
+                    "ctds.Parameter(None)"
+                ),
+                (
+                    ctds.Parameter(ctds.SqlVarBinary(b'4321', size=10)),
+                    "ctds.Parameter(ctds.SqlVarBinary(b'4321', size=10))"
+                    if PY3 else
+                    "ctds.Parameter(ctds.SqlVarBinary('4321', size=10))"
+                )
+        ):
+            self.assertEqual(repr(parameter), expected)
+
+    def _test__cmp__(self, __cmp__, expected, op):
+        CASES = (
+            (ctds.Parameter(b'1234'), ctds.Parameter(b'123')),
+            (ctds.Parameter(b'123'), ctds.Parameter(b'123')),
+            (ctds.Parameter(b'123'), ctds.Parameter(b'123', output=True)),
+            (ctds.Parameter(b'123'), ctds.Parameter(b'1234')),
+            (ctds.Parameter(b'123'), b'123'),
+            (ctds.Parameter(b'123'), ctds.Parameter(123)),
+            (ctds.Parameter(b'123'), unicode_('123')),
+            (ctds.Parameter(b'123'), ctds.SqlBinary(None)),
+            (ctds.Parameter(b'123'), 123),
+            (ctds.Parameter(b'123'), None),
+        )
+
+        for ix, args in enumerate(CASES):
+            operation = '[{0}]: {1} {2} {3}'.format(ix, repr(args[0]), op, repr(args[1]))
+            if expected[ix] == TypeError:
+                try:
+                    result = __cmp__(*args)
+                except TypeError as ex:
+                    regex = (
+                        r"'{0}' not supported between instances of '[^']+' and '[^']+'".format(op)
+                        if not PY3 or PY36
+                        else
+                        r'unorderable types: \S+ {0} \S+'.format(op)
+                    )
+                    self.assertTrue(re.match(regex, str(ex)), ex)
+                else:
+                    self.fail('{0} did not fail as expected'.format(operation)) # pragma: nocover
+            else:
+                self.assertEqual(__cmp__(*args), expected[ix], operation)
+
+    def test___cmp__eq(self):
+        self._test__cmp__(
+            lambda left, right: left == right,
+            (
+                False,
+                True,
+                True,
+                False,
+                True,
+                False,
+                not PY3,
+                False,
+                False,
+                False,
+            ),
+            '=='
+        )
+
+    def test___cmp__ne(self):
+        self._test__cmp__(
+            lambda left, right: left != right,
+            (
+                True,
+                False,
+                False,
+                True,
+                False,
+                True,
+                PY3,
+                True,
+                True,
+                True,
+            ),
+            '!='
+        )
+
+    def test___cmp__lt(self):
+        self._test__cmp__(
+            lambda left, right: left < right,
+            (
+                False,
+                False,
+                False,
+                True,
+                False,
+                TypeError if PY3 else False,
+                TypeError if PY3 else False,
+                TypeError if PY3 else False,
+                TypeError if PY3 else False,
+                TypeError if PY3 else False,
+            ),
+            '<'
+        )
+
+    def test___cmp__le(self):
+        self._test__cmp__(
+            lambda left, right: left <= right,
+            (
+                False,
+                True,
+                True,
+                True,
+                True,
+                TypeError if PY3 else False,
+                TypeError if PY3 else True,
+                TypeError if PY3 else False,
+                TypeError if PY3 else False,
+                TypeError if PY3 else False,
+            ),
+            '<='
+        )
+
+    def test___cmp__gt(self):
+        self._test__cmp__(
+            lambda left, right: left > right,
+            (
+                True,
+                False,
+                False,
+                False,
+                False,
+                TypeError if PY3 else True,
+                TypeError if PY3 else False,
+                TypeError if PY3 else True,
+                TypeError if PY3 else True,
+                TypeError if PY3 else True,
+            ),
+            '>'
+        )
+
+    def test___cmp__ge(self):
+        self._test__cmp__(
+            lambda left, right: left >= right,
+            (
+                True,
+                True,
+                True,
+                False,
+                True,
+                TypeError if PY3 else True,
+                TypeError if PY3 else True,
+                TypeError if PY3 else True,
+                TypeError if PY3 else True,
+                TypeError if PY3 else True,
+            ),
+            '>='
+        )
 
     def test_typeerror(self):
         for case in (None, object(), 123, 'foobar'):

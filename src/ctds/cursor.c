@@ -2758,7 +2758,7 @@ static PyObject* Row_getattro(PyObject* self, PyObject* attr)
 
 PyTypeObject RowType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    STRINGIFY(tds) ".Row",                    /* tp_name */
+    "ctds.Row",                               /* tp_name */
     sizeof(struct Row),                       /* tp_basicsize */
     sizeof(PyObject*),                        /* tp_itemsize */
     Row_dealloc,                              /* tp_dealloc */
@@ -2951,7 +2951,7 @@ static PySequenceMethods s_RowList_as_sequence = {
 
 PyTypeObject RowListType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    STRINGIFY(tds) ".RowList",                /* tp_name */
+    "ctds.RowList",                           /* tp_name */
     sizeof(struct RowList),                   /* tp_basicsize */
     sizeof(struct LazilyCreatedRow),          /* tp_itemsize */
     RowList_dealloc,                          /* tp_dealloc */
@@ -3500,7 +3500,7 @@ PyObject* Cursor_create(struct Connection* connection, enum ParamStyle paramstyl
 
 PyTypeObject CursorType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    STRINGIFY(tds) ".Cursor",     /* tp_name */
+    "ctds.Cursor",                /* tp_name */
     sizeof(struct Cursor),        /* tp_basicsize */
     0,                            /* tp_itemsize */
     Cursor_dealloc,               /* tp_dealloc */

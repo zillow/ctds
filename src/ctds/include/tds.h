@@ -44,7 +44,7 @@ enum ParamStyle {
 #endif
 
 /*
-    Is the read-only intent options is supported?
+    Is the read-only intent option supported?
 */
 #if defined(DBSETLREADONLY)
 #  define CTDS_HAVE_READONLY_INTENT 1

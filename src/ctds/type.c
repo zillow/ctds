@@ -56,8 +56,10 @@ static void SqlType_dealloc(PyObject* self)
 
 static PyObject* SqlType_repr(PyObject* self)
 {
-    struct SqlType* type = (struct SqlType*)self;
+    const struct SqlType* type = (const struct SqlType*)self;
     PyObject* repr = NULL;
+
+    bool include_size = (-1 == type->size);
 
 #if PY_MAJOR_VERSION < 3
     /*
@@ -68,43 +70,21 @@ static PyObject* SqlType_repr(PyObject* self)
     PyObject* value = PyObject_Repr(type->value);
     if (value)
     {
-        if (-1 == type->size)
-        {
-            repr = PyString_FromFormat(
-                "%s(%s)",
-                Py_TYPE(self)->tp_name,
-                PyString_AS_STRING(value)
-            );
-        }
-        else
-        {
-            repr = PyString_FromFormat(
-                "%s(%s, size=%d)",
-                Py_TYPE(self)->tp_name,
-                PyString_AS_STRING(value),
-                type->size
-            );
-        }
+        repr = PyString_FromFormat(
+            (include_size) ? "%s(%s)" : "%s(%s, size=%d)",
+            Py_TYPE(self)->tp_name,
+            PyString_AS_STRING(value),
+            type->size
+        );
         Py_DECREF(value);
     }
 #else /* if PY_MAJOR_VERSION < 3 */
-    if (-1 == type->size)
-    {
-        repr = PyUnicode_FromFormat(
-            "%s(%R)",
-            Py_TYPE(self)->tp_name,
-            type->value
-        );
-    }
-    else
-    {
-        repr = PyUnicode_FromFormat(
-            "%s(%R, size=%d)",
-            Py_TYPE(self)->tp_name,
-            type->value,
-            type->size
-        );
-    }
+    repr = PyUnicode_FromFormat(
+        (include_size) ? "%s(%R)" : "%s(%R, size=%d)",
+        Py_TYPE(self)->tp_name,
+        type->value,
+        type->size
+    );
 #endif /* else if PY_MAJOR_VERSION < 3 */
     return repr;
 }
@@ -132,7 +112,7 @@ static const char s_tds_SqlType_doc[] =
 
 PyTypeObject SqlTypeType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    STRINGIFY(tds) ".SqlType",                /* tp_name */
+    "ctds.SqlType",                           /* tp_name */
     sizeof(struct SqlType),                   /* tp_basicsize */
     0,                                        /* tp_itemsize */
     SqlType_dealloc,                          /* tp_dealloc */
@@ -223,7 +203,7 @@ int SqlType_Check(PyObject* o)
     } \
     PyTypeObject Sql ## _type ## Type = { \
         PyVarObject_HEAD_INIT(NULL, 0) \
-        STRINGIFY(tds) ".Sql" STRINGIFY(_type),     /* tp_name */ \
+        "ctds.Sql" STRINGIFY(_type),                /* tp_name */ \
         sizeof(struct Sql ## _type),                /* tp_basicsize */ \
         0,                                          /* tp_itemsize */ \
         NULL,                                       /* tp_dealloc */ \

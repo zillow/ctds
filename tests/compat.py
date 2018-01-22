@@ -4,6 +4,7 @@ PY3 = sys.version_info[0] >= 3
 PY33 = sys.version_info >= (3, 3)
 PY34 = sys.version_info >= (3, 4)
 PY35 = sys.version_info >= (3, 5)
+PY36 = sys.version_info >= (3, 6)
 PY27 = sys.version_info >= (2, 7)
 
 # pylint: disable=import-error,invalid-name,undefined-variable,unused-import,wrong-import-position

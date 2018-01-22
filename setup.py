@@ -11,8 +11,8 @@ import sys
 
 # Version information is defined here and compiled into the extension.
 CTDS_MAJOR_VERSION = 1
-CTDS_MINOR_VERSION = 6
-CTDS_PATCH_VERSION = 3
+CTDS_MINOR_VERSION = 7
+CTDS_PATCH_VERSION = 0
 
 
 tests_require = []

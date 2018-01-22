@@ -1832,10 +1832,10 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                     PyErr_SetString(PyExc_RuntimeError, "failed to set read-only intent");
                     break;
                 }
-#else /* if defined defined(CTDS_HAVE_READONLY_INTENT) */
+#else /* if defined(CTDS_HAVE_READONLY_INTENT) */
                 PyErr_Format(PyExc_NotImplementedError, "read-only intent is not supported");
                 break;
-#endif /* else if defined defined(CTDS_HAVE_READONLY_INTENT) */
+#endif /* else if defined(CTDS_HAVE_READONLY_INTENT) */
             }
 
             if (database)
@@ -1964,54 +1964,54 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
 
 PyTypeObject ConnectionType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    STRINGIFY(tds) ".Connection", /* tp_name */
-    sizeof(struct Connection),    /* tp_basicsize */
-    0,                            /* tp_itemsize */
-    Connection_dealloc,           /* tp_dealloc */
-    NULL,                         /* tp_print */
-    NULL,                         /* tp_getattr */
-    NULL,                         /* tp_setattr */
-    NULL,                         /* tp_reserved */
-    NULL,                         /* tp_repr */
-    NULL,                         /* tp_as_number */
-    NULL,                         /* tp_as_sequence */
-    NULL,                         /* tp_as_mapping */
-    NULL,                         /* tp_hash */
-    NULL,                         /* tp_call */
-    NULL,                         /* tp_str */
-    NULL,                         /* tp_getattro */
-    NULL,                         /* tp_setattro */
-    NULL,                         /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,           /* tp_flags */
-    s_tds_Connection_doc,         /* tp_doc */
-    NULL,                         /* tp_traverse */
-    NULL,                         /* tp_clear */
-    NULL,                         /* tp_richcompare */
-    0,                            /* tp_weaklistoffset */
-    NULL,                         /* tp_iter */
-    NULL,                         /* tp_iternext */
-    Connection_methods,           /* tp_methods */
-    NULL,                         /* tp_members */
-    Connection_getset,            /* tp_getset */
-    NULL,                         /* tp_base */
-    NULL,                         /* tp_dict */
-    NULL,                         /* tp_descr_get */
-    NULL,                         /* tp_descr_set */
-    0,                            /* tp_dictoffset */
-    NULL,                         /* tp_init */
-    NULL,                         /* tp_alloc */
-    NULL,                         /* tp_new */
-    NULL,                         /* tp_free */
-    NULL,                         /* tp_is_gc */
-    NULL,                         /* tp_bases */
-    NULL,                         /* tp_mro */
-    NULL,                         /* tp_cache */
-    NULL,                         /* tp_subclasses */
-    NULL,                         /* tp_weaklist */
-    NULL,                         /* tp_del */
-    0,                            /* tp_version_tag */
+    "ctds.Connection",             /* tp_name */
+    sizeof(struct Connection),     /* tp_basicsize */
+    0,                             /* tp_itemsize */
+    Connection_dealloc,            /* tp_dealloc */
+    NULL,                          /* tp_print */
+    NULL,                          /* tp_getattr */
+    NULL,                          /* tp_setattr */
+    NULL,                          /* tp_reserved */
+    NULL,                          /* tp_repr */
+    NULL,                          /* tp_as_number */
+    NULL,                          /* tp_as_sequence */
+    NULL,                          /* tp_as_mapping */
+    NULL,                          /* tp_hash */
+    NULL,                          /* tp_call */
+    NULL,                          /* tp_str */
+    NULL,                          /* tp_getattro */
+    NULL,                          /* tp_setattro */
+    NULL,                          /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,            /* tp_flags */
+    s_tds_Connection_doc,          /* tp_doc */
+    NULL,                          /* tp_traverse */
+    NULL,                          /* tp_clear */
+    NULL,                          /* tp_richcompare */
+    0,                             /* tp_weaklistoffset */
+    NULL,                          /* tp_iter */
+    NULL,                          /* tp_iternext */
+    Connection_methods,            /* tp_methods */
+    NULL,                          /* tp_members */
+    Connection_getset,             /* tp_getset */
+    NULL,                          /* tp_base */
+    NULL,                          /* tp_dict */
+    NULL,                          /* tp_descr_get */
+    NULL,                          /* tp_descr_set */
+    0,                             /* tp_dictoffset */
+    NULL,                          /* tp_init */
+    NULL,                          /* tp_alloc */
+    NULL,                          /* tp_new */
+    NULL,                          /* tp_free */
+    NULL,                          /* tp_is_gc */
+    NULL,                          /* tp_bases */
+    NULL,                          /* tp_mro */
+    NULL,                          /* tp_cache */
+    NULL,                          /* tp_subclasses */
+    NULL,                          /* tp_weaklist */
+    NULL,                          /* tp_del */
+    0,                             /* tp_version_tag */
 #if PY_VERSION_HEX >= 0x03040000
-    NULL,                         /* tp_finalize */
+    NULL,                          /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
 };
 

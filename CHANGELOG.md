@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [1.7.0] - 2018-01-22
+### Added
+- Add rich comparison support and `repr` to `ctds.Parameter`.
+
 ### Fixed
 - Compiler warnings on older version of gcc.
 
@@ -180,7 +185,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.6.3...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/zillow/ctds/compare/v1.7.0...v1.6.3
 [1.6.3]: https://github.com/zillow/ctds/compare/v1.6.3...v1.6.2
 [1.6.2]: https://github.com/zillow/ctds/compare/v1.6.2...v1.6.1
 [1.6.1]: https://github.com/zillow/ctds/compare/v1.6.1...v1.6.0
