@@ -1,4 +1,4 @@
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ > 4)
 #  pragma GCC diagnostic pop
 #endif /* if defined(__GNUC__) */
 

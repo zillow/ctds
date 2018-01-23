@@ -135,19 +135,17 @@ static PyObject* Parameter_repr(PyObject* self)
     if (value)
     {
         repr = PyString_FromFormat(
-            (output) ? "%s(%s, output=%s)" : "%s(%s)",
+            (output) ? "%s(%s, output=True)" : "%s(%s)",
             Py_TYPE(self)->tp_name,
-            PyString_AS_STRING(value),
-            (output) ? "True" : "False"
+            PyString_AS_STRING(value)
         );
         Py_DECREF(value);
     }
 #else /* if PY_MAJOR_VERSION < 3 */
     repr = PyUnicode_FromFormat(
-        (output) ? "%s(%R, output=%s)" : "%s(%R)",
+        (output) ? "%s(%R, output=True)" : "%s(%R)",
         Py_TYPE(self)->tp_name,
-        parameter->value,
-        (output) ? "True" : "False"
+        parameter->value
     );
 #endif /* else if PY_MAJOR_VERSION < 3 */
     return repr;

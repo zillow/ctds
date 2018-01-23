@@ -59,7 +59,7 @@ static PyObject* SqlType_repr(PyObject* self)
     const struct SqlType* type = (const struct SqlType*)self;
     PyObject* repr = NULL;
 
-    bool include_size = (-1 == type->size);
+    bool include_size = (-1 != type->size);
 
 #if PY_MAJOR_VERSION < 3
     /*
@@ -70,21 +70,43 @@ static PyObject* SqlType_repr(PyObject* self)
     PyObject* value = PyObject_Repr(type->value);
     if (value)
     {
-        repr = PyString_FromFormat(
-            (include_size) ? "%s(%s)" : "%s(%s, size=%d)",
-            Py_TYPE(self)->tp_name,
-            PyString_AS_STRING(value),
-            type->size
-        );
+        if (include_size)
+        {
+            repr = PyString_FromFormat(
+                "%s(%s, size=%d)",
+                Py_TYPE(self)->tp_name,
+                PyString_AS_STRING(value),
+                type->size
+            );
+        }
+        else
+        {
+            repr = PyString_FromFormat(
+                "%s(%s)",
+                Py_TYPE(self)->tp_name,
+                PyString_AS_STRING(value)
+            );
+        }
         Py_DECREF(value);
     }
 #else /* if PY_MAJOR_VERSION < 3 */
-    repr = PyUnicode_FromFormat(
-        (include_size) ? "%s(%R)" : "%s(%R, size=%d)",
-        Py_TYPE(self)->tp_name,
-        type->value,
-        type->size
-    );
+    if (include_size)
+    {
+        repr = PyUnicode_FromFormat(
+            "%s(%R, size=%d)",
+            Py_TYPE(self)->tp_name,
+            type->value,
+            type->size
+        );
+    }
+    else
+    {
+        repr = PyUnicode_FromFormat(
+            "%s(%R)",
+            Py_TYPE(self)->tp_name,
+            type->value
+        );
+    }
 #endif /* else if PY_MAJOR_VERSION < 3 */
     return repr;
 }
