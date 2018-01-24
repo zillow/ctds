@@ -309,11 +309,10 @@ Connect to a database.
                 self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
 
     def test_read_only(self):
-        # $future: This should be supported once an official release of
-        # FreeTDS with the DBSETLREADONLY option is available.
         try:
-            self.connect(read_only=True)
+            with self.connect(read_only=True):
+                pass
         except NotImplementedError as ex:
-            self.assertEqual(str(ex), 'read-only intent is not supported')
+            self.assertFalse(self.read_only_intent_supported)
         else:
-            self.fail('.connect() did not fail as expected') # pragma: nocover
+            self.assertTrue(self.read_only_intent_supported)

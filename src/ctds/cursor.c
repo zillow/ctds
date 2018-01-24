@@ -1900,6 +1900,7 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
             if (nextparams)
             {
                 Py_XDECREF(parameters);
+                parameters = NULL;
                 if (!namedparams)
                 {
                     static const char s_fmt[] = "invalid parameter sequence item %ld";

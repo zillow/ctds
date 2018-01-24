@@ -140,6 +140,10 @@ class TestExternalDatabase(unittest.TestCase):
         return self.use_sp_executesql
 
     @property
+    def read_only_intent_supported(self):
+        return self.freetds_version >= (1, 0, 74)
+
+    @property
     def use_utf16(self):
         return self.freetds_version >= (1, 0, 0)
 

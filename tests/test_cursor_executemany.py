@@ -5,7 +5,7 @@ import warnings
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import long_, unicode_
+from .compat import PY3, long_, unicode_
 
 class TestCursorExecuteMany(TestExternalDatabase):
     '''Unit tests related to the Cursor.executemany() method.
@@ -56,7 +56,7 @@ against all parameter sequences or mappings found in the sequence
                         self.fail('.executemany() did not fail as expected') # pragma: nocover
 
     def test_invalid_numeric_parameter(self):
-        with self.connect() as connection:
+        with self.connect(paramstyle='numeric') as connection:
             with connection.cursor() as cursor:
                 for case, ex, msg in (
                         (
@@ -82,6 +82,32 @@ against all parameter sequences or mappings found in the sequence
                 ):
                     try:
                         cursor.executemany('SELECT :0 AS missing', case)
+                    except ex as actual:
+                        self.assertEqual(str(actual), msg)
+                    else:
+                        self.fail('.executemany() did not fail as expected') # pragma: nocover
+
+    def test_invalid_named_parameter(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                for case, ex, msg in (
+                        (
+                            ({'arg': None}, False),
+                            TypeError,
+                            'invalid parameter mapping item 1',
+                        ),
+                        (
+                            ({'arg': None}, [None, 1]),
+                            ctds.InterfaceError if PY3 else TypeError,
+                            (
+                                'unexpected parameter count in mapping item 2'
+                                if PY3 else
+                                'invalid parameter mapping item 1'
+                            )
+                        ),
+                ):
+                    try:
+                        cursor.executemany('SELECT :arg AS missing', case)
                     except ex as actual:
                         self.assertEqual(str(actual), msg)
                     else:

@@ -22,7 +22,8 @@ CHECKED_FREETDS_VERSIONS := \
     0.91.112 \
     0.92.405 \
     0.95.95 \
-    1.00.55
+    1.00.55 \
+    1.00.80
 
 # Valgrind FreeTDS versions are limited to one without sp_executesql support
 # and one with.
@@ -85,7 +86,7 @@ SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
 VALGRIND_DOCKER_IMAGE_NAME = ctds-valgrind-python$(strip $(1))-$(strip $(2))
 
 define DOCKER_RM
-	@if [ ! -z `docker ps -f name=$(strip $(1)) -q` ]; then \
+	@if [ ! -z `docker ps -a -f name=$(strip $(1)) -q` ]; then \
         docker rm $(strip $(1)); \
     fi
 endef
@@ -247,6 +248,10 @@ doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
         ./scripts/ctds-doc.sh "$(notdir $(GH_PAGES_DIR))"
 	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc:/usr/src/ctds/$(notdir $(GH_PAGES_DIR)) .
 	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc
+	@echo; \
+    echo "View generated documentation at: "; \
+    echo "    firefox $(GH_PAGES_DIR)/index.html"; \
+    echo;
 
 .PHONY: _pre_publish-doc
 _pre_publish-doc:
@@ -283,6 +288,11 @@ $(VIRTUALENV_DIR)/include/sybdb.h: | $(VIRTUALENV_DIR) $(VIRTUALENV_FREETDS_VERS
 $(VIRTUALENV_DIR):
 	virtualenv $(VIRTUALENV_DIR)
 
+VIRTUALENV_FREETDS_VERSION_URL = ftp://ftp.freetds.org/pub/freetds/current/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz
 $(VIRTUALENV_FREETDS_VERSION):
-	wget 'ftp://ftp.freetds.org/pub/freetds/current/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz' -O freetds.tar.gz
+	if [ `which wget` ]; then \
+        wget '$(VIRTUALENV_FREETDS_VERSION_URL)' -O freetds.tar.gz; \
+    else \
+        curl '$(VIRTUALENV_FREETDS_VERSION_URL)' -o freetds.tar.gz; \
+    fi
 	tar -xzf freetds.tar.gz && rm freetds.tar.gz

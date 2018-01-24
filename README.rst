@@ -56,19 +56,23 @@ Generate documentation using the following:
 
 Documentation is hosted on `GitHub Pages <https://pages.github.com/>`_.
 As such, the source code for the documentation pages must be committed
-to the master branch in order to update the live documentation.
+to the **gh-pages** branch in order to update the live documentation.
 
 
 Development
 -----------
 
-Local development and testing is supported on linux-based systems running
+Local development and testing is supported on Linux-based systems running
 `Docker`_. Docker containers are used for both running a local instance
 of `SQL Server on Linux`_ and creating containers for each combination
-of Python and `FreeTDS`_ version supported.
+of Python and `FreeTDS`_ version supported. Only `Docker`_ and `GNU make`_
+are required for running tests locally on Linux or OS X systems.
 
-Local development *can* be done by simply installing **ctds** against the
-system versions of `FreeTDS`_ and `Python`_.
+If desired, local development *can* be done by installing **ctds** against the
+system versions of `FreeTDS`_ and `Python`_. Additionally there is a
+`virtualenv` target which will download and compile a recent version of
+`FreeTDS`_ and then install **ctds** into a *virtualenv* using the local
+version of `FreeTDS`_.
 
 .. code-block:: console
 
@@ -83,7 +87,8 @@ system versions of `FreeTDS`_ and `Python`_.
 
 
 However, given the various supported combinations of `FreeTDS`_ and `Python`_,
-it is easier to create a separate `Docker`_ container for each.
+it is easier to create a separate `Docker`_ container for each. The matrix
+of `FreeTDS`_ and `Python`_ is driven using `GNU make`_.
 
 
 Development and testing will require an instance of
@@ -105,7 +110,7 @@ used by the tests.
 Testing
 -------
 
-Testing is designed to be relatively seamless, using `Docker`_ containers
+Testing is designed to be relatively seamless using `Docker`_ containers
 and `SQL Server on Linux`_. All *test* targets will ensure a running
 database instance docker container exists and is accessible prior to running.
 
@@ -136,3 +141,4 @@ and additional linting and metadata checks:
 .. _`Docker`: https://www.docker.com/
 .. _`SQL Server on Linux`: https://hub.docker.com/r/microsoft/mssql-server-linux/
 .. _`Python`: https://www.python.org/
+.. _`GNU make`: https://www.gnu.org/software/make/
