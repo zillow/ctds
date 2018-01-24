@@ -4,12 +4,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [1.7.0] - 2018-01-22
+## [1.7.0] - 2018-01-24
 ### Added
 - Add rich comparison support and `repr` to `ctds.Parameter`.
 
 ### Fixed
 - Compiler warnings on older version of gcc.
+- Debug assert when passing invalid parameters to `ctds.Cursor.execute*()`.
 
 ## [1.6.3] - 2017-12-05
 ### Fixed
