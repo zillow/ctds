@@ -23,6 +23,12 @@ RUN set -ex \
     && rm -rf \
        /usr/src/freetds
 
+# isort 4.3.0 doesn't install on Python 3.3. Pin to an older version on Python3.3
+RUN case "${PYTHON_VERSION}" in 3.3*) \
+        pip install --no-cache-dir \
+            isort==4.2.5; \
+    esac
+
 RUN pip install --no-cache-dir \
     check-manifest \
     coverage \

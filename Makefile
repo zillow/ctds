@@ -37,7 +37,8 @@ DEFAULT_FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
 
 VIRTUALENV_FREETDS_VERSION ?= dev.1.00.336
 
-CTDS_VERSION := $(strip $(shell python setup.py --version))
+# Ignore warnings, i.e. "Unknown distribution option: 'python_requires'"
+CTDS_VERSION := $(strip $(shell python -W ignore setup.py --version))
 
 VIRTUALENV_DIR ?= .venv
 
@@ -111,9 +112,7 @@ start-sqlserver:
 
 .PHONY: stop-sqlserver
 stop-sqlserver:
-	if [ `docker ps -f name=$(SQL_SERVER_DOCKER_IMAGE_NAME) -q` ]; then \
-        docker stop $(SQL_SERVER_DOCKER_IMAGE_NAME); \
-    fi
+	scripts/remove-sqlserver.sh $(SQL_SERVER_DOCKER_IMAGE_NAME)
 
 # Function to generate rules for:
 #   * building a docker image with a specific Python/FreeTDS version

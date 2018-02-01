@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Retry on SQL Server unittest database setup failures due to race conditions when
+starting SQL Server. This should make the unit tests much more reliable.
+- Add `python_requires` specifier to *setup.py*.
 
 ## [1.7.0] - 2018-01-24
 ### Added
