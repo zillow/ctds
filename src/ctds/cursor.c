@@ -2318,19 +2318,11 @@ static PyObject* Cursor_execute(PyObject* self, PyObject* args)
 
     if (parameters)
     {
-        if (!PySequence_Check(parameters) && !PyMapping_Check(parameters))
+        if (((ParamStyle_numeric == cursor->paramstyle) && !PySequence_Check(parameters)) ||
+            ((ParamStyle_named == cursor->paramstyle) && !PyMapping_Check(parameters)))
         {
             PyErr_SetObject(PyExc_TypeError, parameters);
             return NULL;
-        }
-        if (PyObject_Length(parameters) > 0)
-        {
-            if (((ParamStyle_numeric == cursor->paramstyle) && !PySequence_Check(parameters)) ||
-                ((ParamStyle_named == cursor->paramstyle) && !PyMapping_Check(parameters)))
-            {
-                PyErr_SetObject(PyExc_TypeError, parameters);
-                return NULL;
-            }
         }
 
         sequence = PyTuple_New(PyObject_Length(parameters) ? 1 : 0);

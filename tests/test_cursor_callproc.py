@@ -526,11 +526,15 @@ parameters are replaced with output values.
                         @pBigInt BIGINT OUTPUT,
                         @pVarChar VARCHAR(32) OUTPUT,
                         @pVarBinary VARBINARY(32) OUTPUT,
-                        @pDateTime DATETIME
+                        @pFloat FLOAT OUTPUT,
+                        @pDateTime DATETIME,
+                        @pDateTimeOut DATETIME OUTPUT
                     AS
                         SET @pBigInt = @pBigInt * 2;
                         SET @pVarBinary = CONVERT(VARBINARY(32), @pVarChar);
                         SET @pVarChar = CONVERT(VARCHAR(32), @pDateTime, 120);
+                        SET @pFloat = @pFloat * 2.1;
+                        SET @pDateTimeOut = CONVERT(DATETIME, '2017-01-01 01:02:03');
                     '''
                     ):
                     types = [str]
@@ -544,7 +548,9 @@ parameters are replaced with output values.
                                 output=True
                             ),
                             type_('@pVarBinary'): ctds.Parameter(ctds.SqlVarBinary(None, size=32), output=True),
-                            type_('@pDateTime'): datetime(2011, 11, 5, 12, 12, 12)
+                            type_('@pFloat'): ctds.Parameter(1.23, output=True),
+                            type_('@pDateTime'): datetime(2011, 11, 5, 12, 12, 12),
+                            type_('@pDateTimeOut'): ctds.Parameter(datetime.utcnow(), output=True),
                         }
                         outputs = cursor.callproc(sproc, inputs)
                         self.assertNotEqual(id(outputs[type_('@pBigInt')]), id(inputs[type_('@pBigInt')]))
@@ -563,6 +569,14 @@ parameters are replaced with output values.
                         self.assertEqual(
                             outputs[type_('@pVarBinary')],
                             bytes(inputs[type_('@pVarChar')].value.encode('utf-8'))
+                        )
+                        self.assertEqual(
+                            outputs[type_('@pFloat')],
+                            inputs[type_('@pFloat')].value * 2.1
+                        )
+                        self.assertEqual(
+                            outputs[type_('@pDateTimeOut')],
+                            datetime(2017, 1, 1, 1, 2, 3)
                         )
 
     def test_binary(self):

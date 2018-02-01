@@ -6,7 +6,7 @@ import warnings
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import long_, unicode_
+from .compat import PY3, long_, unicode_
 
 class TestCursorExecute(TestExternalDatabase): # pylint: disable=too-many-public-methods
     '''Unit tests related to the Cursor.execute() method.
@@ -68,6 +68,38 @@ specified in the SQL statement. Parameter notation is specified by
                         self.assertEqual(str(ex), 'invalid parameter marker')
                     else:
                         self.fail('.execute() did not fail as expected') # pragma: nocover
+
+    def test_invalid_named_parameter(self):
+        with self.connect(paramstyle='named') as connection:
+            with connection.cursor() as cursor:
+                for case, ex, msg in (
+                        (
+                            False,
+                            TypeError,
+                            "'bool' object is not iterable",
+                        ),
+                        (
+                            [None],
+                            TypeError,
+                            (
+                                'invalid parameter mapping item 0'
+                            )
+                        ),
+                        (
+                            object(),
+                            TypeError,
+                            (
+                                "'object' object is not iterable"
+                            )
+                        ),
+                ):
+                    try:
+                        cursor.executemany('SELECT :arg AS missing', case)
+                    except ex as actual:
+                        self.assertEqual(str(actual), msg)
+                    else:
+                        self.fail('.execute() did not fail as expected') # pragma: nocover
+
 
     def test_int_overflow(self):
         with self.connect() as connection:
@@ -340,6 +372,25 @@ specified in the SQL statement. Parameter notation is specified by
                     )
                 )
 
+    def test_format_numeric_empty(self):
+        with self.connect(paramstyle='numeric') as connection:
+            with connection.cursor() as cursor:
+                query = cursor.execute(
+                    '''
+                    SELECT
+                        'test'
+                    ''',
+                    ()
+                )
+                self.assertEqual(None, query)
+
+                self.assertEqual(
+                    tuple(cursor.fetchone()),
+                    (
+                        unicode_('test'),
+                    )
+                )
+
     def test_format_named(self):
         with self.connect(paramstyle='named') as connection:
             with connection.cursor() as cursor:
@@ -399,7 +450,7 @@ specified in the SQL statement. Parameter notation is specified by
                     SELECT
                         'test'
                     ''',
-                    ()
+                    {}
                 )
                 self.assertEqual(None, query)
 
