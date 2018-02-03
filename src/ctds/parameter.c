@@ -417,26 +417,38 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             }
             else if (PyDecimal_Check(value))
             {
-                /* Convert the Decimal to a string, then convert. */
-                PyObject* ostr = PyObject_Str(value);
-                if (ostr)
+                PyObject* ostr = NULL;
+
+                do
                 {
-                    DBTYPEINFO dbtypeinfo;
                     Py_ssize_t nutf8;
+                    const char* str;
+
+                    ostr = PyDecimal_ToString(value);
+                    if (!ostr)
+                    {
+                        break;
+                    }
+
 #if PY_MAJOR_VERSION < 3
-                    const char* str = PyString_AS_STRING(ostr);
+                    str = PyString_AS_STRING(ostr);
                     nutf8 = PyString_GET_SIZE(ostr);
 #else /* if PY_MAJOR_VERSION < 3 */
-                    const char* str = PyUnicode_AsUTF8AndSize(ostr, &nutf8);
+                    str = PyUnicode_AsUTF8AndSize(ostr, &nutf8);
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
                     do
                     {
+                        DBTYPEINFO dbtypeinfo;
                         DBINT size;
 
                         /*
-                            Determine the precision and scale based on the integer and
-                            fractional part lengths.
+                            Determine the precision and scale based on the integer
+                            and fractional part lengths. Ideally these would be
+                            retrieved directly from the current decimal.Context,
+                            but this is not feasible. Assume the desired scale
+                            and precision are reflected in the string
+                            representation.
                         */
                         const char* point = strchr(str, '.');
                         bool negative = ('-' == *str);
@@ -492,10 +504,11 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                             parameter->input = (void*)&parameter->buffer;
                         }
                     } while (0);
-                    Py_DECREF(ostr);
+                } while (0);
 
-                    if (PyErr_Occurred()) break;
-                }
+                Py_XDECREF(ostr);
+
+                if (PyErr_Occurred()) break;
             }
             else if (PyDate_Check_(value) || PyTime_Check_(value))
             {

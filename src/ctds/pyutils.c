@@ -76,6 +76,24 @@ PyObject* PyDecimal_FromString(const char* str, Py_ssize_t size)
     return PyObject_CallFunction(PyDecimalType, "s#", str, size);
 }
 
+PyObject* PyDecimal_ToString(PyObject* odecimal)
+{
+    PyObject* ostr = NULL;
+
+#if PY_MAJOR_VERSION < 3
+    PyObject* oformat = oformat = PyString_FromString("{0:f}");
+#else /* if PY_MAJOR_VERSION < 3 */
+    PyObject* oformat = PyUnicode_FromString("{0:f}");
+#endif /* else if PY_MAJOR_VERSION < 3 */
+
+    if (oformat)
+    {
+        ostr = PyObject_CallMethod(oformat, "format", "(O)", odecimal);
+        Py_DECREF(oformat);
+    }
+    return ostr;
+}
+
 /* uuid.UUID reference */
 static PyObject* PyUuidType = NULL;
 

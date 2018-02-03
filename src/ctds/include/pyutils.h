@@ -26,6 +26,16 @@ int PyDecimal_Check(PyObject* o);
 */
 PyObject* PyDecimal_FromString(const char* str, Py_ssize_t size);
 
+/*
+    Convert a decimal.Decimal object to a string.
+    Equivalent to the following Python code:
+
+        '{0:f}'.format(odecimal)
+
+    PyDecimalType_init() must be called prior.
+*/
+PyObject* PyDecimal_ToString(PyObject* odecimal);
+
 /* Initialize the uuid.UUID type; returns 0 on failure. */
 int PyUuidType_init(void);
 void PyUuidType_free(void);

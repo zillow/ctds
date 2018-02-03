@@ -1,5 +1,5 @@
 import datetime
-from decimal import Decimal
+import decimal
 import uuid
 
 from .base import TestExternalDatabase
@@ -45,21 +45,29 @@ class TestPythonToSQL(TestExternalDatabase):
     def test_decimal(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                for value in  (
-                        Decimal(0),
-                        Decimal('1.1'),
-                        Decimal('-1.234567'),
-                        Decimal('1234567.890123'),
-                        Decimal('-1234567.890123'),
+                for value, precision, scale in  (
+                        (decimal.Decimal(0), 1, 0),
+                        (decimal.Decimal('1.1'), 2, 1),
+                        (decimal.Decimal('0.1'), 2, 1),
+                        (decimal.Decimal('-1.234567'), 7, 6),
+                        (decimal.Decimal('1234567.890123'), 13, 6),
+                        (decimal.Decimal('-1234567.890123'), 13, 6),
+                        (decimal.Decimal('4.01E+8'), 9, 0),
+                        (decimal.Decimal('-1.54E+11'), 12, 0),
+                        (decimal.Decimal('0.004354'), 7, 6),
+                        (decimal.Decimal('900.0'), 4, 1),
+                        (decimal.Decimal('54.234246451650'), 14, 12),
+                        (
+                            decimal.Decimal('.{0}'.format('1' * decimal.getcontext().prec)),
+                            decimal.getcontext().prec + 1,
+                            decimal.getcontext().prec
+                        ),
                 ):
                     row = self.parameter_type(cursor, value)
                     self.assertEqual('decimal', row.Type)
-                    parts = str(abs(value)).split('.')
-                    scale = len(parts[1]) if len(parts) > 1 else 0
-                    precision = len(parts[0]) + scale
 
-                    self.assertEqual(row.Precision, precision)
-                    self.assertEqual(row.Scale, scale)
+                    self.assertEqual(row.Precision, precision, repr(value))
+                    self.assertEqual(row.Scale, scale, repr(value))
                     self.assertEqual(row.Value, value)
 
     def test_date(self):

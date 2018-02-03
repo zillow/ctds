@@ -4,9 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
-- Retry on SQL Server unittest database setup failures due to race conditions when
-starting SQL Server. This should make the unit tests much more reliable.
+- Retry on SQL Server unittest database setup failures due to race conditions
+when starting SQL Server. This should make the unit tests much more reliable.
 - Add `python_requires` specifier to *setup.py*.
+- Properly handle decimal.Decimal values specified in scientific notation.
 
 ## [1.7.0] - 2018-01-24
 ### Added
