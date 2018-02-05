@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 when starting SQL Server. This should make the unit tests much more reliable.
 - Add `python_requires` specifier to *setup.py*.
 - Properly handle decimal.Decimal values specified in scientific notation.
+- Properly set autocommit in `ctds.connect()`, even when `ansi_defaults` is
+`False`.
 
 ## [1.7.0] - 2018-01-24
 ### Added

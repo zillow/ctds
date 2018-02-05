@@ -1905,35 +1905,32 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
 
             dbsetuserdata(connection->dbproc, (BYTE*)connection);
 
-            if (ansi_defaults)
+            /*
+                These settings could easily be passed via the login packet, though that
+                requires an update to freetds' dbopen method to actually pass the flag.
+            */
+            /* Mimic the settings used by ODBC connections. */
+            static const char s_ansi_default_stmt[] =
+                /* https://msdn.microsoft.com/en-us/library/ms190306.aspx */
+                "SET ARITHABORT ON;"
+
+                /* https://msdn.microsoft.com/en-us/library/ms188340.aspx */
+                "SET ANSI_DEFAULTS ON;"
+
+                /* https://msdn.microsoft.com/en-us/library/ms176056.aspx */
+                "SET CONCAT_NULL_YIELDS_NULL ON;"
+
+                /* https://msdn.microsoft.com/en-us/library/ms186238.aspx */
+                "SET TEXTSIZE 2147483647;";
+
+            if (0 != Connection_execute(connection,
+                                        4,
+                                        (ansi_defaults) ? s_ansi_default_stmt : "",
+                                        "SET IMPLICIT_TRANSACTIONS ",
+                                        (autocommit) ? "OFF" : "ON",
+                                        ";"))
             {
-                /*
-                    These settings could easily be passed via the login packet, though that
-                    requires an update to freetds' dbopen method to actually pass the flag.
-                */
-                /* Mimic the settings used by ODBC connections. */
-                static const char s_ansi_default_stmt[] =
-                    /* https://msdn.microsoft.com/en-us/library/ms190306.aspx */
-                    "SET ARITHABORT ON;"
-
-                    /* https://msdn.microsoft.com/en-us/library/ms188340.aspx */
-                    "SET ANSI_DEFAULTS ON;"
-
-                    /* https://msdn.microsoft.com/en-us/library/ms176056.aspx */
-                    "SET CONCAT_NULL_YIELDS_NULL ON;"
-
-                    /* https://msdn.microsoft.com/en-us/library/ms186238.aspx */
-                    "SET TEXTSIZE 2147483647;";
-
-                if (0 != Connection_execute(connection,
-                                            4,
-                                            s_ansi_default_stmt,
-                                            "SET IMPLICIT_TRANSACTIONS ",
-                                            (autocommit) ? "OFF" : "ON",
-                                            ";"))
-                {
-                    break;
-                }
+                break;
             }
 
             if (database)

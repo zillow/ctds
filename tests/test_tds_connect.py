@@ -278,35 +278,36 @@ Connect to a database.
 
     def test_ansi_defaults(self):
 
-        with self.connect(ansi_defaults=True) as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT @@OPTIONS')
-                options = cursor.fetchone()[0]
+        for autocommit in (True, False):
+            with self.connect(ansi_defaults=True, autocommit=autocommit) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT @@OPTIONS')
+                    options = cursor.fetchone()[0]
 
-                self.assertFalse(self.IMPLICIT_TRANSACTIONS & options)
-                self.assertTrue(self.CURSOR_CLOSE_ON_COMMIT & options)
-                self.assertTrue(self.ANSI_PADDING & options)
-                self.assertTrue(self.ANSI_NULLS & options)
-                self.assertTrue(self.ARITHABORT & options)
-                self.assertFalse(self.ARITHIGNORE & options)
-                self.assertTrue(self.QUOTED_IDENTIFIER & options)
-                self.assertTrue(self.ANSI_NULL_DFLT_ON & options)
-                self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
+                    self.assertEqual(bool(self.IMPLICIT_TRANSACTIONS & options), not autocommit)
+                    self.assertTrue(self.CURSOR_CLOSE_ON_COMMIT & options)
+                    self.assertTrue(self.ANSI_PADDING & options)
+                    self.assertTrue(self.ANSI_NULLS & options)
+                    self.assertTrue(self.ARITHABORT & options)
+                    self.assertFalse(self.ARITHIGNORE & options)
+                    self.assertTrue(self.QUOTED_IDENTIFIER & options)
+                    self.assertTrue(self.ANSI_NULL_DFLT_ON & options)
+                    self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
 
-        with self.connect(ansi_defaults=False) as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT @@OPTIONS')
-                options = cursor.fetchone()[0]
+            with self.connect(ansi_defaults=False, autocommit=autocommit) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT @@OPTIONS')
+                    options = cursor.fetchone()[0]
 
-                self.assertFalse(self.IMPLICIT_TRANSACTIONS & options)
-                self.assertFalse(self.CURSOR_CLOSE_ON_COMMIT & options)
-                self.assertFalse(self.ANSI_PADDING & options)
-                self.assertFalse(self.ANSI_NULLS & options)
-                self.assertFalse(self.ARITHABORT & options)
-                self.assertFalse(self.ARITHIGNORE & options)
-                self.assertFalse(self.QUOTED_IDENTIFIER & options)
-                self.assertFalse(self.ANSI_NULL_DFLT_ON & options)
-                self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
+                    self.assertEqual(bool(self.IMPLICIT_TRANSACTIONS & options), not autocommit)
+                    self.assertFalse(self.CURSOR_CLOSE_ON_COMMIT & options)
+                    self.assertFalse(self.ANSI_PADDING & options)
+                    self.assertFalse(self.ANSI_NULLS & options)
+                    self.assertFalse(self.ARITHABORT & options)
+                    self.assertFalse(self.ARITHIGNORE & options)
+                    self.assertFalse(self.QUOTED_IDENTIFIER & options)
+                    self.assertFalse(self.ANSI_NULL_DFLT_ON & options)
+                    self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
 
     def test_read_only(self):
         try:
