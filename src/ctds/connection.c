@@ -1703,6 +1703,25 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 { "7.0", DBVERSION_70 }
 #endif
             };
+
+            /*
+                These settings could easily be passed via the login packet, though that
+                requires an update to freetds' dbopen method to actually pass the flag.
+            */
+            /* Mimic the settings used by ODBC connections. */
+            static const char s_ansi_default_stmt[] =
+                /* https://msdn.microsoft.com/en-us/library/ms190306.aspx */
+                "SET ARITHABORT ON;"
+
+                /* https://msdn.microsoft.com/en-us/library/ms188340.aspx */
+                "SET ANSI_DEFAULTS ON;"
+
+                /* https://msdn.microsoft.com/en-us/library/ms176056.aspx */
+                "SET CONCAT_NULL_YIELDS_NULL ON;"
+
+                /* https://msdn.microsoft.com/en-us/library/ms186238.aspx */
+                "SET TEXTSIZE 2147483647;";
+
             DBINT dbversion = DBVERSION_UNKNOWN;
 
             int flag;
@@ -1904,24 +1923,6 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
             connection->paramstyle = paramstyle;
 
             dbsetuserdata(connection->dbproc, (BYTE*)connection);
-
-            /*
-                These settings could easily be passed via the login packet, though that
-                requires an update to freetds' dbopen method to actually pass the flag.
-            */
-            /* Mimic the settings used by ODBC connections. */
-            static const char s_ansi_default_stmt[] =
-                /* https://msdn.microsoft.com/en-us/library/ms190306.aspx */
-                "SET ARITHABORT ON;"
-
-                /* https://msdn.microsoft.com/en-us/library/ms188340.aspx */
-                "SET ANSI_DEFAULTS ON;"
-
-                /* https://msdn.microsoft.com/en-us/library/ms176056.aspx */
-                "SET CONCAT_NULL_YIELDS_NULL ON;"
-
-                /* https://msdn.microsoft.com/en-us/library/ms186238.aspx */
-                "SET TEXTSIZE 2147483647;";
 
             if (0 != Connection_execute(connection,
                                         4,
