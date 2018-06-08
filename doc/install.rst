@@ -26,7 +26,7 @@ Installation From Source
 
     # Create the virtual environment.
     virtualenv ctds-venv && cd ctds-venv
-    wget 'ftp://ftp.freetds.org/pub/freetds/stable/freetds-patched.tar.gz'
+    wget 'http://www.freetds.org/files/stable/freetds-patched.tar.gz'
     tar -xzf freetds-patched.tar.gz
     pushd freetds-*
     ./configure --prefix "$(dirname $(pwd))" && make && make install

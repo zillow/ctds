@@ -10,6 +10,11 @@ when starting SQL Server. This should make the unit tests much more reliable.
 - Properly handle decimal.Decimal values specified in scientific notation.
 - Properly set autocommit in `ctds.connect()`, even when `ansi_defaults` is
 `False`.
+- Download FreeTDS packages from HTTP URL for compatability with Travis CI
+builds (FTP no longer works due to firewall issues.)
+- Fix OS X Travis CI build.
+- Improve SQL Server -> DB API 2.0 error mappings.
+- Remove Python 2.6 from Appveyor CI due to lack of support.
 
 ## [1.7.0] - 2018-01-24
 ### Added

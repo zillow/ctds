@@ -378,7 +378,7 @@ parameters are replaced with output values.
                     )
                     try:
                         cursor.callproc(sproc, inputs)
-                    except ctds.ProgrammingError as ex:
+                    except ctds.DataError as ex:
                         self.assertEqual(
                             str(ex),
                             'Arithmetic overflow error for data type tinyint, value = {0}.'.format(

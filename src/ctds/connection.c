@@ -407,30 +407,160 @@ void Connection_raise_lasterror(struct Connection* connection)
 {
     PyObject* exception;
 
-    /*
-        Attempt to map SQL Server error codes to the appropriate DB API
-        exception.
-
-        https://technet.microsoft.com/en-us/library/cc645603(v=sql.105).aspx
-    */
     const struct DatabaseMsg* lastmsg = connection->messages;
-    int msgno = (lastmsg) ? lastmsg->msgno : 0;
 
-    if (
-        (101 <= msgno && msgno < 8000) ||
-        /* >= 50000 are user-defined errors. */
-        (50000 <= msgno)
-        )
+    int msgno = (lastmsg) ? lastmsg->msgno : 0;
+    if (msgno < 50000 /* start of custom range */)
     {
-        exception = PyExc_tds_ProgrammingError;
-    }
-    else if (8000 <= msgno && msgno < 9000)
-    {
-        exception = PyExc_tds_DataError;
+        /*
+            Categorize by severity for levels > 10, which are considered errors by SQL
+            Server.
+
+            See https://technet.microsoft.com/en-us/library/ms164086(v=sql.105).aspx
+            for descriptions of each severity level.
+        */
+        switch ((lastmsg) ? lastmsg->severity : 0)
+        {
+            /*
+                Indicates that the given object or entity does not exist.
+            */
+            case 11:
+            {
+                exception = PyExc_tds_ProgrammingError;
+                break;
+            }
+
+            /*
+                A special severity for queries that do not use locking because of special
+                query hints. In some cases, read operations performed by these statements
+                could result in inconsistent data, since locks are not taken to guarantee
+                consistency.
+            */
+            case 12:
+            {
+                exception = PyExc_tds_IntegrityError;
+                break;
+            }
+
+            /*
+                Indicates transaction deadlock errors.
+            */
+            case 13:
+            {
+                exception = PyExc_tds_InternalError;
+                break;
+            }
+
+            /*
+                Indicates security-related errors, such as permission denied.
+            */
+            case 14:
+            {
+                switch (msgno)
+                {
+                    case 2601: /* Cannot insert duplicate key row in object '%.*ls' with unique index '%.*ls'. */
+                    case 2627: /* Violation of %ls constraint '%.*ls'. Cannot insert duplicate key in object '%.*ls'. */
+                    {
+                        exception = PyExc_tds_IntegrityError;
+                        break;
+                    }
+
+                    default:
+                    {
+                        exception = PyExc_tds_DatabaseError;
+                        break;
+                    }
+                }
+                break;
+            }
+
+            /*
+                Indicates syntax errors in the Transact-SQL command.
+            */
+            case 15:
+            {
+                exception = PyExc_tds_ProgrammingError;
+                break;
+            }
+
+            /*
+                Indicates general errors that can be corrected by the user.
+            */
+            case 16:
+            {
+                /*
+                    Attempt to map SQL Server error codes to the appropriate DB API
+                    exception.
+
+                    https://technet.microsoft.com/en-us/library/cc645603(v=sql.105).aspx
+                */
+                switch (msgno)
+                {
+                    case 220: /* Arithmetic overflow error for data type %ls, value = %ld. */
+                    case 517: /* Adding a value to a '%ls' column caused an overflow. */
+                    case 518: /* Cannot convert data type %ls to %ls. */
+                    case 529: /* Explicit conversion from data type %ls to %ls is not allowed. */
+                    case 8114: /* Error converting data type %ls to %ls. */
+                    case 8115: /* Arithmetic overflow error converting %ls to data type %ls. */
+                    case 8134: /* Divide by zero error encountered. */
+                    case 8152: /* String or binary data would be truncated. */
+                    {
+                        exception = PyExc_tds_DataError;
+                        break;
+                    }
+
+                    case 515: /* Cannot insert the value NULL into column '%.*ls', table '%.*ls'; column does not allow nulls. %ls fails. */
+                    case 544: /* Cannot insert explicit value for identity column in table '%.*ls' when IDENTITY_INSERT is set to OFF. */
+                    case 545: /* Explicit value must be specified for identity column in table '%.*ls' either when IDENTITY_INSERT is set to ON or when a replication user is inserting into a NOT FOR REPLICATION identity column. */
+                    case 547: /* The %ls statement conflicted with the %ls constraint "%.*ls". The conflict occurred in database "%.*ls", table "%.*ls"%ls%.*ls%ls. */
+                    case 548: /*  The insert failed. It conflicted with an identity range check constraint in database '%.*ls', replicated table '%.*ls'%ls%.*ls%ls. */
+                    {
+                        exception = PyExc_tds_IntegrityError;
+                        break;
+                    }
+
+                    default:
+                    {
+                        exception = PyExc_tds_ProgrammingError;
+                        break;
+                    }
+                }
+                break;
+            }
+
+            /*
+                [17-19] Indicate software errors that cannot be corrected by the user.
+            */
+            case 17:
+            case 18:
+            case 19:
+
+            /*
+                [20-24] Indicate system problems and are fatal errors, which means that the
+                Database Engine task that is executing a statement or batch is no longer
+                running.
+            */
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+            {
+                exception = PyExc_tds_OperationalError;
+                break;
+            }
+
+            default:
+            {
+                exception = PyExc_tds_DatabaseError;
+                break;
+            }
+        }
     }
     else
     {
-        exception = PyExc_tds_DatabaseError;
+        /* Default to ProgrammingError for user-defined error numbers. */
+        exception = PyExc_tds_ProgrammingError;
     }
     raise_lasterror(exception, &connection->lasterror, lastmsg);
 }

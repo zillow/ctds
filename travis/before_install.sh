@@ -15,10 +15,11 @@ if [ "$TRAVIS_OS_NAME" != "osx" ]; then
     # Launch SQL Server
     make start-sqlserver
 else
-    # Travis-ci doesn't support Python on OS X. Install it manually for now.
     brew update
     brew install freetds
-    brew install python3
-    virtualenv venv -p python3
-    source venv/bin/activate
+
+    # Upgrade Travis CI's Python2.7 to Python3.
+    brew upgrade python
+    python3 -m venv ctds-venv
+    source ctds-venv/bin/activate
 fi

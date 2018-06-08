@@ -25,5 +25,4 @@ else
 }
 
 & "$env:PYTHON\Scripts\pip" install check-manifest codecov coverage
-
 if ($LastExitCode -ne 0) { exit $LastExitCode }

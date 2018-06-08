@@ -104,7 +104,7 @@ else
     Write-Verbose "FREETDS_VERSION not set; defaulting to $freetds_version"
 }
 
-$url = "ftp://ftp.freetds.org/pub/freetds/stable/freetds-$freetds_version.tar.gz"
+$url = "http://www.freetds.org/files/stable/freetds-$freetds_version.tar.gz"
 $freetds_tar = "$build_dir\freetds-$freetds_version.tar"
 $freetds_path = "$build_dir\freetds-$freetds_version"
 

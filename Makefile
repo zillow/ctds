@@ -17,7 +17,7 @@ VALGRIND_PYTHON_VERSIONS := \
 # FreeTDS versions to test against. This should
 # be the latest of each minor release.
 # Note: These version strings *must* match the versions
-# on ftp://ftp.freetds.org/pub/freetds/stable/.
+# on http://www.freetds.org/files/stable/.
 CHECKED_FREETDS_VERSIONS := \
     0.91.112 \
     0.92.405 \
@@ -80,6 +80,7 @@ help:
 	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
+	@echo "      VERBOSE - Include more verbose output."
 
 
 UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
@@ -202,7 +203,7 @@ $(foreach PV, $(VALGRIND_PYTHON_VERSIONS), $(eval $(call VALGRIND_RULE, $(PV))))
 
 define CHECK_RULE
 .PHONY: check_$(strip $(1))
-check_$(strip $(1)): $(foreach FV, $(CHECKED_FREETDS_VERSIONS), coverage_$(strip $(1))_$(FV))
+check_$(strip $(1)): checkmetadata_$(strip $(1)) $(foreach FV, $(CHECKED_FREETDS_VERSIONS), coverage_$(strip $(1))_$(FV))
 endef
 
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECK_RULE, $(PV))))
@@ -219,7 +220,7 @@ endef
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECKMETADATA_RULE, $(PV))))
 
 .PHONY: check
-check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV) checkmetadata_$(PV))
+check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV))
 
 .PHONY: test
 test: test_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
@@ -287,7 +288,7 @@ $(VIRTUALENV_DIR)/include/sybdb.h: | $(VIRTUALENV_DIR) $(VIRTUALENV_FREETDS_VERS
 $(VIRTUALENV_DIR):
 	virtualenv $(VIRTUALENV_DIR)
 
-VIRTUALENV_FREETDS_VERSION_URL = ftp://ftp.freetds.org/pub/freetds/current/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz
+VIRTUALENV_FREETDS_VERSION_URL = http://www.freetds.org/files/current/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz
 $(VIRTUALENV_FREETDS_VERSION):
 	if [ `which wget` ]; then \
         wget '$(VIRTUALENV_FREETDS_VERSION_URL)' -O freetds.tar.gz; \

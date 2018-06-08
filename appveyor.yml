@@ -10,9 +10,6 @@ environment:
   BUILD_INSTALL_PREFIX: "C:\\usr\\local"
 
   matrix:
-  - PYTHON: "C:\\Python26-x64"
-    SQLSERVER_INSTANCENAME: "SQL2016"
-
   - PYTHON: "C:\\Python27-x64"
     SQLSERVER_INSTANCENAME: "SQL2016"
 

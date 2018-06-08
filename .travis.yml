@@ -37,10 +37,15 @@ matrix:
           dist: trusty
           services: docker
           sudo: required
+        - env: CTDS_MAKE_TARGET=pylint
+          os: linux
+          dist: trusty
+          services: docker
+          sudo: required
         - os: osx
 
 
-before_install: travis/before_install.sh
+before_install: travis_wait travis/before_install.sh
 install: travis/install.sh
 script: travis/script.sh
 after_script: travis/after_script.sh

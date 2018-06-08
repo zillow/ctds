@@ -42,7 +42,12 @@ specified in the SQL statement. Parameter notation is specified by
                         (1, (1,)),
                         (-1, (1,)),
                 ):
-                    self.assertRaises(IndexError, cursor.execute, 'SELECT :{0} AS missing'.format(index), args)
+                    self.assertRaises(
+                        IndexError,
+                        cursor.execute,
+                        'SELECT :{0} AS missing'.format(index),
+                        args
+                    )
 
     def test_missing_named_parameter(self):
         with self.connect(paramstyle='named') as connection:
@@ -54,7 +59,10 @@ specified in the SQL statement. Parameter notation is specified by
                     try:
                         cursor.execute('SELECT :missing AS missing', args)
                     except LookupError as ex:
-                        self.assertEqual(str(ex), 'unknown named parameter "missing"')
+                        self.assertEqual(
+                            str(ex),
+                            'unknown named parameter "missing"'
+                        )
                     else:
                         self.fail('.execute() did not fail as expected') # pragma: nocover
 
@@ -104,7 +112,12 @@ specified in the SQL statement. Parameter notation is specified by
     def test_int_overflow(self):
         with self.connect() as connection:
             with connection.cursor() as cursor:
-                self.assertRaises(OverflowError, cursor.execute, 'SELECT :0', (long_(2**63),))
+                self.assertRaises(
+                    OverflowError,
+                    cursor.execute,
+                    'SELECT :0',
+                    (long_(2**63),)
+                )
 
     def test_sql_syntax_error(self):
         with self.connect() as connection:
@@ -240,7 +253,7 @@ specified in the SQL statement. Parameter notation is specified by
                             (1);
                         '''
                     )
-                except ctds.ProgrammingError as ex:
+                except ctds.IntegrityError as ex:
                     regex = r'''Violation of PRIMARY KEY constraint 'PK__[^']+'. ''' \
                             r'''Cannot insert duplicate key in object 'dbo\.@tTable'. ''' \
                             r'''The duplicate key value is \(1\).'''
@@ -671,4 +684,68 @@ specified in the SQL statement. Parameter notation is specified by
                 'line': 1,
             })
         else:
-            self.fail('DatabaseError expected') # pragma: nocover
+            self.fail('ProgrammingError expected') # pragma: nocover
+
+    def test_error_mapping(self):
+        for query, exception, severity, number in (
+            (
+                '''
+                DROP TABLE DoesntExist;
+                ''',
+                ctds.ProgrammingError,
+                11,
+                3701
+            ),
+            (
+                '''
+                DECLARE @tTable TABLE (NotNullColumn INT NOT NULL);
+                INSERT INTO @tTable VALUES (NULL);
+                ''',
+                ctds.IntegrityError,
+                16,
+                515
+            ),
+            (
+                '''
+                DECLARE @var TINYINT = 255;
+                SET @var = @var + 1;
+                ''',
+                ctds.DataError,
+                16,
+                220
+            ),
+            (
+                '''
+                DECLARE @tTable TABLE (VarCharColumn VARCHAR(1) NOT NULL);
+                INSERT INTO @tTable VALUES ('12');
+                ''',
+                ctds.DataError,
+                16,
+                8152
+            ),
+            (
+                '''
+                DECLARE @var FLOAT = CONVERT(FLOAT, 0x00);
+                ''',
+                ctds.DataError,
+                16,
+                529
+            ),
+            (
+                '''
+                DBCC CHECKDB ('master') WITH NO_INFOMSGS;
+                ''',
+                ctds.DatabaseError,
+                14,
+                7983
+            ),
+        ):
+            with self.connect() as connection:
+                with connection.cursor() as cursor:
+                    try:
+                        cursor.execute(query)
+                    except exception as ex:
+                        self.assertEqual(ex.last_message['severity'], severity)
+                        self.assertEqual(ex.last_message['number'], number)
+                    else:
+                        self.fail('query "{0}" did not fail'.format(query)) # pragma: nocover
