@@ -11,9 +11,12 @@ possible. If this is not possible, `FreeTDS`_ can be installed using your
 system's package manager.
 
 .. warning::
-
     Versions of `FreeTDS`_ prior to *0.95* contain defects which may
     affect `cTDS` functionality.
+    
+    Debian installations come bundled with an old version of FreeTDS, incompatible with the latest ctds releases. This causes an InterfaceError to be thrown.
+    
+    Installing from source is the best option for such scenarios.
 
 
 Installation From Source
@@ -32,6 +35,16 @@ Installation From Source
     ./configure --prefix "$(dirname $(pwd))" && make && make install
     popd
 
+If you want to connect to `SSL` enabled databases you need to configure `FreeTDS` with the `--with-openssl` option. OpenSSL is
+generally found in `/usr/lib/ssl`, so the configuration command will look like this.
+
+.. code-block:: bash
+   ./configure --prefix "$(dirname $(pwd))" --with-openssl='/usr/lib/ssl'
+   
+FreeTDS also have a configure time option (`--with-tdsver`) to set the default TDS version being used. This defaults to 5.0 if not provided. So it might be a good idea to set it to a modern version like 7.3. Now the configuration command would look like this.
+
+.. code-block:: bash
+   ./configure --prefix "$(dirname $(pwd))" --with-openssl='/usr/lib/ssl' --with-tdsver=7.3
 
 Installation On Debian-based Systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
