@@ -107,10 +107,12 @@ Using `antipool <http://furius.ca/antiorm/>`_ is fairly straightforward.
     # Explicitly cleanup the connection pool.
     pool.finalize()
     
-Microsoft Azure Connections
---------------------------
+Microsoft Azure SQL Datawarehouse Connections
+----------------------------------------------
 
-With microsofot azure you need to make sure the TDS Version 7.3 is being used. Failure to do so will result in connection failure with an error message similar to `Adaptive connection failed.`
+With Microsoft Azure SQL Datawrehouse you need to make sure the TDS Version 7.3 is being used. Failure to do so will result in connection failure with an error message similar to `Adaptive connection failed.`
+
+Note that a `Adaptive connection failed` error will also occur if you built FreeTDS from source without enabling SSL via the `--with-ssl` option.
 
 To set the TDS version to 7.3, add the `tds_version` paramter to the `config` object.
 
