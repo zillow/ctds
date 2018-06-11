@@ -19,6 +19,6 @@ Exit the cursor's runtime context, closing the cursor.
 :param object exc_tb: The exception traceback, if an exception
     is raised in the context, otherwise :py:data:`None`.
 
-:rtype: None
+:returns: :py:data:`None`
 '''
         )

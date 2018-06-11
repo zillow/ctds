@@ -843,7 +843,7 @@ static const char s_Connection_autocommit_doc[] =
     "If :py:data:`False`, operations must be committed explicitly using\n"
     ":py:meth:`.commit`.\n"
     "\n"
-    ":rtype: bool or None\n";
+    ":rtype: bool\n";
 
 static PyObject* Connection_autocommit_get(PyObject* self, void* closure)
 {
@@ -897,7 +897,7 @@ static int Connection_autocommit_set(PyObject* self, PyObject* value, void* clos
 static const char s_Connection_database_doc[] =
     "The current database or :py:data:`None` if the connection is closed.\n"
     "\n"
-    ":rtype: str or None\n";
+    ":rtype: str\n";
 
 static PyObject* Connection_database_get(PyObject* self, void* closure)
 {
@@ -970,7 +970,7 @@ static const char s_Connection_messages_doc[] =
     "\n"
     ".. versionadded:: 1.4\n"
     "\n"
-    ":rtype: list(dict) or None\n";
+    ":rtype: list(dict)\n";
 
 static PyObject* Connection_messages_get(PyObject* self, void* closure)
 {
@@ -1040,7 +1040,7 @@ static const char s_Connection_spid_doc[] =
     "The SQL Server Session Process ID (SPID) for the connection or\n"
     ":py:data:`None` if the connection is closed.\n"
     "\n"
-    ":rtype: int or None\n";
+    ":rtype: int\n";
 
 static PyObject* Connection_spid_get(PyObject* self, void* closure)
 {
@@ -1062,7 +1062,7 @@ static const char s_Connection_tds_version_doc[] =
     "The TDS version in use for the connection or :py:data:`None` if the\n"
     "connection is closed.\n"
     "\n"
-    ":rtype: str or None\n";
+    ":rtype: str\n";
 
 static PyObject* Connection_tds_version_get(PyObject* self, void* closure)
 {
@@ -1135,7 +1135,7 @@ static const char s_Connection_timeout_doc[] =
     ":raises ctds.NotSupportedError: `cTDS` was compiled against a version of\n"
     "    FreeTDS which does not support setting the timeout on a connection.\n"
     "\n"
-    ":rtype: int or None\n";
+    ":rtype: int\n";
 
 static PyObject* Connection_timeout_get(PyObject* self, void* closure)
 {
@@ -1697,7 +1697,7 @@ static const char s_Connection_use_doc[] =
     "Set the current database.\n"
     "\n"
     ":param str database: The database.\n"
-    ":rtype: None\n";
+    ":returns: :py:data:`None`\n";
 
 static PyObject* Connection_use(PyObject* self, PyObject* args)
 {
@@ -1743,13 +1743,13 @@ static const char s_Connection___exit___doc[] =
     "will be implicitly rolled back when the connection is closed.\n"
     "\n"
     ":param type exc_type: The exception type, if an exception\n"
-    "    is raised in the context, otherwise `None`.\n"
+    "    is raised in the context, otherwise :py:data:`None`.\n"
     ":param Exception exc_val: The exception value, if an exception\n"
-    "    is raised in the context, otherwise `None`.\n"
+    "    is raised in the context, otherwise :py:data:`None`.\n"
     ":param object exc_tb: The exception traceback, if an exception\n"
-    "    is raised in the context, otherwise `None`.\n"
+    "    is raised in the context, otherwise :py:data:`None`.\n"
     "\n"
-    ":rtype: None\n";
+    ":returns: :py:data:`None`\n";
 
 static PyObject* Connection___exit__(PyObject* self, PyObject* args)
 {

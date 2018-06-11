@@ -14,7 +14,7 @@ class TestCursorSpid(TestExternalDatabase):
 Retrieve the SQL Server Session Process ID (SPID) for the connection or
 :py:data:`None` if the connection is closed.
 
-:rtype: int or None
+:rtype: int
 '''
         )
 

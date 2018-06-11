@@ -572,7 +572,7 @@ static const char s_Cursor_rownumber_doc[] =
     "\n"
     ":pep:`0249#rownumber`\n"
     "\n"
-    ":rtype: int or None\n";
+    ":rtype: int\n";
 
 static PyObject* Cursor_rownumber_get(PyObject* self, void* closure)
 {
@@ -599,7 +599,7 @@ static const char s_Cursor_spid_doc[] =
     "Retrieve the SQL Server Session Process ID (SPID) for the connection or\n"
     ":py:data:`None` if the connection is closed.\n"
     "\n"
-    ":rtype: int or None\n";
+    ":rtype: int\n";
 
 static PyObject* Cursor_spid_get(PyObject* self, void* closure)
 {
@@ -3274,7 +3274,7 @@ static const char s_Cursor_nextset_doc[] =
     ":return:\n"
     "    :py:data:`True` if there was another result set or :py:data:`None`\n"
     "    if not.\n"
-    ":rtype: bool or None\n";
+    ":rtype: bool\n";
 
 static PyObject* Cursor_nextset(PyObject* self, PyObject* args)
 {
@@ -3410,7 +3410,7 @@ static const char s_Cursor___exit___doc[] =
     ":param object exc_tb: The exception traceback, if an exception\n"
     "    is raised in the context, otherwise :py:data:`None`.\n"
     "\n"
-    ":rtype: None\n";
+    ":returns: :py:data:`None`\n";
 
 static PyObject* Cursor___exit__(PyObject* self, PyObject* args)
 {

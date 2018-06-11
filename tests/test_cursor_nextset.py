@@ -17,7 +17,7 @@ current set.
 :return:
     :py:data:`True` if there was another result set or :py:data:`None`
     if not.
-:rtype: bool or None
+:rtype: bool
 '''
         self.assertEqual(
             ctds.Cursor.nextset.__doc__,

@@ -18,7 +18,7 @@ The current 0-based index of the cursor in the result set or
 
 :pep:`0249#rownumber`
 
-:rtype: int or None
+:rtype: int
 '''
         )
 

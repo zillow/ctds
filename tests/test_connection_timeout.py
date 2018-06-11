@@ -23,7 +23,7 @@ is closed.
 :raises ctds.NotSupportedError: `cTDS` was compiled against a version of
     FreeTDS which does not support setting the timeout on a connection.
 
-:rtype: int or None
+:rtype: int
 '''
         )
 

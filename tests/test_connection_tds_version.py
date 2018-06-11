@@ -14,7 +14,7 @@ class TestConnectionTDSVersion(TestExternalDatabase):
 The TDS version in use for the connection or :py:data:`None` if the
 connection is closed.
 
-:rtype: str or None
+:rtype: str
 '''
         )
 

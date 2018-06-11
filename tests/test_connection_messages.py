@@ -25,7 +25,7 @@ connection is closed.
 
 .. versionadded:: 1.4
 
-:rtype: list(dict) or None
+:rtype: list(dict)
 '''
         )
 

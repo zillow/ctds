@@ -42,6 +42,11 @@ matrix:
           dist: trusty
           services: docker
           sudo: required
+        - env: CTDS_MAKE_TARGET=doc
+          os: linux
+          dist: trusty
+          services: docker
+          sudo: required
         - os: osx
 
 

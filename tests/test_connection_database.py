@@ -13,7 +13,7 @@ class TestConnectionDatabase(TestExternalDatabase):
             '''\
 The current database or :py:data:`None` if the connection is closed.
 
-:rtype: str or None
+:rtype: str
 '''
         )
 

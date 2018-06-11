@@ -14,7 +14,7 @@ use(database)
 Set the current database.
 
 :param str database: The database.
-:rtype: None
+:returns: :py:data:`None`
 '''
         )
 

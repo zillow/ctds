@@ -16,13 +16,13 @@ prior to closing the connection. If an error occurred, the transaction
 will be implicitly rolled back when the connection is closed.
 
 :param type exc_type: The exception type, if an exception
-    is raised in the context, otherwise `None`.
+    is raised in the context, otherwise :py:data:`None`.
 :param Exception exc_val: The exception value, if an exception
-    is raised in the context, otherwise `None`.
+    is raised in the context, otherwise :py:data:`None`.
 :param object exc_tb: The exception traceback, if an exception
-    is raised in the context, otherwise `None`.
+    is raised in the context, otherwise :py:data:`None`.
 
-:rtype: None
+:returns: :py:data:`None`
 '''
         )
 
