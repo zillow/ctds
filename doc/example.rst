@@ -38,3 +38,17 @@ An example of a simple query follows:
     # Columns can be accessed by index, name, or attribute.
     assert row[0] == row['Version']
     print(row.Version)
+    
+Microsoft Azure SQL Datawarehouse Connections
+----------------------------------------------
+
+With Microsoft Azure SQL Datawarehouse you need to make sure the TDS Version 7.3 is being used. Failure to do so will result in connection failure with an error message similar to `Adaptive connection failed.`
+
+To set the TDS version to 7.3, add the `tds_version` paramter to the `connect` method.
+
+.. code-block:: python
+
+    connection = ctds.connect(
+        ...,
+        tds_version='7.3'
+    )
