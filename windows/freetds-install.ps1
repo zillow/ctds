@@ -1,5 +1,8 @@
 $ErrorActionPreference = "Stop"
 
+# Explicitly enable modern versions of TLS.
+[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+
 Function MSVC-Env-Invoke([string] $command)
 {
     $command = "$env:COMSPEC /E:ON /V:ON /C $PSScriptRoot\run_with_msvc.cmd " + $command
