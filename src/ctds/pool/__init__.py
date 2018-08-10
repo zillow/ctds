@@ -7,7 +7,7 @@ import warnings
 PooledConnection = namedtuple('PooledConnection', ['connection', 'released'])
 
 
-class ConnectionPool(object): # pylint: disable=too-many-instance-attributes
+class ConnectionPool(object): # pylint: disable=too-many-instance-attributes,useless-object-inheritance
     '''
     A basic connection pool for DB-API 2.0-compliant database drivers.
 

@@ -24,20 +24,31 @@ RUN set -ex \
        /usr/src/freetds
 
 # Python 3.3 support requires specific versions.
-RUN case "${PYTHON_VERSION}" in 3.3*) \
-        pip install --no-cache-dir \
-            isort==4.2.5 \
-            sphinx==1.4.9; \
+RUN set -ex \
+    && case "${PYTHON_VERSION}" in 3.3*) \
+        pip --disable-pip-version-check \
+            --no-cache-dir \
+            install \
+                --no-deps \
+                isort==4.2.5 \
+                sphinx==1.4.9; \
     esac
 
-RUN pip install --no-cache-dir \
-    check-manifest \
-    coverage \
-    docutils \
-    pylint \
-    recommonmark \
-    sphinx \
-    sphinx_rtd_theme
+RUN set -ex \
+    && pip --disable-pip-version-check \
+            --no-cache-dir \
+        install \
+            --upgrade \
+            pip \
+    && pip --no-cache-dir \
+        install \
+            check-manifest \
+            coverage \
+            docutils \
+            pylint \
+            recommonmark \
+            sphinx \
+            sphinx_rtd_theme
 
 COPY . /usr/src/ctds/
 WORKDIR /usr/src/ctds

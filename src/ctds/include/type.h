@@ -206,7 +206,7 @@ sql_topython sql_topython_lookup(enum TdsType tdstype);
 
     @return The Python string object which owns the buffer `utf8bytes`.
 */
-PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes, size_t* width);
+PyObject* encode_for_dblib(PyObject* unicode, const char** utf8bytes, size_t* nutf8bytes, size_t* width);
 
 /**
     Convert a Python datetime, date or time to a DBDATETIME.

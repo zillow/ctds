@@ -1,12 +1,18 @@
 #!/bin/sh -e
 
+if [ -z "$VERBOSE" ]; then VERBOSITY="-q"; else VERBOSITY="-v"; fi
+
 # Install using setuptools directly so the local setup.cfg is used.
-CTDS_STRICT=1 python setup.py -v install
+CTDS_STRICT=1 python setup.py $VERBOSITY install
 
 mkdir coverage
 
 # Install test dependencies using pip.
-pip install --no-cache-dir -v .[tests]
+pip install \
+    --no-cache-dir \
+    --disable-pip-version-check \
+    $VERBOSITY \
+    /usr/src/ctds/[tests]
 
 # Outputs data to ".coverage"
 coverage run --branch --source 'ctds' setup.py test

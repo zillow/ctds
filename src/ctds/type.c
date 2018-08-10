@@ -625,7 +625,7 @@ static const char s_SqlNVarChar_doc[] =
 
 static int SqlNVarChar_init(PyObject* self, PyObject* args, PyObject* kwargs)
 {
-    char* utf8bytes = NULL;
+    const char* utf8bytes = NULL;
     size_t nutf8bytes = 0;
     PyObject* encoded;
     enum TdsType tdstype;
@@ -1245,7 +1245,7 @@ static PyObject* translate_to_ucs2(PyObject* o)
 
 #endif /* if !defined(CTDS_USE_UTF16) */
 
-PyObject* encode_for_dblib(PyObject* unicode, char** utf8bytes, size_t* nutf8bytes, size_t* width)
+PyObject* encode_for_dblib(PyObject* unicode, const char** utf8bytes, size_t* nutf8bytes, size_t* width)
 {
     PyObject* encoded = NULL;
 

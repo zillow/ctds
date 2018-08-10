@@ -8,7 +8,8 @@ SUPPORTED_PYTHON_VERSIONS := \
     3.3 \
     3.4 \
     3.5 \
-    3.6
+    3.6 \
+    3.7
 
 VALGRIND_PYTHON_VERSIONS := \
     2.7.14 \
@@ -87,6 +88,12 @@ UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
 SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
 VALGRIND_DOCKER_IMAGE_NAME = ctds-valgrind-python$(strip $(1))-$(strip $(2))
 
+DOCKER_ENV = \
+    -e DEBUG=1 \
+    $(if $(TDSDUMP),-e TDSDUMP=$(TDSDUMP)) \
+    $(if $(TEST),-e TEST=$(TEST)) \
+    $(if $(VERBOSE),-e VERBOSE=$(VERBOSE))
+
 define DOCKER_RM
 	@if [ ! -z `docker ps -a -f name=$(strip $(1)) -q` ]; then \
         docker rm $(strip $(1)); \
@@ -135,10 +142,8 @@ docker_$(strip $(1))_$(strip $(2)):
 .PHONY: test_$(strip $(1))_$(strip $(2))
 test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
 	docker run --init --rm \
-        -e DEBUG=1 \
+        $(DOCKER_ENV) \
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
-        $(if $(TDSDUMP), -e TDSDUMP=$(TDSDUMP)) \
-        $(if $(TEST), -e TEST=$(TEST)) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         ./scripts/ctds-unittest.sh
 
@@ -147,10 +152,9 @@ coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-s
 	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage)
 	docker run --init \
         -e CTDS_COVER=1 \
-        -e DEBUG=1 \
-        --workdir /usr/src/ctds/ \
-        --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
+        $(DOCKER_ENV) \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage \
+        --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         ./scripts/ctds-coverage.sh
 	mkdir -p $$@
@@ -183,10 +187,8 @@ docker_valgrind_$(strip $(1))_$(strip $(2)):
 .PHONY: valgrind_$(strip $(1))_$(strip $(2))
 valgrind_$(strip $(1))_$(strip $(2)): docker_valgrind_$(strip $(1))_$(strip $(2)) start-sqlserver
 	docker run --init --rm \
-        -e DEBUG=1 \
+        $(DOCKER_ENV) \
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
-        $(if $(TDSDUMP), -e TDSDUMP=$(TDSDUMP)) \
-        $(if $(TEST), -e TEST=$(TEST)) \
         $(call VALGRIND_DOCKER_IMAGE_NAME, $(1), $(2)) \
         ./scripts/ctds-valgrind.sh
 endef
@@ -212,7 +214,7 @@ define CHECKMETADATA_RULE
 .PHONY: checkmetadata_$(strip $(1))
 checkmetadata_$(strip $(1)): docker_$(strip $(1))_$(DEFAULT_FREETDS_VERSION)
 	docker run --init --rm \
-        --workdir /usr/src/ctds/ \
+        $(DOCKER_ENV) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(strip $(1)), $(DEFAULT_FREETDS_VERSION)) \
         ./scripts/ctds-checkmetadata.sh
 endef
@@ -234,7 +236,6 @@ coverage: coverage_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 .PHONY: pylint
 pylint: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 	docker run --init --rm \
-        --workdir /usr/src/ctds/ \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
         ./scripts/ctds-pylint.sh
 
@@ -242,7 +243,6 @@ pylint: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc)
 	docker run --init \
-        --workdir /usr/src/ctds/ \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
         ./scripts/ctds-doc.sh "$(notdir $(GH_PAGES_DIR))"

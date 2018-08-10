@@ -288,7 +288,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             {
                 size_t nchars; /* number of unicode characters in the string */
 
-                char* utf8bytes;
+                const char* utf8bytes;
 
                 Py_XDECREF(parameter->source);
                 parameter->source = encode_for_dblib(value, &utf8bytes, &parameter->ninput, &nchars);
@@ -296,7 +296,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 {
                     break;
                 }
-                parameter->input = (void*)utf8bytes;
+                parameter->input = (const void*)utf8bytes;
 
                 /*
                     FreeTDS does not support passing *VARCHAR(MAX) types.
@@ -321,7 +321,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             {
                 parameter->buffer.byte = (BYTE)(Py_True == value);
 
-                parameter->input = (void*)&parameter->buffer;
+                parameter->input = (const void*)&parameter->buffer;
                 parameter->ninput = sizeof(parameter->buffer.byte);
 
                 parameter->tdstype = TDSBITN;
@@ -379,7 +379,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     parameter->tdstype = TDSBIGINT;
                 }
 
-                parameter->input = (void*)&parameter->buffer;
+                parameter->input = (const void*)&parameter->buffer;
             }
             else if (PyBytes_Check(value) || PyByteArray_Check(value))
             {
@@ -388,12 +388,12 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     char* data;
                     Py_ssize_t size;
                     (void)PyBytes_AsStringAndSize(value, &data, &size);
-                    parameter->input = (void*)data;
+                    parameter->input = (const void*)data;
                     parameter->ninput = (size_t)size;
                 }
                 else
                 {
-                    parameter->input = (void*)PyByteArray_AS_STRING(value);
+                    parameter->input = (const void*)PyByteArray_AS_STRING(value);
                     parameter->ninput = (size_t)PyByteArray_GET_SIZE(value);
                 }
 
@@ -410,7 +410,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             {
                 parameter->buffer.dbflt8 = (DBFLT8)PyFloat_AS_DOUBLE(value);
 
-                parameter->input = (void*)&parameter->buffer;
+                parameter->input = (const void*)&parameter->buffer;
                 parameter->ninput = sizeof(parameter->buffer.dbflt8);
 
                 parameter->tdstype = TDSFLOAT;
@@ -501,7 +501,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                         {
                             parameter->ninput = (size_t)size;
                             parameter->tdstype = TDSDECIMAL;
-                            parameter->input = (void*)&parameter->buffer;
+                            parameter->input = (const void*)&parameter->buffer;
                         }
                     } while (0);
                 } while (0);
@@ -520,7 +520,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 
                 parameter->ninput = sizeof(parameter->buffer.dbdatetime);
                 parameter->tdstype = TDSDATETIME;
-                parameter->input = (void*)&parameter->buffer;
+                parameter->input = (const void*)&parameter->buffer;
             }
             else if (PyUuid_Check(value))
             {
@@ -537,10 +537,10 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     Py_XDECREF(parameter->source);
                     parameter->source = uuidstr; /* claim reference */
 #if PY_MAJOR_VERSION < 3
-                    parameter->input = (void*)PyString_AS_STRING(uuidstr);
+                    parameter->input = (const void*)PyString_AS_STRING(uuidstr);
                     parameter->ninput = (size_t)PyString_GET_SIZE(uuidstr);
 #else /* if PY_MAJOR_VERSION < 3 */
-                    parameter->input = (void*)PyUnicode_AsUTF8AndSize(uuidstr, &size);
+                    parameter->input = (const void*)PyUnicode_AsUTF8AndSize(uuidstr, &size);
                     parameter->ninput = (size_t)size;
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
