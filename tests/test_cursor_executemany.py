@@ -558,3 +558,49 @@ against all parameter sequences or mappings found in the sequence
                     )
             finally:
                 connection.rollback()
+
+    def test_variable_width_columns(self):
+        with self.connect(autocommit=False, paramstyle='named') as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0} (
+                            [varchar] VARCHAR(MAX),
+                            [nvarchar] NVARCHAR(MAX),
+                            [varbinary] VARBINARY(MAX)
+                        );
+                        '''.format(self.test_variable_width_columns.__name__)
+                    )
+                    cursor.executemany(
+                        '''
+                        INSERT INTO {0}([varchar], [nvarchar], [varbinary]) VALUES (:varchar, :nvarchar, :varbinary);
+                        '''.format(self.test_variable_width_columns.__name__),
+                        (
+                            {
+                                'varchar': unicode_('v' * (ix + 1)),
+                                'nvarchar': unicode_('n' * (ix + 1)),
+                                'varbinary': b'b' * (ix + 1),
+                            }
+                            for ix in range(10)
+                        )
+                    )
+                    cursor.execute(
+                        '''
+                        SELECT * FROM {0}
+                        '''.format(self.test_variable_width_columns.__name__)
+                    )
+
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (
+                                unicode_('v' * (ix + 1)),
+                                unicode_('n' * (ix + 1)),
+                                b'b' * (ix + 1),
+                            )
+                            for ix in range(10)
+                        ]
+                    )
+            finally:
+                connection.rollback()
