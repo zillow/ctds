@@ -39,7 +39,10 @@ extern PyTypeObject ConnectionType;
     @param database [in] An optional database to connect to initially.
             This may be NULL.
 
-    @param database [in] An optional application name to associate with the
+    @param appname [in] An optional application name to associate with the
+            connection. This may be NULL.
+
+    @param hostname [in] An optional client host name to associate with the
             connection. This may be NULL.
 
     @param login_timeout [in] An optional timeout, in seconds, to use during
@@ -72,7 +75,7 @@ extern PyTypeObject ConnectionType;
  */
 PyObject* Connection_create(const char* server, uint16_t port, const char* instance,
                             const char* username, const char* password,
-                            const char* database, const char* appname,
+                            const char* database, const char* appname, const char* hostname,
                             unsigned int login_timeout, unsigned int timeout,
                             const char* tds_version, bool autocommit,
                             bool ansi_defaults, bool enable_bcp,

@@ -1,3 +1,5 @@
+import socket
+
 import ctds
 
 from .base import TestExternalDatabase
@@ -11,8 +13,9 @@ class TestTdsConnection(TestExternalDatabase):
             # pylint: disable=line-too-long
             '''\
 connect(server, port=1433, instance=None, user='', password='', database=None, \
-appname='ctds', login_timeout=5, timeout=5, tds_version=None, autocommit=False, \
-ansi_defaults=True, enable_bcp=True, paramstyle=None, read_only=False)
+appname='ctds', hostname=None, login_timeout=5, timeout=5, tds_version=None, \
+autocommit=False, ansi_defaults=True, enable_bcp=True, paramstyle=None, \
+read_only=False)
 
 Connect to a database.
 
@@ -35,6 +38,8 @@ Connect to a database.
 :param str database: An optional database to initially connect to.
 :param str appname: An optional application name to associate with
     the connection.
+:param str hostname: An optional client host name to associate with
+    the connection instead of the local device hostname.
 :param int login_timeout: An optional login timeout, in seconds.
 :param int timeout: An optional timeout for database requests, in
     seconds.
@@ -115,6 +120,7 @@ Connect to a database.
             string_case('password') +
             string_case('database') +
             string_case('appname') +
+            string_case('hostname') +
             uint_case('login_timeout') +
             uint_case('timeout') +
             string_case('tds_version') +
@@ -167,7 +173,8 @@ Connect to a database.
         for kwargs in (
                 {'user': '*' * 256},
                 {'password': '*' * 256},
-                {'appname': '*' * 256}
+                {'appname': '*' * 256},
+                {'hostname': '*' * 256},
         ):
             try:
                 connection = ctds.connect('hostname', **kwargs)
@@ -244,6 +251,17 @@ Connect to a database.
             else:
                 self.fail('.connect() did not fail as expected') # pragma: nocover
 
+    def test_appname(self):
+        with self.connect(appname='test_appname') as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    SELECT APP_NAME();
+                    '''
+                )
+
+                self.assertEqual('test_appname', cursor.fetchone()[0])
+
     def test_autocommit(self):
         with self.connect(autocommit=True) as connection:
             self.assertEqual(connection.autocommit, True)
@@ -308,6 +326,37 @@ Connect to a database.
                     self.assertFalse(self.QUOTED_IDENTIFIER & options)
                     self.assertFalse(self.ANSI_NULL_DFLT_ON & options)
                     self.assertFalse(self.ANSI_NULL_DFLT_OFF & options)
+
+    def test_hostname(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    SELECT hostname
+                    FROM master..sysprocesses
+                    WHERE spid = @@SPID;
+                    '''
+                )
+
+                self.assertEqual(
+                    socket.gethostname(),
+                    cursor.fetchone()[0].rstrip() # SQL Server pads the column
+                )
+
+        with self.connect(hostname='test_hostname') as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    '''
+                    SELECT hostname
+                    FROM master..sysprocesses
+                    WHERE spid = @@SPID;
+                    '''
+                )
+
+                self.assertEqual(
+                    'test_hostname',
+                    cursor.fetchone()[0].rstrip() # SQL Server pads the column
+                )
 
     def test_read_only(self):
         try:

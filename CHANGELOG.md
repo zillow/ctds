@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Official support for Python 3.7.
+- Add optional `hostname` parameter to `ctds.connect`.
 
 ### Fixed
 - Retry on SQL Server unittest database setup failures due to race conditions
@@ -13,7 +14,7 @@ when starting SQL Server. This should make the unit tests much more reliable.
 - Properly handle decimal.Decimal values specified in scientific notation.
 - Properly set autocommit in `ctds.connect()`, even when `ansi_defaults` is
 `False`.
-- Download FreeTDS packages from HTTP URL for compatability with Travis CI
+- Download FreeTDS packages from HTTP URL for compatibility with Travis CI
 builds (FTP no longer works due to firewall issues.)
 - Fix OS X Travis CI build.
 - Improve SQL Server -> DB API 2.0 error mappings.

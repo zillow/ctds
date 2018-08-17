@@ -1794,7 +1794,7 @@ static PyMethodDef Connection_methods[] = {
 
 PyObject* Connection_create(const char* server, uint16_t port, const char* instance,
                             const char* username, const char* password,
-                            const char* database, const char* appname,
+                            const char* database, const char* appname, const char* hostname,
                             unsigned int login_timeout, unsigned int timeout,
                             const char* tds_version, bool autocommit,
                             bool ansi_defaults, bool enable_bcp,
@@ -1930,6 +1930,14 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 if (FAIL == DBSETLAPP(connection->login, appname))
                 {
                     PyErr_SetString(PyExc_tds_InterfaceError, appname);
+                    break;
+                }
+            }
+            if (hostname)
+            {
+                if (FAIL == DBSETLHOST(connection->login, hostname))
+                {
+                    PyErr_SetString(PyExc_tds_InterfaceError, hostname);
                     break;
                 }
             }

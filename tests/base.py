@@ -89,6 +89,7 @@ class TestExternalDatabase(unittest.TestCase):
             [
                 (key, self.get_option(key, type_))
                 for key, type_ in (
+                    ('appname', str),
                     ('autocommit', bool),
                     ('database', str),
                     ('instance', str),
@@ -103,10 +104,10 @@ class TestExternalDatabase(unittest.TestCase):
         )
 
         kwargs_.update(kwargs)
+        kwargs_.setdefault('appname', 'egg.tds.unittest')
 
         return ctds.connect(
             self.get_option('server'),
-            appname='egg.tds.unittest',
             **kwargs_
         )
 

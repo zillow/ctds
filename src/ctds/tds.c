@@ -117,6 +117,7 @@ static const char s_tds_connect_doc[] =
             "password='" DEFAULT_PASSWORD "', "
             "database=None, "
             "appname='" DEFAULT_APPNAME "', "
+            "hostname=None, "
             "login_timeout=" STRINGIFY(DEFAULT_LOGIN_TIMEOUT) ", "
             "timeout=" STRINGIFY(DEFAULT_LOGIN_TIMEOUT) ", "
             "tds_version=None, "
@@ -153,6 +154,9 @@ static const char s_tds_connect_doc[] =
 
     ":param str appname: An optional application name to associate with\n"
     "    the connection.\n"
+
+    ":param str hostname: An optional client host name to associate with\n"
+    "    the connection instead of the local device hostname.\n"
 
     ":param int login_timeout: An optional login timeout, in seconds.\n"
 
@@ -193,6 +197,7 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
         "password",
         "database",
         "appname",
+        "hostname",
         "login_timeout",
         "timeout",
         "tds_version",
@@ -222,6 +227,7 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
     char* password = DEFAULT_PASSWORD;
     char* database = NULL;
     char* appname = DEFAULT_APPNAME;
+    char* hostname = NULL;
     unsigned int login_timeout = DEFAULT_LOGIN_TIMEOUT;
     unsigned int timeout = DEFAULT_TIMEOUT;
     char* tds_version = NULL;
@@ -230,10 +236,11 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
     PyObject* enable_bcp = (DEFAULT_ENABLE_BCP) ? Py_True : Py_False;
     PyObject* read_only = (DEFAULT_READ_ONLY) ? Py_True : Py_False;
     char* paramstyle_str = CTDS_DEFAULT_PARAMSTYLE;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|HzzzzzIIzO!O!O!zO!", s_kwlist, &server,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|HzzzzzzIIzO!O!O!zO!", s_kwlist, &server,
                                      &port, &instance, &username, &password,
-                                     &database, &appname, &login_timeout,
-                                     &timeout, &tds_version, &PyBool_Type, &autocommit,
+                                     &database, &appname, &hostname,
+                                     &login_timeout, &timeout, &tds_version,
+                                     &PyBool_Type, &autocommit,
                                      &PyBool_Type, &ansi_defaults,
                                      &PyBool_Type, &enable_bcp,
                                      &paramstyle_str,
@@ -247,7 +254,8 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
         if (0 == strcmp(paramstyle_str, s_paramstyles[ix].serialized))
         {
             return Connection_create(server, port, instance, username, password,
-                                     database, appname, login_timeout, timeout,
+                                     database, appname, hostname,
+                                     login_timeout, timeout,
                                      tds_version, (Py_True == autocommit),
                                      (Py_True == ansi_defaults),
                                      (Py_True == enable_bcp),
