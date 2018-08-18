@@ -30,6 +30,8 @@ extern PyObject* PyExc_tds_NotSupportedError;
 #define TDS_NCHAR_MIN_SIZE 1
 #define TDS_NCHAR_MAX_SIZE 4000
 
+#define TDS_BINARY_MAX_SIZE 8000
+
 enum ParamStyle {
     ParamStyle_named,
     ParamStyle_numeric

@@ -41,14 +41,17 @@ bool Parameter_output(struct Parameter* rpcparam);
     Get the SQL type of this parameter.
 
     @note The caller is required to release the returned value using free().
+
+    @param minimum_width [in] Use the MAX width for variable width types instead of
+      inferring it from the size of the parameter.
 */
-char* Parameter_sqltype(struct Parameter* rpcparam);
+char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width);
 
 PyObject* Parameter_value(struct Parameter* rpcparam);
 
 #if !defined(CTDS_USE_SP_EXECUTESQL)
 
-char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized);
+char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t* nserialized);
 
 #endif /* if !defined(CTDS_USE_SP_EXECUTESQL) */
 

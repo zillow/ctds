@@ -740,7 +740,7 @@ bool Parameter_output(struct Parameter* rpcparam)
     return (NULL != rpcparam->output);
 }
 
-char* Parameter_sqltype(struct Parameter* rpcparam)
+char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
 {
     char* sql = NULL;
     switch (rpcparam->tdstype)
@@ -750,7 +750,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
 
         case TDSNVARCHAR:
         {
-            if (rpcparam->tdstypesize > TDS_NCHAR_MAX_SIZE)
+            if ((rpcparam->tdstypesize > TDS_NCHAR_MAX_SIZE) || maximum_width)
             {
                 sql = tds_mem_strdup("NVARCHAR(MAX)");
                 break;
@@ -773,7 +773,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
         }
         case TDSVARCHAR:
         {
-            if (rpcparam->tdstypesize > TDS_CHAR_MAX_SIZE)
+            if ((rpcparam->tdstypesize > TDS_CHAR_MAX_SIZE) || maximum_width)
             {
                 sql = tds_mem_strdup("VARCHAR(MAX)");
                 break;
@@ -846,7 +846,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
 
         case TDSVARBINARY:
         {
-            if (rpcparam->tdstypesize > 8000)
+            if ((rpcparam->tdstypesize > TDS_BINARY_MAX_SIZE) || maximum_width)
             {
                 sql = tds_mem_strdup("VARBINARY(MAX)");
                 break;
@@ -855,8 +855,8 @@ char* Parameter_sqltype(struct Parameter* rpcparam)
         }
         case TDSBINARY:
         {
-            assert(1 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= 8000);
-            sql = (char*)tds_mem_malloc(ARRAYSIZE("VARBINARY(8000)"));
+            assert(1 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_BINARY_MAX_SIZE);
+            sql = (char*)tds_mem_malloc(ARRAYSIZE("VARBINARY(" STRINGIFY(TDS_BINARY_MAX_SIZE) ")"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -885,7 +885,7 @@ PyObject* Parameter_value(struct Parameter* rpcparam)
 
 #if !defined(CTDS_USE_SP_EXECUTESQL)
 
-char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
+char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t* nserialized)
 {
     char* serialized = NULL;
     char* value = NULL;
@@ -1110,7 +1110,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, size_t* nserialized)
     {
         if (convert)
         {
-            char* type = Parameter_sqltype(rpcparam);
+            char* type = Parameter_sqltype(rpcparam, maximum_width);
             if (type)
             {
                 serialized = (char*)tds_mem_malloc(
