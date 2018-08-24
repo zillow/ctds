@@ -24,10 +24,19 @@ else
     Add-AppveyorMessage -Message "Using cached version of FreeTDS." -Category Information
 }
 
-& "$env:PYTHON\Scripts\pip" install `
+# Upgrade pip.
+& "$env:PYTHON\python.exe" -m pip install `
         --no-warn-script-location `
         --no-cache-dir `
         --disable-pip-version-check `
         --upgrade `
-    check-manifest codecov coverage pip
+    pip
+if ($LastExitCode -ne 0) { exit $LastExitCode }
+
+# Install testing dependencies.
+& "$env:PYTHON\Scripts\pip" install `
+        --no-warn-script-location `
+        --no-cache-dir `
+        --disable-pip-version-check `
+    check-manifest codecov coverage
 if ($LastExitCode -ne 0) { exit $LastExitCode }
