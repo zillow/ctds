@@ -19,6 +19,10 @@ $env:CTDS_LIBRARY_DIRS= "$env:BUILD_INSTALL_PREFIX\lib"
 $env:CTDS_STRICT = 1
 $env:CTDS_COVER = 1
 
-& "$PSScriptRoot\build.cmd" "$env:PYTHON\python.exe" setup.py install
+& "$PSScriptRoot\build.cmd" "$env:PYTHON\Scripts\pip" install `
+        --no-warn-script-location `
+        --no-cache-dir `
+        --disable-pip-version-check `
+    .
 
 if ($LastExitCode -ne 0) { exit $LastExitCode }

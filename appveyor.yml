@@ -1,6 +1,6 @@
-skip_commits:
+#skip_commits:
   # Mimic Travis-ci skip behavior.
-  message: /ci skip/
+  #message: /ci skip/
 
 environment:
 
