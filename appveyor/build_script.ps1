@@ -19,7 +19,7 @@ $env:CTDS_LIBRARY_DIRS= "$env:BUILD_INSTALL_PREFIX\lib"
 $env:CTDS_STRICT = 1
 $env:CTDS_COVER = 1
 
-& "$PSScriptRoot\build.cmd" "$env:PYTHON\Scripts\pip" install `
+& "$PSScriptRoot\build.cmd" "$env:PYTHON\Scripts\pip" install -v `
         --no-warn-script-location `
         --no-cache-dir `
         --disable-pip-version-check `

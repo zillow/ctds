@@ -21,6 +21,12 @@ $env:PATH += ";$env:BUILD_INSTALL_PREFIX\lib"
 # The computer's hostname is returned in messages from SQL Server.
 $env:HOSTNAME = "$env:COMPUTERNAME"
 
+# Install test dependencies using pip.
+& "$env:PYTHON\Scripts\pip" install -v `
+        --no-cache-dir `
+        --disable-pip-version-check `
+    .[tests]
+
 & "$env:PYTHON\Scripts\coverage" run --branch --source 'ctds' setup.py test
 if ($LastExitCode -ne 0) { exit $LastExitCode }
 
