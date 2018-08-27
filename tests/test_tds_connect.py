@@ -15,7 +15,7 @@ class TestTdsConnection(TestExternalDatabase):
 connect(server, port=1433, instance=None, user='', password='', database=None, \
 appname='ctds', hostname=None, login_timeout=5, timeout=5, tds_version=None, \
 autocommit=False, ansi_defaults=True, enable_bcp=True, paramstyle=None, \
-read_only=False)
+read_only=False, ntlmv2=False)
 
 Connect to a database.
 
@@ -28,6 +28,12 @@ Connect to a database.
 
 .. versionadded:: 1.6
     `paramstyle`
+
+.. versionadded:: 1.6
+    `read_only`
+
+.. versionadded:: 1.8
+    `ntlmv2`
 
 :param str server: The database server host.
 :param int port: The database server port. This value is ignored if
@@ -54,6 +60,7 @@ Connect to a database.
 :param str paramstyle: Override the default :py:data:`ctds.paramstyle` value for
     this connection. Supported values: `numeric`, `named`.
 :param bool read_only: Indicate 'read-only' application intent.
+:param bool ntlmv2: Enable NTLMv2 authentication.
 :return: A new `Connection` object connected to the database.
 :rtype: Connection
 '''
