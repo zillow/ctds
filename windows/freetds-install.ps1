@@ -103,7 +103,7 @@ if (Test-Path env:FREETDS_VERSION)
 }
 else
 {
-    $freetds_version = "1.00.63"
+    $freetds_version = "1.00.80"
     Write-Verbose "FREETDS_VERSION not set; defaulting to $freetds_version"
 }
 

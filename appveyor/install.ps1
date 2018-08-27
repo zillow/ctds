@@ -17,12 +17,26 @@ if (-not (Test-Path -Path $env:BUILD_INSTALL_PREFIX))
     Add-AppveyorMessage -Message "FreeTDS build completed." -Category Information
 
     # Allow FreeTDS to be cached even on failure.
-    $env:APPVEYOR_SAVE_CACHE_ON_ERROR = "True"
+    Set-AppveyorBuildVariable 'APPVEYOR_SAVE_CACHE_ON_ERROR' 'True'
 }
 else
 {
     Add-AppveyorMessage -Message "Using cached version of FreeTDS." -Category Information
 }
 
-& "$env:PYTHON\Scripts\pip" install check-manifest codecov coverage
+# Upgrade pip.
+& "$env:PYTHON\python.exe" -m pip install `
+        --no-warn-script-location `
+        --no-cache-dir `
+        --disable-pip-version-check `
+        --upgrade `
+    pip
+if ($LastExitCode -ne 0) { exit $LastExitCode }
+
+# Install testing dependencies.
+& "$env:PYTHON\Scripts\pip" install `
+        --no-warn-script-location `
+        --no-cache-dir `
+        --disable-pip-version-check `
+    check-manifest codecov coverage
 if ($LastExitCode -ne 0) { exit $LastExitCode }

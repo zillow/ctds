@@ -7,7 +7,7 @@ import ctds
 from .base import TestExternalDatabase
 from .compat import PY3, long_, unicode_
 
-class TestCursorExecuteMany(TestExternalDatabase):
+class TestCursorExecuteMany(TestExternalDatabase): # pylint: disable=too-many-public-methods
     '''Unit tests related to the Cursor.executemany() method.
     '''
 
@@ -372,10 +372,10 @@ against all parameter sequences or mappings found in the sequence
         with self.connect(paramstyle='named') as connection:
             with connection.cursor() as cursor:
                 for arg in (
-                    None,
-                    object(),
-                    1,
-                    Decimal('1.0'),
+                        None,
+                        object(),
+                        1,
+                        Decimal('1.0'),
                 ):
                     args = {
                         arg: 'value',

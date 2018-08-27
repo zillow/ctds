@@ -40,9 +40,10 @@ class TestExternalDatabase(unittest.TestCase):
 
     def get_option(self, key, type_=str):
         section = self.__class__.__name__
-        for section_ in (section, 'DEFAULT'): # pragma: nocover
+        for section_ in (section, 'DEFAULT'): # pragma: no branch
             if self.parser.has_option(section_, key):
                 return type_(self.parser.get(section_, key))
+        return None # pragma: no cover
 
     @staticmethod
     def parameter_type(cursor, value):
@@ -85,7 +86,7 @@ class TestExternalDatabase(unittest.TestCase):
         '''Connect to the database using parameters defined in the config.
         '''
 
-        kwargs_ = dict(
+        kwargs_ = dict( # pylint: disable=consider-using-dict-comprehension
             [
                 (key, self.get_option(key, type_))
                 for key, type_ in (
@@ -125,12 +126,12 @@ class TestExternalDatabase(unittest.TestCase):
             r'^freetds v(?P<major>[\d]+)\.(?P<minor>[\d]+)(?:\.(?P<patch>[\d]+))?$',
             ctds.freetds_version
         )
-        if matches: # pragma: nobranch
-            return (
-                int(matches.group('major')),
-                int(matches.group('minor') or 0),
-                int(matches.group('patch') or 0),
-            )
+        assert matches is not None
+        return (
+            int(matches.group('major')),
+            int(matches.group('minor') or 0),
+            int(matches.group('patch') or 0),
+        )
 
     @property
     def use_sp_executesql(self):

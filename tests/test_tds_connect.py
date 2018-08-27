@@ -362,7 +362,7 @@ Connect to a database.
         try:
             with self.connect(read_only=True):
                 pass
-        except NotImplementedError as ex:
+        except NotImplementedError:
             self.assertFalse(self.read_only_intent_supported)
         else:
             self.assertTrue(self.read_only_intent_supported)

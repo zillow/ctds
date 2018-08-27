@@ -6,7 +6,7 @@ import warnings
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import PY3, long_, unicode_
+from .compat import long_, unicode_
 
 class TestCursorExecute(TestExternalDatabase): # pylint: disable=too-many-public-methods
     '''Unit tests related to the Cursor.execute() method.
@@ -500,11 +500,10 @@ specified in the SQL statement. Parameter notation is specified by
         with self.connect(paramstyle='named') as connection:
             with connection.cursor() as cursor:
                 for arg in (
-                    None,
-                    object(),
-                    1,
-                    Decimal('1.0'),
-
+                        None,
+                        object(),
+                        1,
+                        Decimal('1.0'),
                 ):
                     args = {
                         arg: 'value',
@@ -688,57 +687,57 @@ specified in the SQL statement. Parameter notation is specified by
 
     def test_error_mapping(self):
         for query, exception, severity, number in (
-            (
-                '''
-                DROP TABLE DoesntExist;
-                ''',
-                ctds.ProgrammingError,
-                11,
-                3701
-            ),
-            (
-                '''
-                DECLARE @tTable TABLE (NotNullColumn INT NOT NULL);
-                INSERT INTO @tTable VALUES (NULL);
-                ''',
-                ctds.IntegrityError,
-                16,
-                515
-            ),
-            (
-                '''
-                DECLARE @var TINYINT = 255;
-                SET @var = @var + 1;
-                ''',
-                ctds.DataError,
-                16,
-                220
-            ),
-            (
-                '''
-                DECLARE @tTable TABLE (VarCharColumn VARCHAR(1) NOT NULL);
-                INSERT INTO @tTable VALUES ('12');
-                ''',
-                ctds.DataError,
-                16,
-                8152
-            ),
-            (
-                '''
-                DECLARE @var FLOAT = CONVERT(FLOAT, 0x00);
-                ''',
-                ctds.DataError,
-                16,
-                529
-            ),
-            (
-                '''
-                DBCC CHECKDB ('master') WITH NO_INFOMSGS;
-                ''',
-                ctds.DatabaseError,
-                14,
-                7983
-            ),
+                (
+                    '''
+                    DROP TABLE DoesntExist;
+                    ''',
+                    ctds.ProgrammingError,
+                    11,
+                    3701
+                ),
+                (
+                    '''
+                    DECLARE @tTable TABLE (NotNullColumn INT NOT NULL);
+                    INSERT INTO @tTable VALUES (NULL);
+                    ''',
+                    ctds.IntegrityError,
+                    16,
+                    515
+                ),
+                (
+                    '''
+                    DECLARE @var TINYINT = 255;
+                    SET @var = @var + 1;
+                    ''',
+                    ctds.DataError,
+                    16,
+                    220
+                ),
+                (
+                    '''
+                    DECLARE @tTable TABLE (VarCharColumn VARCHAR(1) NOT NULL);
+                    INSERT INTO @tTable VALUES ('12');
+                    ''',
+                    ctds.DataError,
+                    16,
+                    8152
+                ),
+                (
+                    '''
+                    DECLARE @var FLOAT = CONVERT(FLOAT, 0x00);
+                    ''',
+                    ctds.DataError,
+                    16,
+                    529
+                ),
+                (
+                    '''
+                    DBCC CHECKDB ('master') WITH NO_INFOMSGS;
+                    ''',
+                    ctds.DatabaseError,
+                    14,
+                    7983
+                ),
         ):
             with self.connect() as connection:
                 with connection.cursor() as cursor:
