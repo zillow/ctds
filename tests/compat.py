@@ -31,6 +31,6 @@ else: # pragma: nocover
     StandardError_ = StandardError
 
 if PY33: # pragma: nocover
-    import unittest.mock as mock
+    from unittest import mock
 else: # pragma: nocover
-    import mock as mock
+    import mock

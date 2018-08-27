@@ -9,6 +9,8 @@ environment:
 
   BUILD_INSTALL_PREFIX: "C:\\usr\\local"
 
+  FREETDS_VERSION: "1.00.94"
+
   matrix:
   - PYTHON: "C:\\Python27-x64"
     SQLSERVER_INSTANCENAME: "SQL2016"

@@ -128,7 +128,7 @@ connection is closed.
             with warnings.catch_warnings():
                 warnings.simplefilter('error')
                 try:
-                    unused = connection.messages
+                    getattr(connection, 'messages')
                 except Warning as warn:
                     self.assertEqual('DB-API extension connection.messages used', str(warn))
                 else:

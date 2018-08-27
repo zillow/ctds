@@ -59,8 +59,8 @@ parameter.
         ):
             self.assertEqual(repr(parameter), expected)
 
-    def _test__cmp__(self, __cmp__, expected, op):
-        CASES = (
+    def _test__cmp__(self, __cmp__, expected, oper):
+        cases = (
             (ctds.Parameter(b'1234'), ctds.Parameter(b'123')),
             (ctds.Parameter(b'123'), ctds.Parameter(b'123')),
             (ctds.Parameter(b'123'), ctds.Parameter(b'123', output=True)),
@@ -73,23 +73,23 @@ parameter.
             (ctds.Parameter(b'123'), None),
         )
 
-        for ix, args in enumerate(CASES):
-            operation = '[{0}]: {1} {2} {3}'.format(ix, repr(args[0]), op, repr(args[1]))
-            if expected[ix] == TypeError:
+        for index, args in enumerate(cases):
+            operation = '[{0}]: {1} {2} {3}'.format(index, repr(args[0]), oper, repr(args[1]))
+            if expected[index] == TypeError:
                 try:
-                    result = __cmp__(*args)
+                    __cmp__(*args)
                 except TypeError as ex:
                     regex = (
-                        r"'{0}' not supported between instances of '[^']+' and '[^']+'".format(op)
+                        r"'{0}' not supported between instances of '[^']+' and '[^']+'".format(oper)
                         if not PY3 or PY36
                         else
-                        r'unorderable types: \S+ {0} \S+'.format(op)
+                        r'unorderable types: \S+ {0} \S+'.format(oper)
                     )
                     self.assertTrue(re.match(regex, str(ex)), ex)
                 else:
                     self.fail('{0} did not fail as expected'.format(operation)) # pragma: nocover
             else:
-                self.assertEqual(__cmp__(*args), expected[ix], operation)
+                self.assertEqual(__cmp__(*args), expected[index], operation)
 
     def test___cmp__eq(self):
         self._test__cmp__(

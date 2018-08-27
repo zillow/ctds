@@ -17,7 +17,7 @@ if (-not (Test-Path -Path $env:BUILD_INSTALL_PREFIX))
     Add-AppveyorMessage -Message "FreeTDS build completed." -Category Information
 
     # Allow FreeTDS to be cached even on failure.
-    $env:APPVEYOR_SAVE_CACHE_ON_ERROR = "True"
+    Set-AppveyorBuildVariable 'APPVEYOR_SAVE_CACHE_ON_ERROR' 'True'
 }
 else
 {

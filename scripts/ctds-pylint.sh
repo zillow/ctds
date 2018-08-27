@@ -8,4 +8,4 @@ pip install \
     $VERBOSITY \
     -e .
 
-pylint src
+pylint setup.py src tests

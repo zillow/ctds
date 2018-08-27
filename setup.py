@@ -5,9 +5,10 @@ import io
 import os
 import os.path
 import platform
+import sys
+
 import setuptools
 import setuptools.dist
-import sys
 
 # Version information is defined here and compiled into the extension.
 CTDS_MAJOR_VERSION = 1
@@ -15,29 +16,29 @@ CTDS_MINOR_VERSION = 7
 CTDS_PATCH_VERSION = 0
 
 
-tests_require = []
-if (sys.version_info < (3, 3)):
+TESTS_REQUIRE = []
+if sys.version_info < (3, 3):
     # Mock is part of the Python 3.3+ stdlib.
-    tests_require.append('mock >= 0.7.2')
+    TESTS_REQUIRE.append('mock >= 0.7.2')
 
-strict = os.environ.get('CTDS_STRICT')
-windows = platform.system() == 'Windows'
-coverage = os.environ.get('CTDS_COVER', False)
+STRICT = os.environ.get('CTDS_STRICT')
+WINDOWS = platform.system() == 'Windows'
+COVERAGE = os.environ.get('CTDS_COVER', False)
 
-libraries = [
+LIBRARIES = [
     'sybdb',
     'ct', # required for ct_config only
 ]
 
-extra_compile_args = []
-extra_link_args = []
+EXTRA_COMPILE_ARGS = []
+EXTRA_LINK_ARGS = []
 
 
-if not windows:
-    extra_compile_args = [
+if not WINDOWS:
+    EXTRA_COMPILE_ARGS = [
     ]
-    if strict:
-        extra_compile_args += [
+    if STRICT:
+        EXTRA_COMPILE_ARGS += [
             '-ansi',
             '-Wall',
             '-Wextra',
@@ -48,21 +49,21 @@ if not windows:
         ]
 
     if os.environ.get('CTDS_PROFILE'):
-        extra_compile_args.append('-pg')
+        EXTRA_COMPILE_ARGS.append('-pg')
         if os.path.isdir(os.environ['CTDS_PROFILE']):
-            extra_compile_args += ['-fprofile-dir', '"{0}"'.format(os.environ['CTDS_PROFILE'])]
-        extra_link_args.append('-pg')
+            EXTRA_COMPILE_ARGS += ['-fprofile-dir', '"{0}"'.format(os.environ['CTDS_PROFILE'])]
+        EXTRA_LINK_ARGS.append('-pg')
 
-    if coverage:
-        extra_compile_args += ['-fprofile-arcs', '-ftest-coverage']
-        extra_link_args.append('-fprofile-arcs')
+    if COVERAGE:
+        EXTRA_COMPILE_ARGS += ['-fprofile-arcs', '-ftest-coverage']
+        EXTRA_LINK_ARGS.append('-fprofile-arcs')
 
     # pthread is required on OS X for thread-local storage support.
     if sys.platform == 'darwin':
-        extra_link_args.append('-lpthread')
+        EXTRA_LINK_ARGS.append('-lpthread')
 else:
-    if strict:
-        extra_compile_args += [
+    if STRICT:
+        EXTRA_COMPILE_ARGS += [
             '/WX',
             '/w14242',
             '/w14254',
@@ -85,7 +86,7 @@ else:
             '/w14928',
             '/Zi'
         ]
-    libraries += [
+    LIBRARIES += [
         'shell32',
         'ws2_32'
     ]
@@ -98,25 +99,25 @@ def splitdirs(name):
 
 def read(*names, **kwargs):
     with io.open(
-        os.path.join(os.path.dirname(__file__), *names),
-        encoding=kwargs.get('encoding', 'utf-8')
+            os.path.join(os.path.dirname(__file__), *names),
+            encoding=kwargs.get('encoding', 'utf-8')
     ) as file_:
         return file_.read()
 
 
 setuptools.setup(
-    name = 'ctds',
-    version = '{0}.{1}.{2}'.format(
+    name='ctds',
+    version='{0}.{1}.{2}'.format(
         CTDS_MAJOR_VERSION,
         CTDS_MINOR_VERSION,
         CTDS_PATCH_VERSION
     ),
 
-    author = 'Joshua Lang',
-    author_email = 'joshual@zillow.com',
-    description = 'DB API 2.0-compliant Linux driver for SQL Server',
-    long_description = read('README.rst'),
-    keywords = ' '.join([
+    author='Joshua Lang',
+    author_email='joshual@zillow.com',
+    description='DB API 2.0-compliant Linux driver for SQL Server',
+    long_description=read('README.rst'),
+    keywords=' '.join([
         'freetds',
         'mssql',
         'SQL',
@@ -127,8 +128,8 @@ setuptools.setup(
         'PEP-0249',
         'database',
     ]),
-    license = 'MIT',
-    url = 'https://github.com/zillow/ctds',
+    license='MIT',
+    url='https://github.com/zillow/ctds',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -152,17 +153,17 @@ setuptools.setup(
 
     python_requires='>=2.6, !=3.0.*, !=3.1.*, !=3.2.*',
 
-    packages = setuptools.find_packages('src'),
-    package_data = {
+    packages=setuptools.find_packages('src'),
+    package_data={
         'ctds': []
     },
-    package_dir = {'': 'src'},
+    package_dir={'': 'src'},
 
-    entry_points = {
+    entry_points={
         'console_scripts': []
     },
 
-    ext_modules = [
+    ext_modules=[
         setuptools.Extension(
             '_tds',
             glob.glob(os.path.join('src', 'ctds', '*.c')),
@@ -176,23 +177,23 @@ setuptools.setup(
             include_dirs=splitdirs('CTDS_INCLUDE_DIRS'),
             library_dirs=splitdirs('CTDS_LIBRARY_DIRS'),
             # runtime_library_dirs is not supported on Windows.
-            runtime_library_dirs=[] if windows else splitdirs('CTDS_RUNTIME_LIBRARY_DIRS'),
-            extra_compile_args=extra_compile_args,
-            extra_link_args=extra_link_args,
-            libraries=libraries,
+            runtime_library_dirs=[] if WINDOWS else splitdirs('CTDS_RUNTIME_LIBRARY_DIRS'),
+            extra_compile_args=EXTRA_COMPILE_ARGS,
+            extra_link_args=EXTRA_LINK_ARGS,
+            libraries=LIBRARIES,
             language='c',
         ),
     ],
 
-    install_requires = [],
+    install_requires=[],
 
-    tests_require = tests_require,
-    test_suite = 'tests',
+    tests_require=TESTS_REQUIRE,
+    test_suite='tests',
 
-    extras_require = {
-        'tests': tests_require,
+    extras_require={
+        'tests': TESTS_REQUIRE,
     },
 
     # Prevent easy_install from warning about use of __file__.
-    zip_safe = False
+    zip_safe=False
 )
