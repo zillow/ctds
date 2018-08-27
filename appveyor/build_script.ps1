@@ -23,6 +23,6 @@ $env:CTDS_COVER = 1
         --no-warn-script-location `
         --no-cache-dir `
         --disable-pip-version-check `
-    .
+    . .[tests]
 
 if ($LastExitCode -ne 0) { exit $LastExitCode }
