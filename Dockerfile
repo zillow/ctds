@@ -18,7 +18,6 @@ RUN set -ex \
         --disable-pool \
         --datarootdir=/usr/src/freetds/data \
         --prefix=/usr \
-        --with-openssl=/usr/lib/ssl \
     && make -j "$(nproc)" \
     && make install \
     && rm -rf \
