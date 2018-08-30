@@ -2,7 +2,7 @@ ARG PYTHON_VERSION=3.6
 
 FROM python:${PYTHON_VERSION}
 
-ARG FREETDS_VERSION=1.00.40
+ARG FREETDS_VERSION=1.00.80
 
 # Build FreeTDS (required by ctds)
 RUN set -ex \
@@ -18,6 +18,7 @@ RUN set -ex \
         --disable-pool \
         --datarootdir=/usr/src/freetds/data \
         --prefix=/usr \
+        --with-openssl=/usr/lib/ssl \
     && make -j "$(nproc)" \
     && make install \
     && rm -rf \

@@ -29,6 +29,9 @@ Connect to a database.
 .. versionadded:: 1.6
     `paramstyle`
 
+.. versionadded:: 1.6
+    `read_only`
+
 :param str server: The database server host.
 :param int port: The database server port. This value is ignored if
     `instance` is provided.

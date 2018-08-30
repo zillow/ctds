@@ -139,6 +139,9 @@ static const char s_tds_connect_doc[] =
     ".. versionadded:: 1.6\n"
     "    `paramstyle`\n"
     "\n"
+    ".. versionadded:: 1.6\n"
+    "    `read_only`\n"
+    "\n"
     ":param str server: The database server host.\n"
 
     ":param int port: The database server port. This value is ignored if\n"

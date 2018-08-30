@@ -83,6 +83,7 @@ help:
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
 	@echo "      VERBOSE - Include more verbose output."
 
+DARWIN := $(findstring Darwin,$(shell uname))
 
 UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
 SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
@@ -105,7 +106,7 @@ GH_PAGES_DIR := $(abspath .gh-pages)
 .PHONY: clean
 clean: stop-sqlserver
 	git clean -dfX
-	docker images -q ctds-unittest-* | xargs -r docker rmi
+	docker images -q ctds-unittest-* | xargs $(if $(DARWIN),,-r) docker rmi
 
 .PHONY: publish
 publish:
@@ -141,7 +142,7 @@ docker_$(strip $(1))_$(strip $(2)):
 
 .PHONY: test_$(strip $(1))_$(strip $(2))
 test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
-	docker run --init --rm \
+	docker run --init --rm -it \
         $(DOCKER_ENV) \
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
@@ -150,7 +151,7 @@ test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlse
 .PHONY: coverage_$(strip $(1))_$(strip $(2))
 coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
 	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage)
-	docker run --init \
+	docker run --init -it \
         -e CTDS_COVER=1 \
         $(DOCKER_ENV) \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage \
@@ -186,7 +187,7 @@ docker_valgrind_$(strip $(1))_$(strip $(2)):
 
 .PHONY: valgrind_$(strip $(1))_$(strip $(2))
 valgrind_$(strip $(1))_$(strip $(2)): docker_valgrind_$(strip $(1))_$(strip $(2)) start-sqlserver
-	docker run --init --rm \
+	docker run --init --rm -it \
         $(DOCKER_ENV) \
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         $(call VALGRIND_DOCKER_IMAGE_NAME, $(1), $(2)) \
@@ -213,7 +214,7 @@ $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECK_RULE, $(PV))))
 define CHECKMETADATA_RULE
 .PHONY: checkmetadata_$(strip $(1))
 checkmetadata_$(strip $(1)): docker_$(strip $(1))_$(DEFAULT_FREETDS_VERSION)
-	docker run --init --rm \
+	docker run --init --rm -it \
         $(DOCKER_ENV) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(strip $(1)), $(DEFAULT_FREETDS_VERSION)) \
         ./scripts/ctds-checkmetadata.sh
@@ -235,14 +236,14 @@ coverage: coverage_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 
 .PHONY: pylint
 pylint: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
-	docker run --init --rm \
+	docker run --init --rm -it \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
         ./scripts/ctds-pylint.sh
 
 .PHONY: doc
 doc: docker_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)
 	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc)
-	docker run --init \
+	docker run --init -it \
         --name $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION))-doc \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(DEFAULT_PYTHON_VERSION), $(DEFAULT_FREETDS_VERSION)) \
         ./scripts/ctds-doc.sh "$(notdir $(GH_PAGES_DIR))"

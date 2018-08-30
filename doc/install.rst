@@ -29,7 +29,13 @@ Installation From Source
     wget 'http://www.freetds.org/files/stable/freetds-patched.tar.gz'
     tar -xzf freetds-patched.tar.gz
     pushd freetds-*
-    ./configure --prefix "$(dirname $(pwd))" && make && make install
+
+    # The "--with-openssl" argument is required to connect to some databases,
+    # such as Microsoft Azure.
+    ./configure \
+            --prefix "$(dirname $(pwd))" \
+            --with-openssl=$(openssl version -d | sed  -r 's/OPENSSLDIR: "([^"]*)"/\1/') \
+        && make && make install
     popd
 
 
