@@ -40,6 +40,7 @@ Dependencies
 
 .. include-documentation-end-marker
 
+See `installation instructions <https://zillow.github.io/ctds/install.html>`_.
 
 Documentation
 -------------
