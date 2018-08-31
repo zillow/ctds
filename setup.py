@@ -86,6 +86,9 @@ else:
             '/w14928',
             '/Zi'
         ]
+    if COVERAGE:
+        # Generate a PDB for code coverage.
+        EXTRA_LINK_ARGS.append('/DEBUG')
     LIBRARIES += [
         'shell32',
         'ws2_32'
