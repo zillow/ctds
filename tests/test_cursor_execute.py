@@ -591,7 +591,13 @@ specified in the SQL statement. Parameter notation is specified by
 
     def test_compute(self):
         # COMPUTE clauses are only supported in SQL Server 2005 & 2008
-        if self.sql_server_version()[0] < 11: # pragma: nocover
+        version = self.sql_server_version()
+        if version[0] > 10:
+            version = '.'.join(str(part) for part in version)
+            self.skipTest(
+                'SQL Server {0} does not support compute columns'.format(version)
+            )
+        else: # pragma: nocover
             with self.connect() as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
