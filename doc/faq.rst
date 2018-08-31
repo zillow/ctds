@@ -1,13 +1,14 @@
 Frequently Asked Questions
 ==========================
 
-Why can't I pass an empty string to `callproc`?
------------------------------------------------
+Why can't I pass an empty string to :py:meth:`ctds.Cursor.callproc`?
+--------------------------------------------------------------------
 
 The definition of the `dblib` API implemented by `FreeTDS` does
 not define a way to specify a **(N)VARCHAR** with length *0*. This
 is a known deficiency of the `dblib` API. String parameters with
 length *0* are interpreted as `NULL` by the `dblib` API.
+
 
 Why don't :py:class:`str` values map to **(N)VARCHAR** in Python 2?
 -------------------------------------------------------------------
@@ -75,5 +76,6 @@ codepoints outside the *UCS-2* range will no longer be replaced.
    by default, and there is no way to determine if *UTF-16* is enabled for a
    connection. Because of these limitations, `cTDS` cannot reliably determine
    if the connection will support *UTF-16* and assumes it does not.
+
 
 .. _FreeTDS: http://www.freetds.org

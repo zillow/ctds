@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Official support for Python 3.7.
 - Add optional `hostname` parameter to `ctds.connect()`.
+https://github.com/zillow/ctds/issues/20.
 
 ### Fixed
 - Retry on SQL Server unittest database setup failures due to race conditions
@@ -18,6 +19,7 @@ when starting SQL Server. This should make the unit tests much more reliable.
 builds (FTP no longer works due to firewall issues.)
 - Fix OS X Travis CI build.
 - Improve SQL Server -> DB API 2.0 error mappings.
+https://github.com/zillow/ctds/issues/12
 - Remove Python 2.6 from Appveyor CI due to lack of support.
 - Fix `ctds.Cursor.executemany()` truncating data for variable width types.
 https://github.com/zillow/ctds/issues/25.
