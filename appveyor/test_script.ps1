@@ -21,7 +21,8 @@ $env:PATH += ";$env:BUILD_INSTALL_PREFIX\lib"
 # The computer's hostname is returned in messages from SQL Server.
 $env:HOSTNAME = "$env:COMPUTERNAME"
 
-& "$env:ProgramFiles\OpenCppCoverage\OpenCppCoverage.exe" --sources ctds -- `
+& "$env:ProgramFiles\OpenCppCoverage\OpenCppCoverage.exe" `
+    --export_type=cobertura:cobertura.xml --sources ctds -- `
     "$env:PYTHON\python.exe" -m coverage run --branch --source 'ctds' setup.py test
 if ($LastExitCode -ne 0) { exit $LastExitCode }
 
