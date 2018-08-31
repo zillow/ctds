@@ -24,22 +24,22 @@ else
     Add-AppveyorMessage -Message "Using cached version of FreeTDS." -Category Information
 }
 
-# Download OpenCppCodeCoverage to the cached dir.
-$CppCodeCoverageInstaller = "$env:BUILD_INSTALL_PREFIX\OpenCppCoverageSetup.exe"
-if (-not (Test-Path -Path $CppCodeCoverageInstaller))
+# Download OpenCppCoverage to the cached dir.
+$OpenCppCoverageInstaller = "$env:BUILD_INSTALL_PREFIX\OpenCppCoverageSetup.exe"
+if (-not (Test-Path -Path $OpenCppCoverageInstaller))
 {
     $Url = "https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.6.1/OpenCppCoverageSetup-x64-0.9.6.1.exe"
     Add-AppveyorMessage -Message "Downloading OpenCppCodeCoverage installer ..." -Category Information
-    (New-Object System.Net.WebClient).DownloadFile($Url, $CppCodeCoverageInstaller)
+    (New-Object System.Net.WebClient).DownloadFile($Url, $OpenCppCoverageInstaller)
 }
 else
 {
-    Add-AppveyorMessage -Message "Using cached version of OpenCppCodeCoverage installer ..." -Category Information
+    Add-AppveyorMessage -Message "Using cached version of OpenCppCoverage installer ..." -Category Information
 }
 
 # Run the OpenCppCodeCoverage installer.
 Add-AppveyorMessage -Message "Installing OpenCppCodeCoverage ..." -Category Information
-& "$CppCodeCoverageInstaller" /VERYSILENT
+& "$OpenCppCoverageInstaller" /SILENT
 if ($LastExitCode -ne 0) { exit $LastExitCode }
 
 # Upgrade pip.
