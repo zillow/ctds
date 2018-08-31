@@ -44,7 +44,7 @@ environment:
 services:
 
 cache:
-  -  '%BUILD_INSTALL_PREFIX% -> appveyor.yml'
+  -  '%BUILD_INSTALL_PREFIX% -> appveyor\\install.ps1'
 
 install:
   - "powershell appveyor\\install.ps1"

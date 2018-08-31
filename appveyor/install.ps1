@@ -29,11 +29,16 @@ $CppCodeCoverageInstaller = "$env:BUILD_INSTALL_PREFIX\OpenCppCoverageSetup.exe"
 if (-not (Test-Path -Path $CppCodeCoverageInstaller))
 {
     $Url = "https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.6.1/OpenCppCoverageSetup-x64-0.9.6.1.exe"
-    Write-Verbose "Downloading $CppCodeCoverageInstaller from '$Url' ..."
+    Add-AppveyorMessage -Message "Downloading OpenCppCodeCoverage installer ..." -Category Information
     (New-Object System.Net.WebClient).DownloadFile($Url, $CppCodeCoverageInstaller)
+}
+else
+{
+    Add-AppveyorMessage -Message "Using cached version of OpenCppCodeCoverage installer ..." -Category Information
 }
 
 # Run the OpenCppCodeCoverage installer.
+Add-AppveyorMessage -Message "Installing OpenCppCodeCoverage ..." -Category Information
 & "$CppCodeCoverageInstaller" /VERYSILENT
 if ($LastExitCode -ne 0) { exit $LastExitCode }
 
