@@ -22,7 +22,7 @@ $env:PATH += ";$env:BUILD_INSTALL_PREFIX\lib"
 $env:HOSTNAME = "$env:COMPUTERNAME"
 
 & "$env:ProgramFiles\OpenCppCoverage\OpenCppCoverage.exe" `
-    --export_type=cobertura:cobertura.xml --modules "$env:APPVEYOR_BUILD_FOLDER" -- `
+    --export_type=cobertura:cobertura.xml --modules "$env:APPVEYOR_BUILD_FOLDER\src" -- `
     "$env:PYTHON\python.exe" -m coverage run --branch --source 'ctds' setup.py test
 if ($LastExitCode -ne 0) { exit $LastExitCode }
 
