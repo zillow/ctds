@@ -22,7 +22,7 @@ $env:PATH += ";$env:BUILD_INSTALL_PREFIX\lib"
 $env:HOSTNAME = "$env:COMPUTERNAME"
 
 & "$env:ProgramFiles\OpenCppCoverage\OpenCppCoverage.exe" --sources ctds -- `
-    "$env:PYTHON\Scripts\coverage" run --branch --source 'ctds' setup.py test
+    "$env:PYTHON\python.exe" -m coverage run --branch --source 'ctds' setup.py test
 if ($LastExitCode -ne 0) { exit $LastExitCode }
 
 & "$env:PYTHON\Scripts\coverage" report -m --skip-covered
