@@ -33,6 +33,9 @@ Connect to a database.
     `read_only`
 
 .. versionadded:: 1.8
+    `hostname`
+
+.. versionadded:: 1.8
     `ntlmv2`
 
 :param str server: The database server host.
@@ -94,26 +97,26 @@ Connect to a database.
     def test_typeerror(self):
         def string_case(name):
             cases = [
-                (('hostname',), {name: 1234}),
-                (('hostname',), {name: object()}),
+                (('127.0.0.1',), {name: 1234}),
+                (('127.0.0.1',), {name: object()}),
             ]
             if PY3: # pragma: nocover
-                cases.append((('hostname',), {name: b'1234'}))
+                cases.append((('127.0.0.1',), {name: b'1234'}))
             return cases
         def uint_case(name):
             return [
-                (('hostname',), {name: '1234'}),
-                (('hostname',), {name: unicode_('1234')}),
-                (('hostname',), {name: b'1234'}),
-                (('hostname',), {name: None}),
-                (('hostname',), {name: object()}),
+                (('127.0.0.1',), {name: '1234'}),
+                (('127.0.0.1',), {name: unicode_('1234')}),
+                (('127.0.0.1',), {name: b'1234'}),
+                (('127.0.0.1',), {name: None}),
+                (('127.0.0.1',), {name: object()}),
             ]
         def bool_case(name):
             return [
-                (('hostname',), {name: 'False'}),
-                (('hostname',), {name: 0}),
-                (('hostname',), {name: 1}),
-                (('hostname',), {name: None}),
+                (('127.0.0.1',), {name: 'False'}),
+                (('127.0.0.1',), {name: 0}),
+                (('127.0.0.1',), {name: 1}),
+                (('127.0.0.1',), {name: None}),
             ]
 
         cases = (

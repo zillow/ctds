@@ -146,6 +146,10 @@ class TestExternalDatabase(unittest.TestCase):
         return self.freetds_version >= (1, 0, 74)
 
     @property
+    def ntlmv2_supported(self):
+        return self.freetds_version >= (1, 0, 0)
+
+    @property
     def use_utf16(self):
         return self.freetds_version >= (1, 0, 0)
 
