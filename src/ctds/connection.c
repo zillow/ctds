@@ -1944,16 +1944,16 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
 
             if (ntlmv2)
             {
-#if defined(DBSETNTLMV2)
+#if defined(CTDS_HAVE_NTLMV2)
                 if (FAIL == DBSETLNTLMV2(connection->login, (int)ntlmv2))
                 {
                     PyErr_SetString(PyExc_RuntimeError, "failed to set NTLMv2");
                     break;
                 }
-#else /* if defined(DBSETNTLMV2) */
+#else /* if defined(CTDS_HAVE_NTLMV2) */
                 PyErr_Format(PyExc_NotImplementedError, "NTLMv2 is not supported");
                 break;
-#endif /* else if defined(DBSETNTLMV2) */
+#endif /* else if defined(CTDS_HAVE_NTLMV2) */
             }
 
             if (tds_version)
