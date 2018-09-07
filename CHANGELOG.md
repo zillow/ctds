@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Official support for Python 3.7.
 - Add optional `hostname` parameter to `ctds.connect()`.
 https://github.com/zillow/ctds/issues/20.
+- Add optional `ntlmv2` parameter to `ctds.connect()`.
+https://github.com/zillow/ctds/issues/27.
 
 ### Fixed
 - Retry on SQL Server unittest database setup failures due to race conditions

@@ -69,6 +69,8 @@ extern PyTypeObject ConnectionType;
 
     @param read_only [in] Include read-only application intent in login request.
 
+    @param ntlmv2 [in] Include NTLMv2 authentication support in login request.
+
     @return NULL if the connection creation failed.
     @return The created connection object.
 
@@ -80,7 +82,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                             const char* tds_version, bool autocommit,
                             bool ansi_defaults, bool enable_bcp,
                             enum ParamStyle paramstyle,
-                            bool read_only);
+                            bool read_only, bool ntlmv2);
 
 
 struct Connection; /* forward declaration */

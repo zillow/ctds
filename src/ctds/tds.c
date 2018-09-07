@@ -81,6 +81,9 @@ static const char s_tds_doc[] =
 #ifndef DEFAULT_READ_ONLY
 #  define DEFAULT_READ_ONLY 0
 #endif
+#ifndef DEFAULT_NTLMV2
+#  define DEFAULT_NTLMV2 0
+#endif
 
 #if DEFAULT_AUTOCOMMIT
 #  define DEFAULT_AUTOCOMMIT_STR "True"
@@ -106,6 +109,12 @@ static const char s_tds_doc[] =
 #  define DEFAULT_READ_ONLY_STR "False"
 #endif
 
+#if DEFAULT_NTLMV2
+#  define DEFAULT_NTLMV2_STR "True"
+#else
+#  define DEFAULT_NTLMV2_STR "False"
+#endif
+
 #define CTDS_DEFAULT_PARAMSTYLE "numeric"
 
 
@@ -125,7 +134,8 @@ static const char s_tds_connect_doc[] =
             "ansi_defaults=" DEFAULT_ANSI_DEFAULTS_STR ", "
             "enable_bcp=" DEFAULT_ENABLE_BCP_STR ", "
             "paramstyle=None, "
-            "read_only=" DEFAULT_READ_ONLY_STR ")\n"
+            "read_only=" DEFAULT_READ_ONLY_STR ", "
+            "ntlmv2=" DEFAULT_NTLMV2_STR ")\n"
     "\n"
     "Connect to a database.\n"
     "\n"
@@ -141,6 +151,12 @@ static const char s_tds_connect_doc[] =
     "\n"
     ".. versionadded:: 1.6\n"
     "    `read_only`\n"
+    "\n"
+    ".. versionadded:: 1.8\n"
+    "    `hostname`\n"
+    "\n"
+    ".. versionadded:: 1.8\n"
+    "    `ntlmv2`\n"
     "\n"
     ":param str server: The database server host.\n"
 
@@ -183,6 +199,8 @@ static const char s_tds_connect_doc[] =
 
     ":param bool read_only: Indicate 'read-only' application intent.\n"
 
+    ":param bool ntlmv2: Enable NTLMv2 authentication.\n"
+
     ":return: A new `Connection` object connected to the database.\n"
     ":rtype: Connection\n";
 
@@ -209,6 +227,7 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
         "enable_bcp",
         "paramstyle",
         "read_only",
+        "ntlmv2",
         NULL
     };
 
@@ -238,8 +257,9 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
     PyObject* ansi_defaults = (DEFAULT_ANSI_DEFAULTS) ? Py_True : Py_False;
     PyObject* enable_bcp = (DEFAULT_ENABLE_BCP) ? Py_True : Py_False;
     PyObject* read_only = (DEFAULT_READ_ONLY) ? Py_True : Py_False;
+    PyObject* ntlmv2 = (DEFAULT_NTLMV2) ? Py_True : Py_False;
     char* paramstyle_str = CTDS_DEFAULT_PARAMSTYLE;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|HzzzzzzIIzO!O!O!zO!", s_kwlist, &server,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|HzzzzzzIIzO!O!O!zO!O!", s_kwlist, &server,
                                      &port, &instance, &username, &password,
                                      &database, &appname, &hostname,
                                      &login_timeout, &timeout, &tds_version,
@@ -247,7 +267,8 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
                                      &PyBool_Type, &ansi_defaults,
                                      &PyBool_Type, &enable_bcp,
                                      &paramstyle_str,
-                                     &PyBool_Type, &read_only))
+                                     &PyBool_Type, &read_only,
+                                     &PyBool_Type, &ntlmv2))
     {
         return NULL;
     }
@@ -263,7 +284,8 @@ static PyObject* tds_connect(PyObject* self, PyObject* args, PyObject* kwargs)
                                      (Py_True == ansi_defaults),
                                      (Py_True == enable_bcp),
                                      s_paramstyles[ix].paramstyle,
-                                     (Py_True == read_only));
+                                     (Py_True == read_only),
+                                     (Py_True == ntlmv2));
         }
     }
 

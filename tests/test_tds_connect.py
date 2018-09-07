@@ -15,7 +15,7 @@ class TestTdsConnection(TestExternalDatabase):
 connect(server, port=1433, instance=None, user='', password='', database=None, \
 appname='ctds', hostname=None, login_timeout=5, timeout=5, tds_version=None, \
 autocommit=False, ansi_defaults=True, enable_bcp=True, paramstyle=None, \
-read_only=False)
+read_only=False, ntlmv2=False)
 
 Connect to a database.
 
@@ -31,6 +31,12 @@ Connect to a database.
 
 .. versionadded:: 1.6
     `read_only`
+
+.. versionadded:: 1.8
+    `hostname`
+
+.. versionadded:: 1.8
+    `ntlmv2`
 
 :param str server: The database server host.
 :param int port: The database server port. This value is ignored if
@@ -57,6 +63,7 @@ Connect to a database.
 :param str paramstyle: Override the default :py:data:`ctds.paramstyle` value for
     this connection. Supported values: `numeric`, `named`.
 :param bool read_only: Indicate 'read-only' application intent.
+:param bool ntlmv2: Enable NTLMv2 authentication.
 :return: A new `Connection` object connected to the database.
 :rtype: Connection
 '''
@@ -90,26 +97,26 @@ Connect to a database.
     def test_typeerror(self):
         def string_case(name):
             cases = [
-                (('hostname',), {name: 1234}),
-                (('hostname',), {name: object()}),
+                (('127.0.0.1',), {name: 1234}),
+                (('127.0.0.1',), {name: object()}),
             ]
             if PY3: # pragma: nocover
-                cases.append((('hostname',), {name: b'1234'}))
+                cases.append((('127.0.0.1',), {name: b'1234'}))
             return cases
         def uint_case(name):
             return [
-                (('hostname',), {name: '1234'}),
-                (('hostname',), {name: unicode_('1234')}),
-                (('hostname',), {name: b'1234'}),
-                (('hostname',), {name: None}),
-                (('hostname',), {name: object()}),
+                (('127.0.0.1',), {name: '1234'}),
+                (('127.0.0.1',), {name: unicode_('1234')}),
+                (('127.0.0.1',), {name: b'1234'}),
+                (('127.0.0.1',), {name: None}),
+                (('127.0.0.1',), {name: object()}),
             ]
         def bool_case(name):
             return [
-                (('hostname',), {name: 'False'}),
-                (('hostname',), {name: 0}),
-                (('hostname',), {name: 1}),
-                (('hostname',), {name: None}),
+                (('127.0.0.1',), {name: 'False'}),
+                (('127.0.0.1',), {name: 0}),
+                (('127.0.0.1',), {name: 1}),
+                (('127.0.0.1',), {name: None}),
             ]
 
         cases = (
@@ -131,7 +138,8 @@ Connect to a database.
             bool_case('ansi_defaults') +
             bool_case('enable_bcp') +
             string_case('paramstyle') +
-            bool_case('read_only')
+            bool_case('read_only') +
+            bool_case('ntlmv2')
         )
 
         for args, kwargs in cases:
@@ -369,3 +377,12 @@ Connect to a database.
             self.assertFalse(self.read_only_intent_supported)
         else:
             self.assertTrue(self.read_only_intent_supported)
+
+    def test_ntlmv2(self):
+        try:
+            with self.connect(ntlmv2=True):
+                pass
+        except NotImplementedError:
+            self.assertFalse(self.ntlmv2_supported)
+        else:
+            self.assertTrue(self.ntlmv2_supported)

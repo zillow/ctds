@@ -1799,7 +1799,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                             const char* tds_version, bool autocommit,
                             bool ansi_defaults, bool enable_bcp,
                             enum ParamStyle paramstyle,
-                            bool read_only)
+                            bool read_only, bool ntlmv2)
 {
     struct Connection* connection = PyObject_New(struct Connection, &ConnectionType);
     if (NULL != connection)
@@ -1940,6 +1940,20 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                     PyErr_SetString(PyExc_tds_InterfaceError, hostname);
                     break;
                 }
+            }
+
+            if (ntlmv2)
+            {
+#if defined(CTDS_HAVE_NTLMV2)
+                if (FAIL == DBSETLNTLMV2(connection->login, (int)ntlmv2))
+                {
+                    PyErr_SetString(PyExc_RuntimeError, "failed to set NTLMv2");
+                    break;
+                }
+#else /* if defined(CTDS_HAVE_NTLMV2) */
+                PyErr_Format(PyExc_NotImplementedError, "NTLMv2 is not supported");
+                break;
+#endif /* else if defined(CTDS_HAVE_NTLMV2) */
             }
 
             if (tds_version)
