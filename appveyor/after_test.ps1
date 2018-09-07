@@ -12,5 +12,5 @@ if (-not (Test-Path env:PYTHON))
     exit 1
 }
 
-& "$env:PYTHON\Scripts\codecov" -f "coverage.xml"
+& "$env:PYTHON\Scripts\codecov" --disable gcov -f "coverage.xml" "cobertura.xml"
 if ($LastExitCode -ne 0) { exit $LastExitCode }

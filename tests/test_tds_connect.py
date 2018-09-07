@@ -135,7 +135,8 @@ Connect to a database.
             bool_case('ansi_defaults') +
             bool_case('enable_bcp') +
             string_case('paramstyle') +
-            bool_case('read_only')
+            bool_case('read_only') +
+            bool_case('ntlmv2')
         )
 
         for args, kwargs in cases:
@@ -373,3 +374,12 @@ Connect to a database.
             self.assertFalse(self.read_only_intent_supported)
         else:
             self.assertTrue(self.read_only_intent_supported)
+
+    def test_ntlmv2(self):
+        try:
+            with self.connect(ntlmv2=True):
+                pass
+        except NotImplementedError:
+            self.assertFalse(self.ntlmv2_supported)
+        else:
+            self.assertTrue(self.ntlmv2_supported)

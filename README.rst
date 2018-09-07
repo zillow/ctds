@@ -20,6 +20,8 @@ cTDS
 SQL Server database library for `Linux`, `Windows`, and `Mac OS X` supporting
 both Python 2 and Python 3.
 
+The full documentation for `cTDS` can be found
+`here <https://zillow.github.io/ctds/>`_.
 
 Features
 --------
@@ -34,18 +36,19 @@ Dependencies
 ------------
 
 * `FreeTDS`_
+* `Python`_
 
 .. _`FreeTDS`: http://www.freetds.org/
+.. _`Python`: https://www.python.org/
 .. _`DB API-2.0`: https://www.python.org/dev/peps/pep-0249
 
 .. include-documentation-end-marker
 
+See `installation instructions <https://zillow.github.io/ctds/install.html>`_
+for more information on installing `FreeTDS`_.
 
 Documentation
 -------------
-
-The full documentation for `cTDS` can be found
-`here <https://zillow.github.io/ctds/>`_.
 
 Generate documentation using the following:
 
@@ -56,7 +59,8 @@ Generate documentation using the following:
 
 Documentation is hosted on `GitHub Pages <https://pages.github.com/>`_.
 As such, the source code for the documentation pages must be committed
-to the **gh-pages** branch in order to update the live documentation.
+to the `gh-pages <https://github.com/zillow/ctds/tree/gh-pages>`_ branch in
+order to update the live documentation.
 
 
 Development
@@ -140,5 +144,4 @@ and additional linting and metadata checks:
 
 .. _`Docker`: https://www.docker.com/
 .. _`SQL Server on Linux`: https://hub.docker.com/r/microsoft/mssql-server-linux/
-.. _`Python`: https://www.python.org/
 .. _`GNU make`: https://www.gnu.org/software/make/

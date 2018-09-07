@@ -29,7 +29,13 @@ Installation From Source
     wget 'http://www.freetds.org/files/stable/freetds-patched.tar.gz'
     tar -xzf freetds-patched.tar.gz
     pushd freetds-*
-    ./configure --prefix "$(dirname $(pwd))" && make && make install
+
+    # The "--with-openssl" argument is required to connect to some databases,
+    # such as Microsoft Azure.
+    ./configure \
+            --prefix "$(dirname $(pwd))" \
+            --with-openssl=$(openssl version -d | sed  -r 's/OPENSSLDIR: "([^"]*)"/\1/') \
+        && make && make install
     popd
 
 
@@ -59,14 +65,21 @@ Installation On Windows
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 On Windows, `FreeTDS`_ should be installed from the latest source code.
-A powershell script is include which may aid in this:
+A powershell script is included which may aid in this.
+
+You'll need `Visual C++ Build Tools`_ and `CMake`_ installed.
+
+Make sure you select the architecture matching your Python's in
+``ctds\windows\run_with_msvc.cmd`` (i.e. replace ``CALL %VCVARS% amd64``
+with ``CALL %VCVARS% x86`` if using 32-bit Python), otherwise you'll get
+errors like ``LNK2001: unresolved external symbol _bcp_batch``.
 
 .. code-block:: powershell
 
+    # Add cmake to the path if necessary, using:  $env:Path += ";c:\Program Files\CMake\bin\"
     ./windows/freetds-install.ps1
     # FreeTDS headers and include files are installed to ./build/include
     # and ./build/lib
-
 
 PIP Installation
 ----------------
@@ -104,8 +117,20 @@ When using the system version of `FreeTDS`_, use the following:
 
     pip install ctds
 
+When building on Windows, run the following in powershell:
+
+.. code-block:: powershell
+
+    # current directory must be the ctds root
+    $Env:CTDS_INCLUDE_DIRS = "$(pwd)/build/include"
+    $Env:CTDS_LIBRARY_DIRS = "$(pwd)/build/lib"
+    $Env:CTDS_RUNTIME_LIBRARY_DIRS = "$(pwd)/build/lib"
+    pip install -e .
+
 
 .. _FreeTDS: http://www.freetds.org
 .. _homebrew: http://brew.sh/
 .. _pip: https://pip.pypa.io/en/stable/
 .. _virtualenv: http://virtualenv.readthedocs.org/en/latest/userguide.html
+.. _Visual C++ Build Tools: https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017
+.. _CMake: https://cmake.org/

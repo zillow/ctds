@@ -83,6 +83,7 @@ help:
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
 	@echo "      VERBOSE - Include more verbose output."
 
+DARWIN := $(findstring Darwin,$(shell uname))
 
 UNITTEST_DOCKER_IMAGE_NAME = ctds-unittest-python$(strip $(1))-$(strip $(2))
 SQL_SERVER_DOCKER_IMAGE_NAME := ctds-unittest-sqlserver
@@ -105,7 +106,7 @@ GH_PAGES_DIR := $(abspath .gh-pages)
 .PHONY: clean
 clean: stop-sqlserver
 	git clean -dfX
-	docker images -q ctds-unittest-* | xargs -r docker rmi
+	docker images -q ctds-unittest-* | xargs $(if $(DARWIN),,-r) docker rmi
 
 .PHONY: publish
 publish:

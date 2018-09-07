@@ -1,5 +1,9 @@
 language: generic
 
+branches:
+    except:
+        - /^appveyor-.*$/
+
 matrix:
     include:
         - env: CTDS_MAKE_TARGET=check_3.7
