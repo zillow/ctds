@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; ctds 1.7.0 documentation</title>
+  <title>Getting Started &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="next" title="Basic Example" href="example.html"/>
-        <link rel="prev" title="cTDS" href="index.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basic Example" href="example.html" />
+    <link rel="prev" title="cTDS" href="index.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -66,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -124,7 +116,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -132,9 +124,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -193,12 +186,18 @@ affect <cite>cTDS</cite> functionality.</p>
 <h3>Installation From Source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="http://www.freetds.org">FreeTDS</a> can be easily built from the latest stable source for use in a
 <a class="reference external" href="http://virtualenv.readthedocs.org/en/latest/userguide.html">virtualenv</a> using the following:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Create the virtual environment.</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the virtual environment.</span>
 virtualenv ctds-venv <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ctds-venv
-wget <span class="s1">&#39;ftp://ftp.freetds.org/pub/freetds/stable/freetds-patched.tar.gz&#39;</span>
+wget <span class="s1">&#39;http://www.freetds.org/files/stable/freetds-patched.tar.gz&#39;</span>
 tar -xzf freetds-patched.tar.gz
 <span class="nb">pushd</span> freetds-*
-./configure --prefix <span class="s2">&quot;</span><span class="k">$(</span>dirname <span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">&quot;</span> <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install
+
+<span class="c1"># The &quot;--with-openssl&quot; argument is required to connect to some databases,</span>
+<span class="c1"># such as Microsoft Azure.</span>
+./configure <span class="se">\</span>
+        --prefix <span class="s2">&quot;</span><span class="k">$(</span>dirname <span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">&quot;</span> <span class="se">\</span>
+        --with-openssl<span class="o">=</span><span class="k">$(</span>openssl version -d <span class="p">|</span> sed  -r <span class="s1">&#39;s/OPENSSLDIR: &quot;([^&quot;]*)&quot;/\1/&#39;</span><span class="k">)</span> <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install
 <span class="nb">popd</span>
 </pre></div>
 </div>
@@ -207,14 +206,14 @@ tar -xzf freetds-patched.tar.gz
 <h3>Installation On Debian-based Systems<a class="headerlink" href="#installation-on-debian-based-systems" title="Permalink to this headline">¶</a></h3>
 <p>Both <em>FreeTDS</em> and the <em>Python</em> development headers can easily be installed
 using the system package manager on Debian-based systems, such as Ubuntu.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>sudo apt-get install freetds-dev python-dev
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt-get install freetds-dev python-dev
 </pre></div>
 </div>
 </div>
 <div class="section" id="installation-on-mac-os-x">
 <h3>Installation On Mac OS X<a class="headerlink" href="#installation-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
 <p>On OS X, <a class="reference external" href="http://brew.sh/">homebrew</a> is recommended for installing <a class="reference external" href="http://www.freetds.org">FreeTDS</a>.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>brew update
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew update
 brew install freetds
 </pre></div>
 </div>
@@ -222,8 +221,14 @@ brew install freetds
 <div class="section" id="installation-on-windows">
 <h3>Installation On Windows<a class="headerlink" href="#installation-on-windows" title="Permalink to this headline">¶</a></h3>
 <p>On Windows, <a class="reference external" href="http://www.freetds.org">FreeTDS</a> should be installed from the latest source code.
-A powershell script is include which may aid in this:</p>
-<div class="highlight-powershell"><div class="highlight"><pre><span></span><span class="p">./</span><span class="n">windows</span><span class="p">/</span><span class="n">freetds-install</span><span class="p">.</span><span class="n">ps1</span>
+A powershell script is included which may aid in this.</p>
+<p>You’ll need <a class="reference external" href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017">Visual C++ Build Tools</a> and <a class="reference external" href="https://cmake.org/">CMake</a> installed.</p>
+<p>Make sure you select the architecture matching your Python’s in
+<code class="docutils literal notranslate"><span class="pre">ctds\windows\run_with_msvc.cmd</span></code> (i.e. replace <code class="docutils literal notranslate"><span class="pre">CALL</span> <span class="pre">%VCVARS%</span> <span class="pre">amd64</span></code>
+with <code class="docutils literal notranslate"><span class="pre">CALL</span> <span class="pre">%VCVARS%</span> <span class="pre">x86</span></code> if using 32-bit Python), otherwise you’ll get
+errors like <code class="docutils literal notranslate"><span class="pre">LNK2001:</span> <span class="pre">unresolved</span> <span class="pre">external</span> <span class="pre">symbol</span> <span class="pre">_bcp_batch</span></code>.</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Add cmake to the path if necessary, using:  $env:Path += &quot;;c:\Program Files\CMake\bin\&quot;</span>
+<span class="p">./</span><span class="n">windows</span><span class="p">/</span><span class="n">freetds-install</span><span class="p">.</span><span class="n">ps1</span>
 <span class="c"># FreeTDS headers and include files are installed to ./build/include</span>
 <span class="c"># and ./build/lib</span>
 </pre></div>
@@ -235,7 +240,7 @@ A powershell script is include which may aid in this:</p>
 <p>Once <a class="reference external" href="http://www.freetds.org">FreeTDS</a> is installed, <em>cTDS</em> can be installed using <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.</p>
 <p>When using a non-system version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a>, use the following to specify
 which <cite>include</cite> and <cite>library</cite> directories to compile and link <em>cTDS</em> against.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Assuming . is the root of the virtualenv.</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assuming . is the root of the virtualenv.</span>
 <span class="c1"># Note: In order to load the locally built version of the</span>
 <span class="c1"># FreeTDS libraries either the working directory must be</span>
 <span class="c1"># the same as when ctds was installed or LD_LIBRARY_PATH</span>
@@ -256,7 +261,15 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
 </pre></div>
 </div>
 <p>When using the system version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a>, use the following:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install ctds
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ctds
+</pre></div>
+</div>
+<p>When building on Windows, run the following in powershell:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># current directory must be the ctds root</span>
+<span class="nv">$Env:CTDS_INCLUDE_DIRS</span> <span class="p">=</span> <span class="s2">&quot;</span><span class="p">$(</span><span class="n">pwd</span><span class="p">)</span><span class="s2">/build/include&quot;</span>
+<span class="nv">$Env:CTDS_LIBRARY_DIRS</span> <span class="p">=</span> <span class="s2">&quot;</span><span class="p">$(</span><span class="n">pwd</span><span class="p">)</span><span class="s2">/build/lib&quot;</span>
+<span class="nv">$Env:CTDS_RUNTIME_LIBRARY_DIRS</span> <span class="p">=</span> <span class="s2">&quot;</span><span class="p">$(</span><span class="n">pwd</span><span class="p">)</span><span class="s2">/build/lib&quot;</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">-e</span> <span class="p">.</span>
 </pre></div>
 </div>
 </div>
@@ -264,9 +277,7 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -288,7 +299,7 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -306,7 +317,8 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -319,19 +331,13 @@ pip install --global-option<span class="o">=</span>build_ext <span class="se">\<
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

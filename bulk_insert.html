@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bulk Insert &mdash; ctds 1.7.0 documentation</title>
+  <title>Bulk Insert &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="next" title="Connection Pooling" href="pooling.html"/>
-        <link rel="prev" title="Transactions" href="transactions.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Connection Pooling" href="pooling.html" />
+    <link rel="prev" title="Transactions" href="transactions.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -66,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -120,7 +112,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -128,9 +120,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -175,13 +168,13 @@
   <div class="section" id="bulk-insert">
 <h1>Bulk Insert<a class="headerlink" href="#bulk-insert" title="Permalink to this headline">¶</a></h1>
 <p><cite>cTDS</cite> supports <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188365.aspx">BULK INSERT</a> for effeciently inserting large amounts of data
-into a table using <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.bulk_insert()</span></code></a>.</p>
+into a table using <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.bulk_insert()</span></code></a>.</p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>A bulk insert is done by providing an <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typeiter" title="(in Python v3.6)"><span class="xref std std-ref">iterator</span></a> of
+<p>A bulk insert is done by providing an <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typeiter" title="(in Python v3.7)"><span class="xref std std-ref">iterator</span></a> of
 rows to insert and the name of the table to insert the rows into. The iterator
 should return a sequence containing the values for each column in the table.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
 <span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
         <span class="s1">&#39;MyExampleTable&#39;</span><span class="p">,</span>
@@ -198,7 +191,7 @@ should return a sequence containing the values for each column in the table.</p>
 <div class="section" id="inserting-from-a-csv-file">
 <h2>Inserting from a CSV File<a class="headerlink" href="#inserting-from-a-csv-file" title="Permalink to this headline">¶</a></h2>
 <p>This example illustrates how to import data from a <em>CSV</em> file.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;BulkInsertExample.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
@@ -213,10 +206,10 @@ should return a sequence containing the values for each column in the table.</p>
 </div>
 <div class="section" id="batch-size">
 <h2>Batch Size<a class="headerlink" href="#batch-size" title="Permalink to this headline">¶</a></h2>
-<p>By default, <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.bulk_insert()</span></code></a> will push all data to the
+<p>By default, <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.bulk_insert()</span></code></a> will push all data to the
 database before it is actually validated against the table’s schema. If any of
 the data is invalid, the entire <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188365.aspx">BULK INSERT</a> operation would fail. The
-<cite>batch_size</cite> parameter of <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.bulk_insert()</span></code></a> can be used
+<cite>batch_size</cite> parameter of <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.bulk_insert()</span></code></a> can be used
 to control how many rows should be copied before validating them.</p>
 </div>
 <div class="section" id="text-columns">
@@ -226,13 +219,13 @@ to control how many rows should be copied before validating them.</p>
 Because of this behavior it is possible to insert textual data with an invalid
 encoding and cause the column data to become corrupted.</p>
 <p>To prevent this, it is recommended the caller is explicitly wrap the the object
-with either <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a> (for <strong>CHAR</strong>, <strong>VARCHAR</strong> or <strong>TEXT</strong>
-columns) or <a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlNVarChar</span></code></a> (for <strong>NCHAR</strong>, <strong>NVARCHAR</strong> or
+with either <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlVarChar</span></code></a> (for <strong>CHAR</strong>, <strong>VARCHAR</strong> or <strong>TEXT</strong>
+columns) or <a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlNVarChar</span></code></a> (for <strong>NCHAR</strong>, <strong>NVARCHAR</strong> or
 <strong>NTEXT</strong> columns). For non-Unicode columns, the value should be first encoded
-to column’s encoding (e.g. <cite>latin-1</cite>). By default <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a>
-will encode <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> objects to <cite>utf-8</cite>, which is likely incorrect for
+to column’s encoding (e.g. <cite>latin-1</cite>). By default <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlVarChar</span></code></a>
+will encode <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> objects to <cite>utf-8</cite>, which is likely incorrect for
 most SQL Server configurations.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
 <span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
         <span class="c1">#</span>
@@ -270,9 +263,7 @@ most SQL Server configurations.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -294,7 +285,7 @@ most SQL Server configurations.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -312,7 +303,8 @@ most SQL Server configurations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -325,19 +317,13 @@ most SQL Server configurations.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

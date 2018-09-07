@@ -4,6 +4,30 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.8.0] - 2018-09-07
+### Added
+- Official support for Python 3.7.
+- Add optional `hostname` parameter to `ctds.connect()`.
+https://github.com/zillow/ctds/issues/20.
+- Add optional `ntlmv2` parameter to `ctds.connect()`.
+https://github.com/zillow/ctds/issues/27.
+
+### Fixed
+- Retry on SQL Server unittest database setup failures due to race conditions
+when starting SQL Server. This should make the unit tests much more reliable.
+- Add `python_requires` specifier to *setup.py*.
+- Properly handle decimal.Decimal values specified in scientific notation.
+- Properly set autocommit in `ctds.connect()`, even when `ansi_defaults` is
+`False`.
+- Download FreeTDS packages from HTTP URL for compatibility with Travis CI
+builds (FTP no longer works due to firewall issues.)
+- Fix OS X Travis CI build.
+- Improve SQL Server -> DB API 2.0 error mappings.
+https://github.com/zillow/ctds/issues/12
+- Remove Python 2.6 from Appveyor CI due to lack of support.
+- Fix `ctds.Cursor.executemany()` truncating data for variable width types.
+https://github.com/zillow/ctds/issues/25.
+
 ## [1.7.0] - 2018-01-24
 ### Added
 - Add rich comparison support and `repr` to `ctds.Parameter`.
@@ -186,7 +210,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/zillow/ctds/compare/v1.8.0...v1.7.0
 [1.7.0]: https://github.com/zillow/ctds/compare/v1.7.0...v1.6.3
 [1.6.3]: https://github.com/zillow/ctds/compare/v1.6.3...v1.6.2
 [1.6.2]: https://github.com/zillow/ctds/compare/v1.6.2...v1.6.1

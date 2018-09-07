@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cTDS &mdash; ctds 1.7.0 documentation</title>
+  <title>cTDS &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -26,26 +26,18 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="#"/>
-        <link rel="next" title="Getting Started" href="install.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="install.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -67,7 +59,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -115,7 +107,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">ctds</a>
@@ -123,9 +115,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -176,12 +169,14 @@
 <p><cite>cTDS</cite> is a full Python <a class="reference external" href="https://www.python.org/dev/peps/pep-0249">DB API-2.0</a>-compliant
 SQL Server database library for <cite>Linux</cite>, <cite>Windows</cite>, and <cite>Mac OS X</cite> supporting
 both Python 2 and Python 3.</p>
+<p>The full documentation for <cite>cTDS</cite> can be found
+<a class="reference external" href="https://zillow.github.io/ctds/">here</a>.</p>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Supports <a class="reference external" href="http://www.microsoft.com/sqlserver/">Microsoft SQL Server</a> 2008 and up.</li>
 <li>Complete <a class="reference external" href="https://www.python.org/dev/peps/pep-0249">DB API-2.0</a> support.</li>
-<li>Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, and Python 3.6 support.</li>
+<li>Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, Python 3.6, and Python 3.7 support.</li>
 <li>Bulk insert (bcp) support.</li>
 <li>Written entirely in C.</li>
 </ul>
@@ -190,6 +185,7 @@ both Python 2 and Python 3.</p>
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="http://www.freetds.org/">FreeTDS</a></li>
+<li><a class="reference external" href="https://www.python.org/">Python</a></li>
 </ul>
 </div>
 <div class="section" id="index">
@@ -241,8 +237,8 @@ both Python 2 and Python 3.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-t-i-pass-an-empty-string-to-callproc">Why can’t I pass an empty string to <cite>callproc</cite>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-t-i-pass-an-empty-string-to-ctds-cursor-callproc">Why can’t I pass an empty string to <code class="docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal notranslate"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-doesn-t-raiserror-raise-a-python-exception">Why doesn’t <cite>RAISERROR</cite> raise a Python exception?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?</a></li>
 </ul>
@@ -259,6 +255,7 @@ both Python 2 and Python 3.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change Log</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#unreleased">Unreleased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.8.0 - 2018-09-07</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.7.0 - 2018-01-24</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.6.3 - 2017-12-05</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#">1.6.2 - 2017-11-27</a></li>
@@ -293,9 +290,7 @@ both Python 2 and Python 3.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -315,7 +310,7 @@ both Python 2 and Python 3.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -333,7 +328,8 @@ both Python 2 and Python 3.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -346,19 +342,13 @@ both Python 2 and Python 3.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transactions &mdash; ctds 1.7.0 documentation</title>
+  <title>Transactions &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="next" title="Bulk Insert" href="bulk_insert.html"/>
-        <link rel="prev" title="Reading Result Sets" href="results.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Bulk Insert" href="bulk_insert.html" />
+    <link rel="prev" title="Reading Result Sets" href="results.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -66,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -117,7 +109,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -125,9 +117,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -175,28 +168,26 @@
 for transaction management. This approach was chosen given the similarities to
 the <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/">DB API 2.0 specification</a> .
 The spec implies that transactions are implicitly created, but must be
-explicitly committed, using the <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.commit()</span></code></a> method, or
-rolled back, using the <a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.rollback()</span></code></a> method.</p>
+explicitly committed, using the <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.commit()</span></code></a> method, or
+rolled back, using the <a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.rollback()</span></code></a> method.</p>
 <p><cite>cTDS</cite> supports disabling of the use of <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a> if desired. In
-this case the <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.commit()</span></code></a> and
-<a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.rollback()</span></code></a> methods have no affect and transactions
-are implicitly commited after each call to <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.execute()</span></code></a>,
-<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a> or <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.callproc()</span></code></a>.</p>
+this case the <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.commit()</span></code></a> and
+<a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.rollback()</span></code></a> methods have no affect and transactions
+are implicitly commited after each call to <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.execute()</span></code></a>,
+<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.executemany()</span></code></a> or <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a>.</p>
 <div class="section" id="autocommit">
 <h2>Autocommit<a class="headerlink" href="#autocommit" title="Permalink to this headline">¶</a></h2>
-<p>The <cite>autocommit</cite> parameter to <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-func docutils literal"><span class="pre">ctds.connect()</span></code></a> and
-<a class="reference internal" href="connection.html#ctds.Connection.autocommit" title="ctds.Connection.autocommit"><code class="xref py py-attr docutils literal"><span class="pre">ctds.Connection.autocommit</span></code></a> controls the use of
-<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a>. When <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">True</span></code></a>, transactions are implicitly
-committed after an operation and calls to <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.commit()</span></code></a>
+<p>The <cite>autocommit</cite> parameter to <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">ctds.connect()</span></code></a> and
+<a class="reference internal" href="connection.html#ctds.Connection.autocommit" title="ctds.Connection.autocommit"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ctds.Connection.autocommit</span></code></a> controls the use of
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a>. When <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, transactions are implicitly
+committed after an operation and calls to <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.commit()</span></code></a>
 are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a> is set to <strong>OFF</strong>).</p>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -218,7 +209,7 @@ are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -236,7 +227,8 @@ are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -249,19 +241,13 @@ are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

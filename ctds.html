@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctds &mdash; ctds 1.7.0 documentation</title>
+  <title>ctds &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="up" title="API Reference" href="api.html"/>
-        <link rel="next" title="Parameter" href="parameter.html"/>
-        <link rel="prev" title="Cursor" href="cursor.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parameter" href="parameter.html" />
+    <link rel="prev" title="Cursor" href="cursor.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -67,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -124,7 +115,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -132,9 +123,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -237,9 +229,9 @@ rather than the database itself.</p>
 <dl class="attribute">
 <dt id="ctds.DatabaseError.db_error">
 <code class="descname">db_error</code><a class="headerlink" href="#ctds.DatabaseError.db_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a> containing information relating to an
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing information relating to an
 error returned by the database.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
     <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;An error description&#39;</span>
 <span class="p">}</span>
@@ -250,11 +242,11 @@ error returned by the database.</p>
 <dl class="attribute">
 <dt id="ctds.DatabaseError.os_error">
 <code class="descname">os_error</code><a class="headerlink" href="#ctds.DatabaseError.os_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a> containing information relating to an
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing information relating to an
 error caused by a database connection issue.
-This will be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> if the error was not caused by a
+This will be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the error was not caused by a
 connection issue.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
     <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;An error description&#39;</span>
 <span class="p">}</span>
@@ -265,11 +257,11 @@ connection issue.</p>
 <dl class="attribute">
 <dt id="ctds.DatabaseError.last_message">
 <code class="descname">last_message</code><a class="headerlink" href="#ctds.DatabaseError.last_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a> containing more detailed information about.
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing more detailed information about.
 the error returned from the database.
-This may be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> if the error does not include more
+This may be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the error does not include more
 information from the database, e.g. a connection error.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
     <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="s1">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
@@ -336,7 +328,7 @@ parameters specified, etc.</p>
 <dd><p><span class="target" id="index-11"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#notsupportederror"><strong>PEP 0249#notsupportederror</strong></a></p>
 <p>Exception raised in case a method or database API was used which is
 not supported by the database, e.g. calling
-<a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-func docutils literal"><span class="pre">rollback()</span></code></a> on a connection that does not
+<a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-func docutils literal notranslate"><span class="pre">rollback()</span></code></a> on a connection that does not
 support transactions or has transactions turned off.</p>
 </dd></dl>
 
@@ -350,45 +342,57 @@ inserting, etc.</p>
 
 <dl class="function">
 <dt id="ctds.connect">
-<code class="descclassname">ctds.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>server</em>, <em>port=1433</em>, <em>instance=None</em>, <em>user=''</em>, <em>password=''</em>, <em>database=None</em>, <em>appname='ctds'</em>, <em>login_timeout=5</em>, <em>timeout=5</em>, <em>tds_version=None</em>, <em>autocommit=False</em>, <em>ansi_defaults=True</em>, <em>enable_bcp=True</em>, <em>paramstyle=None</em>, <em>read_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.connect" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ctds.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>server</em>, <em>port=1433</em>, <em>instance=None</em>, <em>user=''</em>, <em>password=''</em>, <em>database=None</em>, <em>appname='ctds'</em>, <em>hostname=None</em>, <em>login_timeout=5</em>, <em>timeout=5</em>, <em>tds_version=None</em>, <em>autocommit=False</em>, <em>ansi_defaults=True</em>, <em>enable_bcp=True</em>, <em>paramstyle=None</em>, <em>read_only=False</em>, <em>ntlmv2=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a database.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><a class="reference internal" href="connection.html#ctds.Connection.close" title="ctds.Connection.close"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Connection.close()</span></code></a> should be called when the returned
+<p class="last"><a class="reference internal" href="connection.html#ctds.Connection.close" title="ctds.Connection.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.close()</span></code></a> should be called when the returned
 connection object is no longer required.</p>
 </div>
 <p><span class="target" id="index-13"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a></p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.6: </span><cite>paramstyle</cite></p>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span><cite>read_only</cite></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.8: </span><cite>hostname</cite></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.8: </span><cite>ntlmv2</cite></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>server</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The database server host.</li>
-<li><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The database server port. This value is ignored if
+<li><strong>server</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The database server host.</li>
+<li><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The database server port. This value is ignored if
 <cite>instance</cite> is provided.</li>
-<li><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – An optional database instance to connect to.</li>
-<li><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The database server username.</li>
-<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The database server password.</li>
-<li><strong>database</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – An optional database to initially connect to.</li>
-<li><strong>appname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – An optional application name to associate with
+<li><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – An optional database instance to connect to.</li>
+<li><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The database server username.</li>
+<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The database server password.</li>
+<li><strong>database</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – An optional database to initially connect to.</li>
+<li><strong>appname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – An optional application name to associate with
 the connection.</li>
-<li><strong>login_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – An optional login timeout, in seconds.</li>
-<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – An optional timeout for database requests, in
+<li><strong>hostname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – An optional client host name to associate with
+the connection instead of the local device hostname.</li>
+<li><strong>login_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional login timeout, in seconds.</li>
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional timeout for database requests, in
 seconds.</li>
-<li><strong>tds_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The TDS protocol version to use. If
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-data docutils literal"><span class="pre">None</span></code></a> is specified, the highest version supported by
+<li><strong>tds_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The TDS protocol version to use. If
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is specified, the highest version supported by
 FreeTDS will be used.</li>
-<li><strong>autocommit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Autocommit transactions on the connection.</li>
-<li><strong>ansi_defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Set <cite>ANSI_DEFAULTS</cite> and related settings to
+<li><strong>autocommit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Autocommit transactions on the connection.</li>
+<li><strong>ansi_defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Set <cite>ANSI_DEFAULTS</cite> and related settings to
 mimic ODBC drivers.</li>
-<li><strong>enable_bcp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Enable bulk copy support on the connection. This
-is required for <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal"><span class="pre">bulk_insert()</span></code></a> to function.</li>
-<li><strong>paramstyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Override the default <a class="reference internal" href="#ctds.paramstyle" title="ctds.paramstyle"><code class="xref py py-data docutils literal"><span class="pre">ctds.paramstyle</span></code></a> value for
+<li><strong>enable_bcp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Enable bulk copy support on the connection. This
+is required for <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bulk_insert()</span></code></a> to function.</li>
+<li><strong>paramstyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Override the default <a class="reference internal" href="#ctds.paramstyle" title="ctds.paramstyle"><code class="xref py py-data docutils literal notranslate"><span class="pre">ctds.paramstyle</span></code></a> value for
 this connection. Supported values: <cite>numeric</cite>, <cite>named</cite>.</li>
-<li><strong>read_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Indicate ‘read-only’ application intent.</li>
+<li><strong>read_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Indicate ‘read-only’ application intent.</li>
+<li><strong>ntlmv2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Enable NTLMv2 authentication.</li>
 </ul>
 </td>
 </tr>
@@ -412,16 +416,16 @@ this connection. Supported values: <cite>numeric</cite>, <cite>named</cite>.</li
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The year.</li>
-<li><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The month.</li>
-<li><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The day.</li>
+<li><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The year.</li>
+<li><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The month.</li>
+<li><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The day.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>date</cite> object.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.6)">datetime.date</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.7)">datetime.date</a></p>
 </td>
 </tr>
 </tbody>
@@ -438,16 +442,16 @@ this connection. Supported values: <cite>numeric</cite>, <cite>named</cite>.</li
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The hour.</li>
-<li><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The minute.</li>
-<li><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The second.</li>
+<li><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The hour.</li>
+<li><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The minute.</li>
+<li><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The second.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>time</cite> object.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.6)">datetime.time</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.7)">datetime.time</a></p>
 </td>
 </tr>
 </tbody>
@@ -464,19 +468,19 @@ this connection. Supported values: <cite>numeric</cite>, <cite>named</cite>.</li
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The year.</li>
-<li><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The month.</li>
-<li><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The day.</li>
-<li><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The hour.</li>
-<li><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The minute.</li>
-<li><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The second.</li>
+<li><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The year.</li>
+<li><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The month.</li>
+<li><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The day.</li>
+<li><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The hour.</li>
+<li><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The minute.</li>
+<li><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The second.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A new <cite>datetime</cite> object.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)">datetime.datetime</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.7)">datetime.datetime</a></p>
 </td>
 </tr>
 </tbody>
@@ -494,11 +498,11 @@ the standard Python time module for details).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The number of seconds since the epoch.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of seconds since the epoch.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new date object.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.6)">datetime.date</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.7)">datetime.date</a></td>
 </tr>
 </tbody>
 </table>
@@ -515,11 +519,11 @@ the standard Python time module for details).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The number of seconds since the epoch.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of seconds since the epoch.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new <cite>time</cite> object.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.6)">datetime.time</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.7)">datetime.time</a></td>
 </tr>
 </tbody>
 </table>
@@ -536,11 +540,11 @@ documentation of the standard Python time module for details).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – The number of seconds since the epoch.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The number of seconds since the epoch.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new <cite>datetime</cite> object.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.6)">datetime.datetime</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.7)">datetime.datetime</a></td>
 </tr>
 </tbody>
 </table>
@@ -556,7 +560,7 @@ string value.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The string value to convert to binary.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The string value to convert to binary.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A new binary object.</td>
 </tr>
@@ -570,9 +574,7 @@ string value.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -594,7 +596,7 @@ string value.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -612,7 +614,8 @@ string value.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -625,19 +628,13 @@ string value.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic Example &mdash; ctds 1.7.0 documentation</title>
+  <title>Basic Example &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="next" title="Executing SQL Statements" href="execute.html"/>
-        <link rel="prev" title="Getting Started" href="install.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Executing SQL Statements" href="execute.html" />
+    <link rel="prev" title="Getting Started" href="install.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -66,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -114,7 +106,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -122,9 +114,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -169,22 +162,22 @@
   <div class="section" id="basic-example">
 <h1>Basic Example<a class="headerlink" href="#basic-example" title="Permalink to this headline">¶</a></h1>
 <p>All interactions with <em>cTDS</em> first require a connection. Connections
-are created using the <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-func docutils literal"><span class="pre">ctds.connect()</span></code></a> method. All
-<a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection"><code class="xref py py-class docutils literal"><span class="pre">ctds.Connection</span></code></a> objects can be used as context managers
+are created using the <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">ctds.connect()</span></code></a> method. All
+<a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Connection</span></code></a> objects can be used as context managers
 in a <a class="reference external" href="https://www.python.org/dev/peps/pep-0343/">with</a> statement.</p>
 <p>In order to actually perform queries or called stored procedures,
-a <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal"><span class="pre">ctds.Cursor</span></code></a> is required. This can be acquired using the
-<a class="reference internal" href="connection.html#ctds.Connection.cursor" title="ctds.Connection.cursor"><code class="xref py py-func docutils literal"><span class="pre">ctds.Connection.cursor()</span></code></a> method. Like the <a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection"><code class="xref py py-class docutils literal"><span class="pre">ctds.Connection</span></code></a>
-object, the <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal"><span class="pre">ctds.Cursor</span></code></a> object can also be used as a context
+a <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Cursor</span></code></a> is required. This can be acquired using the
+<a class="reference internal" href="connection.html#ctds.Connection.cursor" title="ctds.Connection.cursor"><code class="xref py py-func docutils literal notranslate"><span class="pre">ctds.Connection.cursor()</span></code></a> method. Like the <a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Connection</span></code></a>
+object, the <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Cursor</span></code></a> object can also be used as a context
 manager.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Due to the design of the <em>TDS</em> protocol, <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal"><span class="pre">ctds.Cursor</span></code></a> objects
+<p class="last">Due to the design of the <em>TDS</em> protocol, <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Cursor</span></code></a> objects
 cannot have multiple query results active at once. Only the results from
-the last query are available from the <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal"><span class="pre">ctds.Cursor</span></code></a>.</p>
+the last query are available from the <a class="reference internal" href="cursor.html#ctds.Cursor" title="ctds.Cursor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Cursor</span></code></a>.</p>
 </div>
 <p>An example of a simple query follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctds</span>
 
 <span class="n">connection</span> <span class="o">=</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
     <span class="s1">&#39;my-database-host&#39;</span><span class="p">,</span>
@@ -205,9 +198,7 @@ the last query are available from the <a class="reference internal" href="cursor
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -229,7 +220,7 @@ the last query are available from the <a class="reference internal" href="cursor
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -247,7 +238,8 @@ the last query are available from the <a class="reference internal" href="cursor
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -260,19 +252,13 @@ the last query are available from the <a class="reference internal" href="cursor
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Executing SQL Statements &mdash; ctds 1.7.0 documentation</title>
+  <title>Executing SQL Statements &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="next" title="Calling Stored Procedures" href="callproc.html"/>
-        <link rel="prev" title="Basic Example" href="example.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calling Stored Procedures" href="callproc.html" />
+    <link rel="prev" title="Basic Example" href="example.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -66,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -121,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -129,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -175,28 +168,28 @@
             
   <div class="section" id="executing-sql-statements">
 <h1>Executing SQL Statements<a class="headerlink" href="#executing-sql-statements" title="Permalink to this headline">¶</a></h1>
-<p><em>cTDS</em> implements both the <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.execute()</span></code></a> and
-<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a> methods for executing SQL statements.
+<p><em>cTDS</em> implements both the <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.execute()</span></code></a> and
+<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.executemany()</span></code></a> methods for executing SQL statements.
 Both are implemented using the <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188001.aspx">sp_executesql</a> <a class="reference external" href="http://www.microsoft.com/sqlserver/">SQL Server</a> stored procedure.
 This allows optimizations when running batches using
-<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a>.</p>
+<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.executemany()</span></code></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Versions of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> prior to <strong>0.92.405</strong> can’t properly support the use
 of <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188001.aspx">sp_executesql</a>. <cite>cTDS</cite> still implements
-<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">executemany()</span></code></a>, however performance benefits are lost.</p>
+<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">executemany()</span></code></a>, however performance benefits are lost.</p>
 </div>
 <div class="section" id="passing-parameters">
 <h2>Passing Parameters<a class="headerlink" href="#passing-parameters" title="Permalink to this headline">¶</a></h2>
-<p>Parameters may be passed to the <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.execute()</span></code></a> and
-<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a> methods using the <strong>numeric</strong> parameter
+<p>Parameters may be passed to the <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.execute()</span></code></a> and
+<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.executemany()</span></code></a> methods using the <strong>numeric</strong> parameter
 style as defined in <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#paramstyle"><strong>PEP 0249#paramstyle</strong></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Passing parameters using the <strong>numeric</strong> <cite>paramstyle</cite> assumes an initial
 index of 0.</p>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
     <span class="s1">&#39;SELECT * FROM MyTable WHERE Id = :0 AND OtherId = :1&#39;</span><span class="p">,</span>
     <span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="mi">5678</span><span class="p">)</span>
 <span class="p">)</span>
@@ -216,15 +209,15 @@ index of 0.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In <cite>ctds</cite> version <strong>1.6.0</strong> and later, the <strong>named</strong> <cite>paramstyle</cite> may be used instead
-by specifying it in <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-meth docutils literal"><span class="pre">ctds.connect()</span></code></a>.</p>
+by specifying it in <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.connect()</span></code></a>.</p>
 </div>
 <div class="section" id="parameter-types">
 <h3>Parameter Types<a class="headerlink" href="#parameter-types" title="Permalink to this headline">¶</a></h3>
 <p>Parameter SQL types are inferred from the Python object type. If desired,
 the SQL type can be explicitly specified using a
 <a class="reference internal" href="types.html"><span class="doc">type wrapper class</span></a>. For example, this is necessary when passing
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> for a <cite>BINARY</cite> column.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> for a <cite>BINARY</cite> column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    INSERT (Id, BinaryValue) INTO MyTable</span>
 <span class="sd">    VALUES (:0, :1)</span>
@@ -239,11 +232,11 @@ the SQL type can be explicitly specified using a
 </div>
 <div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
-<p>Due to the implementation of <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.execute()</span></code></a> and
-<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">ctds.Cursor.executemany()</span></code></a>, any SQL code which defines parameters
+<p>Due to the implementation of <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.execute()</span></code></a> and
+<a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.executemany()</span></code></a>, any SQL code which defines parameters
 cannot be used with execute parameters. For example, the following is <strong>not</strong>
 supported:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Parameters passed from python are not supported with SQL &#39;@&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters passed from python are not supported with SQL &#39;@&#39;</span>
 <span class="c1"># parameters.</span>
 <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -267,9 +260,7 @@ transmitted to the database.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -291,7 +282,7 @@ transmitted to the database.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -309,7 +300,8 @@ transmitted to the database.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -322,19 +314,13 @@ transmitted to the database.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

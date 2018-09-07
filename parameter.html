@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Parameter &mdash; ctds 1.7.0 documentation</title>
+  <title>Parameter &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="up" title="API Reference" href="api.html"/>
-        <link rel="next" title="RowList" href="rowlist.html"/>
-        <link rel="prev" title="ctds" href="ctds.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RowList" href="rowlist.html" />
+    <link rel="prev" title="ctds" href="ctds.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -67,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -124,7 +115,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -132,9 +123,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -183,8 +175,8 @@
 <dl class="class">
 <dt id="ctds.Parameter">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">Parameter</code><span class="sig-paren">(</span><em>value</em>, <em>output=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Parameter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Explicitly define a parameter for <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal"><span class="pre">callproc()</span></code></a>,
-<a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal"><span class="pre">execute()</span></code></a>, or <a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal"><span class="pre">executemany()</span></code></a>. This is necessary
+<dd><p>Explicitly define a parameter for <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">callproc()</span></code></a>,
+<a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a>, or <a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">executemany()</span></code></a>. This is necessary
 to indicate whether a parameter is <em>SQL</em> <cite>OUTPUT</cite> or <cite>INPUT/OUTPUT</cite>
 parameter.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -192,8 +184,8 @@ parameter.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><em>object</em></a>) – The parameter’s value.</li>
-<li><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Is the parameter an output parameter.</li>
+<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The parameter’s value.</li>
+<li><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Is the parameter an output parameter.</li>
 </ul>
 </td>
 </tr>
@@ -205,9 +197,7 @@ parameter.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -229,7 +219,7 @@ parameter.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -247,7 +237,8 @@ parameter.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -260,19 +251,13 @@ parameter.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

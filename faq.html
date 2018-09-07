@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; ctds 1.7.0 documentation</title>
+  <title>Frequently Asked Questions &mdash; ctds 1.8.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="ctds 1.7.0 documentation" href="index.html"/>
-        <link rel="next" title="API Reference" href="api.html"/>
-        <link rel="prev" title="Connection Pooling" href="pooling.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="prev" title="Connection Pooling" href="pooling.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -66,7 +58,7 @@
             
             
               <div class="version">
-                1.7
+                1.8
               </div>
             
           
@@ -101,8 +93,8 @@
 <li class="toctree-l1"><a class="reference internal" href="bulk_insert.html">Bulk Insert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pooling.html">Connection Pooling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#why-can-t-i-pass-an-empty-string-to-callproc">Why can’t I pass an empty string to <cite>callproc</cite>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-can-t-i-pass-an-empty-string-to-ctds-cursor-callproc">Why can’t I pass an empty string to <code class="docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal notranslate"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-doesn-t-raiserror-raise-a-python-exception">Why doesn’t <cite>RAISERROR</cite> raise a Python exception?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?</a></li>
 </ul>
@@ -120,7 +112,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ctds</a>
@@ -128,9 +120,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -174,38 +167,38 @@
             
   <div class="section" id="frequently-asked-questions">
 <h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="why-can-t-i-pass-an-empty-string-to-callproc">
-<h2>Why can’t I pass an empty string to <cite>callproc</cite>?<a class="headerlink" href="#why-can-t-i-pass-an-empty-string-to-callproc" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="why-can-t-i-pass-an-empty-string-to-ctds-cursor-callproc">
+<h2>Why can’t I pass an empty string to <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a>?<a class="headerlink" href="#why-can-t-i-pass-an-empty-string-to-ctds-cursor-callproc" title="Permalink to this headline">¶</a></h2>
 <p>The definition of the <cite>dblib</cite> API implemented by <cite>FreeTDS</cite> does
 not define a way to specify a <strong>(N)VARCHAR</strong> with length <em>0</em>. This
 is a known deficiency of the <cite>dblib</cite> API. String parameters with
 length <em>0</em> are interpreted as <cite>NULL</cite> by the <cite>dblib</cite> API.</p>
 </div>
 <div class="section" id="why-don-t-str-values-map-to-n-varchar-in-python-2">
-<h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
-<p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a> are equivalent. As such, it
+<h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
+<p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> are equivalent. As such, it
 is difficult for <cite>cTDS</cite> to infer a proper <em>SQL</em> type from the Python type.
-<code class="xref py py-func docutils literal"><span class="pre">unicode()</span></code> should be used in Python 2 when a <strong>(N)CHAR</strong>-type
-parameter is desired. Alternatively, <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlVarChar</span></code></a> and
-<a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal"><span class="pre">ctds.SqlNVarChar</span></code></a> can be used to explicitly define the desired
+<code class="xref py py-func docutils literal notranslate"><span class="pre">unicode()</span></code> should be used in Python 2 when a <strong>(N)CHAR</strong>-type
+parameter is desired. Alternatively, <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlVarChar</span></code></a> and
+<a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlNVarChar</span></code></a> can be used to explicitly define the desired
 <em>SQL</em> type.</p>
 </div>
 <div class="section" id="why-doesn-t-raiserror-raise-a-python-exception">
 <h2>Why doesn’t <cite>RAISERROR</cite> raise a Python exception?<a class="headerlink" href="#why-doesn-t-raiserror-raise-a-python-exception" title="Permalink to this headline">¶</a></h2>
 <p>A Python exception is raised only if the last SQL operation resulted in an
 error. For example, the following will not raise a
-<a class="reference internal" href="ctds.html#ctds.ProgrammingError" title="ctds.ProgrammingError"><code class="xref py py-class docutils literal"><span class="pre">ctds.ProgrammingError</span></code></a> exception because the last statement does not
+<a class="reference internal" href="ctds.html#ctds.ProgrammingError" title="ctds.ProgrammingError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.ProgrammingError</span></code></a> exception because the last statement does not
 result in an error.</p>
-<div class="highlight-SQL"><div class="highlight"><pre><span></span><span class="n">RAISERROR</span> <span class="p">(</span><span class="n">N</span><span class="s1">&#39;some custom error&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="n">RAISERROR</span> <span class="p">(</span><span class="n">N</span><span class="s1">&#39;some custom error&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
 
 <span class="cm">/* This statement does not fail, hence a Python exception is not raised. */</span>
 <span class="k">SELECT</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">Column1</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>The error <cite>some custom error</cite> is reported as a <a class="reference internal" href="ctds.html#ctds.Warning" title="ctds.Warning"><code class="xref py py-obj docutils literal"><span class="pre">ctds.Warning</span></code></a>.</p>
+<p>The error <cite>some custom error</cite> is reported as a <a class="reference internal" href="ctds.html#ctds.Warning" title="ctds.Warning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ctds.Warning</span></code></a>.</p>
 <p>In <cite>cTDS</cite> v1.3.0 and later, this warning can be turned into an exception using
-the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">warnings</span></code></a> module.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.7)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">ctds</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
@@ -242,9 +235,7 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -266,7 +257,7 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -284,7 +275,8 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.7.0',
+            VERSION:'1.8.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -297,19 +289,13 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
