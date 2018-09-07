@@ -12,7 +12,7 @@ import setuptools.dist
 
 # Version information is defined here and compiled into the extension.
 CTDS_MAJOR_VERSION = 1
-CTDS_MINOR_VERSION = 7
+CTDS_MINOR_VERSION = 8
 CTDS_PATCH_VERSION = 0
 
 
