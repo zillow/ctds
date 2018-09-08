@@ -142,6 +142,7 @@ class TestPythonToSQL(TestExternalDatabase):
                     unicode_('*' * 8000),
                     unicode_('*' * 8001),
                     b'this a string, but as bytes',
+                    unicode_(b'quand une dr\xc3\xb4le', encoding='utf-8'),
                 ]
                 if self.nchars_supported: # pragma: nobranch
                     values.extend([

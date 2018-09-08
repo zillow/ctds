@@ -29,8 +29,8 @@ CHECKED_FREETDS_VERSIONS := \
 # Valgrind FreeTDS versions are limited to one without sp_executesql support
 # and one with.
 VALGRIND_FREETDS_VERSIONS := \
-    0.91.112 \
-    1.00.55
+    $(firstword $(CHECKED_FREETDS_VERSIONS)) \
+    $(lastword $(CHECKED_FREETDS_VERSIONS))
 
 
 DEFAULT_PYTHON_VERSION := $(lastword $(SUPPORTED_PYTHON_VERSIONS))
