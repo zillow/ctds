@@ -1659,7 +1659,10 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
             /* Always call bcp_done() regardless of previous errors. */
             Py_BEGIN_ALLOW_THREADS
 
-                processed = bcp_done(connection->dbproc);
+                if (sent)
+                    processed = bcp_done(connection->dbproc);
+                else
+                    processed = 0;
 
             Py_END_ALLOW_THREADS
 
