@@ -235,6 +235,28 @@ insert.\
             finally:
                 connection.rollback()
 
+    def test_insert_nothing(self):
+        with self.connect(autocommit=False) as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0}
+                        (
+                            PrimaryKey INT NOT NULL PRIMARY KEY,
+                        )
+                        '''.format(self.test_insert_tablock.__name__)
+                    )
+
+                inserted = connection.bulk_insert(
+                    self.test_insert_tablock.__name__,
+                    ()
+                )
+                self.assertEqual(inserted, 0)
+
+            finally:
+                connection.rollback()
+
     def test_insert_tablock(self):
         with self.connect(autocommit=False) as connection:
             try:
