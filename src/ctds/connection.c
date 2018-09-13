@@ -1592,40 +1592,9 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
             RETCODE retcode;
             size_t sent = 0;
 
-            DBINT processed;
+            DBINT processed = 0;
 
-            Py_BEGIN_ALLOW_THREADS
-
-                do
-                {
-                    retcode = bcp_init(connection->dbproc, table, NULL, NULL, DB_IN);
-                    if (FAIL == retcode)
-                    {
-                        break;
-                    }
-
-                    if (Py_True == tablock)
-                    {
-                        static const char s_TABLOCK[] = "TABLOCK";
-                        retcode = bcp_options(connection->dbproc,
-                                              BCPHINTS,
-                                              (BYTE*)s_TABLOCK,
-                                              ARRAYSIZE(s_TABLOCK));
-                        if (FAIL == retcode)
-                        {
-                            break;
-                        }
-                    }
-                }
-                while (0);
-
-            Py_END_ALLOW_THREADS
-
-            if (FAIL == retcode)
-            {
-                Connection_raise_lasterror(connection);
-                break;
-            }
+            bool initialized = false;
 
             while (NULL != (row = PyIter_Next(irows)))
             {
@@ -1633,6 +1602,46 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                 PyObject* sequence;
 
                 char msg[ARRAYSIZE(INVALID_SEQUENCE_FMT) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
+
+                /* Initialize only if there are rows to send. */
+                if (!initialized)
+                {
+                    Py_BEGIN_ALLOW_THREADS
+
+                        do
+                        {
+                            retcode = bcp_init(connection->dbproc, table, NULL, NULL, DB_IN);
+                            if (FAIL == retcode)
+                            {
+                                break;
+                            }
+
+                            if (Py_True == tablock)
+                            {
+                                static const char s_TABLOCK[] = "TABLOCK";
+                                retcode = bcp_options(connection->dbproc,
+                                                      BCPHINTS,
+                                                      (BYTE*)s_TABLOCK,
+                                                      ARRAYSIZE(s_TABLOCK));
+                                if (FAIL == retcode)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        while (0);
+
+                    Py_END_ALLOW_THREADS
+
+                    if (FAIL == retcode)
+                    {
+                        Connection_raise_lasterror(connection);
+                        break;
+                    }
+
+                    initialized = true;
+                }
+
                 (void)sprintf(msg, INVALID_SEQUENCE_FMT, sent);
 
                 sequence = PySequence_Fast(row, msg);
@@ -1656,12 +1665,15 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                 sent++;
             }
 
-            /* Always call bcp_done() regardless of previous errors. */
-            Py_BEGIN_ALLOW_THREADS
+            if (initialized)
+            {
+                /* Always call bcp_done() regardless of previous errors. */
+                Py_BEGIN_ALLOW_THREADS
 
-                processed = bcp_done(connection->dbproc);
+                    processed = bcp_done(connection->dbproc);
 
-            Py_END_ALLOW_THREADS
+                Py_END_ALLOW_THREADS
+            }
 
             if (-1 != processed)
             {
