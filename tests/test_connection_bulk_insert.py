@@ -271,7 +271,9 @@ insert.\
                             'String': ctds.SqlVarChar(
                                 unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix).encode('latin-1')
                             ),
-                            'Unicode': ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100).encode('utf-16le')),
+                            'Unicode': ctds.SqlVarChar(
+                                (unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100).encode('utf-16le')
+                            ),
                         }
                         for ix in range(0, rows)
                     )
