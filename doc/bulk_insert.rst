@@ -25,6 +25,19 @@ should return a sequence containing the values for each column in the table.
             )
         )
 
+        # Version 1.9 supports passing dict rows.
+        connection.bulk_insert(
+            'MyExampleTable',
+            # A generator of the rows.
+            (
+                {
+                    'IntColumn': i,
+                    'TextColumn': 'hello world {0}'.format(i)
+                }
+                for i in range(0, 100)
+            )
+        )
+
 
 Inserting from a CSV File
 ^^^^^^^^^^^^^^^^^^^^^^^^^

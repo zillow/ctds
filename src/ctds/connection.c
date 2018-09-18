@@ -1377,7 +1377,9 @@ static const char s_Connection_bulk_insert_doc[] =
 
     ":param rows: An iterable of data rows. Data rows are Python `sequence`\n"
     "    objects. Each item in the data row is inserted into the table in\n"
-    "    sequential order.\n"
+    "    sequential order. Version 1.9 supports passing rows as\n"
+    "    `:py:class:`dict`. Keys must map to column names and must exist for\n"
+    "    all columns.\n"
     ":type rows: :ref:`typeiter <python:typeiter>`\n"
 
     ":param int batch_size: An optional batch size.\n"
@@ -1412,7 +1414,7 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
             PyObject* value = PySequence_Fast_GET_ITEM(sequence, ix);
             if (!Parameter_Check(value))
             {
-                rpcparams[ix] = Parameter_create(value, 0 /* output */);
+                rpcparams[ix] = Parameter_create(value, false /* output */);
                 if (!rpcparams[ix])
                 {
                     break;
@@ -1594,18 +1596,22 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
 
             DBINT processed = 0;
 
+            DBINT ncolumns = 0;
+            char** columns = NULL;
             bool initialized = false;
 
             while (NULL != (row = PyIter_Next(irows)))
             {
 #define INVALID_SEQUENCE_FMT "invalid sequence for row %zd"
-                PyObject* sequence;
+                PyObject* sequence = NULL;
 
                 char msg[ARRAYSIZE(INVALID_SEQUENCE_FMT) + ARRAYSIZE(STRINGIFY(UINT64_MAX))];
 
                 /* Initialize only if there are rows to send. */
                 if (!initialized)
                 {
+                    size_t column;
+
                     Py_BEGIN_ALLOW_THREADS
 
                         do
@@ -1615,6 +1621,8 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                             {
                                 break;
                             }
+
+                            initialized = true;
 
                             if (Py_True == tablock)
                             {
@@ -1639,12 +1647,79 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                         break;
                     }
 
-                    initialized = true;
+                    /*
+                        Store an ordered list of table column names. Once
+                        insertion starts this information won't be available.
+                    */
+                    ncolumns = dbnumcols(connection->dbproc);
+                    assert(ncolumns > 0);
+                    columns = tds_mem_calloc((size_t)ncolumns, sizeof(char*));
+                    if (!columns)
+                    {
+                        PyErr_NoMemory();
+                        break;
+                    }
+
+                    for (column = 0; column < (size_t)ncolumns; ++column)
+                    {
+                        DBCOL dbcol;
+                        retcode = dbcolinfo(connection->dbproc, CI_REGULAR, (DBINT)column + 1, 0 /* ignored by dblib */,
+                                            &dbcol);
+                        if (FAIL == retcode)
+                        {
+                            Connection_raise_lasterror(connection);
+                            break;
+                        }
+
+                        columns[column] = tds_mem_strdup(dbcol.ActualName);
+                        if (!columns[column])
+                        {
+                            PyErr_NoMemory();
+                            break;
+                        }
+                    }
+
+                    if (PyErr_Occurred())
+                    {
+                        break;
+                    }
                 }
 
-                (void)sprintf(msg, INVALID_SEQUENCE_FMT, sent);
+                if (PyMapping_Check(row) && !PySequence_Check(row))
+                {
+                    PyObject* tuple = PyTuple_New((Py_ssize_t)ncolumns);
+                    if (tuple)
+                    {
+                        /* Construct the sequence based on the column info. */
+                        size_t column;
+                        for (column = 0; column < (size_t)ncolumns; ++column)
+                        {
+                            /* Retrieve the value by name from the row. */
+                            PyObject* value = PyMapping_GetItemString(row, columns[column]);
+                            if (!value)
+                            {
+                                assert(PyErr_Occurred()); /* set by PyMapping_GetItemString */
+                                break;
+                            }
 
-                sequence = PySequence_Fast(row, msg);
+                            PyTuple_SET_ITEM(tuple, (Py_ssize_t)column, value);
+                            /* value reference stolen by PyTuple_SET_ITEM */
+                        }
+
+                        if (!PyErr_Occurred())
+                        {
+                            sequence = PySequence_Fast(tuple, "internal error");
+                        }
+
+                        Py_DECREF(tuple);
+                    }
+                }
+                else
+                {
+                    (void)sprintf(msg, INVALID_SEQUENCE_FMT, sent);
+                    sequence = PySequence_Fast(row, msg);
+                }
+
                 if (sequence)
                 {
                     bool send_batch = ((0 != batches) && ((sent + 1) % batches == 0));
@@ -1663,6 +1738,16 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                 }
 
                 sent++;
+            } /* while (NULL != (row = PyIter_Next(irows))) */
+
+            if (columns)
+            {
+                size_t column;
+                for (column = 0; column < (size_t)ncolumns; ++column)
+                {
+                    tds_mem_free(columns[column]);
+                }
+                tds_mem_free(columns);
             }
 
             if (initialized)
