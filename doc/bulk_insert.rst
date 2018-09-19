@@ -25,6 +25,19 @@ should return a sequence containing the values for each column in the table.
             )
         )
 
+        # Version 1.9 supports passing dict rows.
+        connection.bulk_insert(
+            'MyExampleTable',
+            # A generator of the rows.
+            (
+                {
+                    'IntColumn': i,
+                    'TextColumn': 'hello world {0}'.format(i)
+                }
+                for i in range(0, 100)
+            )
+        )
+
 
 Inserting from a CSV File
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -43,6 +56,18 @@ This example illustrates how to import data from a *CSV* file.
                 'BulkInsertExample',
                 iter(csvreader)
             )
+
+    # ctds 1.9 supports passing rows as dict objects, mapping column name
+    # to value. This is useful if the table contains NULLable columns
+    # not present in the CSV file. 
+    with open('BulkInsertExample.csv', 'rb') as csvfile:
+        csvreader = csv.DictReader(csvfile, delimiter=',')
+        with ctds.connect('host') as connection:
+            connection.bulk_insert(
+                'BulkInsertExample',
+                iter(csvreader)
+            )
+
 
 
 Batch Size

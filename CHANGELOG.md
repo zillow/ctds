@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Add support for passing sequences of `dict` values to
+`ctds.Connection.bulk_insert`. The mapping key is used to determine the column
+order based on the column info available after `bcp_init`.
+https://github.com/zillow/ctds/issues/38
 
 ## [1.8.0] - 2018-09-07
 ### Added
