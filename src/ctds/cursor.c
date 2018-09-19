@@ -68,8 +68,7 @@ struct ResultSetDescription {
 
 struct ResultSetDescription* ResultSetDescription_create(size_t ncolumns)
 {
-    struct ResultSetDescription* description =
-        (struct ResultSetDescription*)tds_mem_malloc(ResultSetDescription_size(ncolumns));
+    struct ResultSetDescription* description = tds_mem_malloc(ResultSetDescription_size(ncolumns));
     if (description)
     {
         description->_refs = 1;
@@ -1121,8 +1120,7 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
                     {
                         int ix;
 
-                        outputparams = (struct OutputParameter*)tds_mem_calloc((size_t)noutputparams,
-                                                                               sizeof(struct OutputParameter));
+                        outputparams = tds_mem_calloc((size_t)noutputparams, sizeof(struct OutputParameter));
                         if (!outputparams)
                         {
                             break;
@@ -1384,7 +1382,7 @@ static char* build_executesql_stmt(const char* format,
 #if defined(CTDS_USE_SP_EXECUTESQL)
                     if (ParamStyle_numeric == paramstyle)
                     {
-                        param = (char*)tds_mem_malloc(ARRAYSIZE("@param" STRINGIFY(UINT64_MAX)));
+                        param = tds_mem_malloc(ARRAYSIZE("@param" STRINGIFY(UINT64_MAX)));
                         if (param)
                         {
                             assert(-1 != paramnum);
@@ -1396,7 +1394,7 @@ static char* build_executesql_stmt(const char* format,
                     {
                         assert(parammarker_end >= parammarker_start);
                         nparam = 1 /* @ */ + (size_t)(parammarker_end - parammarker_start);
-                        param = (char*)tds_mem_malloc(nparam + 1 /* '\0' */);
+                        param = tds_mem_malloc(nparam + 1 /* '\0' */);
                         if (param)
                         {
                             char* paramname;
@@ -1434,7 +1432,7 @@ static char* build_executesql_stmt(const char* format,
                         else
                         {
                             size_t nparamname = (size_t)(parammarker_end - parammarker_start);
-                            char* paramname = (char*)tds_mem_malloc(nparamname + 1 /* '\0' */);
+                            char* paramname = tds_mem_malloc(nparamname + 1 /* '\0' */);
                             if (!paramname)
                             {
                                 PyErr_NoMemory();
@@ -1685,7 +1683,7 @@ static char* make_paramname(PyObject* oname, size_t* nparamname)
 #endif /* else if PY_MAJOR_VERSION < 3 */
 
         required = nname + 1 /* '@' */ + 1 /* '\0' */;
-        paramname = (char*)tds_mem_malloc(required);
+        paramname = tds_mem_malloc(required);
         if (!paramname)
         {
             PyErr_NoMemory();
@@ -1774,7 +1772,7 @@ static PyObject* build_executesql_params(enum ParamStyle paramstyle, PyObject* p
             else
             {
                 size_t required = STRLEN("@param" STRINGIFY(UINT64_MAX)) + 1 /* '\0' */;
-                paramname = (char*)tds_mem_malloc(required);
+                paramname = tds_mem_malloc(required);
                 if (!paramname)
                 {
                     PyErr_NoMemory();
@@ -1827,7 +1825,7 @@ static PyObject* build_executesql_params(enum ParamStyle paramstyle, PyObject* p
                           strlen(sqltype) +
                           STRLEN(" OUTPUT") +
                           1 /* '\0' */;
-            paramdesc = (char*)tds_mem_malloc(nparamdesc);
+            paramdesc = tds_mem_malloc(nparamdesc);
             if (!paramdesc)
             {
                 PyErr_NoMemory();
@@ -3068,7 +3066,7 @@ static struct RowList* Cursor_fetchrows(struct Cursor* cursor, size_t n)
             }
             assert(BUF_FULL != retcode);
 
-            new_rowbuffer = (struct RowBuffer*)tds_mem_malloc(rowsize);
+            new_rowbuffer = tds_mem_malloc(rowsize);
             if (!new_rowbuffer)
             {
                 ResultSetDescription_RowBuffer_free(description, rowbuffers);

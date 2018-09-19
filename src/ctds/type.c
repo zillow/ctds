@@ -1175,7 +1175,7 @@ static PyObject* translate_to_ucs2(PyObject* o)
     len = PyUnicode_GetSize(o);
     do
     {
-        unicode = (wchar_t*)tds_mem_malloc((size_t)len * sizeof(wchar_t));
+        unicode = tds_mem_malloc((size_t)len * sizeof(wchar_t));
         if (!unicode)
         {
             PyErr_NoMemory();

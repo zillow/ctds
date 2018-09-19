@@ -43,7 +43,7 @@
           _type* value = ((_type*)pthread_getspecific(tls_ ## _name)); \
           if (!value) \
           { \
-              value = (_type*)tds_mem_malloc(sizeof(_type)); \
+              value = tds_mem_malloc(sizeof(_type)); \
               if (value) \
               { \
                   if (0 == pthread_setspecific(tls_ ## _name, value)) \
@@ -86,7 +86,7 @@
           _type* value = ((_type*)TlsGetValue(tls_ ## _name)); \
           if (!value && (ERROR_SUCCESS == GetLastError())) \
           { \
-              value = (_type*)tds_mem_malloc(sizeof(_type)); \
+              value = tds_mem_malloc(sizeof(_type)); \
               if (value) \
               { \
                   if (TlsSetValue(tls_ ## _name, (LPVOID)value)) \
@@ -1400,7 +1400,7 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
     {
         RETCODE retcode;
 
-        rpcparams = (struct Parameter**)tds_mem_calloc((size_t)size, sizeof(struct Parameter*));
+        rpcparams = tds_mem_calloc((size_t)size, sizeof(struct Parameter*));
         if (!rpcparams)
         {
             PyErr_NoMemory();
@@ -1875,7 +1875,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                 ((instance) ? strlen(instance) : STRLEN(STRINGIFY(UINT16_MAX)) /* maximum port number length */) +
                 1 /* for '\0' */;
 
-            servername = (char*)tds_mem_malloc(nservername);
+            servername = tds_mem_malloc(nservername);
             if (!servername)
             {
                 PyErr_NoMemory();

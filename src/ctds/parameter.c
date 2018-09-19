@@ -761,7 +761,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         {
             /* The typesize will be 0 for NULL values, but the SQL type size must be 1. */
             assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_NCHAR_MAX_SIZE);
-            sql = (char*)tds_mem_malloc(ARRAYSIZE("NVARCHAR(" STRINGIFY(TDS_NCHAR_MAX_SIZE) ")"));
+            sql = tds_mem_malloc(ARRAYSIZE("NVARCHAR(" STRINGIFY(TDS_NCHAR_MAX_SIZE) ")"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -784,7 +784,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         {
             /* The typesize will be 0 for NULL values, but the SQL type size must be 1. */
             assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_CHAR_MAX_SIZE);
-            sql = (char*)tds_mem_malloc(ARRAYSIZE("VARCHAR(" STRINGIFY(TDS_CHAR_MAX_SIZE) ")"));
+            sql = tds_mem_malloc(ARRAYSIZE("VARCHAR(" STRINGIFY(TDS_CHAR_MAX_SIZE) ")"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -831,7 +831,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         case TDSNUMERIC:
         case TDSDECIMAL:
         {
-            sql = (char*)tds_mem_malloc(ARRAYSIZE("DECIMAL(38,38)"));
+            sql = tds_mem_malloc(ARRAYSIZE("DECIMAL(38,38)"));
             if (sql)
             {
                 const DBDECIMAL* dbdecimal = (const DBDECIMAL*)rpcparam->input;
@@ -856,7 +856,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         case TDSBINARY:
         {
             assert(1 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_BINARY_MAX_SIZE);
-            sql = (char*)tds_mem_malloc(ARRAYSIZE("VARBINARY(" STRINGIFY(TDS_BINARY_MAX_SIZE) ")"));
+            sql = tds_mem_malloc(ARRAYSIZE("VARBINARY(" STRINGIFY(TDS_BINARY_MAX_SIZE) ")"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -929,7 +929,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
                     size_t ixsrc;
                     if (write)
                     {
-                        value = (char*)tds_mem_malloc(written);
+                        value = tds_mem_malloc(written);
                         if (!value)
                         {
                             PyErr_NoMemory();
@@ -979,7 +979,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
                 size_t ix, written = 0;
 
                 /* Large enough for the hexadecimal representation. */
-                value = (char*)tds_mem_malloc(ARRAYSIZE("0x") + rpcparam->ninput * 2 + 1 /* '\0' */);
+                value = tds_mem_malloc(ARRAYSIZE("0x") + rpcparam->ninput * 2 + 1 /* '\0' */);
                 if (!value)
                 {
                     PyErr_NoMemory();
@@ -1030,7 +1030,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
                     }
                 }
 
-                value = (char*)tds_mem_malloc(nvalue);
+                value = tds_mem_malloc(nvalue);
                 if (!value)
                 {
                     PyErr_NoMemory();
@@ -1073,7 +1073,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
                 } ints;
                 memset(&ints, 0, sizeof(ints));
 
-                value = (char*)tds_mem_malloc(ARRAYSIZE("-9223372036854775808"));
+                value = tds_mem_malloc(ARRAYSIZE("-9223372036854775808"));
                 if (!value)
                 {
                     PyErr_NoMemory();
@@ -1113,7 +1113,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
             char* type = Parameter_sqltype(rpcparam, maximum_width);
             if (type)
             {
-                serialized = (char*)tds_mem_malloc(
+                serialized = tds_mem_malloc(
                     ARRAYSIZE("CONVERT(") + strlen(type) + ARRAYSIZE(",") + strlen(value) + ARRAYSIZE(")")
                 );
                 if (serialized)
