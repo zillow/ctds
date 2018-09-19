@@ -27,9 +27,9 @@ after `batch_size` rows have been copied to server.
 :param str table: The table in which to insert the rows.
 :param rows: An iterable of data rows. Data rows are Python `sequence`
     objects. Each item in the data row is inserted into the table in
-    sequential order. Version 1.9 supports passing rows as
-    `:py:class:`dict`. Keys must map to column names and must exist for
-    all columns.
+    sequential order.
+    Version 1.9 supports passing rows as `:py:class:`dict`. Keys must map
+    to column names and must exist for all non-NULL columns.
 :type rows: :ref:`typeiter <python:typeiter>`
 :param int batch_size: An optional batch size.
 :param bool tablock: Should the `TABLOCK` hint be passed.
@@ -246,15 +246,15 @@ insert.\
                         CREATE TABLE {0}
                         (
                             PrimaryKey INT NOT NULL PRIMARY KEY,
-                            Date       DATETIME,
+                            Date       DATETIME NULL,
                             /*
                                 FreeTDS' bulk insert implementation doesn't seem to work
                                 properly with *VARCHAR(MAX) columns.
                             */
-                            String     VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS,
-                            Unicode    NVARCHAR(100),
-                            Bytes      VARBINARY(1000),
-                            Decimal    DECIMAL(7,3)
+                            String     VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+                            Unicode    NVARCHAR(100) NULL,
+                            Bytes      VARBINARY(1000) NULL,
+                            Decimal    DECIMAL(7,3) NOT NULL
                         )
                         '''.format(self.test_insert_dict.__name__)
                     )
@@ -294,6 +294,57 @@ insert.\
                                 # FreeTDS maps b'' -> NULL
                                 bytes(ix) if ix or not PY3 else None,
                                 Decimal(str(ix + .125))
+                            )
+                            for ix in range(0, rows)
+                        ]
+                    )
+
+            finally:
+                connection.rollback()
+
+    def test_insert_dict_nullable(self):
+        with self.connect(autocommit=False) as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0}
+                        (
+                            PrimaryKey     INT NOT NULL PRIMARY KEY,
+                            NullableInt    INT NULL,
+                            NullableBinary VARBINARY(2) NULL
+                        )
+                        '''.format(self.test_insert_dict_nullable.__name__)
+                    )
+
+                rows = 100
+                inserted = connection.bulk_insert(
+                    self.test_insert_dict_nullable.__name__,
+                    (
+                        {
+                            'NullableInt': ix * 1000,
+                            'PrimaryKey': ix,
+                            'NullableBinary': unicode_(ix).encode('utf-8')
+                        }
+                        if ix % 2 else
+                        {
+                            'PrimaryKey': ix,
+                        }
+                        for ix in range(0, rows)
+                    )
+                )
+
+                self.assertEqual(inserted, rows)
+
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT * FROM {0}'.format(self.test_insert_dict_nullable.__name__))
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (
+                                ix,
+                                ix * 1000 if ix % 2 else None,
+                                unicode_(ix).encode('utf-8') if ix % 2 else None
                             )
                             for ix in range(0, rows)
                         ]

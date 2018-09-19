@@ -57,6 +57,18 @@ This example illustrates how to import data from a *CSV* file.
                 iter(csvreader)
             )
 
+    # ctds 1.9 supports passing rows as dict objects, mapping column name
+    # to value. This is useful if the table contains NULLable columns
+    # not present in the CSV file. 
+    with open('BulkInsertExample.csv', 'rb') as csvfile:
+        csvreader = csv.DictReader(csvfile, delimiter=',')
+        with ctds.connect('host') as connection:
+            connection.bulk_insert(
+                'BulkInsertExample',
+                iter(csvreader)
+            )
+
+
 
 Batch Size
 ^^^^^^^^^^

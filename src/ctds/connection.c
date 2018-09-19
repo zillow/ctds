@@ -1379,7 +1379,7 @@ static const char s_Connection_bulk_insert_doc[] =
     "    objects. Each item in the data row is inserted into the table in\n"
     "    sequential order. Version 1.9 supports passing rows as\n"
     "    `:py:class:`dict`. Keys must map to column names and must exist for\n"
-    "    all columns.\n"
+    "    all non-NULL columns.\n"
     ":type rows: :ref:`typeiter <python:typeiter>`\n"
 
     ":param int batch_size: An optional batch size.\n"
@@ -1597,7 +1597,10 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
             DBINT processed = 0;
 
             DBINT ncolumns = 0;
-            char** columns = NULL;
+            struct {
+                bool nullable;
+                char* name;
+            }* columns = NULL;
             bool initialized = false;
 
             while (NULL != (row = PyIter_Next(irows)))
@@ -1653,7 +1656,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                     */
                     ncolumns = dbnumcols(connection->dbproc);
                     assert(ncolumns > 0);
-                    columns = tds_mem_calloc((size_t)ncolumns, sizeof(char*));
+                    columns = tds_mem_calloc((size_t)ncolumns, sizeof(*columns));
                     if (!columns)
                     {
                         PyErr_NoMemory();
@@ -1671,8 +1674,9 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                             break;
                         }
 
-                        columns[column] = tds_mem_strdup(dbcol.ActualName);
-                        if (!columns[column])
+                        columns[column].nullable = dbcol.Null;
+                        columns[column].name = tds_mem_strdup(dbcol.ActualName);
+                        if (!columns[column].name)
                         {
                             PyErr_NoMemory();
                             break;
@@ -1695,11 +1699,20 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                         for (column = 0; column < (size_t)ncolumns; ++column)
                         {
                             /* Retrieve the value by name from the row. */
-                            PyObject* value = PyMapping_GetItemString(row, columns[column]);
+                            PyObject* value = PyMapping_GetItemString(row, columns[column].name);
                             if (!value)
                             {
-                                assert(PyErr_Occurred()); /* set by PyMapping_GetItemString */
-                                break;
+                                if (columns[column].nullable)
+                                {
+                                    PyErr_Clear();
+                                    value = Py_None;
+                                    Py_INCREF(value);
+                                }
+                                else
+                                {
+                                    assert(PyErr_Occurred()); /* set by PyMapping_GetItemString */
+                                    break;
+                                }
                             }
 
                             PyTuple_SET_ITEM(tuple, (Py_ssize_t)column, value);
@@ -1745,7 +1758,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                 size_t column;
                 for (column = 0; column < (size_t)ncolumns; ++column)
                 {
-                    tds_mem_free(columns[column]);
+                    tds_mem_free(columns[column].name);
                 }
                 tds_mem_free(columns);
             }
