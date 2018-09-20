@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 order based on the column info available after `bcp_init`.
 https://github.com/zillow/ctds/issues/38
 
+### Fixed
+- Fix truncation of strings containing multi-byte sequences when not using
+`sp_executesql`.
+
 ## [1.8.0] - 2018-09-07
 ### Added
 - Official support for Python 3.7.

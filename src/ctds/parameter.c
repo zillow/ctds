@@ -941,7 +941,7 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
                     if (write) { value[written] = '\''; }
                     ++written;
 
-                    for (ixsrc = 0; ixsrc < MIN((size_t)rpcparam->tdstypesize, rpcparam->ninput); ++ixsrc)
+                    for (ixsrc = 0; ixsrc < rpcparam->ninput; ++ixsrc)
                     {
                         switch (input[ixsrc])
                         {
