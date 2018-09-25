@@ -795,6 +795,7 @@ PyMODINIT_FUNC PyInit__tds(void)
     if (0 != PyModule_AddIntMacro(module, TDSDATE)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSTIME)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSDATETIME2)) FAIL_MODULE_INIT;
+    if (0 != PyModule_AddIntMacro(module, TDSDATETIMEOFFSET)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSIMAGE)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSSMALLMONEY)) FAIL_MODULE_INIT;
     if (0 != PyModule_AddIntMacro(module, TDSMONEY)) FAIL_MODULE_INIT;

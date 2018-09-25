@@ -426,30 +426,54 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
             '''
             SELECT
                 CONVERT(DATETIME2, NULL),
-                CONVERT(DATETIME2, :0),
-                CONVERT(DATETIME2, :1)
-            ''',
-            (
-                datetime(1, 1, 1),
-                # $future: fix rounding issues. DB lib doesn't expose a good way to access
-                # the more precise DATETIME2 structure
-                datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
-            )
+                CONVERT(DATETIME2, '0001-01-01'),
+                CONVERT(DATETIME2, '9999-12-31T23:59:59.987654')
+            '''
         )
         self.assertEqual(
             tuple(self.cursor.fetchone()),
             (
                 None,
                 (
-                    '2001-01-01 00:00:00.0000000'
+                    '0001-01-01 00:00:00.0000000'
                     if self.connection.tds_version < '7.3'
-                    else datetime(2001, 1, 1)
+                    else datetime(1, 1, 1)
                 ),
                 (
-                    '9999-12-31 23:59:59.9966667'
+                    '9999-12-31 23:59:59.9876540'
                     if self.connection.tds_version < '7.3'
-                    else datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
+                    else datetime(
+                        9999, 12, 31,
+                        23, 59, 59,
+                        987654 if self.dbanydatecrack_supported else 997 * 1000
+                    )
                 ),
+            )
+        )
+
+    def test_datetimeoffset(self):
+        self.cursor.execute(
+            '''
+            SELECT
+                CONVERT(DATETIMEOFFSET, NULL),
+                CONVERT(DATETIMEOFFSET, '0001-01-01 00:00:00.0000000-14:00'),
+                CONVERT(DATETIMEOFFSET, '9999-12-31 23:59:59.9999999+14:00')
+            '''
+        )
+        self.assertEqual(
+            tuple(self.cursor.fetchone()),
+            (
+                None,
+                (
+                    '0001-01-01T00:00:00.0000000-14:00'
+                    if self.dbanydatecrack_supported else
+                    '0001-01-01 00:00:00.0000000 -14:00'
+                ),
+                (
+                    '9999-12-31T23:59:59.9999999+14:00'
+                    if self.dbanydatecrack_supported else
+                    '9999-12-31 23:59:59.9999999 +14:00'
+                )
             )
         )
 

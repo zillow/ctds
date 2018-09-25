@@ -150,6 +150,10 @@ class TestExternalDatabase(unittest.TestCase):
         return self.freetds_version >= (1, 0, 0)
 
     @property
+    def dbanydatecrack_supported(self):
+        return self.freetds_version >= (0, 95, 0)
+
+    @property
     def use_utf16(self):
         return self.freetds_version >= (1, 0, 0)
 

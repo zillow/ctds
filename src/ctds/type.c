@@ -1040,9 +1040,23 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
         }
         case TDSDATETIME:
         case TDSDATETIMEN:
+#if defined(CTDS_HAVE_DBANYDATECRACK)
+        case TDSDATE:
+        case TDSDATETIME2:
+        case TDSDATETIMEOFFSET:
+        case TDSTIME:
+#endif /* if defined(CTDS_HAVE_DBANYDATECRACK) */
         {
+            int useconds;
+#if defined(CTDS_HAVE_DBANYDATECRACK)
+            DBDATEREC2 dbdaterec;
+            (void)dbanydatecrack(NULL, &dbdaterec, tdstype, (DBDATETIME*)data);
+            useconds = dbdaterec.nanosecond / 1000;
+#else /* if defined(CTDS_HAVE_DBANYDATECRACK) */
             DBDATEREC dbdaterec;
             (void)dbdatecrack(NULL, &dbdaterec, (DBDATETIME*)data);
+            useconds = dbdaterec.millisecond * 1000;
+#endif /* else if defined(CTDS_HAVE_DBANYDATECRACK) */
 
             /*
                 If freetds was not compiled with MSDBLIB defined, the month,
@@ -1067,8 +1081,26 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
                     return PyTime_FromTime_(dbdaterec.hour,
                                             dbdaterec.minute,
                                             dbdaterec.second,
-                                            dbdaterec.millisecond * 1000);
+                                            useconds);
                 }
+#if defined(CTDS_HAVE_DBANYDATECRACK)
+                case TDSDATETIMEOFFSET:
+                {
+                    int hours = abs(dbdaterec.tzone) / 60;
+                    int minutes = abs(dbdaterec.tzone) % 60;
+                    return PyUnicode_FromFormat("%04u-%02u-%02uT%02u:%02u:%02u.%07u%c%02d:%02u",
+                                                dbdaterec.year,
+                                                dbdaterec.month,
+                                                dbdaterec.day,
+                                                dbdaterec.hour,
+                                                dbdaterec.minute,
+                                                dbdaterec.second,
+                                                dbdaterec.nanosecond / 100,
+                                                (dbdaterec.tzone > 0) ? '+' : '-',
+                                                hours,
+                                                minutes);
+                }
+#endif /* if defined(CTDS_HAVE_DBANYDATECRACK) */
                 default:
                 {
                     return PyDateTime_FromDateAndTime_(dbdaterec.year,
@@ -1077,7 +1109,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
                                                        dbdaterec.hour,
                                                        dbdaterec.minute,
                                                        dbdaterec.second,
-                                                       dbdaterec.millisecond * 1000);
+                                                       useconds);
                 }
             }
             break;
@@ -1098,45 +1130,48 @@ static const struct {
     enum TdsType tdstype;
     sql_topython topython;
 } s_tdstypes[] = {
-    { TDSCHAR,          SQLCHAR_topython },
-    { TDSVARCHAR,       SQLCHAR_topython },
-    { TDSTEXT,          SQLCHAR_topython },
+    { TDSCHAR,           SQLCHAR_topython },
+    { TDSVARCHAR,        SQLCHAR_topython },
+    { TDSTEXT,           SQLCHAR_topython },
 
     /* Map the XML type to Python string. */
-    { TDSXML,           SQLCHAR_topython },
+    { TDSXML,            SQLCHAR_topython },
 
-    { TDSBINARY,        SQLBINARY_topython },
-    { TDSVARBINARY,     SQLBINARY_topython },
-    { TDSIMAGE,         SQLBINARY_topython },
+    { TDSBINARY,         SQLBINARY_topython },
+    { TDSVARBINARY,      SQLBINARY_topython },
+    { TDSIMAGE,          SQLBINARY_topython },
 
-    { TDSBIT,           SQLBIT_topython },
-    { TDSBITN,          SQLBIT_topython },
-    { TDSINTN,          SQLINT_topython },
-    { TDSTINYINT,       SQLINT_topython },
-    { TDSSMALLINT,      SQLINT_topython },
-    { TDSINT,           SQLINT_topython },
-    { TDSBIGINT,        SQLINT_topython },
+    { TDSBIT,            SQLBIT_topython },
+    { TDSBITN,           SQLBIT_topython },
+    { TDSINTN,           SQLINT_topython },
+    { TDSTINYINT,        SQLINT_topython },
+    { TDSSMALLINT,       SQLINT_topython },
+    { TDSINT,            SQLINT_topython },
+    { TDSBIGINT,         SQLINT_topython },
 
-    { TDSFLOAT,         FLOAT_topython },
-    { TDSFLOATN,        FLOAT_topython },
-    { TDSREAL,          FLOAT_topython },
+    { TDSFLOAT,          FLOAT_topython },
+    { TDSFLOATN,         FLOAT_topython },
+    { TDSREAL,           FLOAT_topython },
 
-    { TDSSMALLMONEY,    MONEY_topython },
-    { TDSMONEY,         MONEY_topython },
-    { TDSMONEYN,        MONEY_topython },
+    { TDSSMALLMONEY,     MONEY_topython },
+    { TDSMONEY,          MONEY_topython },
+    { TDSMONEYN,         MONEY_topython },
 
-    { TDSDECIMAL,       NUMERIC_topython },
-    { TDSNUMERIC,       NUMERIC_topython },
+    { TDSDECIMAL,        NUMERIC_topython },
+    { TDSNUMERIC,        NUMERIC_topython },
 
-    { TDSDATE,          DATETIME_topython },
-    { TDSDATETIME,      DATETIME_topython },
-    { TDSDATETIME2,     DATETIME_topython },
-    { TDSDATETIMEN,     DATETIME_topython },
-    { TDSSMALLDATETIME, DATETIME_topython },
-    { TDSTIME,          DATETIME_topython },
+    { TDSDATE,           DATETIME_topython },
+    { TDSDATETIME,       DATETIME_topython },
+    { TDSDATETIME2,      DATETIME_topython },
+    { TDSDATETIMEN,      DATETIME_topython },
+#if defined(CTDS_HAVE_DBANYDATECRACK)
+    { TDSDATETIMEOFFSET, DATETIME_topython },
+#endif
+    { TDSSMALLDATETIME,  DATETIME_topython },
+    { TDSTIME,           DATETIME_topython },
 
-    { TDSGUID,          GUID_topython },
-    { TDSVOID,          NULL },
+    { TDSGUID,           GUID_topython },
+    { TDSVOID,           NULL },
 };
 
 
