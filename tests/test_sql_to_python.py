@@ -523,15 +523,3 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
                 xml
             )
         )
-
-    def test_unsupported(self):
-        obj = object()
-        try:
-            self.cursor.execute('SELECT :0', (obj,))
-        except ctds.InterfaceError as ex:
-            self.assertEqual(
-                str(ex),
-                'could not implicitly convert Python type "{0}" to SQL'.format(type(obj))
-            )
-        else:
-            self.fail('.execute() did not fail as expected') # pragma: nocover

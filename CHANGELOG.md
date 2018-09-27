@@ -7,7 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add support for passing sequences of `dict` values to
 `ctds.Connection.bulk_insert`. The mapping key is used to determine the column
 order based on the column info available after `bcp_init`.
-https://github.com/zillow/ctds/issues/38
+https://github.com/zillow/ctds/issues/38.
+- Add support for the DATETIMEOFFSET SQL type.
+https://github.com/zillow/ctds/issues/14.
 
 ### Fixed
 - Fix truncation of strings containing multi-byte sequences when not using

@@ -2,6 +2,8 @@ import datetime
 import decimal
 import uuid
 
+import ctds
+
 from .base import TestExternalDatabase
 from .compat import long_, PY3, unichr_, unicode_
 
@@ -116,7 +118,7 @@ class TestPythonToSQL(TestExternalDatabase):
     def test_datetime(self):
         values = (
             datetime.datetime(1753, 1, 1, 0, 0),
-            datetime.datetime(9999, 12, 31, 23, 59, 59, 997 * 1000),
+            datetime.datetime(9999, 12, 31, 23, 59, 59, 987654),
         )
         with self.connect() as connection:
             with connection.cursor() as cursor:
@@ -125,7 +127,18 @@ class TestPythonToSQL(TestExternalDatabase):
                     self.assertEqual('datetime', row.Type)
                     self.assertEqual(row.Precision, 23)
                     self.assertEqual(row.Scale, 3)
-                    self.assertEqual(value, row.Value)
+                    self.assertEqual(
+                        row.Value,
+                        datetime.datetime(
+                            value.year,
+                            value.month,
+                            value.day,
+                            value.hour,
+                            value.minute,
+                            value.second,
+                            (value.microsecond // 1000) * 1000
+                        )
+                    )
 
     def test_float(self):
         self.assert_type('float', (0.0, -1.1234, 12345.67890))
@@ -191,3 +204,17 @@ class TestPythonToSQL(TestExternalDatabase):
                     # FreeTDS doesn't support sending raw GUID values, so they are sent as CHAR.
                     self.assertTrue(isinstance(row.Value, unicode_))
                     self.assertEqual(unicode_(value), row.Value)
+
+    def test_unsupported(self):
+        obj = object()
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                try:
+                    cursor.execute('SELECT :0', (obj,))
+                except ctds.InterfaceError as ex:
+                    self.assertEqual(
+                        str(ex),
+                        'could not implicitly convert Python type "{0}" to SQL'.format(type(obj))
+                    )
+                else:
+                    self.fail('.execute() did not fail as expected') # pragma: nocover
