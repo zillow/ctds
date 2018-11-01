@@ -574,19 +574,25 @@ against all parameter sequences or mappings found in the sequence
                         CREATE TABLE {0} (
                             [varchar] VARCHAR(MAX),
                             [nvarchar] NVARCHAR(MAX),
-                            [varbinary] VARBINARY(MAX)
+                            [varbinary] VARBINARY(MAX),
+                            [int] BIGINT
                         );
                         '''.format(self.test_variable_width_columns.__name__)
                     )
                     cursor.executemany(
                         '''
-                        INSERT INTO {0}([varchar], [nvarchar], [varbinary]) VALUES (:varchar, :nvarchar, :varbinary);
+                        INSERT INTO
+                            {0}([varchar], [nvarchar], [varbinary], [int])
+                        VALUES (
+                            :varchar, :nvarchar, :varbinary, :int
+                        );
                         '''.format(self.test_variable_width_columns.__name__),
                         (
                             {
                                 'varchar': unicode_('v' * (ix + 1)),
                                 'nvarchar': unicode_('n' * (ix + 1)),
                                 'varbinary': b'b' * (ix + 1),
+                                'int': 8 ** ix,
                             }
                             for ix in range(10)
                         )
@@ -604,6 +610,7 @@ against all parameter sequences or mappings found in the sequence
                                 unicode_('v' * (ix + 1)),
                                 unicode_('n' * (ix + 1)),
                                 b'b' * (ix + 1),
+                                8 ** ix,
                             )
                             for ix in range(10)
                         ]
