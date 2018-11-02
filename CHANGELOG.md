@@ -12,6 +12,8 @@ https://github.com/zillow/ctds/issues/38
 ### Fixed
 - Fix truncation of strings containing multi-byte sequences when not using
 `sp_executesql`.
+- Fix `ctds.Cursor.executemany()` truncating data for integer types.
+https://github.com/zillow/ctds/issues/43.
 
 ## [1.8.0] - 2018-09-07
 ### Added

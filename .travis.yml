@@ -1,5 +1,11 @@
 language: generic
 
+addons:
+    homebrew:
+        packages:
+            - freetds
+        update: true
+
 branches:
     except:
         - /^appveyor-.*$/

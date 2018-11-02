@@ -15,11 +15,7 @@ if [ "$TRAVIS_OS_NAME" != "osx" ]; then
     # Launch SQL Server
     make start-sqlserver
 else
-    brew update
-    brew install freetds
-
     # Upgrade Travis CI's Python2.7 to Python3.
-    brew upgrade python
     python3 -m venv ctds-venv
     source ctds-venv/bin/activate
 fi

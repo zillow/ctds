@@ -800,12 +800,32 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         case TDSBITN:
         CONST_CASE(BIT)
 
-        case TDSINTN:
-            /* INTN can represent up to 32 bit integers. */
-        CONST_CASE(INT)
-        CONST_CASE(TINYINT)
-        CONST_CASE(SMALLINT)
-        CONST_CASE(BIGINT)
+        case TDSINTN: /* INTN can represent up to 32 bit integers. */
+        case TDSINT:
+        case TDSTINYINT:
+        case TDSSMALLINT:
+        case TDSBIGINT:
+        {
+            const char* prefix = "";
+            if (maximum_width || TDSBIGINT == rpcparam->tdstype)
+            {
+                prefix = "BIG";
+            }
+            else if (TDSTINYINT == rpcparam->tdstype)
+            {
+                prefix = "TINY";
+            }
+            else if (TDSSMALLINT == rpcparam->tdstype)
+            {
+                prefix = "SMALL";
+            }
+            sql = tds_mem_malloc(ARRAYSIZE("SMALLINT"));
+            if (sql)
+            {
+                (void)sprintf(sql, "%sINT", prefix);
+            }
+            break;
+        }
 
         case TDSFLOAT:
         case TDSFLOATN:
