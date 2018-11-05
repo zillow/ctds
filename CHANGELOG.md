@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## [1.9.0] - 2018-11-05
 ### Added
 - Add support for passing sequences of `dict` values to
 `ctds.Connection.bulk_insert`. The mapping key is used to determine the column
@@ -221,7 +222,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/zillow/ctds/compare/v1.9.0...v1.8.0
 [1.8.0]: https://github.com/zillow/ctds/compare/v1.8.0...v1.7.0
 [1.7.0]: https://github.com/zillow/ctds/compare/v1.7.0...v1.6.3
 [1.6.3]: https://github.com/zillow/ctds/compare/v1.6.3...v1.6.2
