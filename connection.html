@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connection &mdash; ctds 1.8.0 documentation</title>
+  <title>Connection &mdash; ctds 1.9.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.8
+                1.9
               </div>
             
           
@@ -256,7 +256,9 @@ after <cite>batch_size</cite> rows have been copied to server.</p>
 <li><strong>table</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The table in which to insert the rows.</li>
 <li><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typeiter" title="(in Python v3.7)"><span class="xref std std-ref">typeiter</span></a>) – An iterable of data rows. Data rows are Python <cite>sequence</cite>
 objects. Each item in the data row is inserted into the table in
-sequential order.</li>
+sequential order.
+Version 1.9 supports passing rows as <cite>:py:class:`dict</cite>. Keys must map
+to column names and must exist for all non-NULL columns.</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional batch size.</li>
 <li><strong>tablock</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Should the <cite>TABLOCK</cite> hint be passed.</li>
 </ul>
@@ -476,7 +478,7 @@ FreeTDS which does not support setting the timeout on a connection.</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.8.0',
+            VERSION:'1.9.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

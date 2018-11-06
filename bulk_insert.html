@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bulk Insert &mdash; ctds 1.8.0 documentation</title>
+  <title>Bulk Insert &mdash; ctds 1.9.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.8
+                1.9
               </div>
             
           
@@ -185,6 +185,19 @@ should return a sequence containing the values for each column in the table.</p>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="p">)</span>
+
+    <span class="c1"># Version 1.9 supports passing dict rows.</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
+        <span class="s1">&#39;MyExampleTable&#39;</span><span class="p">,</span>
+        <span class="c1"># A generator of the rows.</span>
+        <span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;IntColumn&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                <span class="s1">&#39;TextColumn&#39;</span><span class="p">:</span> <span class="s1">&#39;hello world {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -196,6 +209,17 @@ should return a sequence containing the values for each column in the table.</p>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;BulkInsertExample.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
     <span class="n">csvreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
+            <span class="s1">&#39;BulkInsertExample&#39;</span><span class="p">,</span>
+            <span class="nb">iter</span><span class="p">(</span><span class="n">csvreader</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<span class="c1"># ctds 1.9 supports passing rows as dict objects, mapping column name</span>
+<span class="c1"># to value. This is useful if the table contains NULLable columns</span>
+<span class="c1"># not present in the CSV file.</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;BulkInsertExample.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+    <span class="n">csvreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">ctds</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">bulk_insert</span><span class="p">(</span>
             <span class="s1">&#39;BulkInsertExample&#39;</span><span class="p">,</span>
@@ -303,7 +327,7 @@ most SQL Server configurations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.8.0',
+            VERSION:'1.9.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
