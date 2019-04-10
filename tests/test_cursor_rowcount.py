@@ -60,5 +60,5 @@ The number of rows that the last :py:meth:`.execute` produced or affected.
                 )
                 self.assertEqual(
                     cursor.rowcount,
-                    -1 if self.use_sp_executesql else 3
+                    3 if self.have_valid_rowcount else -1
                 )
