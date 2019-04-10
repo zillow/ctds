@@ -56,6 +56,10 @@ enum ParamStyle {
 #  define CTDS_HAVE_NTLMV2 1
 #endif
 
+#if defined(SYBMSTIME)
+#  define CTDS_HAVE_TDSTIME 1
+#endif
+
 /*
     Use `sp_executesql` when possible for the execute*() methods. This method
     won't work on older versions of FreeTDS which don't properly support passing

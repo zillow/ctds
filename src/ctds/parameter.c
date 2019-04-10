@@ -66,7 +66,11 @@ struct Parameter
         DBINT dbint;
         DBBIGINT dbbigint;
         DBDECIMAL dbdecimal;
+#if defined(CTDS_HAVE_TDSTIME)
+        DBDATETIMEALL dbdatetime;
+#else /* if defined(CTDS_HAVE_TDSTIME) */
         DBDATETIME dbdatetime;
+#endif /* else if defined(CTDS_HAVE_TDSTIME) */
         DBFLT8 dbflt8;
     } buffer;
 
@@ -257,23 +261,14 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
         struct SqlType* sqltype = (struct SqlType*)value;
         parameter->input = sqltype->data;
         parameter->ninput = sqltype->ndata;
-
-        switch (sqltype->tdstype)
-        {
-            case TDSDATE:
-            {
-                /* FreeTDS 0.9.15 doesn't support TDSDATE properly. Fallback to DATETIME. */
-                parameter->tdstype = TDSDATETIME;
-                break;
-            }
-            default:
-            {
-                parameter->tdstype = sqltype->tdstype;
-                break;
-            }
-        }
-
         parameter->tdstypesize = (DBINT)sqltype->size;
+        parameter->tdstype = sqltype->tdstype;
+
+        if (TDSDATE == sqltype->tdstype)
+        {
+            /* FreeTDS doesn't support passing TDSDATE properly. Fallback to DATETIME. */
+            parameter->tdstype = TDSDATETIME;
+        }
     }
     else
     {
@@ -512,14 +507,17 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             }
             else if (PyDate_Check_(value) || PyTime_Check_(value))
             {
-                if (-1 == datetime_to_sql(value, &parameter->buffer.dbdatetime))
+                int ninput = datetime_to_sql(value,
+                                             &parameter->tdstype,
+                                             &parameter->buffer.dbdatetime,
+                                             sizeof(parameter->buffer.dbdatetime));
+                if (-1 == ninput)
                 {
                     PyErr_Format(PyExc_tds_InterfaceError, "failed to convert datetime");
                     break;
                 }
 
-                parameter->ninput = sizeof(parameter->buffer.dbdatetime);
-                parameter->tdstype = TDSDATETIME;
+                parameter->ninput = (size_t)ninput;
                 parameter->input = (const void*)&parameter->buffer;
             }
             else if (PyUuid_Check(value))
@@ -637,7 +635,11 @@ struct Parameter* Parameter_create(PyObject* value, bool output)
                         case TDSTIME:
                         case TDSDATETIME2:
                         {
+#if defined(CTDS_HAVE_TDSTIME)
+                            parameter->noutput = sizeof(DBDATETIMEALL);
+#else /* if defined(CTDS_HAVE_TDSTIME) */
                             parameter->noutput = sizeof(DBDATETIME);
+#endif /* else if defined(CTDS_HAVE_TDSTIME) */
                             break;
                         }
                         case TDSSMALLMONEY:

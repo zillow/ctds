@@ -1,5 +1,5 @@
 import contextlib
-from datetime import datetime
+from datetime import date, datetime, time
 from decimal import Decimal
 import uuid
 import warnings
@@ -529,13 +529,22 @@ parameters are replaced with output values.
                             @pVarBinary VARBINARY(32) OUTPUT,
                             @pFloat FLOAT OUTPUT,
                             @pDateTime DATETIME,
-                            @pDateTimeOut DATETIME OUTPUT
+                            @pDateTimeOut DATETIME OUTPUT,
+                            @pDateTime2 DATETIME2,
+                            @pDateTime2Out DATETIME2 OUTPUT,
+                            @pDate DATE,
+                            @pDateOut DATE OUTPUT,
+                            @pTime TIME,
+                            @pTimeOut TIME OUTPUT
                         AS
                             SET @pBigInt = @pBigInt * 2;
                             SET @pVarBinary = CONVERT(VARBINARY(32), @pVarChar);
                             SET @pVarChar = CONVERT(VARCHAR(32), @pDateTime, 120);
                             SET @pFloat = @pFloat * 2.1;
                             SET @pDateTimeOut = CONVERT(DATETIME, '2017-01-01 01:02:03');
+                            SET @pDateTime2Out = CONVERT(DATETIME2, '2017-01-01 01:02:03.1234567');
+                            SET @pDateOut = CONVERT(DATE, '2017-01-01');
+                            SET @pTimeOut = CONVERT(TIME, '01:02:03.1234567');
                         '''
                 ):
                     types = [str]
@@ -552,12 +561,21 @@ parameters are replaced with output values.
                             type_('@pFloat'): ctds.Parameter(1.23, output=True),
                             type_('@pDateTime'): datetime(2011, 11, 5, 12, 12, 12),
                             type_('@pDateTimeOut'): ctds.Parameter(datetime.utcnow(), output=True),
+                            type_('@pDateTime2'): datetime(2011, 11, 5, 12, 12, 12, 123456),
+                            type_('@pDateTime2Out'): ctds.Parameter(datetime.utcnow(), output=True),
+                            type_('@pDate'): date(2011, 11, 5),
+                            type_('@pDateOut'): ctds.Parameter(date.today(), output=True),
+                            type_('@pTime'): time(12, 12, 12, 123456),
+                            type_('@pTimeOut'): ctds.Parameter(datetime.utcnow().time(), output=True),
                         }
                         outputs = cursor.callproc(sproc, inputs)
                         self.assertNotEqual(id(outputs[type_('@pBigInt')]), id(inputs[type_('@pBigInt')]))
                         self.assertNotEqual(id(outputs[type_('@pVarChar')]), id(inputs[type_('@pVarChar')]))
                         self.assertNotEqual(id(outputs[type_('@pVarBinary')]), id(inputs[type_('@pVarBinary')]))
                         self.assertEqual(id(outputs[type_('@pDateTime')]), id(inputs[type_('@pDateTime')]))
+                        self.assertEqual(id(outputs[type_('@pDateTime2')]), id(inputs[type_('@pDateTime2')]))
+                        self.assertEqual(id(outputs[type_('@pDate')]), id(inputs[type_('@pDate')]))
+                        self.assertEqual(id(outputs[type_('@pTime')]), id(inputs[type_('@pTime')]))
 
                         self.assertEqual(
                             outputs[type_('@pBigInt')],
@@ -578,6 +596,26 @@ parameters are replaced with output values.
                         self.assertEqual(
                             outputs[type_('@pDateTimeOut')],
                             datetime(2017, 1, 1, 1, 2, 3)
+                        )
+                        self.assertEqual(
+                            outputs[type_('@pDateTime2Out')],
+                            datetime(
+                                2017, 1, 1, 1, 2, 3,
+                                123456 if self.tdstime_supported else 123000
+                            )
+                        )
+                        self.assertEqual(
+                            outputs[type_('@pDateOut')],
+
+                            # $future: When passing TDSDATE to FreeTDS is
+                            # supported, this should be a `datetime.date`
+                            datetime(2017, 1, 1)
+                        )
+                        self.assertEqual(
+                            outputs[type_('@pTimeOut')],
+                            time(1, 2, 3, 123456)
+                            if self.tdstime_supported else
+                            datetime(1900, 1, 1, 1, 2, 3, 123000)
                         )
 
     def test_binary(self):

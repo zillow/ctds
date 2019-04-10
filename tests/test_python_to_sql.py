@@ -91,7 +91,7 @@ class TestPythonToSQL(TestExternalDatabase):
     def test_time(self):
         values = (
             datetime.time(0, 0, 0),
-            datetime.time(12, 13, 14, 123000),
+            datetime.time(12, 13, 14, 123456),
             datetime.time(23, 59, 59, 997000),
         )
         # Times are always converted to datetime for compatibility with older FreeTDS versions.
@@ -99,16 +99,33 @@ class TestPythonToSQL(TestExternalDatabase):
             with connection.cursor() as cursor:
                 for value in values:
                     row = self.parameter_type(cursor, value)
-                    self.assertEqual('datetime', row.Type)
-                    self.assertEqual(row.Precision, 23)
-                    self.assertEqual(row.Scale, 3)
                     self.assertEqual(
+                        'time' if self.tdstime_supported else 'datetime',
+                        row.Type
+                    )
+                    self.assertEqual(
+                        16 if self.tdstime_supported else 23,
+                        row.Precision
+                    )
+                    self.assertEqual(
+                        7 if self.tdstime_supported else 3,
+                        row.Scale
+                    )
+                    self.assertEqual(
+                        datetime.time(
+                            value.hour,
+                            value.minute,
+                            value.second,
+                            value.microsecond,
+                        )
+                        if self.tdstime_supported else
                         datetime.datetime(
                             1900, 1, 1,
                             value.hour,
                             value.minute,
                             value.second,
-                            value.microsecond,
+                            # TDSTIME support is required for microsecond resolution
+                            (value.microsecond // 1000) * 1000,
                         ),
                         row.Value
                     )
