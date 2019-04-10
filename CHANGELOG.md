@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Add FreeTDS 1.1 to test matrix.
+
 ## [1.9.0] - 2018-11-05
 ### Added
 - Add support for passing sequences of `dict` values to

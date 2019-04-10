@@ -15,7 +15,8 @@ The number of rows that the last :py:meth:`.execute` produced or affected.
 
 .. note::
 
-    This value is unreliable when :py:meth:`.execute` is called with parameters.
+    This value is unreliable when :py:meth:`.execute` is called with parameters
+    and using a version of FreeTDS prior to 1.1.
 
 :pep:`0249#rowcount`
 
@@ -60,5 +61,5 @@ The number of rows that the last :py:meth:`.execute` produced or affected.
                 )
                 self.assertEqual(
                     cursor.rowcount,
-                    -1 if self.use_sp_executesql else 3
+                    3 if self.have_valid_rowcount else -1
                 )

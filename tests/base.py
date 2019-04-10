@@ -153,6 +153,11 @@ class TestExternalDatabase(unittest.TestCase):
     def use_utf16(self):
         return self.freetds_version >= (1, 0, 0)
 
+    @property
+    def have_valid_rowcount(self):
+        # FreeTDS 1.1+ properly returns rowcount, even when calling sp_executesql.
+        return self.freetds_version >= (1, 1, 0) or not self.use_sp_executesql
+
     # Older versions of FreeTDS improperly round the money to the nearest hundredth.
     def round_money(self, money):
         if self.freetds_version > (0, 92, 405): # pragma: nobranch
