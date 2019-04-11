@@ -1050,6 +1050,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
         case TDSDATE:
         case TDSTIME:
         case TDSDATETIME2:
+        case TDSSMALLDATETIME:
 #endif /* if defined(CTDS_HAVE_TDSTIME) */
         case TDSDATETIME:
         case TDSDATETIMEN:
