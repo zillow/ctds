@@ -1032,7 +1032,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
             DBINT size = dbconvert(NULL,
                                    tdstype,
                                    data,
-                                   -1,
+                                   (DBINT)ndata,
                                    SYBDATETIME,
                                    (BYTE*)&dbdatetime, -1);
             if (-1 == size)
