@@ -9,7 +9,7 @@ environment:
 
   BUILD_INSTALL_PREFIX: "C:\\usr\\local"
 
-  FREETDS_VERSION: "1.1"
+  FREETDS_VERSION: "1.1.4"
 
   matrix:
   - PYTHON: "C:\\Python27-x64"
