@@ -438,7 +438,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
                     if self.connection.tds_version < '7.3'
                     else (
                         datetime(9999, 12, 31, 23, 59, 59, 999999)
-                        if self.tdstime_supported else
+                        if self.tdsdatetime2_supported else
                         datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
                     )
                 ),

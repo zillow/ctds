@@ -601,7 +601,7 @@ parameters are replaced with output values.
                             outputs[type_('@pDateTime2Out')],
                             datetime(
                                 2017, 1, 1, 1, 2, 3,
-                                123456 if self.tdstime_supported else 123000
+                                123456 if self.tdsdatetime2_supported else 123000
                             )
                         )
                         self.assertEqual(

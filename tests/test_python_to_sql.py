@@ -138,7 +138,7 @@ class TestPythonToSQL(TestExternalDatabase):
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for value in values:
-                    datetime2 = self.tdstime_supported and value.microsecond % 1000
+                    datetime2 = self.tdsdatetime2_supported and value.microsecond % 1000
                     row = self.parameter_type(cursor, value)
                     self.assertEqual(
                         'datetime2'
