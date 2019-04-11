@@ -840,6 +840,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
 
         case TDSDATETIMEN:
         CONST_CASE(DATETIME)
+        CONST_CASE(DATETIME2)
         CONST_CASE(SMALLDATETIME)
         CONST_CASE(DATE)
         CONST_CASE(TIME)

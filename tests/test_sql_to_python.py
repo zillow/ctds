@@ -431,9 +431,7 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
             ''',
             (
                 datetime(1, 1, 1),
-                # $future: fix rounding issues. DB lib doesn't expose a good way to access
-                # the more precise DATETIME2 structure
-                datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
+                '9999-12-31 23:59:59.9966667'
             )
         )
         self.assertEqual(
