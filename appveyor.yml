@@ -9,7 +9,7 @@ environment:
 
   BUILD_INSTALL_PREFIX: "C:\\usr\\local"
 
-  FREETDS_VERSION: "1.00.94"
+  FREETDS_VERSION: "1.1"
 
   matrix:
   - PYTHON: "C:\\Python27-x64"
@@ -36,6 +36,9 @@ environment:
     SQLSERVER_INSTANCENAME: "SQL2014"
 
   - PYTHON: "C:\\Python36-x64"
+    SQLSERVER_INSTANCENAME: "SQL2016"
+
+  - PYTHON: "C:\\Python37-x64"
     SQLSERVER_INSTANCENAME: "SQL2016"
 
 # Note: Database services should *not* be specified in the services section.
