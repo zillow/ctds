@@ -73,6 +73,7 @@ enum ParamStyle {
 #if defined(DATETIME2BIND)
 #  define CTDS_USE_SP_EXECUTESQL 1
 #  define CTDS_USE_NCHARS 1
+#  define CTDS_SUPPORT_BCP_EMPTY_STRING 1
 #endif
 
 #endif /* ifndef __TDS_H__ */

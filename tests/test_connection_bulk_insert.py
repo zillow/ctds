@@ -5,7 +5,7 @@ import warnings
 import ctds
 
 from .base import TestExternalDatabase
-from .compat import PY3, PY35, unicode_
+from .compat import PY35, unicode_
 
 
 class TestConnectionBulkInsert(TestExternalDatabase):
@@ -207,7 +207,7 @@ insert.\
                                 unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix).encode('latin-1')
                             ),
                             ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100).encode('utf-16le')),
-                            bytes(ix),
+                            bytes(ix + 1),
                             Decimal(str(ix + .125))
                         )
                         for ix in range(0, rows)
@@ -226,8 +226,7 @@ insert.\
                                 datetime.datetime(2000 + ix, 1, 1) if ix % 2 else None,
                                 unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix),
                                 unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100,
-                                # FreeTDS maps b'' -> NULL
-                                bytes(ix) if ix or not PY3 else None,
+                                bytes(ix + 1),
                                 Decimal(str(ix + .125))
                             )
                             for ix in range(0, rows)
@@ -264,7 +263,7 @@ insert.\
                     self.test_insert_dict.__name__,
                     (
                         {
-                            'Bytes': bytes(ix),
+                            'Bytes': bytes(ix + 1),
                             'Date': datetime.datetime(2000 + ix, 1, 1) if ix % 2 else None,
                             'Decimal': Decimal(str(ix + .125)),
                             'PrimaryKey': ix,
@@ -291,8 +290,7 @@ insert.\
                                 datetime.datetime(2000 + ix, 1, 1) if ix % 2 else None,
                                 unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix),
                                 unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100,
-                                # FreeTDS maps b'' -> NULL
-                                bytes(ix) if ix or not PY3 else None,
+                                bytes(ix + 1),
                                 Decimal(str(ix + .125))
                             )
                             for ix in range(0, rows)
@@ -444,10 +442,10 @@ insert.\
                             ix,
                             datetime.datetime(2000 + ix, 1, 1) if ix < 1000 else None,
                             ctds.SqlVarChar(
-                                unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix).encode('utf-8')
+                                unicode_(b'this is row {0} \xc2\xbd', encoding='utf-8').format(ix).encode('latin-1')
                             ),
                             ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8')).encode('utf-16le')),
-                            bytes(ix),
+                            bytes(ix + 1),
                             Decimal(str(ix + .125))
                         )
                         for ix in range(0, rows)
@@ -490,7 +488,7 @@ insert.\
                             datetime.datetime(2000 + ix, 1, 1) if ix < 1000 else None,
                             ctds.SqlVarChar(unicode_(b'this is row {0}', encoding='utf-8').format(ix)),
                             ctds.SqlVarChar((unicode_(b'\xe3\x83\x9b', encoding='utf-8') * 100).encode('utf-16le')),
-                            bytes(ix),
+                            bytes(ix + 1),
                             Decimal(str(ix + .125))
                         )
                         for ix in range(0, rows)
@@ -543,6 +541,63 @@ insert.\
                         [tuple(row) for row in cursor.fetchall()],
                         [
                             (unicode_(b'\xc2\xbd', encoding='latin-1'), b'\xc2\xbd',)
+                        ]
+                    )
+
+            finally:
+                connection.rollback()
+
+    def test_insert_empty_string(self):
+        with self.connect(autocommit=False) as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0}
+                        (
+                            String VARCHAR(1000) COLLATE SQL_Latin1_General_CP1_CI_AS
+                        )
+                        '''.format(self.test_insert_empty_string.__name__)
+                    )
+
+                with warnings.catch_warnings(record=True) as warns:
+                    connection.bulk_insert(
+                        self.test_insert_empty_string.__name__,
+                        (
+                            (
+                                ctds.SqlVarChar(unicode_(b'\xc2\xbd', encoding='utf-8').encode('latin-1')),
+                            ),
+                            (
+                                ctds.SqlVarChar(unicode_('').encode('latin-1')),
+                            ),
+                        )
+                    )
+                if self.bcp_empty_string_supported:
+                    self.assertEqual(
+                        [str(warn.message) for warn in warns],
+                        [
+                            '''\
+"" converted to NULL for compatibility with FreeTDS. \
+Please update to a recent version of FreeTDS. \
+'''
+                        ] * len(warns)
+                    )
+
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        SELECT
+                            String,
+                            CONVERT(VARBINARY(1000), String) AS Bytes
+                        FROM
+                            {0}
+                        '''.format(self.test_insert_empty_string.__name__)
+                    )
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (unicode_(b'\xc2\xbd', encoding='utf-8'), b'\xbd',),
+                            (unicode_('') if self.bcp_empty_string_supported else None, None,),
                         ]
                     )
 
