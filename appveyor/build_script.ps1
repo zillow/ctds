@@ -20,6 +20,5 @@ $env:CTDS_STRICT = 1
 $env:CTDS_COVER = 1
 
 & "$PSScriptRoot\build.cmd" "$env:PYTHON\python.exe" setup.py install
-& "$env:PYTHON\python.exe" -c 'import ctds; print(ctds.freetds_version)'
 
 if ($LastExitCode -ne 0) { exit $LastExitCode }
