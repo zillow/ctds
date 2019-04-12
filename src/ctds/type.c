@@ -699,7 +699,11 @@ SQL_TYPE_DEF(NVarChar, s_SqlNVarChar_doc);
 struct SqlDate
 {
     SqlType_HEAD;
+#if defined(CTDS_HAVE_TDSTIME)
+    DBDATETIMEALL dbdatetime;
+#else /* if defined(CTDS_HAVE_TDSTIME) */
     DBDATETIME dbdatetime;
+#endif /* else if defined(CTDS_HAVE_TDSTIME) */
 };
 
 static const char s_SqlDate_doc[] =
@@ -727,7 +731,11 @@ static int SqlDate_init(PyObject* self, PyObject* args, PyObject* kwargs)
 
     if (PyDate_Check_(value))
     {
-        DBINT result = datetime_to_sql(value, &date->dbdatetime);
+        enum TdsType unused = (enum TdsType)-1;
+        DBINT result = datetime_to_sql(value,
+                                       &unused,
+                                       &date->dbdatetime,
+                                       sizeof(date->dbdatetime));
         if (-1 == result)
         {
             PyErr_SetObject(PyExc_ValueError, value);
@@ -1024,7 +1032,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
             DBINT size = dbconvert(NULL,
                                    tdstype,
                                    data,
-                                   -1,
+                                   (DBINT)ndata,
                                    SYBDATETIME,
                                    (BYTE*)&dbdatetime, -1);
             if (-1 == size)
@@ -1038,11 +1046,26 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
 
             /* Intentional fall-through. */
         }
+#if defined(CTDS_HAVE_TDSTIME)
+        case TDSDATE:
+        case TDSTIME:
+        case TDSDATETIME2:
+        case TDSSMALLDATETIME:
+#endif /* if defined(CTDS_HAVE_TDSTIME) */
         case TDSDATETIME:
         case TDSDATETIMEN:
         {
+            int usecond;
+#if defined(CTDS_HAVE_TDSTIME)
+            DBDATEREC2 dbdaterec;
+            (void)dbanydatecrack(NULL, &dbdaterec, tdstype, data);
+
+            usecond = dbdaterec.nanosecond / 1000;
+#else /* if defined(CTDS_HAVE_TDSTIME) */
             DBDATEREC dbdaterec;
             (void)dbdatecrack(NULL, &dbdaterec, (DBDATETIME*)data);
+            usecond = dbdaterec.millisecond * 1000;
+#endif /* else if defined(CTDS_HAVE_TDSTIME) */
 
             /*
                 If freetds was not compiled with MSDBLIB defined, the month,
@@ -1067,7 +1090,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
                     return PyTime_FromTime_(dbdaterec.hour,
                                             dbdaterec.minute,
                                             dbdaterec.second,
-                                            dbdaterec.millisecond * 1000);
+                                            usecond);
                 }
                 default:
                 {
@@ -1077,7 +1100,7 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
                                                        dbdaterec.hour,
                                                        dbdaterec.minute,
                                                        dbdaterec.second,
-                                                       dbdaterec.millisecond * 1000);
+                                                       usecond);
                 }
             }
             break;
@@ -1346,11 +1369,17 @@ PyObject* encode_for_dblib(PyObject* unicode, const char** utf8bytes, size_t* nu
     return encoded;
 }
 
-int datetime_to_sql(PyObject* o, DBDATETIME* dbdatetime)
+int datetime_to_sql(PyObject* o, enum TdsType* tdstype, void* converted, size_t cbconverted)
 {
-    DBINT size;
     int written = 0;
-    char buffer[ARRAYSIZE("YYYY-MM-DD HH:MM:SS.nnn")];
+    /* Python only supports microsecond precision. */
+    char buffer[ARRAYSIZE("YYYY-MM-DD HH:MM:SS.nnnnnn")];
+
+    /*
+        The best _supported_ TDS type. Default to DATETIME which is widely
+        supported across TDS and FreeTDS versions.
+    */
+    *tdstype = TDSDATETIME;
 
     if (PyDate_Check_(o))
     {
@@ -1383,20 +1412,31 @@ int datetime_to_sql(PyObject* o, DBDATETIME* dbdatetime)
 
         if (useconds)
         {
+#if defined(CTDS_HAVE_TDSTIME)
+            written += sprintf(&buffer[written], ".%06d", useconds);
+            /* Always use DATETIME2 to preserve fractional second precision. */
+            *tdstype = (PyDateTime_Check_(o)) ? TDSDATETIME2 : TDSTIME;
+#else /* if defined(CTDS_HAVE_TDSTIME) */
             /*
                 For compatibility with the MS SQL DATETIME type, only include
                 microsecond granularity.
             */
             written += sprintf(&buffer[written], ".%03d", useconds / 1000);
+            *tdstype = TDSDATETIME;
+#endif /* else if defined(CTDS_HAVE_TDSTIME) */
         }
+#if defined(CTDS_HAVE_TDSTIME)
+        else
+        {
+            *tdstype = (PyDateTime_Check_(o)) ? TDSDATETIME : TDSTIME;
+        }
+#endif /* if defined(CTDS_HAVE_TDSTIME) */
     }
-    size = dbconvert(NULL,
-                     TDSCHAR,
-                     (const BYTE*)buffer,
-                     (DBINT)written,
-                     TDSDATETIME,
-                     (BYTE*)dbdatetime,
-                     -1);
-
-    return (-1 == size) ? -1 : 0;
+    return (int)dbconvert(NULL,
+                          TDSCHAR,
+                          (const BYTE*)buffer,
+                          (DBINT)written,
+                          *tdstype,
+                          (BYTE*)converted,
+                          (DBINT)cbconverted);
 }

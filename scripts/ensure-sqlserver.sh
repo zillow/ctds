@@ -16,6 +16,13 @@ fi
 CONTAINER_ID=`docker ps -a -f name="^/$CONTAINER$" -q`
 if [ -z "$CONTAINER_ID" ]; then
     echo "MS SQL Server docker container not running; starting ..."
+
+    # Remove the container if it is stopped.
+    CONTAINER_ID=`docker ps -a -f name="^/$CONTAINER$" -q`
+    if [ -n "$CONTAINER_ID" ]; then
+        docker rm $CONTAINER_ID
+    fi
+
     CONTAINER_ID=`docker run -d \
            -e 'ACCEPT_EULA=Y' \
            -e 'SA_PASSWORD=cTDS-unitest123' \

@@ -91,24 +91,40 @@ class TestPythonToSQL(TestExternalDatabase):
     def test_time(self):
         values = (
             datetime.time(0, 0, 0),
-            datetime.time(12, 13, 14, 123000),
+            datetime.time(12, 13, 14, 123456),
             datetime.time(23, 59, 59, 997000),
         )
-        # Times are always converted to datetime for compatibility with older FreeTDS versions.
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for value in values:
                     row = self.parameter_type(cursor, value)
-                    self.assertEqual('datetime', row.Type)
-                    self.assertEqual(row.Precision, 23)
-                    self.assertEqual(row.Scale, 3)
                     self.assertEqual(
+                        'time' if self.tdstime_supported else 'datetime',
+                        row.Type
+                    )
+                    self.assertEqual(
+                        16 if self.tdstime_supported else 23,
+                        row.Precision
+                    )
+                    self.assertEqual(
+                        7 if self.tdstime_supported else 3,
+                        row.Scale
+                    )
+                    self.assertEqual(
+                        datetime.time(
+                            value.hour,
+                            value.minute,
+                            value.second,
+                            value.microsecond,
+                        )
+                        if self.tdstime_supported else
                         datetime.datetime(
                             1900, 1, 1,
                             value.hour,
                             value.minute,
                             value.second,
-                            value.microsecond,
+                            # TDSTIME support is required for microsecond resolution
+                            (value.microsecond // 1000) * 1000,
                         ),
                         row.Value
                     )
@@ -116,16 +132,45 @@ class TestPythonToSQL(TestExternalDatabase):
     def test_datetime(self):
         values = (
             datetime.datetime(1753, 1, 1, 0, 0),
+            datetime.datetime(1999, 10, 11, 12, 13, 14, 123456),
             datetime.datetime(9999, 12, 31, 23, 59, 59, 997 * 1000),
         )
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 for value in values:
+                    datetime2 = self.tdsdatetime2_supported and value.microsecond
                     row = self.parameter_type(cursor, value)
-                    self.assertEqual('datetime', row.Type)
-                    self.assertEqual(row.Precision, 23)
-                    self.assertEqual(row.Scale, 3)
-                    self.assertEqual(value, row.Value)
+                    self.assertEqual(
+                        'datetime2'
+                        if datetime2 else
+                        'datetime',
+                        row.Type
+                    )
+                    self.assertEqual(row.Precision, 27 if datetime2 else 23)
+                    self.assertEqual(row.Scale, 7 if datetime2 else 3)
+                    self.assertEqual(
+                        datetime.datetime(
+                            value.year,
+                            value.month,
+                            value.day,
+                            value.hour,
+                            value.minute,
+                            value.second,
+                            value.microsecond,
+                        )
+                        if datetime2 else
+                        datetime.datetime(
+                            value.year,
+                            value.month,
+                            value.day,
+                            value.hour,
+                            value.minute,
+                            value.second,
+                            # TDSTIME support is required for microsecond resolution
+                            (value.microsecond // 1000) * 1000,
+                        ),
+                        row.Value
+                    )
 
     def test_float(self):
         self.assert_type('float', (0.0, -1.1234, 12345.67890))

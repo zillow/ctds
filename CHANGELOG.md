@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add FreeTDS 1.1 to test matrix.
 
+### Fixed
+- Preserve microsecond precision of _TIME_ and _DATETIME2_ SQL types when
+converting to Python (and supported by FreeTDS).
+
 ## [1.9.0] - 2018-11-05
 ### Added
 - Add support for passing sequences of `dict` values to

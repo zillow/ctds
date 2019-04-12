@@ -23,9 +23,8 @@ CHECKED_FREETDS_VERSIONS := \
     0.91.112 \
     0.92.405 \
     0.95.95 \
-    1.00.55 \
     1.00.80 \
-	1.1
+	1.1.4
 
 # Valgrind FreeTDS versions are limited to one without sp_executesql support
 # and one with.

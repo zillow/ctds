@@ -381,13 +381,9 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
             '''
             SELECT
                 CONVERT(DATETIME, NULL),
-                CONVERT(DATETIME, :0),
-                CONVERT(DATETIME, :1)
-            ''',
-            (
-                datetime(1753, 1, 1),
-                datetime(9999, 12, 31, 23, 59, 59, 997000)
-            )
+                CONVERT(DATETIME, '1753-1-1'),
+                CONVERT(DATETIME, '9999-12-31 23:59:59.997')
+            '''
         )
         self.assertEqual(
             tuple(self.cursor.fetchone()),
@@ -400,23 +396,21 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
 
     def test_smalldatetime(self):
         self.cursor.execute(
+            # SMALLDATETIME only has minute accuracy.
             '''
             SELECT
                 CONVERT(SMALLDATETIME, NULL),
-                CONVERT(SMALLDATETIME, :0),
-                CONVERT(SMALLDATETIME, :1)
-            ''',
-            (
-                datetime(1900, 1, 1),
-                datetime(2076, 6, 6, 23, 59, 59)
-            )
+                CONVERT(SMALLDATETIME, '1900-1-1'),
+                CONVERT(SMALLDATETIME, '1999-12-31 10:11'),
+                CONVERT(SMALLDATETIME, '2076-6-6 23:59:59')
+            '''
         )
         self.assertEqual(
             tuple(self.cursor.fetchone()),
             (
                 None,
                 datetime(1900, 1, 1),
-                # SMALLDATETIME only has minute accuracy.
+                datetime(1999, 12, 31, 10, 11),
                 datetime(2076, 6, 7)
             )
         )
@@ -426,15 +420,9 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
             '''
             SELECT
                 CONVERT(DATETIME2, NULL),
-                CONVERT(DATETIME2, :0),
-                CONVERT(DATETIME2, :1)
-            ''',
-            (
-                datetime(1, 1, 1),
-                # $future: fix rounding issues. DB lib doesn't expose a good way to access
-                # the more precise DATETIME2 structure
-                datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
-            )
+                CONVERT(DATETIME2, '1-1-1'),
+                CONVERT(DATETIME2, '9999-12-31 23:59:59.9999999')
+            '''
         )
         self.assertEqual(
             tuple(self.cursor.fetchone()),
@@ -446,9 +434,13 @@ class TestSQLToPython(TestExternalDatabase): # pylint: disable=too-many-public-m
                     else datetime(2001, 1, 1)
                 ),
                 (
-                    '9999-12-31 23:59:59.9966667'
+                    '9999-12-31 23:59:59.9999999'
                     if self.connection.tds_version < '7.3'
-                    else datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
+                    else (
+                        datetime(9999, 12, 31, 23, 59, 59, 999999)
+                        if self.tdsdatetime2_supported else
+                        datetime(9999, 12, 31, 23, 59, 59, 997 * 1000)
+                    )
                 ),
             )
         )
