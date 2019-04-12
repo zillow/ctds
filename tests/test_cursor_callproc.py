@@ -560,7 +560,7 @@ parameters are replaced with output values.
                             type_('@pVarBinary'): ctds.Parameter(ctds.SqlVarBinary(None, size=32), output=True),
                             type_('@pFloat'): ctds.Parameter(1.23, output=True),
                             type_('@pDateTime'): datetime(2011, 11, 5, 12, 12, 12),
-                            type_('@pDateTimeOut'): ctds.Parameter(datetime.utcnow(), output=True),
+                            type_('@pDateTimeOut'): ctds.Parameter(datetime(2011, 11, 5, 12, 12, 12), output=True),
                             type_('@pDateTime2'): datetime(2011, 11, 5, 12, 12, 12, 999999),
                             type_('@pDateTime2Out'): ctds.Parameter(datetime.utcnow(), output=True),
                             type_('@pDate'): date(2011, 11, 5),
@@ -595,13 +595,7 @@ parameters are replaced with output values.
                         )
                         self.assertEqual(
                             outputs[type_('@pDateTimeOut')],
-                            datetime(
-                                2016, 2, 3, 4, 5, 6,
-                                # FreeTDS 0.95+ has a defect converting DATETIME.
-                                783333
-                                if self.freetds_version >= (0, 95, 0) else
-                                783000
-                            )
+                            datetime(2016, 2, 3, 4, 5, 6, 783000)
                         )
                         self.assertEqual(
                             outputs[type_('@pDateTime2Out')],
