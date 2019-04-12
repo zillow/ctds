@@ -1414,8 +1414,8 @@ int datetime_to_sql(PyObject* o, enum TdsType* tdstype, void* converted, size_t 
         {
 #if defined(CTDS_HAVE_TDSTIME)
             written += sprintf(&buffer[written], ".%06d", useconds);
-            *tdstype = (PyDateTime_Check_(o)) ?
-                ((useconds % 1000) ? TDSDATETIME2 : TDSDATETIME) : TDSTIME;
+            /* Always use DATETIME2 to preserve fractional second precision. */
+            *tdstype = (PyDateTime_Check_(o)) ? TDSDATETIME2 : TDSTIME;
 #else /* if defined(CTDS_HAVE_TDSTIME) */
             /*
                 For compatibility with the MS SQL DATETIME type, only include

@@ -541,7 +541,7 @@ parameters are replaced with output values.
                             SET @pVarBinary = CONVERT(VARBINARY(32), @pVarChar);
                             SET @pVarChar = CONVERT(VARCHAR(32), @pDateTime, 120);
                             SET @pFloat = @pFloat * 2.1;
-                            SET @pDateTimeOut = CONVERT(DATETIME, '2017-01-01 01:02:03');
+                            SET @pDateTimeOut = CONVERT(DATETIME, '2016-02-03 04:05:06.783');
                             SET @pDateTime2Out = CONVERT(DATETIME2, '2017-01-01 01:02:03.1234567');
                             SET @pDateOut = CONVERT(DATE, '2017-01-01');
                             SET @pTimeOut = CONVERT(TIME, '01:02:03.1234567');
@@ -561,7 +561,7 @@ parameters are replaced with output values.
                             type_('@pFloat'): ctds.Parameter(1.23, output=True),
                             type_('@pDateTime'): datetime(2011, 11, 5, 12, 12, 12),
                             type_('@pDateTimeOut'): ctds.Parameter(datetime.utcnow(), output=True),
-                            type_('@pDateTime2'): datetime(2011, 11, 5, 12, 12, 12, 123456),
+                            type_('@pDateTime2'): datetime(2011, 11, 5, 12, 12, 12, 999999),
                             type_('@pDateTime2Out'): ctds.Parameter(datetime.utcnow(), output=True),
                             type_('@pDate'): date(2011, 11, 5),
                             type_('@pDateOut'): ctds.Parameter(date.today(), output=True),
@@ -595,7 +595,13 @@ parameters are replaced with output values.
                         )
                         self.assertEqual(
                             outputs[type_('@pDateTimeOut')],
-                            datetime(2017, 1, 1, 1, 2, 3)
+                            datetime(
+                                2016, 2, 3, 4, 5, 6,
+                                # FreeTDS 0.95+ has a defect converting DATETIME.
+                                783333
+                                if self.freetds_version >= (0, 95, 0) else
+                                783000
+                            )
                         )
                         self.assertEqual(
                             outputs[type_('@pDateTime2Out')],
