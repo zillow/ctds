@@ -714,6 +714,11 @@ RETCODE Parameter_bcp_bind(struct Parameter* parameter, DBPROCESS* dbproc, size_
         has requested a Unicode type, map it to the equivalent single-byte representation.
     */
     enum TdsType tdstype;
+    BYTE* input = (BYTE*)parameter->input;
+
+    /* Use the input byte count for non-NULL, variable-length types. */
+    DBINT cbinput = (parameter->tdstypesize > 0) ? (DBINT)parameter->ninput : parameter->tdstypesize;
+
     if ((parameter->tdstype == TDSNTEXT) || (parameter->tdstype == TDSNVARCHAR))
     {
         /*
@@ -726,11 +731,32 @@ RETCODE Parameter_bcp_bind(struct Parameter* parameter, DBPROCESS* dbproc, size_
     {
         tdstype = parameter->tdstype;
     }
+
+    /*
+        0-length, non-NULL inputs are intended to be empty strings, but to
+        properly pass an empty string, a NULL-terminated string must be
+        provided to `bcp_bind`.
+    */
+    if ((0 == parameter->ninput) && (NULL != input))
+    {
+#if CTDS_SUPPORT_BCP_EMPTY_STRING
+        input = (BYTE*)"";
+        cbinput = -1;
+#else /* if CTDS_SUPPORT_BCP_EMPTY_STRING */
+        if (PyErr_WarnEx(PyExc_tds_Warning,
+                         "\"\" converted to NULL for compatibility with FreeTDS."
+                         " Please update to a recent version of FreeTDS.",
+                         1))
+        {
+            return FAIL;
+        }
+#endif /* else if CTDS_SUPPORT_BCP_EMPTY_STRING */
+    }
+
     return bcp_bind(dbproc,
-                    (BYTE*)parameter->input,
+                    input,
                     0,
-                    /* Use the input byte count for non-NULL, variable-length types. */
-                    (parameter->tdstypesize > 0) ? (DBINT)parameter->ninput : parameter->tdstypesize,
+                    cbinput,
                     NULL,
                     0,
                     tdstype,

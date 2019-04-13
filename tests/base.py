@@ -166,6 +166,10 @@ class TestExternalDatabase(unittest.TestCase):
     def tdsdatetime2_supported(self):
         return self.freetds_version >= (0, 95, 0)
 
+    @property
+    def bcp_empty_string_supported(self):
+        return self.freetds_version >= (0, 95, 0)
+
     # Older versions of FreeTDS improperly round the money to the nearest hundredth.
     def round_money(self, money):
         if self.freetds_version > (0, 92, 405): # pragma: nobranch

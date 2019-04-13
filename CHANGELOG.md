@@ -9,6 +9,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Preserve microsecond precision of _TIME_ and _DATETIME2_ SQL types when
 converting to Python (and supported by FreeTDS).
+- Fix improper conversion of empty strings to `NULL` in
+`ctds.Connection.bulk_insert()`.
+https://github.com/zillow/ctds/issues/35.
 
 ## [1.9.0] - 2018-11-05
 ### Added
