@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [1.10.0] - 2019-04-15
 ### Added
 - Add FreeTDS 1.1 to test matrix.
 
@@ -232,7 +234,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/zillow/ctds/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/zillow/ctds/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/zillow/ctds/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/zillow/ctds/compare/v1.6.3...v1.7.0
