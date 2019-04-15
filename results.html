@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Reading Result Sets &mdash; ctds 1.9.0 documentation</title>
+  <title>Reading Result Sets &mdash; ctds 1.10.0 documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Transactions" href="transactions.html" />
     <link rel="prev" title="Calling Stored Procedures" href="callproc.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -58,7 +60,7 @@
             
             
               <div class="version">
-                1.9
+                1.10
               </div>
             
           
@@ -213,8 +215,8 @@ therefore supports indexing. For example,</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Unless a result set contains a large number of rows, it is typically
+<p class="admonition-title">Note</p>
+<p>Unless a result set contains a large number of rows, it is typically
 recommended to use <a class="reference internal" href="cursor.html#ctds.Cursor.fetchall" title="ctds.Cursor.fetchall"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.fetchall()</span></code></a> to retrieve all the
 rows of a result. Only when result sets are sufficiently large as to make
 caching them a large memory burden is it recommended to use
@@ -256,8 +258,8 @@ or mapping.</p>
 method. New operations using <a class="reference internal" href="cursor.html#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.execute()</span></code></a> or
 <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a> will discard any unread result sets.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Previous result sets cannot be retrieved once the cursor has been advanced
+<p class="admonition-title">Note</p>
+<p>Previous result sets cannot be retrieved once the cursor has been advanced
 past them.</p>
 </div>
 </div>
@@ -274,7 +276,7 @@ past them.</p>
         <a href="transactions.html" class="btn btn-neutral float-right" title="Transactions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="callproc.html" class="btn btn-neutral" title="Calling Stored Procedures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="callproc.html" class="btn btn-neutral float-left" title="Calling Stored Procedures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -283,7 +285,7 @@ past them.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016-, Zillow, Inc..
+        &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
@@ -300,32 +302,16 @@ past them.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.9.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

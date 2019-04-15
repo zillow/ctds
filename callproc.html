@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Calling Stored Procedures &mdash; ctds 1.9.0 documentation</title>
+  <title>Calling Stored Procedures &mdash; ctds 1.10.0 documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Reading Result Sets" href="results.html" />
     <link rel="prev" title="Executing SQL Statements" href="execute.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -58,7 +60,7 @@
             
             
               <div class="version">
-                1.9
+                1.10
               </div>
             
           
@@ -171,8 +173,8 @@ procedures, as defined by <span class="target" id="index-0"></span><a class="pep
 Stored procedure parameters may be passed as either a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or
 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
+<p class="admonition-title">Warning</p>
+<p>Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
 Empty strings are converted to <cite>NULL</cite> values internally before being
 transmitted to the database.</p>
 </div>
@@ -214,8 +216,8 @@ object, with output parameters replaced.</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">All parameter names <strong>must</strong> begin with the <strong>&#64;</strong> character when using this
+<p class="admonition-title">Note</p>
+<p>All parameter names <strong>must</strong> begin with the <strong>&#64;</strong> character when using this
 form of <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a>.</p>
 </div>
 </div>
@@ -272,7 +274,7 @@ parameter:</p>
         <a href="results.html" class="btn btn-neutral float-right" title="Reading Result Sets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="execute.html" class="btn btn-neutral" title="Executing SQL Statements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="execute.html" class="btn btn-neutral float-left" title="Executing SQL Statements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -281,7 +283,7 @@ parameter:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016-, Zillow, Inc..
+        &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
@@ -298,32 +300,16 @@ parameter:</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.9.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

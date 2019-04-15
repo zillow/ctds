@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SQL Type Wrappers &mdash; ctds 1.9.0 documentation</title>
+  <title>SQL Type Wrappers &mdash; ctds 1.10.0 documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ctds.pool" href="pool.html" />
     <link rel="prev" title="RowList" href="rowlist.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -58,7 +60,7 @@
             
             
               <div class="version">
-                1.9
+                1.10
               </div>
             
           
@@ -176,14 +178,11 @@
 <dt id="ctds.SqlBigInt">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlBigInt</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlBigInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL BIGINT type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlBigInt.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlBigInt.size" title="Permalink to this definition">¶</a></dt>
@@ -208,14 +207,11 @@
 <dt id="ctds.SqlBinary">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlBinary</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlBinary" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL BINARY type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlBinary.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlBinary.size" title="Permalink to this definition">¶</a></dt>
@@ -240,14 +236,11 @@
 <dt id="ctds.SqlChar">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlChar</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL CHAR type wrapper. The value’s UTF-8-encoded length must be &lt;= 8000.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlChar.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlChar.size" title="Permalink to this definition">¶</a></dt>
@@ -272,14 +265,11 @@
 <dt id="ctds.SqlDate">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlDate</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlDate" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL DATE type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.7)"><em>datetime.date</em></a>) – The date value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.7)"><em>datetime.date</em></a>) – The date value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlDate.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlDate.size" title="Permalink to this definition">¶</a></dt>
@@ -304,21 +294,17 @@
 <dt id="ctds.SqlDecimal">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlDecimal</code><span class="sig-paren">(</span><em>value</em>, <em>precision=18</em>, <em>scale=0</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlDecimal" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL DECIMAL type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</li>
-<li><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of total digits stored.
-This must be between 1 and 38.</li>
-<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of digits stored to the right
-of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of total digits stored.
+This must be between 1 and 38.</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of digits stored to the right
+of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlDecimal.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlDecimal.size" title="Permalink to this definition">¶</a></dt>
@@ -343,14 +329,11 @@ of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</
 <dt id="ctds.SqlInt">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlInt</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL INT type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlInt.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlInt.size" title="Permalink to this definition">¶</a></dt>
@@ -376,22 +359,18 @@ of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlNVarChar</code><span class="sig-paren">(</span><em>value</em>, <em>size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlNVarChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL NVARCHAR type wrapper.</p>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.1.</span></p>
+<p><span class="versionmodified added">New in version 1.1.</span></p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</li>
-<li><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional size override. This value will be used for
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional size override. This value will be used for
 the output parameter buffer size. It can also be used to truncate
-the input parameter.</li>
+the input parameter.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlNVarChar.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlNVarChar.size" title="Permalink to this definition">¶</a></dt>
@@ -416,14 +395,11 @@ the input parameter.</li>
 <dt id="ctds.SqlSmallInt">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlSmallInt</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlSmallInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL SMALLINT type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlSmallInt.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlSmallInt.size" title="Permalink to this definition">¶</a></dt>
@@ -448,14 +424,11 @@ the input parameter.</li>
 <dt id="ctds.SqlTinyInt">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlTinyInt</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlTinyInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL TINYINT type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlTinyInt.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlTinyInt.size" title="Permalink to this definition">¶</a></dt>
@@ -480,20 +453,16 @@ the input parameter.</li>
 <dt id="ctds.SqlVarBinary">
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlVarBinary</code><span class="sig-paren">(</span><em>value</em>, <em>size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlVarBinary" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL VARBINARY type wrapper.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</li>
-<li><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional size override. This value will be used for
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional size override. This value will be used for
 the output parameter buffer size. It can also be used to truncate
-the input parameter.</li>
+the input parameter.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlVarBinary.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlVarBinary.size" title="Permalink to this definition">¶</a></dt>
@@ -519,23 +488,19 @@ the input parameter.</li>
 <em class="property">class </em><code class="descclassname">ctds.</code><code class="descname">SqlVarChar</code><span class="sig-paren">(</span><em>value</em>, <em>size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlVarChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL VARCHAR type wrapper.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Byte strings are passed through unchanged to the database.</p>
+<p class="admonition-title">Note</p>
+<p>Byte strings are passed through unchanged to the database.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</li>
-<li><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional size override. This value will be used for
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – An optional size override. This value will be used for
 the output parameter buffer size. It can also be used to truncate
-the input parameter.</li>
+the input parameter.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ctds.SqlVarChar.size">
 <code class="descname">size</code><a class="headerlink" href="#ctds.SqlVarChar.size" title="Permalink to this definition">¶</a></dt>
@@ -569,7 +534,7 @@ the input parameter.</li>
         <a href="pool.html" class="btn btn-neutral float-right" title="ctds.pool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="rowlist.html" class="btn btn-neutral" title="RowList" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="rowlist.html" class="btn btn-neutral float-left" title="RowList" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -578,7 +543,7 @@ the input parameter.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016-, Zillow, Inc..
+        &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
@@ -595,32 +560,16 @@ the input parameter.</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.9.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

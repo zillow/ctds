@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctds.pool &mdash; ctds 1.9.0 documentation</title>
+  <title>ctds.pool &mdash; ctds 1.10.0 documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Change Log" href="CHANGELOG.html" />
     <link rel="prev" title="SQL Type Wrappers" href="types.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -58,7 +60,7 @@
             
             
               <div class="version">
-                1.9
+                1.10
               </div>
             
           
@@ -199,37 +201,33 @@
 </pre></div>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.2.</span></p>
+<p><span class="versionmodified added">New in version 1.2.</span></p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Idle connection collection only occurs during calls to
+<p class="admonition-title">Note</p>
+<p>Idle connection collection only occurs during calls to
 <a class="reference internal" href="#ctds.pool.ConnectionPool.acquire" title="ctds.pool.ConnectionPool.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a> and does not happen automatically in the
 background.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dbapi2</strong> – The DB-API 2 module used to create connections.
-This module must implement the <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249"><strong>PEP 0249</strong></a> specification.</li>
-<li><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Connection parameters to pass directly to the
-<span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a> method when creating a new connection.</li>
-<li><strong>idlettl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – The maximum time, in seconds, a connection can sit
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbapi2</strong> – The DB-API 2 module used to create connections.
+This module must implement the <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249"><strong>PEP 0249</strong></a> specification.</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Connection parameters to pass directly to the
+<span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a> method when creating a new connection.</p></li>
+<li><p><strong>idlettl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – The maximum time, in seconds, a connection can sit
 idle before it is discarded. If not specified, connections are retained
-indefinitely.</li>
-<li><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of connections to keep in
-the pool.</li>
-<li><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Block until a connection is released back to the
+indefinitely.</p></li>
+<li><p><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of connections to keep in
+the pool.</p></li>
+<li><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Block until a connection is released back to the
 pool? This is only applicable when a <cite>maxsize</cite> value is specified. If
 <cite>False</cite>, a new connection will be created as needed, but the number of
-connections retained in the pool will never exceed <cite>maxsize</cite>.</li>
+connections retained in the pool will never exceed <cite>maxsize</cite>.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ctds.pool.ConnectionPool.acquire">
 <code class="descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.acquire" title="Permalink to this definition">¶</a></dt>
@@ -237,8 +235,8 @@ connections retained in the pool will never exceed <cite>maxsize</cite>.</li>
 This will return an existing connection, if one is available in the
 pool, or create a new connection.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">If the pool was created with <cite>maxsize</cite> and <cite>block=True</cite>,
+<p class="admonition-title">Warning</p>
+<p>If the pool was created with <cite>maxsize</cite> and <cite>block=True</cite>,
 this method may block until a connection is available in the pool.</p>
 </div>
 </dd></dl>
@@ -259,8 +257,8 @@ this method may block until a connection is available in the pool.</p>
 <code class="descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.finalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release all connections contained in the pool.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This should be called to cleanly shutdown the pool, i.e.
+<p class="admonition-title">Note</p>
+<p>This should be called to cleanly shutdown the pool, i.e.
 on process exit.</p>
 </div>
 </dd></dl>
@@ -272,19 +270,16 @@ on process exit.</p>
 <p>Prior to release, <a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.rollback()</span></code></a> is called to
 rollback any pending transaction.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This must be called once for every successful call to
+<p class="admonition-title">Note</p>
+<p>This must be called once for every successful call to
 <a class="reference internal" href="#ctds.pool.ConnectionPool.acquire" title="ctds.pool.ConnectionPool.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> – The connection object returned by
-<a class="reference internal" href="#ctds.pool.ConnectionPool.acquire" title="ctds.pool.ConnectionPool.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>connection</strong> – The connection object returned by
+<a class="reference internal" href="#ctds.pool.ConnectionPool.acquire" title="ctds.pool.ConnectionPool.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -302,7 +297,7 @@ rollback any pending transaction.</p>
         <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="Change Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="types.html" class="btn btn-neutral" title="SQL Type Wrappers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="types.html" class="btn btn-neutral float-left" title="SQL Type Wrappers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -311,7 +306,7 @@ rollback any pending transaction.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016-, Zillow, Inc..
+        &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
@@ -328,32 +323,16 @@ rollback any pending transaction.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.9.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

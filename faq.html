@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; ctds 1.9.0 documentation</title>
+  <title>Frequently Asked Questions &mdash; ctds 1.10.0 documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API Reference" href="api.html" />
     <link rel="prev" title="Connection Pooling" href="pooling.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -58,7 +60,7 @@
             
             
               <div class="version">
-                1.9
+                1.10
               </div>
             
           
@@ -93,8 +95,8 @@
 <li class="toctree-l1"><a class="reference internal" href="bulk_insert.html">Bulk Insert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pooling.html">Connection Pooling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#why-can-t-i-pass-an-empty-string-to-ctds-cursor-callproc">Why can’t I pass an empty string to <code class="docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="docutils literal notranslate"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-can-t-i-pass-an-empty-string-to-ctds-cursor-callproc">Why can’t I pass an empty string to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-don-t-str-values-map-to-n-varchar-in-python-2">Why don’t <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> values map to <strong>(N)VARCHAR</strong> in Python 2?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-doesn-t-raiserror-raise-a-python-exception">Why doesn’t <cite>RAISERROR</cite> raise a Python exception?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?</a></li>
 </ul>
@@ -223,8 +225,8 @@ support was added for configuring the connection to use <em>UTF-16</em> in <a cl
 <p>Upgrading the version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> will resolve this warning and unicode
 codepoints outside the <em>UCS-2</em> range will no longer be replaced.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><a class="reference external" href="http://www.freetds.org">FreeTDS</a> <strong>0.95</strong> does support using <em>UTF-16</em> on connections, however
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="http://www.freetds.org">FreeTDS</a> <strong>0.95</strong> does support using <em>UTF-16</em> on connections, however
 the only way to configure it is via <em>freetds.conf</em>. The option is disabled
 by default, and there is no way to determine if <em>UTF-16</em> is enabled for a
 connection. Because of these limitations, <cite>cTDS</cite> cannot reliably determine
@@ -244,7 +246,7 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
         <a href="api.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="pooling.html" class="btn btn-neutral" title="Connection Pooling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="pooling.html" class="btn btn-neutral float-left" title="Connection Pooling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -253,7 +255,7 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016-, Zillow, Inc..
+        &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
@@ -270,32 +272,16 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.9.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
