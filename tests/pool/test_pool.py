@@ -109,6 +109,26 @@ class TestConnectionPool(unittest.TestCase):
             ]
         )
 
+    def test_contextmanager_error(self): # pylint: disable=no-self-use
+        class MockDBAPI2Error(Exception):
+            pass
+
+        mock_dbapi2 = mock.MagicMock()
+        pool = ConnectionPool(mock_dbapi2, {}, maxsize=10)
+
+        try:
+            with pool.connection():
+                raise MockDBAPI2Error
+        except MockDBAPI2Error:
+            pass
+
+        mock_dbapi2.assert_has_calls(
+            [
+                mock.call.connect(),
+                mock.call.connect().rollback(),
+            ]
+        )
+
     def test_finalize(self): # pylint: disable=no-self-use
         mock_dbapi2 = mock.MagicMock()
         pool = ConnectionPool(mock_dbapi2, {}, maxsize=10)
