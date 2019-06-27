@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctds.pool &mdash; ctds 1.10.0 documentation</title>
+  <title>ctds.pool &mdash; ctds 1.10.1 documentation</title>
   
 
   
@@ -176,7 +176,7 @@
 <span id="ctds-pool"></span><h1>ctds.pool<a class="headerlink" href="#module-ctds.pool" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ctds.pool.ConnectionPool">
-<em class="property">class </em><code class="descclassname">ctds.pool.</code><code class="descname">ConnectionPool</code><span class="sig-paren">(</span><em>dbapi2</em>, <em>params</em>, <em>idlettl=None</em>, <em>maxsize=None</em>, <em>block=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.pool.</code><code class="sig-name descname">ConnectionPool</code><span class="sig-paren">(</span><em class="sig-param">dbapi2</em>, <em class="sig-param">params</em>, <em class="sig-param">idlettl=None</em>, <em class="sig-param">maxsize=None</em>, <em class="sig-param">block=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool" title="Permalink to this definition">¶</a></dt>
 <dd><p>A basic connection pool for DB-API 2.0-compliant database drivers.</p>
 <p>Example usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
@@ -230,7 +230,7 @@ connections retained in the pool will never exceed <cite>maxsize</cite>.</p></li
 </dl>
 <dl class="method">
 <dt id="ctds.pool.ConnectionPool.acquire">
-<code class="descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.acquire" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.acquire" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a new connection from the pool.
 This will return an existing connection, if one is available in the
 pool, or create a new connection.</p>
@@ -243,7 +243,7 @@ this method may block until a connection is available in the pool.</p>
 
 <dl class="method">
 <dt id="ctds.pool.ConnectionPool.connection">
-<code class="descname">connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.connection" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Acquire a connection in a managed context for use with the Python
 <cite>with</cite> keyword.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pool</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
@@ -254,7 +254,7 @@ this method may block until a connection is available in the pool.</p>
 
 <dl class="method">
 <dt id="ctds.pool.ConnectionPool.finalize">
-<code class="descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.finalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.finalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release all connections contained in the pool.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -265,7 +265,7 @@ on process exit.</p>
 
 <dl class="method">
 <dt id="ctds.pool.ConnectionPool.release">
-<code class="descname">release</code><span class="sig-paren">(</span><em>connection</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.release" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">release</code><span class="sig-paren">(</span><em class="sig-param">connection</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a connection back to the pool.</p>
 <p>Prior to release, <a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.rollback()</span></code></a> is called to
 rollback any pending transaction.</p>

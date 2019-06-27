@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.10.1] - 2019-06-27
+### Fixed
+- Properly handle errors in the `ctds.pool.ConnectionPool.connection` context
+manager.
+
 ## [1.10.0] - 2019-04-15
 ### Added
 - Add FreeTDS 1.1 to test matrix.
@@ -234,7 +239,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.10.1...HEAD
+[1.10.1]: https://github.com/zillow/ctds/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/zillow/ctds/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/zillow/ctds/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/zillow/ctds/compare/v1.7.0...v1.8.0
