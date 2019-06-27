@@ -112,8 +112,10 @@ class ConnectionPool(object): # pylint: disable=too-many-instance-attributes,use
 
         '''
         connection = self.acquire()
-        yield connection
-        self.release(connection)
+        try:
+            yield connection
+        finally:
+            self.release(connection)
 
     def acquire(self):
         '''
