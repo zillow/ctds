@@ -2769,7 +2769,11 @@ PyTypeObject RowType = {
     sizeof(struct Row),                       /* tp_basicsize */
     sizeof(PyObject*),                        /* tp_itemsize */
     Row_dealloc,                              /* tp_dealloc */
+#if PY_VERSION_HEX >= 0x03080000
+    0,                                        /* tp_vectorcall_offset */
+#else
     NULL,                                     /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
     NULL,                                     /* tp_getattr */
     NULL,                                     /* tp_setattr */
     NULL,                                     /* tp_reserved */
@@ -2814,6 +2818,10 @@ PyTypeObject RowType = {
 #if PY_VERSION_HEX >= 0x03040000
     NULL,                                     /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
+#if PY_VERSION_HEX >= 0x03080000
+    NULL,                                     /* tp_vectorcall */
+    NULL,                                     /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
 /* Stores the `struct RowBuffer` for a row until requested by the client. */
@@ -2962,7 +2970,11 @@ PyTypeObject RowListType = {
     sizeof(struct RowList),                   /* tp_basicsize */
     sizeof(struct LazilyCreatedRow),          /* tp_itemsize */
     RowList_dealloc,                          /* tp_dealloc */
+#if PY_VERSION_HEX >= 0x03080000
+    0,                                        /* tp_vectorcall_offset */
+#else
     NULL,                                     /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
     NULL,                                     /* tp_getattr */
     NULL,                                     /* tp_setattr */
     NULL,                                     /* tp_reserved */
@@ -3007,6 +3019,10 @@ PyTypeObject RowListType = {
 #if PY_VERSION_HEX >= 0x03040000
     NULL,                                     /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
+#if PY_VERSION_HEX >= 0x03080000
+    NULL,                                     /* tp_vectorcall */
+    NULL,                                     /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
 #define FETCH_ALL ((size_t)-1)
@@ -3432,6 +3448,11 @@ static PyObject* Cursor___exit__(PyObject* self, PyObject* args)
     UNUSED(args);
 }
 
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
+
 static PyMethodDef Cursor_methods[] = {
     /* ml_name, ml_meth, ml_flags, ml_doc */
     /* DB API-2.0 required methods. */
@@ -3461,6 +3482,10 @@ static PyMethodDef Cursor_methods[] = {
     { "__exit__",      Cursor___exit__,              METH_VARARGS,                  s_Cursor___exit___doc },
     { NULL,            NULL,                         0,                             NULL }
 };
+
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
 
 static PyObject* Cursor_iter(PyObject* self)
 {
@@ -3511,7 +3536,11 @@ PyTypeObject CursorType = {
     sizeof(struct Cursor),        /* tp_basicsize */
     0,                            /* tp_itemsize */
     Cursor_dealloc,               /* tp_dealloc */
+#if PY_VERSION_HEX >= 0x03080000
+    0,                            /* tp_vectorcall_offset */
+#else
     NULL,                         /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
     NULL,                         /* tp_getattr */
     NULL,                         /* tp_setattr */
     NULL,                         /* tp_reserved */
@@ -3556,6 +3585,10 @@ PyTypeObject CursorType = {
 #if PY_VERSION_HEX >= 0x03040000
     NULL,                         /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
+#if PY_VERSION_HEX >= 0x03080000
+    NULL,                         /* tp_vectorcall */
+    NULL,                         /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
 PyTypeObject* CursorType_init(void)

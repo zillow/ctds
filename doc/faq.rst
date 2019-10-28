@@ -78,4 +78,4 @@ codepoints outside the *UCS-2* range will no longer be replaced.
    if the connection will support *UTF-16* and assumes it does not.
 
 
-.. _FreeTDS: http://www.freetds.org
+.. _FreeTDS: https://www.freetds.org

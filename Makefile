@@ -9,7 +9,8 @@ SUPPORTED_PYTHON_VERSIONS := \
     3.4 \
     3.5 \
     3.6 \
-    3.7
+    3.7 \
+    3.8
 
 VALGRIND_PYTHON_VERSIONS := \
     2.7.14 \
@@ -24,7 +25,7 @@ CHECKED_FREETDS_VERSIONS := \
     0.92.405 \
     0.95.95 \
     1.00.80 \
-	1.1.4
+    1.1.4
 
 # Valgrind FreeTDS versions are limited to one without sp_executesql support
 # and one with.
@@ -36,7 +37,7 @@ VALGRIND_FREETDS_VERSIONS := \
 DEFAULT_PYTHON_VERSION := $(lastword $(SUPPORTED_PYTHON_VERSIONS))
 DEFAULT_FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
 
-VIRTUALENV_FREETDS_VERSION ?= dev.1.00.336
+VIRTUALENV_FREETDS_VERSION ?= $(lastword $(CHECKED_FREETDS_VERSIONS))
 
 # Ignore warnings, i.e. "Unknown distribution option: 'python_requires'"
 CTDS_VERSION := $(strip $(shell python -W ignore setup.py --version))
@@ -289,11 +290,11 @@ $(VIRTUALENV_DIR)/include/sybdb.h: | $(VIRTUALENV_DIR) $(VIRTUALENV_FREETDS_VERS
 $(VIRTUALENV_DIR):
 	virtualenv $(VIRTUALENV_DIR)
 
-VIRTUALENV_FREETDS_VERSION_URL = http://www.freetds.org/files/current/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz
+VIRTUALENV_FREETDS_VERSION_URL = https://www.freetds.org/files/stable/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz
 $(VIRTUALENV_FREETDS_VERSION):
 	if [ `which wget` ]; then \
         wget '$(VIRTUALENV_FREETDS_VERSION_URL)' -O freetds.tar.gz; \
     else \
-        curl '$(VIRTUALENV_FREETDS_VERSION_URL)' -o freetds.tar.gz; \
+        curl -sSf '$(VIRTUALENV_FREETDS_VERSION_URL)' -o freetds.tar.gz; \
     fi
 	tar -xzf freetds.tar.gz && rm freetds.tar.gz

@@ -138,7 +138,11 @@ PyTypeObject SqlTypeType = {
     sizeof(struct SqlType),                   /* tp_basicsize */
     0,                                        /* tp_itemsize */
     SqlType_dealloc,                          /* tp_dealloc */
+#if PY_VERSION_HEX >= 0x03080000
+    0,                                        /* tp_vectorcall_offset */
+#else
     NULL,                                     /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
     NULL,                                     /* tp_getattr */
     NULL,                                     /* tp_setattr */
     NULL,                                     /* tp_reserved */
@@ -183,6 +187,10 @@ PyTypeObject SqlTypeType = {
 #if PY_VERSION_HEX >= 0x03040000
     NULL,                                     /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
+#if PY_VERSION_HEX >= 0x03080000
+    NULL,                                     /* tp_vectorcall */
+    NULL,                                     /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
 int SqlType_Check(PyObject* o)
@@ -194,10 +202,20 @@ int SqlType_Check(PyObject* o)
     struct SqlType type
 
 #if PY_VERSION_HEX >= 0x03040000
-#  define _TP_FINALIZE NULL
+#  define _TP_FINALIZE NULL,
 #else
 #  define _TP_FINALIZE /* NULL */
 #endif
+
+#if PY_VERSION_HEX >= 0x03080000
+#  define _TP_VECTORCALL_OFFSET 0 /* tp_vectorcall_offset */
+#  define _TP_VECTORCALL NULL,
+#  define _TP_PRINT NULL,
+#else
+#  define _TP_VECTORCALL_OFFSET NULL
+#  define _TP_VECTORCALL /* NULL */
+#  define _TP_PRINT /* NULL */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 
 #define SQL_TYPE_DEF(_type, _doc) \
     PyTypeObject Sql ## _type ## Type; /* forward decl. */ \
@@ -229,7 +247,7 @@ int SqlType_Check(PyObject* o)
         sizeof(struct Sql ## _type),                /* tp_basicsize */ \
         0,                                          /* tp_itemsize */ \
         NULL,                                       /* tp_dealloc */ \
-        NULL,                                       /* tp_print */ \
+        _TP_VECTORCALL_OFFSET,                      /* tp_vectorcall_offset */ \
         NULL,                                       /* tp_getattr */ \
         NULL,                                       /* tp_setattr */ \
         NULL,                                       /* tp_reserved */ \
@@ -272,6 +290,8 @@ int SqlType_Check(PyObject* o)
         NULL,                                       /* tp_del */ \
         0,                                          /* tp_version_tag */ \
         _TP_FINALIZE                                /* tp_finalize */ \
+        _TP_VECTORCALL                              /* tp_vectorcall */ \
+        _TP_PRINT                                   /* tp_print */ \
     }
 
 
@@ -1042,8 +1062,14 @@ static PyObject* DATETIME_topython(enum TdsType tdstype, const void* data, size_
             }
 
             ndata = (size_t)size;
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
             data = (const uint8_t*)&dbdatetime;
-
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
             /* Intentional fall-through. */
         }
 #if defined(CTDS_HAVE_TDSTIME)

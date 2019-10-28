@@ -502,6 +502,11 @@ static PyObject* tds_Binary(PyObject* self, PyObject* args)
     return SqlBinary_create(self, args, NULL);
 }
 
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
+
 static PyMethodDef s_tds_methods[] = {
     { "connect",            (PyCFunction)tds_connect, METH_VARARGS | METH_KEYWORDS, s_tds_connect_doc },
     { "Date",               tds_Date,                 METH_VARARGS,                 s_tds_Date_doc },
@@ -513,6 +518,10 @@ static PyMethodDef s_tds_methods[] = {
     { "Binary",             tds_Binary,               METH_VARARGS,                 s_tds_Binary_doc },
     { NULL,                 NULL,                     0,                            NULL }
 };
+
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
 
 static PyObject* version_info = NULL;
 

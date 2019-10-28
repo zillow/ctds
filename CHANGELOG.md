@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Official support for Python3.8.
 
 ## [1.10.1] - 2019-06-27
 ### Fixed
@@ -203,19 +205,19 @@ when the option is supported, but the set fails.
 ## [1.0.4] - 2016-05-19
 ### Fixed
 - Fix the `ctds.Connection.timeout` property to work with the **DBSETTIME**
-option added in [FreeTDS](http://freetds.org) version *1.00*.
+option added in [FreeTDS](https://www.freetds.org) version *1.00*.
 
 ### Added
-- Support for TDS version *7.4*, introduced with [FreeTDS](http://freetds.org)
+- Support for TDS version *7.4*, introduced with [FreeTDS](https://www.freetds.org)
 version *1.00*.
 
 ## [1.0.3] - 2016-03-31
 ### Fixed
 - Fix [execute()](https://www.python.org/dev/peps/pep-0249/#execute) and
 [executemany()](https://www.python.org/dev/peps/pep-0249/#executemany) to work
-with older versions of [FreeTDS](http://freetds.org) (prior to 0.92.405).
+with older versions of [FreeTDS](https://www.freetds.org) (prior to 0.92.405).
 Format the SQL command manually, instead of using **sp_executesql**, since
-older versions of [FreeTDS](http://freetds.org) don't seem to support passing
+older versions of [FreeTDS](https://www.freetds.org) don't seem to support passing
 _NVARCHAR_ arguments to remote procedure calls.
 
 ### Added

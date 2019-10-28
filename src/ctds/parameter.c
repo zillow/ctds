@@ -190,7 +190,11 @@ PyTypeObject ParameterType = {
     sizeof(struct Parameter),     /* tp_basicsize */
     0,                            /* tp_itemsize */
     Parameter_dealloc,            /* tp_dealloc */
+#if PY_VERSION_HEX >= 0x03080000
+    0,                            /* tp_vectorcall_offset */
+#else
     NULL,                         /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
     NULL,                         /* tp_getattr */
     NULL,                         /* tp_setattr */
     NULL,                         /* tp_reserved */
@@ -235,7 +239,10 @@ PyTypeObject ParameterType = {
 #if PY_VERSION_HEX >= 0x03040000
     NULL,                         /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
-
+#if PY_VERSION_HEX >= 0x03080000
+    NULL,                         /* tp_vectorcall */
+    NULL,                         /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
 /*
@@ -778,18 +785,25 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
 
         case TDSNVARCHAR:
         {
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
             if ((rpcparam->tdstypesize > TDS_NCHAR_MAX_SIZE) || maximum_width)
             {
                 sql = tds_mem_strdup("NVARCHAR(MAX)");
                 break;
             }
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
             /* Intentional fall-though. */
         }
         case TDSNCHAR:
         {
             /* The typesize will be 0 for NULL values, but the SQL type size must be 1. */
             assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_NCHAR_MAX_SIZE);
-            sql = tds_mem_malloc(ARRAYSIZE("NVARCHAR(" STRINGIFY(TDS_NCHAR_MAX_SIZE) ")"));
+            sql = tds_mem_malloc(ARRAYSIZE("NVARCHAR(2147483647)"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -801,18 +815,25 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         }
         case TDSVARCHAR:
         {
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
             if ((rpcparam->tdstypesize > TDS_CHAR_MAX_SIZE) || maximum_width)
             {
                 sql = tds_mem_strdup("VARCHAR(MAX)");
                 break;
             }
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
             /* Intentional fall-though. */
         }
         case TDSCHAR:
         {
             /* The typesize will be 0 for NULL values, but the SQL type size must be 1. */
             assert(0 <= rpcparam->tdstypesize && rpcparam->tdstypesize <= TDS_CHAR_MAX_SIZE);
-            sql = tds_mem_malloc(ARRAYSIZE("VARCHAR(" STRINGIFY(TDS_CHAR_MAX_SIZE) ")"));
+            sql = tds_mem_malloc(ARRAYSIZE("VARCHAR(2147483647)"));
             if (sql)
             {
                 (void)sprintf(sql,
@@ -880,7 +901,7 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
         case TDSNUMERIC:
         case TDSDECIMAL:
         {
-            sql = tds_mem_malloc(ARRAYSIZE("DECIMAL(38,38)"));
+            sql = tds_mem_malloc(ARRAYSIZE("DECIMAL(255,255)"));
             if (sql)
             {
                 const DBDECIMAL* dbdecimal = (const DBDECIMAL*)rpcparam->input;
@@ -895,11 +916,18 @@ char* Parameter_sqltype(struct Parameter* rpcparam, bool maximum_width)
 
         case TDSVARBINARY:
         {
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
             if ((rpcparam->tdstypesize > TDS_BINARY_MAX_SIZE) || maximum_width)
             {
                 sql = tds_mem_strdup("VARBINARY(MAX)");
                 break;
             }
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
             /* Intentional fall-though. */
         }
         case TDSBINARY:
@@ -997,7 +1025,14 @@ char* Parameter_serialize(struct Parameter* rpcparam, bool maximum_width, size_t
                             case '\'':
                             {
                                 if (write) { value[written] = '\''; }
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
                                 ++written;
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
                                 /* Intentional fall-through. */
                             }
                             default:

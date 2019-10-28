@@ -288,11 +288,18 @@ static void raise_lasterror(PyObject* exception, const struct LastError* lasterr
         case SYBESMSG:
         case SYBEFCON:
         {
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
             if (lastmsg && lastmsg->msgtext)
             {
                 message = lastmsg->msgtext;
                 break;
             }
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
             /* Intentional fall-through. */
         }
         default:
@@ -1886,6 +1893,11 @@ static PyObject* Connection___exit__(PyObject* self, PyObject* args)
 }
 
 
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif /* if defined(__GNUC__) && (__GNUC__ > 7) */
+
 static PyMethodDef Connection_methods[] = {
     /* ml_name, ml_meth, ml_flags, ml_doc */
     /* DB API-2.0 required methods. */
@@ -1901,6 +1913,10 @@ static PyMethodDef Connection_methods[] = {
     { "__exit__",    Connection___exit__,                 METH_VARARGS,                 s_Connection___exit___doc },
     { NULL,          NULL,                                0,                            NULL }
 };
+
+#if defined(__GNUC__) && (__GNUC__ > 7)
+#  pragma GCC diagnostic pop
+#endif
 
 PyObject* Connection_create(const char* server, uint16_t port, const char* instance,
                             const char* username, const char* password,
@@ -2228,7 +2244,11 @@ PyTypeObject ConnectionType = {
     sizeof(struct Connection),     /* tp_basicsize */
     0,                             /* tp_itemsize */
     Connection_dealloc,            /* tp_dealloc */
+#if PY_VERSION_HEX >= 0x03080000
+    0,                             /* tp_vectorcall_offset */
+#else
     NULL,                          /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
     NULL,                          /* tp_getattr */
     NULL,                          /* tp_setattr */
     NULL,                          /* tp_reserved */
@@ -2273,6 +2293,10 @@ PyTypeObject ConnectionType = {
 #if PY_VERSION_HEX >= 0x03040000
     NULL,                          /* tp_finalize */
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
+#if PY_VERSION_HEX >= 0x03080000
+    NULL,                          /* tp_vectorcall */
+    NULL,                          /* tp_print */
+#endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
 PyTypeObject* ConnectionType_init(void)
