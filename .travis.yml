@@ -12,6 +12,11 @@ branches:
 
 matrix:
     include:
+        - env: CTDS_MAKE_TARGET=check_3.8
+          os: linux
+          dist: trusty
+          services: docker
+          sudo: required
         - env: CTDS_MAKE_TARGET=check_3.7
           os: linux
           dist: trusty

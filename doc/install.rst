@@ -26,7 +26,7 @@ Installation From Source
 
     # Create the virtual environment.
     virtualenv ctds-venv && cd ctds-venv
-    wget 'http://www.freetds.org/files/stable/freetds-patched.tar.gz'
+    wget 'https://www.freetds.org/files/stable/freetds-patched.tar.gz'
     tar -xzf freetds-patched.tar.gz
     pushd freetds-*
 
@@ -128,8 +128,8 @@ When building on Windows, run the following in powershell:
     pip install -e .
 
 
-.. _FreeTDS: http://www.freetds.org
-.. _homebrew: http://brew.sh/
+.. _FreeTDS: https://www.freetds.org
+.. _homebrew: https://brew.sh/
 .. _pip: https://pip.pypa.io/en/stable/
 .. _virtualenv: http://virtualenv.readthedocs.org/en/latest/userguide.html
 .. _Visual C++ Build Tools: https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2017

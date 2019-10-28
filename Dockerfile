@@ -6,7 +6,7 @@ ARG FREETDS_VERSION=1.00.80
 
 # Build FreeTDS (required by ctds)
 RUN set -ex \
-    && wget -O freetds.tar.gz "http://www.freetds.org/files/stable/freetds-${FREETDS_VERSION}.tar.gz" \
+    && wget -O freetds.tar.gz "https://www.freetds.org/files/stable/freetds-${FREETDS_VERSION}.tar.gz" \
     && mkdir -p /usr/src/freetds \
     && tar -xzC /usr/src/freetds --strip-components=1 -f freetds.tar.gz \
     && rm freetds.tar.gz \

@@ -109,4 +109,4 @@ parameter:
     )
 
 
-.. _FreeTDS: http://www.freetds.org
+.. _FreeTDS: https://www.freetds.org

@@ -38,7 +38,7 @@ Dependencies
 * `FreeTDS`_
 * `Python`_
 
-.. _`FreeTDS`: http://www.freetds.org/
+.. _`FreeTDS`: https://www.freetds.org/
 .. _`Python`: https://www.python.org/
 .. _`DB API-2.0`: https://www.python.org/dev/peps/pep-0249
 
