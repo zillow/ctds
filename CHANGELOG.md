@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Official support for Python3.8.
+- Automate Python egg publishing to pypi.
+- Automate documentation publishing.
 
 ### Fixed
 - Fix handling of `IDENTITY` columns in `ctds.Connection.bulk_insert()`.

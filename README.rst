@@ -28,7 +28,7 @@ Features
 
 * Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2008 and up.
 * Complete `DB API-2.0`_ support.
-* Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, Python 3.6, and Python 3.7 support.
+* Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, Python 3.6, Python 3.7, and Python 3.8 support.
 * Bulk insert (bcp) support.
 * Written entirely in C.
 
@@ -46,6 +46,20 @@ Dependencies
 
 See `installation instructions <https://zillow.github.io/ctds/install.html>`_
 for more information on installing `FreeTDS`_.
+
+Releasing
+---------
+
+Publishing new versions of the egg and documentation is automated using
+`travis-ci <https://docs.travis-ci.com/user/deployment/>`_ deployment.
+Official releases are marked using git
+`tags <https://git-scm.com/book/en/v2/Git-Basics-Tagging>`_. Pushing the
+tag to the git remote will trigger the automated deployment. E.g.
+
+.. code-block:: console
+
+    git tag -a v1.2.3 -m 'v1.2.3'
+    git push --tags
 
 Documentation
 -------------

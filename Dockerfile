@@ -1,8 +1,8 @@
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION=3.8
 
 FROM python:${PYTHON_VERSION}
 
-ARG FREETDS_VERSION=1.00.80
+ARG FREETDS_VERSION=1.1.20
 
 # Build FreeTDS (required by ctds)
 RUN set -ex \
@@ -48,7 +48,8 @@ RUN set -ex \
             pylint \
             recommonmark \
             sphinx \
-            sphinx_rtd_theme
+            sphinx_rtd_theme \
+            twine
 
 COPY . /usr/src/ctds/
 WORKDIR /usr/src/ctds

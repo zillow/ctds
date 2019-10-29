@@ -9,7 +9,7 @@ environment:
 
   BUILD_INSTALL_PREFIX: "C:\\usr\\local"
 
-  FREETDS_VERSION: "1.1.4"
+  FREETDS_VERSION: "1.1.20"
 
   matrix:
   - PYTHON: "C:\\Python27-x64"
@@ -47,8 +47,8 @@ environment:
 services:
 
 cache:
-  -  '%BUILD_INSTALL_PREFIX% -> appveyor\\install.ps1'
-  -  '%BUILD_INSTALL_PREFIX% -> appveyor.yml'
+  - '%BUILD_INSTALL_PREFIX% -> appveyor\\install.ps1'
+  - '%BUILD_INSTALL_PREFIX% -> appveyor.yml'
 
 install:
   - choco install opencppcoverage
