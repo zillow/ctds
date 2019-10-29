@@ -122,6 +122,7 @@ setuptools.setup(
     author_email='joshual@zillow.com',
     description='DB API 2.0-compliant driver for SQL Server',
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     keywords=[
         'freetds',
         'mssql',

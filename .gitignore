@@ -5,6 +5,7 @@
 *.so
 .gh-pages/
 .venv/
+.vscode/
 coverage_*
 build/
 dist/

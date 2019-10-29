@@ -1385,13 +1385,13 @@ static const char s_Connection_bulk_insert_doc[] =
     ":param rows: An iterable of data rows. Data rows are Python `sequence`\n"
     "    objects. Each item in the data row is inserted into the table in\n"
     "    sequential order.\n"
-    "    Version 1.9 supports passing rows as `:py:class:`dict`. Keys must map\n"
+    "    Version 1.9 supports passing rows as :py:class:`dict`. Keys must map\n"
     "    to column names and must exist for all non-NULL columns.\n"
     ":type rows: :ref:`typeiter <python:typeiter>`\n"
 
     ":param int batch_size: An optional batch size.\n"
 
-    ":param bool tablock: Should the `TABLOCK` hint be passed.\n"
+    ":param bool tablock: Should the `TABLOCK` hint be passed?\n"
 
     ":return: The number of rows saved to the table.\n"
     ":rtype: int\n";

@@ -28,11 +28,11 @@ after `batch_size` rows have been copied to server.
 :param rows: An iterable of data rows. Data rows are Python `sequence`
     objects. Each item in the data row is inserted into the table in
     sequential order.
-    Version 1.9 supports passing rows as `:py:class:`dict`. Keys must map
+    Version 1.9 supports passing rows as :py:class:`dict`. Keys must map
     to column names and must exist for all non-NULL columns.
 :type rows: :ref:`typeiter <python:typeiter>`
 :param int batch_size: An optional batch size.
-:param bool tablock: Should the `TABLOCK` hint be passed.
+:param bool tablock: Should the `TABLOCK` hint be passed?
 :return: The number of rows saved to the table.
 :rtype: int
 '''

@@ -1,10 +1,12 @@
 .*
 # .git is required by check-manifest
 !.git
+appveyor/
 build/
 coverage/
+dist/
 docs/
 travis/
-appveyor/
+src/ctds.egg-info/
 *.so
 Dockerfile*
