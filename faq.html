@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; ctds 1.10.1 documentation</title>
+  <title>Frequently Asked Questions &mdash; ctds 1.11.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10
+                1.11
               </div>
             
           
@@ -177,8 +177,8 @@ is a known deficiency of the <cite>dblib</cite> API. String parameters with
 length <em>0</em> are interpreted as <cite>NULL</cite> by the <cite>dblib</cite> API.</p>
 </div>
 <div class="section" id="why-don-t-str-values-map-to-n-varchar-in-python-2">
-<h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
-<p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> are equivalent. As such, it
+<h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
+<p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> are equivalent. As such, it
 is difficult for <cite>cTDS</cite> to infer a proper <em>SQL</em> type from the Python type.
 <code class="xref py py-func docutils literal notranslate"><span class="pre">unicode()</span></code> should be used in Python 2 when a <strong>(N)CHAR</strong>-type
 parameter is desired. Alternatively, <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlVarChar</span></code></a> and
@@ -199,7 +199,7 @@ result in an error.</p>
 </div>
 <p>The error <cite>some custom error</cite> is reported as a <a class="reference internal" href="ctds.html#ctds.Warning" title="ctds.Warning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ctds.Warning</span></code></a>.</p>
 <p>In <cite>cTDS</cite> v1.3.0 and later, this warning can be turned into an exception using
-the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.7)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> module.</p>
+the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">ctds</span>
 
@@ -216,17 +216,17 @@ the <a class="reference external" href="https://docs.python.org/3/library/warnin
 </div>
 <div class="section" id="what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean">
 <h2>What does the <cite>Unicode codepoint U+1F4A9 is not representable…</cite> warning mean?<a class="headerlink" href="#what-does-the-unicode-codepoint-u-1f4a9-is-not-representable-warning-mean" title="Permalink to this headline">¶</a></h2>
-<p>Until <a class="reference external" href="http://www.freetds.org">FreeTDS</a> <strong>1.00</strong>, the default encoding used on the connection to
+<p>Until <a class="reference external" href="https://www.freetds.org">FreeTDS</a> <strong>1.00</strong>, the default encoding used on the connection to
 the database was <em>UCS-2</em>. FreeTDS requires all text data be encodable in the
 connection’s encoding. Therefore <cite>cTDS</cite> would replace non <em>UCS-2</em> characters in
 strings and generate a warning before sending the data to the database. Once
-support was added for configuring the connection to use <em>UTF-16</em> in <a class="reference external" href="http://www.freetds.org">FreeTDS</a>
+support was added for configuring the connection to use <em>UTF-16</em> in <a class="reference external" href="https://www.freetds.org">FreeTDS</a>
 <strong>1.00</strong>, this behavior was no longer necessary.</p>
-<p>Upgrading the version of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> will resolve this warning and unicode
+<p>Upgrading the version of <a class="reference external" href="https://www.freetds.org">FreeTDS</a> will resolve this warning and unicode
 codepoints outside the <em>UCS-2</em> range will no longer be replaced.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference external" href="http://www.freetds.org">FreeTDS</a> <strong>0.95</strong> does support using <em>UTF-16</em> on connections, however
+<p><a class="reference external" href="https://www.freetds.org">FreeTDS</a> <strong>0.95</strong> does support using <em>UTF-16</em> on connections, however
 the only way to configure it is via <em>freetds.conf</em>. The option is disabled
 by default, and there is no way to determine if <em>UTF-16</em> is enabled for a
 connection. Because of these limitations, <cite>cTDS</cite> cannot reliably determine

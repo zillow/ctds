@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Executing SQL Statements &mdash; ctds 1.10.1 documentation</title>
+  <title>Executing SQL Statements &mdash; ctds 1.11.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10
+                1.11
               </div>
             
           
@@ -177,7 +177,7 @@ This allows optimizations when running batches using
 <a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.executemany()</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Versions of <a class="reference external" href="http://www.freetds.org">FreeTDS</a> prior to <strong>0.92.405</strong> can’t properly support the use
+<p>Versions of <a class="reference external" href="https://www.freetds.org">FreeTDS</a> prior to <strong>0.92.405</strong> can’t properly support the use
 of <a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms188001.aspx">sp_executesql</a>. <cite>cTDS</cite> still implements
 <a class="reference internal" href="cursor.html#ctds.Cursor.executemany" title="ctds.Cursor.executemany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">executemany()</span></code></a>, however performance benefits are lost.</p>
 </div>
@@ -218,7 +218,7 @@ by specifying it in <a class="reference internal" href="ctds.html#ctds.connect" 
 <p>Parameter SQL types are inferred from the Python object type. If desired,
 the SQL type can be explicitly specified using a
 <a class="reference internal" href="types.html"><span class="doc">type wrapper class</span></a>. For example, this is necessary when passing
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> for a <cite>BINARY</cite> column.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> for a <cite>BINARY</cite> column.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    INSERT (Id, BinaryValue) INTO MyTable</span>
@@ -253,7 +253,7 @@ supported:</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Currently <a class="reference external" href="http://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
+<p>Currently <a class="reference external" href="https://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
 Empty strings are converted to <cite>NULL</cite> values internally before being
 transmitted to the database.</p>
 </div>

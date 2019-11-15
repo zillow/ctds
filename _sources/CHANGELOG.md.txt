@@ -4,6 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.11.0] - 2019-11-14
+### Added
+- Official support for Python3.8.
+- Automate Python egg publishing to pypi.
+- Automate documentation publishing.
+
+### Fixed
+- Fix handling of `IDENTITY` columns in `ctds.Connection.bulk_insert()`.
+https://github.com/zillow/ctds/issues/59.
+
 ## [1.10.1] - 2019-06-27
 ### Fixed
 - Properly handle errors in the `ctds.pool.ConnectionPool.connection` context
@@ -203,19 +213,19 @@ when the option is supported, but the set fails.
 ## [1.0.4] - 2016-05-19
 ### Fixed
 - Fix the `ctds.Connection.timeout` property to work with the **DBSETTIME**
-option added in [FreeTDS](http://freetds.org) version *1.00*.
+option added in [FreeTDS](https://www.freetds.org) version *1.00*.
 
 ### Added
-- Support for TDS version *7.4*, introduced with [FreeTDS](http://freetds.org)
+- Support for TDS version *7.4*, introduced with [FreeTDS](https://www.freetds.org)
 version *1.00*.
 
 ## [1.0.3] - 2016-03-31
 ### Fixed
 - Fix [execute()](https://www.python.org/dev/peps/pep-0249/#execute) and
 [executemany()](https://www.python.org/dev/peps/pep-0249/#executemany) to work
-with older versions of [FreeTDS](http://freetds.org) (prior to 0.92.405).
+with older versions of [FreeTDS](https://www.freetds.org) (prior to 0.92.405).
 Format the SQL command manually, instead of using **sp_executesql**, since
-older versions of [FreeTDS](http://freetds.org) don't seem to support passing
+older versions of [FreeTDS](https://www.freetds.org) don't seem to support passing
 _NVARCHAR_ arguments to remote procedure calls.
 
 ### Added
@@ -239,7 +249,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.10.1...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/zillow/ctds/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/zillow/ctds/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/zillow/ctds/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/zillow/ctds/compare/v1.8.0...v1.9.0

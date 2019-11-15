@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctds.pool &mdash; ctds 1.10.1 documentation</title>
+  <title>ctds.pool &mdash; ctds 1.11.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.10
+                1.11
               </div>
             
           
@@ -214,14 +214,14 @@ background.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dbapi2</strong> – The DB-API 2 module used to create connections.
 This module must implement the <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249"><strong>PEP 0249</strong></a> specification.</p></li>
-<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Connection parameters to pass directly to the
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Connection parameters to pass directly to the
 <span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a> method when creating a new connection.</p></li>
-<li><p><strong>idlettl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – The maximum time, in seconds, a connection can sit
+<li><p><strong>idlettl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The maximum time, in seconds, a connection can sit
 idle before it is discarded. If not specified, connections are retained
 indefinitely.</p></li>
-<li><p><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – The maximum number of connections to keep in
+<li><p><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The maximum number of connections to keep in
 the pool.</p></li>
-<li><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Block until a connection is released back to the
+<li><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Block until a connection is released back to the
 pool? This is only applicable when a <cite>maxsize</cite> value is specified. If
 <cite>False</cite>, a new connection will be created as needed, but the number of
 connections retained in the pool will never exceed <cite>maxsize</cite>.</p></li>

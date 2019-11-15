@@ -28,7 +28,7 @@ ctds
 
     .. py:data:: freetds_version
 
-        The version of `FreeTDS <http://www.freetds.org>`_ in use at runtime.
+        The version of `FreeTDS <https://www.freetds.org>`_ in use at runtime.
 
     .. py:data:: version_info
 

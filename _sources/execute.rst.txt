@@ -99,6 +99,6 @@ supported:
     transmitted to the database.
 
 
-.. _FreeTDS: http://www.freetds.org
+.. _FreeTDS: https://www.freetds.org
 .. _SQL Server: http://www.microsoft.com/sqlserver/
 .. _sp_executesql: https://msdn.microsoft.com/en-us/library/ms188001.aspx
