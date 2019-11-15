@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [1.11.0] - 2019-11-14
 ### Added
 - Official support for Python3.8.
 - Automate Python egg publishing to pypi.
@@ -247,7 +249,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.10.1...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/zillow/ctds/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/zillow/ctds/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/zillow/ctds/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/zillow/ctds/compare/v1.8.0...v1.9.0
