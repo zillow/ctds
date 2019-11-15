@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Official support for Python3.8.
 
+### Fixed
+- Fix handling of `IDENTITY` columns in `ctds.Connection.bulk_insert()`.
+https://github.com/zillow/ctds/issues/59.
+
 ## [1.10.1] - 2019-06-27
 ### Fixed
 - Properly handle errors in the `ctds.pool.ConnectionPool.connection` context

@@ -351,6 +351,49 @@ insert.\
             finally:
                 connection.rollback()
 
+    def test_insert_dict_identity(self):
+        with self.connect(autocommit=False) as connection:
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        '''
+                        CREATE TABLE {0}
+                        (
+                            PrimaryKey INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                            Integer    INT NULL
+                        )
+                        '''.format(self.test_insert_dict_identity.__name__)
+                    )
+
+                rows = 10
+                inserted = connection.bulk_insert(
+                    self.test_insert_dict_identity.__name__,
+                    (
+                        {
+                            'Integer': ix * 1000
+                        }
+                        for ix in range(0, rows)
+                    )
+                )
+
+                self.assertEqual(inserted, rows)
+
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT * FROM {0}'.format(self.test_insert_dict_identity.__name__))
+                    self.assertEqual(
+                        [tuple(row) for row in cursor.fetchall()],
+                        [
+                            (
+                                ix + 1,
+                                ix * 1000
+                            )
+                            for ix in range(0, rows)
+                        ]
+                    )
+
+            finally:
+                connection.rollback()
+
     def test_insert_dict_keyerror(self):
         with self.connect(autocommit=False) as connection:
             try:
