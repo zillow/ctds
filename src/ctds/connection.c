@@ -1606,6 +1606,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
             DBINT ncolumns = 0;
             struct {
                 bool nullable;
+                bool identity;
                 char* name;
             }* columns = NULL;
             bool initialized = false;
@@ -1682,6 +1683,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                         }
 
                         columns[column].nullable = dbcol.Null;
+                        columns[column].identity = dbcol.Identity;
                         columns[column].name = tds_mem_strdup(dbcol.ActualName);
                         if (!columns[column].name)
                         {
@@ -1709,7 +1711,7 @@ static PyObject* Connection_bulk_insert(PyObject* self, PyObject* args, PyObject
                             PyObject* value = PyMapping_GetItemString(row, columns[column].name);
                             if (!value)
                             {
-                                if (columns[column].nullable)
+                                if (columns[column].nullable || columns[column].identity)
                                 {
                                     PyErr_Clear();
                                     value = Py_None;
