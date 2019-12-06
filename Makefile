@@ -257,6 +257,24 @@ ifndef CI
     echo;
 endif
 
+.PHONY: _pre_publish-doc
+_pre_publish-doc:
+	rm -rf "$(GH_PAGES_DIR)"
+	git clone --quiet --branch=gh-pages git@github.com:zillow/ctds.git "$(GH_PAGES_DIR)"
+
+.PHONY: _post_publish-doc
+_post_publish-doc:
+	@if [ -n "`git -C "$(GH_PAGES_DIR)" status -s`" ]; then \
+        echo; \
+        echo "The ctds documentation has changed and should be re-published using: "; \
+        echo "    git -C "$(GH_PAGES_DIR)" commit -am \"Documentation updates for ctds $(CTDS_VERSION)\""; \
+        echo; \
+        git -C "$(GH_PAGES_DIR)" status; \
+    fi
+
+.PHONY: publish-doc
+publish-doc: _pre_publish-doc doc _post_publish-doc
+
 virtualenv: $(VIRTUALENV_DIR)/include/sybdb.h src/ctds/*.c
 	CTDS_INCLUDE_DIRS="$(abspath $(VIRTUALENV_DIR))/include" \
         CTDS_LIBRARY_DIRS="$(abspath $(VIRTUALENV_DIR))/lib" \
