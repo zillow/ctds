@@ -19,6 +19,7 @@ ctds.pool Example
 .. code-block:: python
 
     import ctds
+    import ctds.pool
     import pprint
 
     config = {
