@@ -36,10 +36,13 @@ import sphinx_rtd_theme
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'recommonmark',
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
+    # Add a .nojekyll file required for hosting files with a leading '_' on github-pages.
+    # https://help.github.com/en/articles/files-that-start-with-an-underscore-are-missing
+    'sphinx.ext.githubpages',
     'sphinx.ext.intersphinx',
-    'recommonmark',
 ]
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
