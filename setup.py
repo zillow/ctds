@@ -19,7 +19,7 @@ CTDS_PATCH_VERSION = 0
 TESTS_REQUIRE = []
 if sys.version_info < (3, 3):
     # Mock is part of the Python 3.3+ stdlib.
-    TESTS_REQUIRE.append('mock >= 0.7.2')
+    TESTS_REQUIRE.append('mock >= 0.7.2, < 4.0.0')
 
 STRICT = os.environ.get('CTDS_STRICT')
 WINDOWS = platform.system() == 'Windows'
