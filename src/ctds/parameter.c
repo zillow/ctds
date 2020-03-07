@@ -25,6 +25,8 @@
 #endif /* ifdef __GNUC__ */
 
 
+#define TDS_TYPE_SIZE_FIXED (-1)
+
 struct Parameter
 {
     PyObject_HEAD
@@ -66,11 +68,11 @@ struct Parameter
         DBINT dbint;
         DBBIGINT dbbigint;
         DBDECIMAL dbdecimal;
-#if defined(CTDS_HAVE_TDSTIME)
+#if defined(CTDS_HAVE_TDS73_SUPPORT)
         DBDATETIMEALL dbdatetime;
-#else /* if defined(CTDS_HAVE_TDSTIME) */
+#else /* if defined(CTDS_HAVE_TDS73_SUPPORT) */
         DBDATETIME dbdatetime;
-#endif /* else if defined(CTDS_HAVE_TDSTIME) */
+#endif /* else if defined(CTDS_HAVE_TDS73_SUPPORT) */
         DBFLT8 dbflt8;
     } buffer;
 
@@ -87,6 +89,8 @@ struct Parameter
 
     /* The size of `output`, in bytes. */
     size_t noutput;
+
+    bool isoutput;
 };
 
 static void Parameter_dealloc(PyObject* self)
@@ -127,8 +131,6 @@ static PyObject* Parameter_repr(PyObject* self)
     const struct Parameter* parameter = (const struct Parameter*)self;
     PyObject* repr = NULL;
 
-    bool output = (NULL != parameter->output);
-
 #if PY_MAJOR_VERSION < 3
     /*
         Python2.6's implementation of `PyUnicode_FromFormat` is buggy and
@@ -139,7 +141,7 @@ static PyObject* Parameter_repr(PyObject* self)
     if (value)
     {
         repr = PyString_FromFormat(
-            (output) ? "%s(%s, output=True)" : "%s(%s)",
+            (parameter->isoutput) ? "%s(%s, output=True)" : "%s(%s)",
             Py_TYPE(self)->tp_name,
             PyString_AS_STRING(value)
         );
@@ -147,7 +149,7 @@ static PyObject* Parameter_repr(PyObject* self)
     }
 #else /* if PY_MAJOR_VERSION < 3 */
     repr = PyUnicode_FromFormat(
-        (output) ? "%s(%R, output=True)" : "%s(%R)",
+        (parameter->isoutput) ? "%s(%R, output=True)" : "%s(%R)",
         Py_TYPE(self)->tp_name,
         parameter->value
     );
@@ -246,7 +248,7 @@ PyTypeObject ParameterType = {
 };
 
 /*
-    Bind a python object to a parameter for use in a SQL statement.
+    Convert a python object to a parameter for use in a SQL statement.
 
     An appropriate Python error is set on failure.
 
@@ -255,17 +257,15 @@ PyTypeObject ParameterType = {
 
     @return -1 on error, 0 on success.
 */
-static int Parameter_bind(struct Parameter* parameter, PyObject* value)
+static int Parameter_convert_to_tds(struct Parameter* parameter, DBPROCESS* dbproc)
 {
-    assert(!parameter->value);
+    assert(parameter->value);
 
-    parameter->value = value;
-    Py_INCREF(parameter->value);
-
-    if (SqlType_Check(value))
+    if (SqlType_Check(parameter->value))
     {
         /* Explicitly specified a SQL type. */
-        struct SqlType* sqltype = (struct SqlType*)value;
+        struct SqlType* sqltype = (struct SqlType*)parameter->value;
+
         parameter->input = sqltype->data;
         parameter->ninput = sqltype->ndata;
         parameter->tdstypesize = (DBINT)sqltype->size;
@@ -286,14 +286,17 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 
         do
         {
-            if (PyUnicode_Check(value))
+            if (PyUnicode_Check(parameter->value))
             {
                 size_t nchars; /* number of unicode characters in the string */
 
                 const char* utf8bytes;
 
                 Py_XDECREF(parameter->source);
-                parameter->source = encode_for_dblib(value, &utf8bytes, &parameter->ninput, &nchars);
+                parameter->source = encode_for_dblib(parameter->value,
+                                                     &utf8bytes,
+                                                     &parameter->ninput,
+                                                     &nchars);
                 if (!parameter->source)
                 {
                     break;
@@ -319,9 +322,9 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 parameter->tdstypesize = (DBINT)nchars;
             }
             /* Check for bools prior to integers, which are treated as a boolean type by Python. */
-            else if (PyBool_Check(value))
+            else if (PyBool_Check(parameter->value))
             {
-                parameter->buffer.byte = (BYTE)(Py_True == value);
+                parameter->buffer.byte = (BYTE)(Py_True == parameter->value);
 
                 parameter->input = (const void*)&parameter->buffer;
                 parameter->ninput = sizeof(parameter->buffer.byte);
@@ -331,22 +334,22 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             }
             else if (
 #if PY_MAJOR_VERSION < 3
-                     PyInt_Check(value) ||
+                     PyInt_Check(parameter->value) ||
 #endif /* if PY_MAJOR_VERSION < 3 */
-                     PyLong_Check(value)
+                     PyLong_Check(parameter->value)
                      )
             {
                 PY_LONG_LONG ll = 0;
 #if PY_MAJOR_VERSION < 3
-                if (PyInt_Check(value))
+                if (PyInt_Check(parameter->value))
                 {
-                    ll = PyInt_AsLong(value);
+                    ll = PyInt_AsLong(parameter->value);
                 }
                 else
 #endif /* if PY_MAJOR_VERSION < 3 */
                 {
                     /* This will raise an expected OverflowError on overflow. */
-                    ll = PyLong_AsLongLong(value);
+                    ll = PyLong_AsLongLong(parameter->value);
                 }
 
                 if (PyErr_Occurred())
@@ -383,20 +386,20 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 
                 parameter->input = (const void*)&parameter->buffer;
             }
-            else if (PyBytes_Check(value) || PyByteArray_Check(value))
+            else if (PyBytes_Check(parameter->value) || PyByteArray_Check(parameter->value))
             {
-                if (PyBytes_Check(value))
+                if (PyBytes_Check(parameter->value))
                 {
                     char* data;
                     Py_ssize_t size;
-                    (void)PyBytes_AsStringAndSize(value, &data, &size);
+                    (void)PyBytes_AsStringAndSize(parameter->value, &data, &size);
                     parameter->input = (const void*)data;
                     parameter->ninput = (size_t)size;
                 }
                 else
                 {
-                    parameter->input = (const void*)PyByteArray_AS_STRING(value);
-                    parameter->ninput = (size_t)PyByteArray_GET_SIZE(value);
+                    parameter->input = (const void*)PyByteArray_AS_STRING(parameter->value);
+                    parameter->ninput = (size_t)PyByteArray_GET_SIZE(parameter->value);
                 }
 
                 /*
@@ -408,16 +411,16 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 /* Non-NULL values must have a non-zero length.  */
                 parameter->tdstypesize = (DBINT)parameter->ninput;
             }
-            else if (PyFloat_Check(value))
+            else if (PyFloat_Check(parameter->value))
             {
-                parameter->buffer.dbflt8 = (DBFLT8)PyFloat_AS_DOUBLE(value);
+                parameter->buffer.dbflt8 = (DBFLT8)PyFloat_AS_DOUBLE(parameter->value);
 
                 parameter->input = (const void*)&parameter->buffer;
                 parameter->ninput = sizeof(parameter->buffer.dbflt8);
 
                 parameter->tdstype = TDSFLOAT;
             }
-            else if (PyDecimal_Check(value))
+            else if (PyDecimal_Check(parameter->value))
             {
                 PyObject* ostr = NULL;
 
@@ -426,7 +429,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     Py_ssize_t nutf8;
                     const char* str;
 
-                    ostr = PyDecimal_ToString(value);
+                    ostr = PyDecimal_ToString(parameter->value);
                     if (!ostr)
                     {
                         break;
@@ -486,7 +489,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 
                         dbtypeinfo.scale = (DBINT)MIN(fractional, DECIMAL_MAX_PRECISION - integer);
 
-                        size = dbconvert_ps(NULL,
+                        size = dbconvert_ps(dbproc,
                                             TDSCHAR,
                                             (BYTE*)str,
                                             (DBINT)nutf8,
@@ -512,9 +515,10 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
 
                 if (PyErr_Occurred()) break;
             }
-            else if (PyDate_Check_(value) || PyTime_Check_(value))
+            else if (PyDate_Check_(parameter->value) || PyTime_Check_(parameter->value))
             {
-                int ninput = datetime_to_sql(value,
+                int ninput = datetime_to_sql(dbproc,
+                                             parameter->value,
                                              &parameter->tdstype,
                                              &parameter->buffer.dbdatetime,
                                              sizeof(parameter->buffer.dbdatetime));
@@ -527,13 +531,13 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                 parameter->ninput = (size_t)ninput;
                 parameter->input = (const void*)&parameter->buffer;
             }
-            else if (PyUuid_Check(value))
+            else if (PyUuid_Check(parameter->value))
             {
                 /*
                     FreeTDS doesn't support passing the raw bytes of the GUID, so pass
                     it as CHAR.
                 */
-                PyObject* uuidstr = PyObject_Str(value);
+                PyObject* uuidstr = PyObject_Str(parameter->value);
                 if (uuidstr)
                 {
 #if PY_MAJOR_VERSION >= 3
@@ -555,7 +559,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
                     parameter->tdstypesize = (DBINT)parameter->ninput;
                 }
             }
-            else if (Py_None == value)
+            else if (Py_None == parameter->value)
             {
                 /*
                     Default to VARCHAR for an untyped None value.
@@ -572,7 +576,7 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
             else
             {
                 /* An unsupported type. */
-                PyObject* typestr = PyObject_Str((PyObject*)value->ob_type);
+                PyObject* typestr = PyObject_Str((PyObject*)parameter->value->ob_type);
                 if (typestr)
                 {
                     PyErr_Format(PyExc_tds_InterfaceError,
@@ -592,6 +596,108 @@ static int Parameter_bind(struct Parameter* parameter, PyObject* value)
     return (PyErr_Occurred()) ? -1 : 0;
 }
 
+int Parameter_bind(struct Parameter* parameter, DBPROCESS* dbproc)
+{
+    do
+    {
+        if (0 != Parameter_convert_to_tds(parameter, dbproc))
+        {
+            break;
+        }
+
+        if (parameter->isoutput)
+        {
+            /*
+                Use the type size for variable-length parameters.
+                Determine the fixed size from the type.
+            */
+            bool fixed = (-1 == parameter->tdstypesize);
+            if (fixed)
+            {
+                switch (parameter->tdstype)
+                {
+                    case TDSBIT:
+                    case TDSBITN:
+                    case TDSINTN:
+                    case TDSTINYINT:
+                    case TDSSMALLINT:
+                    case TDSINT:
+                    {
+                        parameter->noutput = sizeof(DBINT);
+                        break;
+                    }
+                    case TDSBIGINT:
+                    {
+                        parameter->noutput = sizeof(DBBIGINT);
+                        break;
+                    }
+                    case TDSFLOAT:
+                    case TDSFLOATN:
+                    case TDSREAL:
+                    {
+                        parameter->noutput = sizeof(DBFLT8);
+                        break;
+                    }
+                    case TDSDATETIME:
+                    case TDSSMALLDATETIME:
+                    case TDSDATETIMEN:
+                    case TDSDATE:
+                    case TDSTIME:
+                    case TDSDATETIME2:
+                    {
+#if defined(CTDS_HAVE_TDS73_SUPPORT)
+                        parameter->noutput = sizeof(DBDATETIMEALL);
+#else /* if defined(CTDS_HAVE_TDS73_SUPPORT) */
+                        parameter->noutput = sizeof(DBDATETIME);
+#endif /* else if defined(CTDS_HAVE_TDS73_SUPPORT) */
+                        break;
+                    }
+                    case TDSSMALLMONEY:
+                    case TDSMONEY:
+                    case TDSMONEYN:
+                    case TDSNUMERIC:
+                    case TDSDECIMAL:
+                    {
+                        parameter->noutput = sizeof(DBDECIMAL);
+                        break;
+                    }
+                    case TDSGUID:
+                    {
+                        parameter->noutput = 16;
+                        break;
+                    }
+                    default:
+                    {
+                        parameter->noutput = 0;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                parameter->noutput = (size_t)parameter->tdstypesize;
+            }
+
+            tds_mem_free(parameter->output);
+            parameter->output = tds_mem_malloc(parameter->noutput);
+            if (!parameter->output)
+            {
+                PyErr_NoMemory();
+                break;
+            }
+
+            memset(parameter->output, 0, parameter->noutput);
+
+            memcpy(parameter->output,
+                   parameter->input,
+                   MIN(parameter->ninput, parameter->noutput));
+        }
+    }
+    while (0);
+
+    return PyErr_Occurred() ? -1 : 0;
+}
+
 struct Parameter* Parameter_create(PyObject* value, bool output)
 {
     struct Parameter* parameter = PyObject_New(struct Parameter, &ParameterType);
@@ -600,100 +706,10 @@ struct Parameter* Parameter_create(PyObject* value, bool output)
         memset((((char*)parameter) + offsetof(struct Parameter, value)),
                0,
                (sizeof(struct Parameter) - offsetof(struct Parameter, value)));
-        if (0 == Parameter_bind(parameter, value))
-        {
-            if (output)
-            {
-                /*
-                    Use the type size for variable-length parameters.
-                    Determine the fixed size from the type.
-                */
-                bool fixed = (-1 == parameter->tdstypesize);
-                if (fixed)
-                {
-                    switch (parameter->tdstype)
-                    {
-                        case TDSBIT:
-                        case TDSBITN:
-                        case TDSINTN:
-                        case TDSTINYINT:
-                        case TDSSMALLINT:
-                        case TDSINT:
-                        {
-                            parameter->noutput = sizeof(DBINT);
-                            break;
-                        }
-                        case TDSBIGINT:
-                        {
-                            parameter->noutput = sizeof(DBBIGINT);
-                            break;
-                        }
-                        case TDSFLOAT:
-                        case TDSFLOATN:
-                        case TDSREAL:
-                        {
-                            parameter->noutput = sizeof(DBFLT8);
-                            break;
-                        }
-                        case TDSDATETIME:
-                        case TDSSMALLDATETIME:
-                        case TDSDATETIMEN:
-                        case TDSDATE:
-                        case TDSTIME:
-                        case TDSDATETIME2:
-                        {
-#if defined(CTDS_HAVE_TDSTIME)
-                            parameter->noutput = sizeof(DBDATETIMEALL);
-#else /* if defined(CTDS_HAVE_TDSTIME) */
-                            parameter->noutput = sizeof(DBDATETIME);
-#endif /* else if defined(CTDS_HAVE_TDSTIME) */
-                            break;
-                        }
-                        case TDSSMALLMONEY:
-                        case TDSMONEY:
-                        case TDSMONEYN:
-                        case TDSNUMERIC:
-                        case TDSDECIMAL:
-                        {
-                            parameter->noutput = sizeof(DBDECIMAL);
-                            break;
-                        }
-                        case TDSGUID:
-                        {
-                            parameter->noutput = 16;
-                            break;
-                        }
-                        default:
-                        {
-                            parameter->noutput = 0;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    parameter->noutput = (size_t)parameter->tdstypesize;
-                }
+        parameter->isoutput = output;
 
-                parameter->output = tds_mem_malloc(parameter->noutput);
-                if (!parameter->output)
-                {
-                    PyErr_NoMemory();
-                }
-
-                memset(parameter->output, 0, parameter->noutput);
-
-                memcpy(parameter->output,
-                       parameter->input,
-                       MIN(parameter->ninput, parameter->noutput));
-            }
-        }
-
-        if (PyErr_Occurred())
-        {
-            Py_DECREF(parameter);
-            parameter = NULL;
-        }
+        parameter->value = value;
+        Py_INCREF(parameter->value);
     }
     else
     {

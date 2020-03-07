@@ -1,9 +1,10 @@
 .*
 # .git is required by check-manifest
 !.git
+.coverage/
+.venv/
 appveyor/
 build/
-coverage/
 dist/
 docs/
 travis/

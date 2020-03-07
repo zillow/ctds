@@ -17,7 +17,7 @@ PyTypeObject* ParameterType_get(void);
 struct Parameter; /* forward decl. */
 
 /**
-    Create/bind an RPC parameter to a Python object.
+    Create an RPC parameter to a Python object.
 
     @note This method sets an appropriate Python error on failure.
     @note This method returns a new reference.
@@ -25,10 +25,15 @@ struct Parameter; /* forward decl. */
     @param value [in] The Python object to bind to the parameter.
     @param output [in] Whether or not the parameter is an output parameter.
 
-    @return The bound RPC parameter.
+    @return The RPC parameter.
     @retval NULL on failure.
 */
 struct Parameter* Parameter_create(PyObject* value, bool output);
+
+/**
+    Bind a parameter to the wrapped Python object.
+*/
+int Parameter_bind(struct Parameter* parameter, DBPROCESS* dbproc);
 
 RETCODE Parameter_dbrpcparam(struct Parameter* parameter, DBPROCESS* dbproc, const char* paramname);
 

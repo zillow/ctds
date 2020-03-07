@@ -57,7 +57,7 @@ enum ParamStyle {
 #endif
 
 #if defined(SYBMSTIME)
-#  define CTDS_HAVE_TDSTIME 1
+#  define CTDS_HAVE_TDS73_SUPPORT 1
 #endif
 
 /*

@@ -3,9 +3,9 @@
 *.gcov
 *.pyc
 *.so
+.coverage/
 .gh-pages/
 .venv/
 .vscode/
-coverage_*
 build/
 dist/

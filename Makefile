@@ -25,7 +25,7 @@ CHECKED_FREETDS_VERSIONS := \
     0.92.405 \
     0.95.95 \
     1.00.80 \
-    1.1.20
+    1.1.24
 
 # Valgrind FreeTDS versions are limited to one without sp_executesql support
 # and one with.
@@ -43,6 +43,7 @@ VIRTUALENV_FREETDS_VERSION ?= $(lastword $(CHECKED_FREETDS_VERSIONS))
 CTDS_VERSION := $(strip $(shell python -W ignore setup.py --version))
 
 VIRTUALENV_DIR ?= .venv
+COVERAGE_DIR ?= .coverage
 
 # Help
 .PHONY: help
@@ -124,6 +125,9 @@ start-sqlserver:
 stop-sqlserver:
 	scripts/remove-sqlserver.sh $(SQL_SERVER_DOCKER_IMAGE_NAME)
 
+$(COVERAGE_DIR):
+	mkdir -p $@
+
 # Function to generate rules for:
 #   * building a docker image with a specific Python/FreeTDS version
 #   * running unit tests for a specific Python/FreeTDS version
@@ -150,7 +154,7 @@ test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlse
         ./scripts/ctds-unittest.sh
 
 .PHONY: coverage_$(strip $(1))_$(strip $(2))
-coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver
+coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver | $(COVERAGE_DIR)
 	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage)
 	docker run --init -it \
         -e CTDS_COVER=1 \
@@ -159,9 +163,8 @@ coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-s
         --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         ./scripts/ctds-coverage.sh
-	mkdir -p $$@
 	docker cp $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage:/usr/src/ctds/coverage \
-        $(abspath $$@)
+        $(abspath $(COVERAGE_DIR)/$$@)
 	docker rm $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage
 endef
 

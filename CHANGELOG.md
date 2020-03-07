@@ -4,6 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.12.0] - 2020-03-07
+### Fixed
+- Fixed Python -> SQL type conversion to consider client TDS version when
+choosing SQL type. https://github.com/zillow/ctds/issues/68.
+- Added Sphinx extension to auto-generate the `.nojekyll` file required
+by Github pages.
+- Consolidate coverage output to a single directory.
+
 ## [1.11.0] - 2019-11-14
 ### Added
 - Official support for Python3.8.
@@ -249,7 +257,8 @@ _NVARCHAR_ arguments to remote procedure calls.
 ## [1.0.0] - 2016-03-14
 Initial Release
 
-[Unreleased]: https://github.com/zillow/ctds/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/zillow/ctds/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/zillow/ctds/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/zillow/ctds/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/zillow/ctds/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/zillow/ctds/compare/v1.9.0...v1.10.0
