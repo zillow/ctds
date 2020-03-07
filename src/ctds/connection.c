@@ -1433,6 +1433,11 @@ static DBINT Connection_bulk_insert_sendrow(struct Connection* connection,
                 rpcparams[ix] = (struct Parameter*)value;
             }
 
+            if (0 != Parameter_bind(rpcparams[ix], Connection_DBPROCESS(connection)))
+            {
+                break;
+            }
+
             if (PyUnicode_Check(Parameter_value(rpcparams[ix])))
             {
                 if (0 != PyErr_WarnEx(PyExc_Warning,

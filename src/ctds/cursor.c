@@ -768,6 +768,11 @@ static PyObject* Cursor_bind(struct Cursor* cursor, PyObject* parameters, bool k
                     rpcparam = (struct Parameter*)value;
                 }
 
+                if (0 != Parameter_bind(rpcparam, dbproc))
+                {
+                    break;
+                }
+
                 PyTuple_SET_ITEM(rpcparams, ix, (PyObject*)rpcparam); /* rpcparam reference stolen by PyTuple_SET_ITEM */
 
                 retcode = Parameter_dbrpcparam(rpcparam, dbproc, keystr);
@@ -824,6 +829,11 @@ static PyObject* Cursor_bind(struct Cursor* cursor, PyObject* parameters, bool k
                     Py_INCREF(value);
                     rpcparam = (struct Parameter*)value;
                 }
+                if (0 != Parameter_bind(rpcparam, dbproc))
+                {
+                    break;
+                }
+
                 if (0 != PyDict_SetItem(rpcparams, key, (PyObject*)rpcparam))
                 {
                     break;
@@ -1307,7 +1317,8 @@ static char* strappend(char* existing, size_t nexisting, const char* suffix, siz
 
     @return The utf-8 formatted SQL statement. The caller is responsible freeing the returned value.
 */
-static char* build_executesql_stmt(const char* format,
+static char* build_executesql_stmt(DBPROCESS* dbproc,
+                                   const char* format,
                                    enum ParamStyle paramstyle,
                                    PyObject* parameters,
                                    Py_ssize_t nparameters,
@@ -1420,6 +1431,7 @@ static char* build_executesql_stmt(const char* format,
                     }
 
                     UNUSED(maximum_width);
+                    UNUSED(dbproc);
 
 #else /* if defined(CTDS_USE_SP_EXECUTESQL) */
                     /* Serialize the parameter to a string. */
@@ -1466,6 +1478,11 @@ static char* build_executesql_stmt(const char* format,
                         Py_DECREF(item);
 
                         if (!oparam)
+                        {
+                            break;
+                        }
+
+                        if (0 != Parameter_bind((struct Parameter*)oparam, dbproc))
                         {
                             break;
                         }
@@ -1716,7 +1733,10 @@ static char* make_paramname(PyObject* oname, size_t* nparamname)
 
     @return A new reference to a Python string object.
 */
-static PyObject* build_executesql_params(enum ParamStyle paramstyle, PyObject* parameters, bool maximum_width)
+static PyObject* build_executesql_params(DBPROCESS* dbproc,
+                                         enum ParamStyle paramstyle,
+                                         PyObject* parameters,
+                                         bool maximum_width)
 {
     PyObject* object = NULL;
     PyObject* items = NULL;
@@ -1804,6 +1824,10 @@ static PyObject* build_executesql_params(enum ParamStyle paramstyle, PyObject* p
             if (!rpcparam)
             {
                 assert(PyErr_Occurred());
+                break;
+            }
+            if (0 != Parameter_bind(rpcparam, dbproc))
+            {
                 break;
             }
 
@@ -1976,7 +2000,8 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
                 do
                 {
                     PyObject* pair = NULL;
-                    sql = build_executesql_stmt(sqlfmt,
+                    sql = build_executesql_stmt(Connection_DBPROCESS(cursor->connection),
+                                                sqlfmt,
                                                 cursor->paramstyle,
                                                 parameters,
                                                 nparameters,
@@ -2030,7 +2055,10 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
                     do
                     {
                         PyObject* pair = NULL;
-                        value = build_executesql_params(cursor->paramstyle, parameters, !minimize_types);
+                        value = build_executesql_params(Connection_DBPROCESS(cursor->connection),
+                                                        cursor->paramstyle,
+                                                        parameters,
+                                                        !minimize_types);
                         if (!value)
                         {
                             break;
@@ -2258,7 +2286,8 @@ static int Cursor_execute_internal(struct Cursor* cursor, const char* sqlfmt, Py
                 break;
             }
 
-            sql = build_executesql_stmt(sqlfmt,
+            sql = build_executesql_stmt(Connection_DBPROCESS(cursor->connection),
+                                        sqlfmt,
                                         cursor->paramstyle,
                                         parameters,
                                         nparameters,

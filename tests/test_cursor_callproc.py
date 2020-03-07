@@ -888,12 +888,12 @@ parameters are replaced with output values.
                     for value, string, truncation in (
                             (1000.0, '1000.000', False),
                             (-1000.0, '-1000.000', False),
-                            (9999.999, '9999.999', True),
-                            (-9999.999, '-9999.999', True),
-                            (.999, '0.999', True),
-                            (-.999, '-0.999', True),
-                            (.001, '0.001', True),
-                            (-.001, '-0.001', True),
+                            (9999.999, '9999.999', PY27),
+                            (-9999.999, '-9999.999', PY27),
+                            (.999, '0.999', PY27),
+                            (-.999, '-0.999', PY27),
+                            (.001, '0.001', PY27),
+                            (-.001, '-0.001', PY27),
                             (0, '0.000', False),
                     ):
                         inputs = (
@@ -903,7 +903,7 @@ parameters are replaced with output values.
 
                         with warnings.catch_warnings(record=True) as warns:
                             outputs = cursor.callproc(sproc, inputs)
-                            if truncation and PY27:
+                            if truncation:
                                 self.assertEqual(len(warns), 1)
                                 msg = "Decimal('{0}') exceeds SQL DECIMAL precision; truncating".format(inputs[0])
                                 self.assertEqual(

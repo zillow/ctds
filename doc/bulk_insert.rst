@@ -88,7 +88,7 @@ Data specified for bulk insertion into text columns (e.g. **VARCHAR**,
 Because of this behavior it is possible to insert textual data with an invalid
 encoding and cause the column data to become corrupted.
 
-To prevent this, it is recommended the caller is explicitly wrap the the object
+To prevent this, it is recommended the caller explicitly wrap the the object
 with either :py:class:`ctds.SqlVarChar` (for **CHAR**, **VARCHAR** or **TEXT**
 columns) or :py:class:`ctds.SqlNVarChar` (for **NCHAR**, **NVARCHAR** or
 **NTEXT** columns). For non-Unicode columns, the value should be first encoded

@@ -1,4 +1,3 @@
-from decimal import Decimal
 import re
 import warnings
 
@@ -209,8 +208,28 @@ parameter.
         for case in (None, object(), 123, 'foobar'):
             self.assertRaises(TypeError, ctds.Parameter, b'123', output=case)
 
-    def test_decimal_warning_as_error(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter('error', Warning)
-            value = Decimal('123456789012345678901234567890.123456789')
-            self.assertRaises(Warning, ctds.Parameter, value)
+    def test_reuse(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                for value in (
+                        None,
+                        123456,
+                        unicode_('hello world'),
+                        b'some bytes',
+                ):
+                    for output in (True, False):
+                        parameter = ctds.Parameter(value, output=output)
+                        for _ in range(0, 2):
+                            # Ignore warnings generated due to output parameters
+                            # used with result sets.
+                            with warnings.catch_warnings(record=True):
+                                cursor.execute(
+                                    '''
+                                    SELECT :0
+                                    ''',
+                                    (parameter,)
+                                )
+                                self.assertEqual(
+                                    [tuple(row) for row in cursor.fetchall()],
+                                    [(value,)]
+                                )
