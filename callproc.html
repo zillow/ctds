@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Calling Stored Procedures &mdash; ctds 1.11.0 documentation</title>
+  <title>Calling Stored Procedures &mdash; ctds 1.12.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11
+                1.12
               </div>
             
           
@@ -232,18 +232,18 @@ parameter. Output parameter values are available in the result returned from
     <span class="s1">&#39;MyStoredProcedureWithOutputs&#39;</span><span class="p">,</span>
     <span class="p">{</span>
         <span class="c1"># This is not necessary for input parameters.</span>
-        <span class="s1">&#39;@input&#39;</span><span class="p">:</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="s1">&#39;@input&#39;</span><span class="p">:</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
 
         <span class="c1"># Input/Output parameters must be specified as output</span>
-        <span class="s1">&#39;@inputOutput&#39;</span><span class="p">:</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+        <span class="s1">&#39;@inputOutput&#39;</span><span class="p">:</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 
         <span class="c1"># The Parameter class is also available on Cursor.</span>
-        <span class="s1">&#39;@output&#39;</span><span class="p">:</span> <span class="n">cursor</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="s1">&#39;@output&#39;</span><span class="p">:</span> <span class="n">cursor</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
 <span class="c1"># Do something with the output parameters.</span>
-<span class="k">print</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">outputs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">outputs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>By default, the output parameter’s type is inferred from the Python value
@@ -256,7 +256,7 @@ parameter should be. For example, to specify a large <cite>VARCHAR</cite> output
 parameter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">callproc</span><span class="p">(</span>
     <span class="s1">&#39;MyStoredProcedureWithLargeVariableOutput&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">SqlVarChar</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">4000</span><span class="p">)),)</span>
+    <span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">SqlVarChar</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">4000</span><span class="p">)),)</span>
 <span class="p">)</span>
 </pre></div>
 </div>

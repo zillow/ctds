@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bulk Insert &mdash; ctds 1.11.0 documentation</title>
+  <title>Bulk Insert &mdash; ctds 1.12.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11
+                1.12
               </div>
             
           
@@ -183,7 +183,7 @@ should return a sequence containing the values for each column in the table.</p>
         <span class="c1"># A generator of the rows.</span>
         <span class="p">(</span>
             <span class="c1"># The row values can be any python sequence type</span>
-            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;hello world {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;hello world </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="p">)</span>
@@ -195,7 +195,7 @@ should return a sequence containing the values for each column in the table.</p>
         <span class="p">(</span>
             <span class="p">{</span>
                 <span class="s1">&#39;IntColumn&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
-                <span class="s1">&#39;TextColumn&#39;</span><span class="p">:</span> <span class="s1">&#39;hello world {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="s1">&#39;TextColumn&#39;</span><span class="p">:</span> <span class="s1">&#39;hello world </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
         <span class="p">)</span>
@@ -244,7 +244,7 @@ to control how many rows should be copied before validating them.</p>
 <strong>NVARCHAR</strong>, <strong>TEXT</strong>) is not encoded on the client in any way by FreeTDS.
 Because of this behavior it is possible to insert textual data with an invalid
 encoding and cause the column data to become corrupted.</p>
-<p>To prevent this, it is recommended the caller is explicitly wrap the the object
+<p>To prevent this, it is recommended the caller explicitly wrap the the object
 with either <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlVarChar</span></code></a> (for <strong>CHAR</strong>, <strong>VARCHAR</strong> or <strong>TEXT</strong>
 columns) or <a class="reference internal" href="types.html#ctds.SqlNVarChar" title="ctds.SqlNVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlNVarChar</span></code></a> (for <strong>NCHAR</strong>, <strong>NVARCHAR</strong> or
 <strong>NTEXT</strong> columns). For non-Unicode columns, the value should be first encoded

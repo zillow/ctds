@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Reading Result Sets &mdash; ctds 1.11.0 documentation</title>
+  <title>Reading Result Sets &mdash; ctds 1.12.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11
+                1.12
               </div>
             
           
@@ -194,10 +194,10 @@ retrieved using the <a class="reference internal" href="cursor.html#ctds.Cursor.
         <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">column</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
 
 <span class="c1"># Process the rows after releasing the connection</span>
-<span class="k">print</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
     <span class="c1"># Do stuff with the rows.</span>
-    <span class="k">print</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The row list returned from <a class="reference internal" href="cursor.html#ctds.Cursor.fetchmany" title="ctds.Cursor.fetchmany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.fetchmany()</span></code></a>, or
@@ -211,7 +211,7 @@ therefore supports indexing. For example,</p>
 
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
     <span class="c1"># Print the first column of row 5.</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="mi">5</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="mi">5</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="admonition note">

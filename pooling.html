@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connection Pooling &mdash; ctds 1.11.0 documentation</title>
+  <title>Connection Pooling &mdash; ctds 1.12.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.11
+                1.12
               </div>
             
           
@@ -191,7 +191,7 @@ objects must <strong>not</strong> be shared across threads.</p>
     <span class="s1">&#39;appname&#39;</span><span class="p">:</span> <span class="s1">&#39;ctds-doc-pooling-example&#39;</span><span class="p">,</span>
     <span class="s1">&#39;timeout&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
     <span class="s1">&#39;login_timeout&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="s1">&#39;autocommit&#39;</span><span class="p">:</span> <span class="bp">True</span>
+    <span class="s1">&#39;autocommit&#39;</span><span class="p">:</span> <span class="kc">True</span>
 <span class="p">}</span>
 
 <span class="n">pool</span> <span class="o">=</span> <span class="n">ctds</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">ConnectionPool</span><span class="p">(</span>
@@ -204,10 +204,10 @@ objects must <strong>not</strong> be shared across threads.</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT @@VERSION;&#39;</span><span class="p">)</span>
             <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-            <span class="k">print</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
             <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">([</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">])</span>
         <span class="k">except</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
 
 <span class="c1"># Explicitly cleanup the connection pool.</span>
 <span class="n">pool</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
@@ -235,16 +235,16 @@ connections.</p>
     <span class="s1">&#39;appname&#39;</span><span class="p">:</span> <span class="s1">&#39;ctds-doc-pooling-example&#39;</span><span class="p">,</span>
     <span class="s1">&#39;timeout&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
     <span class="s1">&#39;login_timeout&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="s1">&#39;autocommit&#39;</span><span class="p">:</span> <span class="bp">True</span>
+    <span class="s1">&#39;autocommit&#39;</span><span class="p">:</span> <span class="kc">True</span>
 <span class="p">}</span>
 
 <span class="n">pool</span> <span class="o">=</span> <span class="n">antipool</span><span class="o">.</span><span class="n">ConnectionPool</span><span class="p">(</span>
     <span class="n">ctds</span><span class="p">,</span>
     <span class="n">options</span><span class="o">=</span><span class="p">{</span>
         <span class="c1"># Don&#39;t have the need for read-only connections.</span>
-        <span class="s1">&#39;disable_ro&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s1">&#39;disable_ro&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="c1"># Never disable rollback</span>
-        <span class="s1">&#39;disable_rollback&#39;</span><span class="p">:</span> <span class="bp">False</span>
+        <span class="s1">&#39;disable_rollback&#39;</span><span class="p">:</span> <span class="kc">False</span>
     <span class="p">},</span>
     <span class="o">**</span><span class="n">config</span>
 <span class="p">)</span>
@@ -255,10 +255,10 @@ connections.</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT @@VERSION;&#39;</span><span class="p">)</span>
             <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-            <span class="k">print</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
             <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">([</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">])</span>
         <span class="k">except</span> <span class="n">ctds</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
 <span class="k">finally</span><span class="p">:</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
