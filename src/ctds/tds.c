@@ -852,6 +852,7 @@ PyMODINIT_FUNC PyInit__tds(void)
     if (0 != PyModule_AddObject(module, "Cursor", (PyObject*)CursorType_init())) FAIL_MODULE_INIT;
     if (0 != PyModule_AddObject(module, "Parameter", (PyObject*)ParameterType_init())) FAIL_MODULE_INIT;
     if (0 != PyModule_AddObject(module, "RowList", (PyObject*)RowListType_init())) FAIL_MODULE_INIT;
+    if (0 != PyModule_AddObject(module, "Row", (PyObject*)RowType_init())) FAIL_MODULE_INIT;
 
     if (0 != SqlTypes_init()) FAIL_MODULE_INIT;
 

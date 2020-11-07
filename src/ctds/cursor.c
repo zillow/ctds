@@ -2737,6 +2737,15 @@ static int Row_contains(PyObject* self, PyObject* value)
     return contains;
 }
 
+PyTypeObject* RowType_init(void)
+{
+    if (0 != PyType_Ready(&RowType))
+    {
+        return NULL;
+    }
+    return &RowType;
+}
+
 static PySequenceMethods s_Row_as_sequence = {
     Row_len,      /* sq_length */
     NULL,         /* sq_concat */

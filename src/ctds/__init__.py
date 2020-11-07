@@ -32,6 +32,7 @@ from _tds import (
     NotSupportedError,
 
     Parameter,
+    Row,
     RowList,
 
     # Types
