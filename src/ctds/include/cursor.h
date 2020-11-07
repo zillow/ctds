@@ -16,7 +16,26 @@
     @return The initialized Python type object.
 */
 PyTypeObject* CursorType_init(void);
+
+/**
+    Initialize the RowList Python type object.
+
+    @note This method returns a new reference.
+
+    @return NULL indicating the initialization failed.
+    @return The initialized Python type object.
+*/
 PyTypeObject* RowListType_init(void);
+
+/**
+    Initialize the Row Python type object.
+
+    @note This method returns a new reference.
+
+    @return NULL indicating the initialization failed.
+    @return The initialized Python type object.
+*/
+PyTypeObject* RowType_init(void);
 
 struct Connection; /* forward declaration */
 
