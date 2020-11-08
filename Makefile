@@ -10,7 +10,15 @@ SUPPORTED_PYTHON_VERSIONS := \
     3.5 \
     3.6 \
     3.7 \
-    3.8
+    3.8 \
+    3.9
+
+CHECKED_PYTHON_VERSIONS := \
+    2.7 \
+    3.6 \
+    3.7 \
+    3.8 \
+    3.9
 
 VALGRIND_PYTHON_VERSIONS := \
     2.7.14 \
@@ -25,7 +33,8 @@ CHECKED_FREETDS_VERSIONS := \
     0.92.405 \
     0.95.95 \
     1.00.80 \
-    1.1.24
+    1.1.24 \
+    1.2.10
 
 # Valgrind FreeTDS versions are limited to one without sp_executesql support
 # and one with.
@@ -153,6 +162,9 @@ test_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlse
         $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2)) \
         ./scripts/ctds-unittest.sh
 
+.PHONY: test_$(strip $(1))
+test_$(strip $(1)): test_$(strip $(1))_$(DEFAULT_FREETDS_VERSION)
+
 .PHONY: coverage_$(strip $(1))_$(strip $(2))
 coverage_$(strip $(1))_$(strip $(2)): docker_$(strip $(1))_$(strip $(2)) start-sqlserver | $(COVERAGE_DIR)
 	$(call DOCKER_RM, $(call UNITTEST_DOCKER_IMAGE_NAME, $(1), $(2))-coverage)
@@ -227,7 +239,7 @@ endef
 $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), $(eval $(call CHECKMETADATA_RULE, $(PV))))
 
 .PHONY: check
-check: pylint $(foreach PV, $(SUPPORTED_PYTHON_VERSIONS), check_$(PV))
+check: pylint $(foreach PV, $(CHECKED_PYTHON_VERSIONS), check_$(PV))
 
 .PHONY: test
 test: test_$(DEFAULT_PYTHON_VERSION)_$(DEFAULT_FREETDS_VERSION)

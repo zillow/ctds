@@ -2849,7 +2849,9 @@ PyTypeObject RowType = {
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
 #if PY_VERSION_HEX >= 0x03080000
     NULL,                                     /* tp_vectorcall */
+#  if PY_VERSION_HEX < 0x03090000
     NULL,                                     /* tp_print */
+#  endif /* if PY_VERSION_HEX < 0x03090000 */
 #endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
@@ -3050,7 +3052,9 @@ PyTypeObject RowListType = {
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
 #if PY_VERSION_HEX >= 0x03080000
     NULL,                                     /* tp_vectorcall */
+#  if PY_VERSION_HEX < 0x03090000
     NULL,                                     /* tp_print */
+#  endif /* if PY_VERSION_HEX < 0x03090000 */
 #endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
@@ -3616,7 +3620,9 @@ PyTypeObject CursorType = {
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
 #if PY_VERSION_HEX >= 0x03080000
     NULL,                         /* tp_vectorcall */
+#  if PY_VERSION_HEX < 0x03090000
     NULL,                         /* tp_print */
+#  endif /* if PY_VERSION_HEX < 0x03090000 */
 #endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 

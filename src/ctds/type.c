@@ -189,7 +189,9 @@ PyTypeObject SqlTypeType = {
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
 #if PY_VERSION_HEX >= 0x03080000
     NULL,                                     /* tp_vectorcall */
+#  if PY_VERSION_HEX < 0x03090000
     NULL,                                     /* tp_print */
+#  endif /* if PY_VERSION_HEX < 0x03090000 */
 #endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 
@@ -210,7 +212,11 @@ int SqlType_Check(PyObject* o)
 #if PY_VERSION_HEX >= 0x03080000
 #  define _TP_VECTORCALL_OFFSET 0 /* tp_vectorcall_offset */
 #  define _TP_VECTORCALL NULL,
-#  define _TP_PRINT NULL,
+#  if PY_VERSION_HEX < 0x03090000
+#    define _TP_PRINT NULL,
+#  else /* if PY_VERSION_HEX < 0x03090000 */
+#    define _TP_PRINT /* NULL */
+#  endif /* else if PY_VERSION_HEX < 0x03090000 */
 #else
 #  define _TP_VECTORCALL_OFFSET NULL
 #  define _TP_VECTORCALL /* NULL */

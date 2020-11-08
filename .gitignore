@@ -8,4 +8,5 @@
 .venv/
 .vscode/
 build/
+coverage_*/
 dist/

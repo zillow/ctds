@@ -320,7 +320,7 @@ static void raise_lasterror(PyObject* exception, const struct LastError* lasterr
     args = Py_BuildValue("(s)", message);
     if (args)
     {
-        PyObject* error = PyEval_CallObject(exception, args);
+        PyObject* error = PyObject_Call(exception, args, (PyObject*)NULL);
         if (error)
         {
             PyObject* db_error = NULL;
@@ -2302,7 +2302,9 @@ PyTypeObject ConnectionType = {
 #endif /* if PY_VERSION_HEX >= 0x03040000 */
 #if PY_VERSION_HEX >= 0x03080000
     NULL,                          /* tp_vectorcall */
+#  if PY_VERSION_HEX < 0x03090000
     NULL,                          /* tp_print */
+#  endif /* if PY_VERSION_HEX < 0x03090000 */
 #endif /* if PY_VERSION_HEX >= 0x03080000 */
 };
 

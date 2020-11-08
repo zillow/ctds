@@ -28,7 +28,7 @@ Features
 
 * Supports `Microsoft SQL Server <http://www.microsoft.com/sqlserver/>`_ 2008 and up.
 * Complete `DB API-2.0`_ support.
-* Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, Python 3.6, Python 3.7, and Python 3.8 support.
+* Python 2.6, Python 2.7, Python 3.3, Python 3.4, Python 3.5, Python 3.6, Python 3.7, Python 3.8, and Python 3.9 support.
 * Bulk insert (bcp) support.
 * Written entirely in C.
 

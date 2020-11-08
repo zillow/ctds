@@ -11,3 +11,5 @@ pip install \
     -e .
 
 python -m sphinx -n -a -E -W doc "$OUTPUTDIR"
+
+touch $OUTPUTDIR/.nojekyll

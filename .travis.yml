@@ -38,10 +38,11 @@ env:
     - CTDS_MAKE_TARGET: check_3.8
     - CTDS_MAKE_TARGET: check_3.7
     - CTDS_MAKE_TARGET: check_3.6
-    - CTDS_MAKE_TARGET: check_3.5
-    - CTDS_MAKE_TARGET: check_3.4
-    - CTDS_MAKE_TARGET: check_3.3
     - CTDS_MAKE_TARGET: check_2.7
+    # Minimal tests against deprecated python versions
+    - CTDS_MAKE_TARGET: test_3.5
+    - CTDS_MAKE_TARGET: test_3.4
+    - CTDS_MAKE_TARGET: test_3.3
     - CTDS_MAKE_TARGET: valgrind_3.6.3
     - CTDS_MAKE_TARGET: valgrind_2.7.14
     - CTDS_MAKE_TARGET: pylint
