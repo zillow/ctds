@@ -1,4 +1,3 @@
-import contextlib
 from datetime import date, datetime, time
 from decimal import Decimal
 import uuid
@@ -12,29 +11,6 @@ from .compat import PY27, PY3, unichr_, unicode_
 class TestCursorCallproc(TestExternalDatabase): # pylint: disable=too-many-public-methods
     '''Unit tests related to the Cursor.callproc() method.
     '''
-
-    @staticmethod
-    def stored_procedure(cursor, sproc, body, args=()):
-
-        @contextlib.contextmanager
-        def stored_procedure_context():
-            cursor.execute(
-                '''
-                IF EXISTS (
-                    SELECT 1
-                    FROM sys.objects
-                    WHERE object_id = OBJECT_ID(N'{0}')
-                )
-                BEGIN
-                    DROP PROCEDURE {0};
-                END
-                '''.format(sproc)
-            )
-            cursor.execute('CREATE PROCEDURE {0}\n{1}'.format(sproc, body), args)
-            yield
-            cursor.execute('DROP PROCEDURE {0}'.format(sproc))
-
-        return stored_procedure_context()
 
     def test___doc__(self):
         self.assertEqual(

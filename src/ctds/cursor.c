@@ -39,6 +39,12 @@ struct ResultSetDescription {
     size_t _refs;
 
     /*
+      The Python object representation of the description. This will be NULL
+       until requested the first time, then built and cached.
+    */
+    PyObject* _obj;
+
+    /*
         Number of columns in the current resultset. This will be 0 if there
         is no current result set.
     */
@@ -72,6 +78,7 @@ struct ResultSetDescription* ResultSetDescription_create(size_t ncolumns)
     if (description)
     {
         description->_refs = 1;
+        description->_obj = NULL;
         description->ncolumns = ncolumns;
         memset(description->columns, 0, sizeof(struct Column) * ncolumns);
     }
@@ -86,6 +93,7 @@ static void ResultSetDescription_decrement(struct ResultSetDescription* descript
     description->_refs--;
     if (0 == description->_refs)
     {
+        Py_XDECREF(description->_obj);
         tds_mem_free(description);
     }
 }
@@ -138,17 +146,30 @@ struct Cursor {
     }
 
 /*
-    Close a cursor's connection.
+    Clear a cursor's notion of the current resultset.
 
-    This method can be called multiple times on the same cursor.
+    @note This method does not consume remaining unread rows in the
+        resultset. That occurs in Cursor_next_resultset(), which
+        runs outside the GIL.
 */
-static void Cursor_close_connection(struct Cursor* cursor)
+static void Cursor_clear_resultset(struct Cursor* cursor)
 {
     if (cursor->description)
     {
         ResultSetDescription_decrement(cursor->description);
         cursor->description = NULL;
     }
+    cursor->rowsread = 0;
+}
+
+/*
+    Close a cursor's connection.
+
+    This method can be called multiple times on the same cursor.
+*/
+static void Cursor_close_connection(struct Cursor* cursor)
+{
+    Cursor_clear_resultset(cursor);
     Py_XDECREF(cursor->connection);
     cursor->connection = NULL;
 }
@@ -171,13 +192,14 @@ static int Cursor_next_resultset(struct Cursor* cursor, RETCODE* retcode)
     DBINT column;
     DBPROCESS* dbproc = Connection_DBPROCESS(cursor->connection);
 
-    if (cursor->description)
-    {
-        ResultSetDescription_decrement(cursor->description);
-        cursor->description = NULL;
-    }
+#if PY_VERSION_HEX >= 0x03040000
+    /* GIL should not be held when this function is called. */
+    assert(!PyGILState_Check());
+#endif /* if PY_VERSION_HEX >= 0x03040000 */
 
-    cursor->rowsread = 0;
+    /* Cursor_clear_resultset() must have already been called. */
+    assert(!cursor->description);
+    assert(0 == cursor->rowsread);
 
     /* Read any unprocessed rows from the database. */
     while (dbnextrow(dbproc) != NO_MORE_ROWS) {}
@@ -469,10 +491,50 @@ static PyObject* create_column_description(const struct Column* column)
     return NULL;
 }
 
+static PyObject* ResultSetDescription_get_object(struct ResultSetDescription* description)
+{
+    if (!description->_obj)
+    {
+        PyObject* tuple = PyTuple_New((Py_ssize_t)description->ncolumns);
+        if (tuple)
+        {
+            size_t ix;
+            for (ix = 0; ix < description->ncolumns; ++ix)
+            {
+                PyObject* column = create_column_description(&description->columns[ix]);
+                if (column)
+                {
+                    PyTuple_SET_ITEM(tuple, (Py_ssize_t)ix, column); /* column reference stolen by PyTuple_SET_ITEM */
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (PyErr_Occurred())
+            {
+                Py_DECREF(tuple);
+                tuple = NULL;
+            }
+            else
+            {
+                description->_obj = tuple;
+                tuple = NULL; /* reference stolen above */
+            }
+        }
+        else
+        {
+            PyErr_NoMemory();
+        }
+    }
+
+    Py_XINCREF(description->_obj);
+    return description->_obj;
+}
+
 static PyObject* Cursor_description_get(PyObject* self, void* closure)
 {
-    PyObject* description = NULL;
-
     struct Cursor* cursor = (struct Cursor*)self;
 
     /*
@@ -484,34 +546,7 @@ static PyObject* Cursor_description_get(PyObject* self, void* closure)
         Py_RETURN_NONE;
     }
 
-    description = PyTuple_New((Py_ssize_t)cursor->description->ncolumns);
-    if (description)
-    {
-        size_t ix;
-        for (ix = 0; ix < cursor->description->ncolumns; ++ix)
-        {
-            PyObject* column = create_column_description(&cursor->description->columns[ix]);
-            if (column)
-            {
-                PyTuple_SET_ITEM(description, (Py_ssize_t)ix, column); /* column reference stolen by PyTuple_SET_ITEM */
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        if (PyErr_Occurred())
-        {
-            Py_DECREF(description);
-            description = NULL;
-        }
-    }
-    else
-    {
-        PyErr_NoMemory();
-    }
-    return description;
+    return ResultSetDescription_get_object(cursor->description);
 
     UNUSED(closure);
 }
@@ -1102,6 +1137,8 @@ static PyObject* Cursor_callproc_internal(struct Cursor* cursor, const char* pro
             break;
         }
 
+        Cursor_clear_resultset(cursor);
+
         Py_BEGIN_ALLOW_THREADS
 
             do
@@ -1587,6 +1624,8 @@ static int Cursor_execute_sql(struct Cursor* cursor, const char* sql)
             Connection_raise_lasterror(cursor->connection);
             break;
         }
+
+        Cursor_clear_resultset(cursor);
 
         Py_BEGIN_ALLOW_THREADS
 
@@ -3356,6 +3395,7 @@ static PyObject* Cursor_nextset(PyObject* self, PyObject* args)
     struct Cursor* cursor = (struct Cursor*)self;
     Cursor_verify_open(cursor);
     Cursor_verify_connection_open(cursor);
+    Cursor_clear_resultset(cursor);
 
     Py_BEGIN_ALLOW_THREADS
 

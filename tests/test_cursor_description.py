@@ -156,6 +156,7 @@ result set. The tuple describes the column data as follows:
                         (unicode_('money'), long_(ctds.MONEY), long_(8), long_(8), long_(0), long_(0), True)
                     )
                 )
+                self.assertIs(cursor.description, cursor.description) # description is cached
                 if PY3:
                     self.assertEqual(cursor.description[0].name, 'none')
                     self.assertEqual(cursor.description[0].type_code, ctds.CHAR)
@@ -167,13 +168,63 @@ result set. The tuple describes the column data as follows:
                 else: # pragma: nocover
                     pass
 
+    def test_multiple_descriptions(self):
+        with self.connect() as connection:
+            cursor = connection.cursor()
+            try:
+                descriptions = []
+
+                cursor.execute("SELECT CONVERT(BIT, 1) AS [bit]")
+                descriptions.append(cursor.description)
+
+                cursor.execute("SELECT CONVERT(INT, 123) AS [int]")
+                descriptions.append(cursor.description)
+
+                with self.stored_procedure(
+                        cursor,
+                        'CallProcDescription',
+                        """
+                        AS BEGIN
+                            SELECT CONVERT(DECIMAL(5,2), 1.75) AS [decimal];
+                            SELECT CONVERT(MONEY, 1.99) AS [money];
+                        END
+                        """
+                ):
+                    cursor.callproc('CallProcDescription', {})
+                    descriptions.append(cursor.description)
+                    cursor.nextset()
+                    descriptions.append(cursor.description)
+
+                self.assertEqual(descriptions, [
+                    (('bit', ctds.BIT, 1, 1, 0, 0, True),),
+                    (('int', ctds.INT, 4, 4, 0, 0, True),),
+                    (('decimal', ctds.DECIMAL, 17, 17, 5, 2, True),),
+                    (('money', ctds.MONEY, 8, 8, 0, 0, True),),
+                ])
+            finally:
+                cursor.close()
+
     def test_closed(self):
         with self.connect() as connection:
             cursor = connection.cursor()
             try:
-                cursor.execute("SELECT 'hi there' as string")
-                self.assertNotEqual(cursor.description, None)
+                cursor.execute("SELECT CONVERT(BIT, 1) AS [bit]")
+                description = cursor.description
+                self.assertIsNotNone(description)
+                self.assertEqual(description, (
+                    ('bit', ctds.BIT, 1, 1, 0, 0, True),
+                ))
             finally:
                 cursor.close()
 
+            # cursor is closed
             self.assertEqual(cursor.description, None)
+            self.assertEqual(description, (
+                ('bit', ctds.BIT, 1, 1, 0, 0, True),
+            ))
+
+        # connection is closed
+        self.assertEqual(cursor.description, None)
+        self.assertEqual(description, (
+            ('bit', ctds.BIT, 1, 1, 0, 0, True),
+        ))
