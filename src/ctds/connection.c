@@ -2100,7 +2100,7 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
                         break;
                     }
                 }
-                if (FAIL == DBSETLVERSION(connection->login, (BYTE)dbversion))
+                if ((DBVERSION_UNKNOWN == dbversion) || (FAIL == DBSETLVERSION(connection->login, (BYTE)dbversion)))
                 {
                     PyErr_Format(PyExc_tds_InterfaceError, "unsupported TDS version \"%s\"", tds_version);
                     break;
