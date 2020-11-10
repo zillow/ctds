@@ -2846,6 +2846,20 @@ static PyObject* Row_getattro(PyObject* self, PyObject* attr)
     return value;
 }
 
+static PyObject* Row_description_get(PyObject* self, void* closure)
+{
+    struct Row* row = (struct Row*)self;
+    return ResultSetDescription_get_object(row->description);
+
+    UNUSED(closure);
+}
+
+static PyGetSetDef Row_getset[] = {
+    /* name, get, set, doc, closure */
+    { (char*)"description", Row_description_get, NULL, (char*)s_Cursor_description_doc, NULL },
+    { NULL,                 NULL,                NULL, NULL,                            NULL }
+};
+
 static const char s_Row_dict_doc[] =
     "dict()\n"
     "\n"
@@ -2948,7 +2962,7 @@ PyTypeObject RowType = {
     NULL,                                     /* tp_iternext */
     Row_methods,                              /* tp_methods */
     NULL,                                     /* tp_members */
-    NULL,                                     /* tp_getset */
+    Row_getset,                               /* tp_getset */
     NULL,                                     /* tp_base */
     NULL,                                     /* tp_dict */
     NULL,                                     /* tp_descr_get */
