@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Offical support for Python 3.9.
 - Expose `ctds.Row` type so that it can be used as a type annotation.
+- Add `description` attribute to rowlists and rows.
+
+### Fixed
 - Cache `cursor.description` rather than creating a new instance every time.
 
 ## [1.12.0] - 2020-03-07

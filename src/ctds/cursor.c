@@ -2836,9 +2836,27 @@ static PyMappingMethods s_Row_as_mapping = {
 
 static PyObject* Row_getattro(PyObject* self, PyObject* attr)
 {
-    return Row_lookup_column(self, attr, PyExc_AttributeError);
+    PyObject* value = Row_lookup_column(self, attr, NULL);
+    if (!value && !PyErr_Occurred())
+    {
+        value = PyObject_GenericGetAttr(self, attr);
+    }
+    return value;
 }
 
+static PyObject* Row_description_get(PyObject* self, void* closure)
+{
+    struct Row* row = (struct Row*)self;
+    return ResultSetDescription_get_object(row->description);
+
+    UNUSED(closure);
+}
+
+static PyGetSetDef Row_getset[] = {
+    /* name, get, set, doc, closure */
+    { (char*)"description", Row_description_get, NULL, (char*)s_Cursor_description_doc, NULL },
+    { NULL,                 NULL,                NULL, NULL,                            NULL }
+};
 
 PyTypeObject RowType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -2874,7 +2892,7 @@ PyTypeObject RowType = {
     NULL,                                     /* tp_iternext */
     NULL,                                     /* tp_methods */
     NULL,                                     /* tp_members */
-    NULL,                                     /* tp_getset */
+    Row_getset,                               /* tp_getset */
     NULL,                                     /* tp_base */
     NULL,                                     /* tp_dict */
     NULL,                                     /* tp_descr_get */
@@ -3021,6 +3039,20 @@ static PyObject* RowList_item(PyObject* self, Py_ssize_t ix)
     return rowlist->rows[ix].row.python;
 }
 
+static PyObject* RowList_description_get(PyObject* self, void* closure)
+{
+    struct RowList* rowlist = (struct RowList*)self;
+    return ResultSetDescription_get_object(rowlist->description);
+
+    UNUSED(closure);
+}
+
+static PyGetSetDef RowList_getset[] = {
+    /* name, get, set, doc, closure */
+    { (char*)"description", RowList_description_get, NULL, (char*)s_Cursor_description_doc, NULL },
+    { NULL,                 NULL,                    NULL, NULL,                            NULL }
+};
+
 PyTypeObject* RowListType_init(void)
 {
     if (0 != PyType_Ready(&RowListType))
@@ -3077,7 +3109,7 @@ PyTypeObject RowListType = {
     NULL,                                     /* tp_iternext */
     NULL,                                     /* tp_methods */
     NULL,                                     /* tp_members */
-    NULL,                                     /* tp_getset */
+    RowList_getset,                           /* tp_getset */
     NULL,                                     /* tp_base */
     NULL,                                     /* tp_dict */
     NULL,                                     /* tp_descr_get */

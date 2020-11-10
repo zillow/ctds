@@ -44,12 +44,14 @@ only created when the data is actually accessed.
                     SELECT * FROM @{0};
                     '''.format(self.test_rowlist.__name__)
                 )
+                description = cursor.description
                 rows = cursor.fetchall()
 
         # The rowlist should be accessible after closing the cursor
         # and connection.
         self.assertTrue(isinstance(rows, ctds.RowList))
         self.assertEqual(len(rows), 6)
+        self.assertTrue(rows.description is description)
         for index, row in enumerate(rows):
             # The row object should always be the same instance.
             self.assertTrue(isinstance(row, ctds.Row))
