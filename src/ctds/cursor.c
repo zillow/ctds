@@ -3095,6 +3095,20 @@ static PyObject* RowList_item(PyObject* self, Py_ssize_t ix)
     return rowlist->rows[ix].row.python;
 }
 
+static PyObject* RowList_description_get(PyObject* self, void* closure)
+{
+    struct RowList* rowlist = (struct RowList*)self;
+    return ResultSetDescription_get_object(rowlist->description);
+
+    UNUSED(closure);
+}
+
+static PyGetSetDef RowList_getset[] = {
+    /* name, get, set, doc, closure */
+    { (char*)"description", RowList_description_get, NULL, (char*)s_Cursor_description_doc, NULL },
+    { NULL,                 NULL,                    NULL, NULL,                            NULL }
+};
+
 PyTypeObject* RowListType_init(void)
 {
     if (0 != PyType_Ready(&RowListType))
@@ -3151,7 +3165,7 @@ PyTypeObject RowListType = {
     NULL,                                     /* tp_iternext */
     NULL,                                     /* tp_methods */
     NULL,                                     /* tp_members */
-    NULL,                                     /* tp_getset */
+    RowList_getset,                           /* tp_getset */
     NULL,                                     /* tp_base */
     NULL,                                     /* tp_dict */
     NULL,                                     /* tp_descr_get */
