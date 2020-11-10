@@ -123,3 +123,22 @@ class TestCursorRow(TestExternalDatabase):
             pass
         else:
             self.fail('row.attr lookup did not fail as expected') # pragma: nocover
+
+    def test_description(self):
+        with self.connect() as connection:
+            with connection.cursor() as cursor:
+                args = (1, 'two', 'three', 4)
+                cursor.execute(
+                    '''
+                    SELECT
+                        :0 AS Col1,
+                        :1 AS Col2,
+                        :2 AS Col3,
+                        :3 AS Col4
+                    ''',
+                    args
+                )
+                description = cursor.description
+                row = cursor.fetchone()
+
+        self.assertTrue(row.description is description)
