@@ -387,6 +387,7 @@ static int Description_init(void)
 #  endif /* if PY_VERSION_HEX >= 0x03040000 */
 
 #  define Description_New() PyStructSequence_New(&DescriptionType)
+#  define Description_GET_ITEM PyStructSequence_GET_ITEM
 #  define Description_SET_ITEM PyStructSequence_SET_ITEM
 
 }
@@ -394,6 +395,7 @@ static int Description_init(void)
 
 #  define Description_init() 0
 #  define Description_New() PyTuple_New(7)
+#  define Description_GET_ITEM PyTuple_GET_ITEM
 #  define Description_SET_ITEM PyTuple_SET_ITEM
 
 #endif /* else if PY_MAJOR_VERSION >= 3 */
@@ -2836,8 +2838,78 @@ static PyMappingMethods s_Row_as_mapping = {
 
 static PyObject* Row_getattro(PyObject* self, PyObject* attr)
 {
-    return Row_lookup_column(self, attr, PyExc_AttributeError);
+    PyObject* value = Row_lookup_column(self, attr, NULL);
+    if (!value && !PyErr_Occurred())
+    {
+        value = PyObject_GenericGetAttr(self, attr);
+    }
+    return value;
 }
+
+static const char s_Row_dict_doc[] =
+    "dict()\n"
+    "\n"
+    "Get a dict representing the contents of the row.\n"
+    "\n"
+    ":return: A dict representation of the row.\n";
+
+static PyObject* Row_dict(PyObject* self, PyObject* args)
+{
+    struct Row* row = (struct Row*)self;
+    size_t ncolumns = row->description->ncolumns;
+    PyObject* key = NULL;
+    PyObject* dict = PyDict_New();
+
+    if (dict)
+    {
+        PyObject* description = ResultSetDescription_get_object(row->description);
+        if (description)
+        {
+            size_t ix;
+            for (ix = 0; ix < ncolumns; ++ix)
+            {
+                key = Description_GET_ITEM(PyTuple_GET_ITEM(description, ix), 0);
+                if (PyObject_IsTrue(key))
+                {
+                    /* Create an owned reference from the borrowed one. */
+                    Py_INCREF(key);
+                }
+                else
+                {
+                    /* Use the column number as the key for unnamed columns. */
+                    key = PyLong_FromSize_t(ix);
+                    if (!key)
+                    {
+                        break;
+                    }
+                }
+                if (0 != PyDict_SetItem(dict, key, row->values[ix]))
+                {
+                    break;
+                }
+                Py_XDECREF(key);
+                key = NULL;
+            }
+            Py_XDECREF(description);
+        }
+    }
+
+    Py_XDECREF(key);
+    if (PyErr_Occurred())
+    {
+        Py_XDECREF(dict);
+        dict = NULL;
+    }
+    return dict;
+
+    UNUSED(args);
+}
+
+static PyMethodDef Row_methods[] = {
+    /* ml_name, ml_meth, ml_flags, ml_doc */
+    { "dict", Row_dict, METH_NOARGS, s_Row_dict_doc },
+    { NULL,   NULL,     0,           NULL }
+};
 
 
 PyTypeObject RowType = {
@@ -2872,7 +2944,7 @@ PyTypeObject RowType = {
     0,                                        /* tp_weaklistoffset */
     NULL,                                     /* tp_iter */
     NULL,                                     /* tp_iternext */
-    NULL,                                     /* tp_methods */
+    Row_methods,                              /* tp_methods */
     NULL,                                     /* tp_members */
     NULL,                                     /* tp_getset */
     NULL,                                     /* tp_base */

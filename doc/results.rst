@@ -65,8 +65,9 @@ therefore supports indexing. For example,
 
 Reading Columns
 ^^^^^^^^^^^^^^^
-*cTDS* rows support referencing column values multiple ways: index, attribute
-or mapping.
+*cTDS* rows support referencing column values multiple ways: you can index
+a row by either a column number or a column name, use a column name as an
+attribute of the row, or build a dictionary mapping column names to values.
 
 .. code-block:: python
 
@@ -76,8 +77,8 @@ or mapping.
             cursor.execute(
                 '''
                 SELECT
-                    1 AS Column1,
-                    '2' AS Column2,
+                    'unnamed',
+                    2 AS Column2,
                     'Three' AS Column3
                 '''
             )
@@ -85,14 +86,22 @@ or mapping.
 
     for row in rows:
         # index
-        assert row[1] == '2'
+        assert row[0] == 'unnamed'
 
         # attribute
-        assert row.Column1 == 1
+        assert row.Column2 == 2
 
         # mapping
         assert row['Column3'] == 'Three'
 
+        # dict - note that the column number is used as the key
+        # for any unnamed columns
+        assert row.dict() == {
+            0: 'unnamed',
+            'Column1': 1,
+            'Column2': '2',
+            'Column3': 'Three',
+        }
 
 Advancing the Result Set
 ------------------------
