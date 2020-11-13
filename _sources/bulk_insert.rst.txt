@@ -1,7 +1,7 @@
 Bulk Insert
 ===========
 
-`cTDS` supports `BULK INSERT`_ for effeciently inserting large amounts of data
+`cTDS` supports `BULK INSERT`_ for efficiently inserting large amounts of data
 into a table using :py:meth:`ctds.Connection.bulk_insert()`.
 
 Example

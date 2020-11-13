@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transactions &mdash; ctds 1.12.0 documentation</title>
+  <title>Transactions &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Bulk Insert" href="bulk_insert.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -105,6 +107,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -143,7 +146,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Transactions</li>
     
@@ -181,7 +184,7 @@ are implicitly commited after each call to <a class="reference internal" href="c
 <h2>Autocommit<a class="headerlink" href="#autocommit" title="Permalink to this headline">¶</a></h2>
 <p>The <cite>autocommit</cite> parameter to <a class="reference internal" href="ctds.html#ctds.connect" title="ctds.connect"><code class="xref py py-func docutils literal notranslate"><span class="pre">ctds.connect()</span></code></a> and
 <a class="reference internal" href="connection.html#ctds.Connection.autocommit" title="ctds.Connection.autocommit"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ctds.Connection.autocommit</span></code></a> controls the use of
-<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a>. When <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, transactions are implicitly
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a>. When <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, transactions are implicitly
 committed after an operation and calls to <a class="reference internal" href="connection.html#ctds.Connection.commit" title="ctds.Connection.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.commit()</span></code></a>
 are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ms187807.aspx">IMPLICIT_TRANSACTIONS</a> is set to <strong>OFF</strong>).</p>
 </div>
@@ -207,11 +210,19 @@ are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -222,7 +233,6 @@ are unnecessary (<a class="reference external" href="https://msdn.microsoft.com/
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently Asked Questions &mdash; ctds 1.12.0 documentation</title>
+  <title>Frequently Asked Questions &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API Reference" href="api.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -108,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -146,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Frequently Asked Questions</li>
     
@@ -177,8 +180,8 @@ is a known deficiency of the <cite>dblib</cite> API. String parameters with
 length <em>0</em> are interpreted as <cite>NULL</cite> by the <cite>dblib</cite> API.</p>
 </div>
 <div class="section" id="why-don-t-str-values-map-to-n-varchar-in-python-2">
-<h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
-<p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> are equivalent. As such, it
+<h2>Why don’t <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> values map to <strong>(N)VARCHAR</strong> in Python 2?<a class="headerlink" href="#why-don-t-str-values-map-to-n-varchar-in-python-2" title="Permalink to this headline">¶</a></h2>
+<p>In Python 2 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> are equivalent. As such, it
 is difficult for <cite>cTDS</cite> to infer a proper <em>SQL</em> type from the Python type.
 <code class="xref py py-func docutils literal notranslate"><span class="pre">unicode()</span></code> should be used in Python 2 when a <strong>(N)CHAR</strong>-type
 parameter is desired. Alternatively, <a class="reference internal" href="types.html#ctds.SqlVarChar" title="ctds.SqlVarChar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.SqlVarChar</span></code></a> and
@@ -199,7 +202,7 @@ result in an error.</p>
 </div>
 <p>The error <cite>some custom error</cite> is reported as a <a class="reference internal" href="ctds.html#ctds.Warning" title="ctds.Warning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ctds.Warning</span></code></a>.</p>
 <p>In <cite>cTDS</cite> v1.3.0 and later, this warning can be turned into an exception using
-the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> module.</p>
+the <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">ctds</span>
 
@@ -255,11 +258,19 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -270,7 +281,6 @@ if the connection will support <em>UTF-16</em> and assumes it does not.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

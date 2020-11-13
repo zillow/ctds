@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Calling Stored Procedures &mdash; ctds 1.12.0 documentation</title>
+  <title>Calling Stored Procedures &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Reading Result Sets" href="results.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -107,6 +109,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -145,7 +148,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Calling Stored Procedures</li>
     
@@ -170,8 +173,8 @@
 <h1>Calling Stored Procedures<a class="headerlink" href="#calling-stored-procedures" title="Permalink to this headline">¶</a></h1>
 <p><em>cTDS</em> implements the <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a> method for calling stored
 procedures, as defined by <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#callproc"><strong>PEP 0249#callproc</strong></a>.
-Stored procedure parameters may be passed as either a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
+Stored procedure parameters may be passed as either a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Currently <a class="reference external" href="https://www.freetds.org">FreeTDS</a> does not support passing empty string parameters.
@@ -180,9 +183,9 @@ transmitted to the database.</p>
 </div>
 <div class="section" id="passing-tuple-parameters">
 <h2>Passing <cite>tuple</cite> parameters<a class="headerlink" href="#passing-tuple-parameters" title="Permalink to this headline">¶</a></h2>
-<p>Arguments passed to <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a> in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> will
+<p>Arguments passed to <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a> in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> will
 be passed to the stored procedure in the tuple order. The returned results will
-be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> object, with output parameters replaced.</p>
+be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> object, with output parameters replaced.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">callproc</span><span class="p">(</span><span class="s1">&#39;MyStoredProcedure&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
 <span class="c1"># ... is roughly equivalent to the SQL statement:</span>
@@ -194,10 +197,10 @@ be a <a class="reference external" href="https://docs.python.org/3/library/stdty
 </div>
 <div class="section" id="passing-dict-parameters">
 <h2>Passing <cite>dict</cite> parameters<a class="headerlink" href="#passing-dict-parameters" title="Permalink to this headline">¶</a></h2>
-<p>Arguments passed to <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a> in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> will
-be passed to the stored procedure using the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> keys for the
-argument names and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> values for the argument values. Order does
-not matter in this usage. The returned results will be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>
+<p>Arguments passed to <a class="reference internal" href="cursor.html#ctds.Cursor.callproc" title="ctds.Cursor.callproc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Cursor.callproc()</span></code></a> in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> will
+be passed to the stored procedure using the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> keys for the
+argument names and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> values for the argument values. Order does
+not matter in this usage. The returned results will be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>
 object, with output parameters replaced.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">outputs</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">callproc</span><span class="p">(</span>
     <span class="s1">&#39;MyStoredProcedure&#39;</span><span class="p">,</span>
@@ -283,11 +286,19 @@ parameter:</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -298,7 +309,6 @@ parameter:</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

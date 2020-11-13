@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctds &mdash; ctds 1.12.0 documentation</title>
+  <title>ctds &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Parameter" href="parameter.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +113,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="api.html">API Reference</a> &raquo;</li>
         
@@ -176,37 +179,37 @@
 <span id="ctds"></span><h1>ctds<a class="headerlink" href="#module-ctds" title="Permalink to this headline">¶</a></h1>
 <p><em>cTDS</em> is a pure C implementation of the <a class="reference external" href="https://www.python.org/dev/peps/pep-0249">Python DB API 2.0</a>
 specification for Microsoft SQL Server.</p>
-<dl class="data">
+<dl class="py data">
 <dt id="ctds.apilevel">
 <code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">apilevel</code><a class="headerlink" href="#ctds.apilevel" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#apilevel"><strong>PEP 0249#apilevel</strong></a></p>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="ctds.paramstyle">
 <code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">paramstyle</code><a class="headerlink" href="#ctds.paramstyle" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#paramstyle"><strong>PEP 0249#paramstyle</strong></a></p>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="ctds.threadsafety">
 <code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">threadsafety</code><a class="headerlink" href="#ctds.threadsafety" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-2"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#threadsafety"><strong>PEP 0249#threadsafety</strong></a></p>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="ctds.freetds_version">
 <code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">freetds_version</code><a class="headerlink" href="#ctds.freetds_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>The version of <a class="reference external" href="https://www.freetds.org">FreeTDS</a> in use at runtime.</p>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="ctds.version_info">
 <code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">version_info</code><a class="headerlink" href="#ctds.version_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <em>cTDS</em> version, as a <strong>(MAJOR, MINOR, PATCH)</strong> tuple.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.Error">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Error</code><a class="headerlink" href="#ctds.Error" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-3"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#error"><strong>PEP 0249#error</strong></a></p>
@@ -214,7 +217,7 @@ specification for Microsoft SQL Server.</p>
 can use this to catch all errors with one single except statement.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.InterfaceError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">InterfaceError</code><a class="headerlink" href="#ctds.InterfaceError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-4"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#interfaceerror"><strong>PEP 0249#interfaceerror</strong></a></p>
@@ -222,16 +225,16 @@ can use this to catch all errors with one single except statement.</p>
 rather than the database itself.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.DatabaseError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">DatabaseError</code><a class="headerlink" href="#ctds.DatabaseError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-5"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#databaseerror"><strong>PEP 0249#databaseerror</strong></a></p>
 <p>Exception raised for errors that are related to the database.</p>
 <p>The exception contains the following properties:</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.DatabaseError.db_error">
 <code class="sig-name descname">db_error</code><a class="headerlink" href="#ctds.DatabaseError.db_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing information relating to an
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing information relating to an
 error returned by the database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
@@ -241,12 +244,12 @@ error returned by the database.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.DatabaseError.os_error">
 <code class="sig-name descname">os_error</code><a class="headerlink" href="#ctds.DatabaseError.os_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing information relating to an
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing information relating to an
 error caused by a database connection issue.
-This will be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the error was not caused by a
+This will be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the error was not caused by a
 connection issue.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
@@ -256,12 +259,12 @@ connection issue.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.DatabaseError.last_message">
 <code class="sig-name descname">last_message</code><a class="headerlink" href="#ctds.DatabaseError.last_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing more detailed information about.
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> containing more detailed information about.
 the error returned from the database.
-This may be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the error does not include more
+This may be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the error does not include more
 information from the database, e.g. a connection error.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
@@ -278,7 +281,7 @@ information from the database, e.g. a connection error.</p>
 
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.DataError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">DataError</code><a class="headerlink" href="#ctds.DataError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-6"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#dataerror"><strong>PEP 0249#dataerror</strong></a></p>
@@ -287,7 +290,7 @@ processed data like division by zero, numeric value out of range,
 etc.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.OperationalError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">OperationalError</code><a class="headerlink" href="#ctds.OperationalError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-7"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#operationalerror"><strong>PEP 0249#operationalerror</strong></a></p>
@@ -298,7 +301,7 @@ found, a transaction could not be processed, a memory allocation
 error occurred during processing, etc.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.IntegrityError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">IntegrityError</code><a class="headerlink" href="#ctds.IntegrityError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-8"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#integrityerror"><strong>PEP 0249#integrityerror</strong></a></p>
@@ -306,7 +309,7 @@ error occurred during processing, etc.</p>
 affected, e.g. a foreign key check fails.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.InternalError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">InternalError</code><a class="headerlink" href="#ctds.InternalError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-9"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#internalerror"><strong>PEP 0249#internalerror</strong></a></p>
@@ -315,7 +318,7 @@ e.g. the cursor is not valid anymore, the transaction is out of
 sync, etc.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.ProgrammingError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">ProgrammingError</code><a class="headerlink" href="#ctds.ProgrammingError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-10"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#programmingerror"><strong>PEP 0249#programmingerror</strong></a></p>
@@ -324,7 +327,7 @@ already exists, syntax error in the SQL statement, wrong number of
 parameters specified, etc.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.NotSupportedError">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">NotSupportedError</code><a class="headerlink" href="#ctds.NotSupportedError" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-11"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#notsupportederror"><strong>PEP 0249#notsupportederror</strong></a></p>
@@ -334,7 +337,7 @@ not supported by the database, e.g. calling
 support transactions or has transactions turned off.</p>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="ctds.Warning">
 <em class="property">exception </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Warning</code><a class="headerlink" href="#ctds.Warning" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="target" id="index-12"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#warning"><strong>PEP 0249#warning</strong></a></p>
@@ -342,16 +345,164 @@ support transactions or has transactions turned off.</p>
 inserting, etc.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
+<dt id="ctds.Binary">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Binary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object capable of holding a binary (long)
+string value.</p>
+<p><span class="target" id="index-13"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#binary"><strong>PEP 0249#binary</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The string value to convert to binary.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new binary object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="types.html#ctds.SqlBinary" title="ctds.SqlBinary">SqlBinary</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ctds.Date">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">month</span></em>, <em class="sig-param"><span class="n">day</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a date value.</p>
+<p><span class="target" id="index-14"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#date"><strong>PEP 0249#date</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The year.</p></li>
+<li><p><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The month.</p></li>
+<li><p><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new <cite>date</cite> object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)">datetime.date</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ctds.DateFromTicks">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">DateFromTicks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ticks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.DateFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a date value from the given
+ticks value (number of seconds since the epoch; see the documentation of
+the standard Python time module for details).</p>
+<p><span class="target" id="index-15"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#datefromticks"><strong>PEP 0249#datefromticks</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of seconds since the epoch.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new date object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)">datetime.date</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ctds.Time">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Time</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hour</span></em>, <em class="sig-param"><span class="n">minute</span></em>, <em class="sig-param"><span class="n">second</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time value.</p>
+<p><span class="target" id="index-16"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#time"><strong>PEP 0249#time</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The hour.</p></li>
+<li><p><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The minute.</p></li>
+<li><p><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The second.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new <cite>time</cite> object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.9)">datetime.time</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ctds.TimeFromTicks">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">TimeFromTicks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ticks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.TimeFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time value from the given
+ticks value (number of seconds since the epoch; see the documentation of
+the standard Python time module for details).</p>
+<p><span class="target" id="index-17"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timefromticks"><strong>PEP 0249#timefromticks</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of seconds since the epoch.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new <cite>time</cite> object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.9)">datetime.time</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ctds.Timestamp">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Timestamp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">month</span></em>, <em class="sig-param"><span class="n">day</span></em>, <em class="sig-param"><span class="n">hour</span></em>, <em class="sig-param"><span class="n">minute</span></em>, <em class="sig-param"><span class="n">second</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time stamp value.</p>
+<p><span class="target" id="index-18"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timestamp"><strong>PEP 0249#timestamp</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The year.</p></li>
+<li><p><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The month.</p></li>
+<li><p><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The day.</p></li>
+<li><p><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The hour.</p></li>
+<li><p><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The minute.</p></li>
+<li><p><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The second.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new <cite>datetime</cite> object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)">datetime.datetime</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ctds.TimestampFromTicks">
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">TimestampFromTicks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ticks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.TimestampFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function constructs an object holding a time stamp value from the
+given ticks value (number of seconds since the epoch; see the
+documentation of the standard Python time module for details).</p>
+<p><span class="target" id="index-19"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timestampfromticks"><strong>PEP 0249#timestampfromticks</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of seconds since the epoch.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new <cite>datetime</cite> object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)">datetime.datetime</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ctds.connect">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">connect</code><span class="sig-paren">(</span><em class="sig-param">server</em>, <em class="sig-param">port=1433</em>, <em class="sig-param">instance=None</em>, <em class="sig-param">user=''</em>, <em class="sig-param">password=''</em>, <em class="sig-param">database=None</em>, <em class="sig-param">appname='ctds'</em>, <em class="sig-param">hostname=None</em>, <em class="sig-param">login_timeout=5</em>, <em class="sig-param">timeout=5</em>, <em class="sig-param">tds_version=None</em>, <em class="sig-param">autocommit=False</em>, <em class="sig-param">ansi_defaults=True</em>, <em class="sig-param">enable_bcp=True</em>, <em class="sig-param">paramstyle=None</em>, <em class="sig-param">read_only=False</em>, <em class="sig-param">ntlmv2=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.connect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">connect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">server</span></em>, <em class="sig-param"><span class="n">port</span><span class="o">=</span><span class="default_value">1433</span></em>, <em class="sig-param"><span class="n">instance</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">user</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">password</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">database</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">appname</span><span class="o">=</span><span class="default_value">'ctds'</span></em>, <em class="sig-param"><span class="n">hostname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">login_timeout</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">tds_version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">autocommit</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ansi_defaults</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">enable_bcp</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">paramstyle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">read_only</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ntlmv2</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a database.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="connection.html#ctds.Connection.close" title="ctds.Connection.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.close()</span></code></a> should be called when the returned
 connection object is no longer required.</p>
 </div>
-<p><span class="target" id="index-13"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a></p>
+<p><span class="target" id="index-20"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a></p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 1.6: </span><cite>paramstyle</cite></p>
 </div>
@@ -367,32 +518,32 @@ connection object is no longer required.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>server</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The database server host.</p></li>
-<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The database server port. This value is ignored if
+<li><p><strong>server</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The database server host.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The database server port. This value is ignored if
 <cite>instance</cite> is provided.</p></li>
-<li><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – An optional database instance to connect to.</p></li>
-<li><p><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The database server username.</p></li>
-<li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The database server password.</p></li>
-<li><p><strong>database</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – An optional database to initially connect to.</p></li>
-<li><p><strong>appname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – An optional application name to associate with
+<li><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – An optional database instance to connect to.</p></li>
+<li><p><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The database server username.</p></li>
+<li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The database server password.</p></li>
+<li><p><strong>database</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – An optional database to initially connect to.</p></li>
+<li><p><strong>appname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – An optional application name to associate with
 the connection.</p></li>
-<li><p><strong>hostname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – An optional client host name to associate with
+<li><p><strong>hostname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – An optional client host name to associate with
 the connection instead of the local device hostname.</p></li>
-<li><p><strong>login_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – An optional login timeout, in seconds.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – An optional timeout for database requests, in
+<li><p><strong>login_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – An optional login timeout, in seconds.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – An optional timeout for database requests, in
 seconds.</p></li>
-<li><p><strong>tds_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The TDS protocol version to use. If
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is specified, the highest version supported by
+<li><p><strong>tds_version</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The TDS protocol version to use. If
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> is specified, the highest version supported by
 FreeTDS will be used.</p></li>
-<li><p><strong>autocommit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Autocommit transactions on the connection.</p></li>
-<li><p><strong>ansi_defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Set <cite>ANSI_DEFAULTS</cite> and related settings to
+<li><p><strong>autocommit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Autocommit transactions on the connection.</p></li>
+<li><p><strong>ansi_defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Set <cite>ANSI_DEFAULTS</cite> and related settings to
 mimic ODBC drivers.</p></li>
-<li><p><strong>enable_bcp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Enable bulk copy support on the connection. This
+<li><p><strong>enable_bcp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Enable bulk copy support on the connection. This
 is required for <a class="reference internal" href="connection.html#ctds.Connection.bulk_insert" title="ctds.Connection.bulk_insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bulk_insert()</span></code></a> to function.</p></li>
-<li><p><strong>paramstyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Override the default <a class="reference internal" href="#ctds.paramstyle" title="ctds.paramstyle"><code class="xref py py-data docutils literal notranslate"><span class="pre">ctds.paramstyle</span></code></a> value for
+<li><p><strong>paramstyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Override the default <a class="reference internal" href="#ctds.paramstyle" title="ctds.paramstyle"><code class="xref py py-data docutils literal notranslate"><span class="pre">ctds.paramstyle</span></code></a> value for
 this connection. Supported values: <cite>numeric</cite>, <cite>named</cite>.</p></li>
-<li><p><strong>read_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Indicate ‘read-only’ application intent.</p></li>
-<li><p><strong>ntlmv2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Enable NTLMv2 authentication.</p></li>
+<li><p><strong>read_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Indicate ‘read-only’ application intent.</p></li>
+<li><p><strong>ntlmv2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Enable NTLMv2 authentication.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -400,154 +551,6 @@ this connection. Supported values: <cite>numeric</cite>, <cite>named</cite>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="connection.html#ctds.Connection" title="ctds.Connection">Connection</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.Date">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Date</code><span class="sig-paren">(</span><em class="sig-param">year</em>, <em class="sig-param">month</em>, <em class="sig-param">day</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Date" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object holding a date value.</p>
-<p><span class="target" id="index-14"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#date"><strong>PEP 0249#date</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The year.</p></li>
-<li><p><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The month.</p></li>
-<li><p><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The day.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <cite>date</cite> object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.8)">datetime.date</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.Time">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Time</code><span class="sig-paren">(</span><em class="sig-param">hour</em>, <em class="sig-param">minute</em>, <em class="sig-param">second</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Time" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object holding a time value.</p>
-<p><span class="target" id="index-15"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#time"><strong>PEP 0249#time</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The hour.</p></li>
-<li><p><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The minute.</p></li>
-<li><p><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The second.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <cite>time</cite> object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.8)">datetime.time</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.Timestamp">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Timestamp</code><span class="sig-paren">(</span><em class="sig-param">year</em>, <em class="sig-param">month</em>, <em class="sig-param">day</em>, <em class="sig-param">hour</em>, <em class="sig-param">minute</em>, <em class="sig-param">second</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object holding a time stamp value.</p>
-<p><span class="target" id="index-16"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timestamp"><strong>PEP 0249#timestamp</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>year</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The year.</p></li>
-<li><p><strong>month</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The month.</p></li>
-<li><p><strong>day</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The day.</p></li>
-<li><p><strong>hour</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The hour.</p></li>
-<li><p><strong>minute</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The minute.</p></li>
-<li><p><strong>second</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The second.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <cite>datetime</cite> object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)">datetime.datetime</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.DateFromTicks">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">DateFromTicks</code><span class="sig-paren">(</span><em class="sig-param">ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.DateFromTicks" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object holding a date value from the given
-ticks value (number of seconds since the epoch; see the documentation of
-the standard Python time module for details).</p>
-<p><span class="target" id="index-17"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#datefromticks"><strong>PEP 0249#datefromticks</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of seconds since the epoch.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new date object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.8)">datetime.date</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.TimeFromTicks">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">TimeFromTicks</code><span class="sig-paren">(</span><em class="sig-param">ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.TimeFromTicks" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object holding a time value from the given
-ticks value (number of seconds since the epoch; see the documentation of
-the standard Python time module for details).</p>
-<p><span class="target" id="index-18"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timefromticks"><strong>PEP 0249#timefromticks</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of seconds since the epoch.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <cite>time</cite> object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.time" title="(in Python v3.8)">datetime.time</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.TimestampFromTicks">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">TimestampFromTicks</code><span class="sig-paren">(</span><em class="sig-param">ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.TimestampFromTicks" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object holding a time stamp value from the
-given ticks value (number of seconds since the epoch; see the
-documentation of the standard Python time module for details).</p>
-<p><span class="target" id="index-19"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#timestampfromticks"><strong>PEP 0249#timestampfromticks</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of seconds since the epoch.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new <cite>datetime</cite> object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.8)">datetime.datetime</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ctds.Binary">
-<code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Binary</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Binary" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function constructs an object capable of holding a binary (long)
-string value.</p>
-<p><span class="target" id="index-20"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#binary"><strong>PEP 0249#binary</strong></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The string value to convert to binary.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new binary object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="types.html#ctds.SqlBinary" title="ctds.SqlBinary">SqlBinary</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -574,11 +577,19 @@ string value.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -589,7 +600,6 @@ string value.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

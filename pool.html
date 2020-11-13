@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ctds.pool &mdash; ctds 1.12.0 documentation</title>
+  <title>ctds.pool &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Change Log" href="CHANGELOG.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +113,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="api.html">API Reference</a> &raquo;</li>
         
@@ -174,9 +177,9 @@
             
   <div class="section" id="module-ctds.pool">
 <span id="ctds-pool"></span><h1>ctds.pool<a class="headerlink" href="#module-ctds.pool" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.pool.ConnectionPool">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.pool.</code><code class="sig-name descname">ConnectionPool</code><span class="sig-paren">(</span><em class="sig-param">dbapi2</em>, <em class="sig-param">params</em>, <em class="sig-param">idlettl=None</em>, <em class="sig-param">maxsize=None</em>, <em class="sig-param">block=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.pool.</code><code class="sig-name descname">ConnectionPool</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dbapi2</span></em>, <em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">idlettl</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maxsize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">block</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool" title="Permalink to this definition">¶</a></dt>
 <dd><p>A basic connection pool for DB-API 2.0-compliant database drivers.</p>
 <p>Example usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
@@ -214,21 +217,21 @@ background.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dbapi2</strong> – The DB-API 2 module used to create connections.
 This module must implement the <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249"><strong>PEP 0249</strong></a> specification.</p></li>
-<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Connection parameters to pass directly to the
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Connection parameters to pass directly to the
 <span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#connect"><strong>PEP 0249#connect</strong></a> method when creating a new connection.</p></li>
-<li><p><strong>idlettl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The maximum time, in seconds, a connection can sit
+<li><p><strong>idlettl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The maximum time, in seconds, a connection can sit
 idle before it is discarded. If not specified, connections are retained
 indefinitely.</p></li>
-<li><p><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The maximum number of connections to keep in
+<li><p><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The maximum number of connections to keep in
 the pool.</p></li>
-<li><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Block until a connection is released back to the
+<li><p><strong>block</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Block until a connection is released back to the
 pool? This is only applicable when a <cite>maxsize</cite> value is specified. If
 <cite>False</cite>, a new connection will be created as needed, but the number of
 connections retained in the pool will never exceed <cite>maxsize</cite>.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.pool.ConnectionPool.acquire">
 <code class="sig-name descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.acquire" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a new connection from the pool.
@@ -241,7 +244,7 @@ this method may block until a connection is available in the pool.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.pool.ConnectionPool.connection">
 <code class="sig-name descname">connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Acquire a connection in a managed context for use with the Python
@@ -252,7 +255,7 @@ this method may block until a connection is available in the pool.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.pool.ConnectionPool.finalize">
 <code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.finalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release all connections contained in the pool.</p>
@@ -263,9 +266,9 @@ on process exit.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.pool.ConnectionPool.release">
-<code class="sig-name descname">release</code><span class="sig-paren">(</span><em class="sig-param">connection</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.release" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">release</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">connection</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.pool.ConnectionPool.release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a connection back to the pool.</p>
 <p>Prior to release, <a class="reference internal" href="connection.html#ctds.Connection.rollback" title="ctds.Connection.rollback"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ctds.Connection.rollback()</span></code></a> is called to
 rollback any pending transaction.</p>
@@ -306,11 +309,19 @@ rollback any pending transaction.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -321,7 +332,6 @@ rollback any pending transaction.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

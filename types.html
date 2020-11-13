@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SQL Type Wrappers &mdash; ctds 1.12.0 documentation</title>
+  <title>SQL Type Wrappers &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ctds.pool" href="pool.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +113,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="api.html">API Reference</a> &raquo;</li>
         
@@ -174,28 +177,28 @@
             
   <div class="section" id="sql-type-wrappers">
 <h1>SQL Type Wrappers<a class="headerlink" href="#sql-type-wrappers" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlBigInt">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlBigInt</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlBigInt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlBigInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlBigInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL BIGINT type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlBigInt.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlBigInt.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlBigInt.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlBigInt.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlBigInt.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlBigInt.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -203,28 +206,28 @@
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlBinary">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlBinary</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlBinary" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlBinary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlBinary" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL BINARY type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlBinary.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlBinary.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlBinary.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlBinary.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlBinary.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlBinary.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -232,28 +235,28 @@
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlChar">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlChar</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlChar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlChar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL CHAR type wrapper. The value’s UTF-8-encoded length must be &lt;= 8000.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlChar.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlChar.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlChar.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlChar.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlChar.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlChar.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -261,28 +264,28 @@
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlDate">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlDate</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlDate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlDate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlDate" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL DATE type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.8)"><em>datetime.date</em></a>) – The date value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><em>datetime.date</em></a>) – The date value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlDate.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlDate.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlDate.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlDate.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlDate.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlDate.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -290,34 +293,34 @@
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlDecimal">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlDecimal</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">precision=18</em>, <em class="sig-param">scale=0</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlDecimal" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlDecimal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">precision</span><span class="o">=</span><span class="default_value">18</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlDecimal" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL DECIMAL type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The maximum number of total digits stored.
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The maximum number of total digits stored.
 This must be between 1 and 38.</p></li>
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The maximum number of digits stored to the right
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The maximum number of digits stored to the right
 of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlDecimal.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlDecimal.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlDecimal.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlDecimal.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlDecimal.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlDecimal.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -325,28 +328,28 @@ of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlInt">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlInt</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlInt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL INT type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlInt.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlInt.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlInt.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlInt.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlInt.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlInt.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -354,9 +357,9 @@ of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlNVarChar">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlNVarChar</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlNVarChar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlNVarChar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlNVarChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL NVARCHAR type wrapper.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 1.1.</span></p>
@@ -364,26 +367,26 @@ of the decimal point. 0 &lt;= <cite>scale</cite> &lt;= <cite>precision</cite>.</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – An optional size override. This value will be used for
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – An optional size override. This value will be used for
 the output parameter buffer size. It can also be used to truncate
 the input parameter.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlNVarChar.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlNVarChar.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlNVarChar.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlNVarChar.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlNVarChar.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlNVarChar.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -391,28 +394,28 @@ the input parameter.</p></li>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlSmallInt">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlSmallInt</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlSmallInt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlSmallInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlSmallInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL SMALLINT type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlSmallInt.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlSmallInt.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlSmallInt.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlSmallInt.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlSmallInt.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlSmallInt.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -420,28 +423,28 @@ the input parameter.</p></li>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlTinyInt">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlTinyInt</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlTinyInt" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlTinyInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlTinyInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL TINYINT type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The integer value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlTinyInt.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlTinyInt.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlTinyInt.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlTinyInt.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlTinyInt.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlTinyInt.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -449,33 +452,33 @@ the input parameter.</p></li>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlVarBinary">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlVarBinary</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlVarBinary" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlVarBinary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlVarBinary" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL VARBINARY type wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – An optional size override. This value will be used for
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – An optional size override. This value will be used for
 the output parameter buffer size. It can also be used to truncate
 the input parameter.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlVarBinary.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlVarBinary.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlVarBinary.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlVarBinary.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlVarBinary.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlVarBinary.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -483,9 +486,9 @@ the input parameter.</p></li>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.SqlVarChar">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlVarChar</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlVarChar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">SqlVarChar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.SqlVarChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>SQL VARCHAR type wrapper.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -494,26 +497,26 @@ the input parameter.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – An optional size override. This value will be used for
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value to wrap or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – An optional size override. This value will be used for
 the output parameter buffer size. It can also be used to truncate
 the input parameter.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlVarChar.size">
 <code class="sig-name descname">size</code><a class="headerlink" href="#ctds.SqlVarChar.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of the type. This will be -1 for fixed size values.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlVarChar.tdstype">
 <code class="sig-name descname">tdstype</code><a class="headerlink" href="#ctds.SqlVarChar.tdstype" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TDS type code.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.SqlVarChar.value">
 <code class="sig-name descname">value</code><a class="headerlink" href="#ctds.SqlVarChar.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The wrapped Python value.</p>
@@ -543,11 +546,19 @@ the input parameter.</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -558,7 +569,6 @@ the input parameter.</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

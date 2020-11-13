@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>RowList &mdash; ctds 1.12.0 documentation</title>
+  <title>RowList &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="SQL Type Wrappers" href="types.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +113,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="api.html">API Reference</a> &raquo;</li>
         
@@ -174,22 +177,77 @@
             
   <div class="section" id="rowlist">
 <h1>RowList<a class="headerlink" href="#rowlist" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.RowList">
 <em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">RowList</code><a class="headerlink" href="#ctds.RowList" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/c-api/sequence.html#sequence" title="(in Python v3.8)"><span class="xref std std-ref">sequence</span></a> object which buffers result set rows
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/c-api/sequence.html#sequence" title="(in Python v3.9)"><span class="xref std std-ref">sequence</span></a> object which buffers result set rows
 in a lightweight manner. Python objects wrapping the columnar data are
 only created when the data is actually accessed.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.RowList.__getitem__">
-<code class="sig-name descname">__getitem__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.RowList.__getitem__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__getitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.RowList.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return self[key].</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.RowList.__len__">
 <code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.RowList.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return len(self).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ctds.RowList.description">
+<code class="sig-name descname">description</code><a class="headerlink" href="#ctds.RowList.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A description of the current result set columns.
+The description is a sequence of tuples, one tuple per column in the
+result set. The tuple describes the column data as follows:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>name</p></td>
+<td><p>The name of the column, if provided.</p></td>
+</tr>
+<tr class="row-even"><td><p>type_code</p></td>
+<td><p>The specific type of the column.</p></td>
+</tr>
+<tr class="row-odd"><td><p>display_size</p></td>
+<td><p>The SQL type size of the column.</p></td>
+</tr>
+<tr class="row-even"><td><p>internal_size</p></td>
+<td><p>The client size of the column.</p></td>
+</tr>
+<tr class="row-odd"><td><p>precision</p></td>
+<td><p>The precision of NUMERIC and DECIMAL
+columns.</p></td>
+</tr>
+<tr class="row-even"><td><p>scale</p></td>
+<td><p>The scale of NUMERIC and DECIMAL
+columns.</p></td>
+</tr>
+<tr class="row-odd"><td><p>null_ok</p></td>
+<td><p>Whether the column allows NULL.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In Python 3+, this is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of
+<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.namedtuple" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">collections.namedtuple()</span></code></a> objects whose members are defined
+above.</p>
+</div>
+<p><span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#description"><strong>PEP 0249#description</strong></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A sequence of tuples or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if no results are
+available.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a>))</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -216,11 +274,19 @@ only created when the data is actually accessed.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -231,7 +297,6 @@ only created when the data is actually accessed.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

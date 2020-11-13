@@ -1,16 +1,18 @@
 
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; ctds 1.12.0 documentation</title>
+  <title>Index &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -18,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -76,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,6 +102,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -139,7 +141,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Index</li>
     
@@ -256,18 +258,28 @@
 </li>
       <li><a href="connection.html#ctds.Connection">Connection (class in ctds)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cursor.html#ctds.Cursor.connection">connection (ctds.Cursor attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pool.html#ctds.pool.ConnectionPool.connection">connection() (ctds.pool.ConnectionPool method)</a>
 </li>
       <li><a href="pool.html#ctds.pool.ConnectionPool">ConnectionPool (class in ctds.pool)</a>
 </li>
-      <li><a href="ctds.html#module-ctds">ctds (module)</a>
+      <li>
+    ctds
+
+      <ul>
+        <li><a href="ctds.html#module-ctds">module</a>
 </li>
-      <li><a href="pool.html#module-ctds.pool">ctds.pool (module)</a>
+      </ul></li>
+      <li>
+    ctds.pool
+
+      <ul>
+        <li><a href="pool.html#module-ctds.pool">module</a>
 </li>
+      </ul></li>
       <li><a href="cursor.html#ctds.Cursor">Cursor (class in ctds)</a>
 </li>
       <li><a href="connection.html#ctds.Connection.cursor">cursor() (ctds.Connection method)</a>
@@ -284,16 +296,20 @@
 </li>
       <li><a href="ctds.html#ctds.DataError">DataError</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ctds.html#ctds.Date">Date() (in module ctds)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ctds.html#ctds.DateFromTicks">DateFromTicks() (in module ctds)</a>
 </li>
       <li><a href="ctds.html#ctds.DatabaseError.db_error">db_error (ctds.DatabaseError attribute)</a>
 </li>
       <li><a href="cursor.html#ctds.Cursor.description">description (ctds.Cursor attribute)</a>
+
+      <ul>
+        <li><a href="rowlist.html#ctds.RowList.description">(ctds.RowList attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -356,6 +372,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection.html#ctds.Connection.messages">messages (ctds.Connection attribute)</a>
 </li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="ctds.html#module-ctds">ctds</a>
+</li>
+        <li><a href="pool.html#module-ctds.pool">ctds.pool</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -408,13 +433,13 @@
 </li>
         <li><a href="cursor.html#index-1">PEP 0249#arraysize</a>
 </li>
-        <li><a href="ctds.html#index-20">PEP 0249#binary</a>
+        <li><a href="ctds.html#index-13">PEP 0249#binary</a>
 </li>
         <li><a href="callproc.html#index-0">PEP 0249#callproc</a>, <a href="callproc.html#index-1">[1]</a>, <a href="cursor.html#index-2">[2]</a>
 </li>
         <li><a href="connection.html#index-2">PEP 0249#commit</a>
 </li>
-        <li><a href="ctds.html#index-13">PEP 0249#connect</a>, <a href="pool.html#index-1">[1]</a>
+        <li><a href="ctds.html#index-20">PEP 0249#connect</a>, <a href="pool.html#index-1">[1]</a>
 </li>
         <li><a href="connection.html#index-4">PEP 0249#connection-messages</a>
 </li>
@@ -434,9 +459,9 @@
 </li>
         <li><a href="ctds.html#index-14">PEP 0249#date</a>
 </li>
-        <li><a href="ctds.html#index-17">PEP 0249#datefromticks</a>
+        <li><a href="ctds.html#index-15">PEP 0249#datefromticks</a>
 </li>
-        <li><a href="cursor.html#index-5">PEP 0249#description</a>
+        <li><a href="cursor.html#index-5">PEP 0249#description</a>, <a href="rowlist.html#index-0">[1]</a>
 </li>
         <li><a href="ctds.html#index-3">PEP 0249#error</a>
 </li>
@@ -482,11 +507,11 @@
 </li>
         <li><a href="ctds.html#index-2">PEP 0249#threadsafety</a>
 </li>
-        <li><a href="ctds.html#index-15">PEP 0249#time</a>
+        <li><a href="ctds.html#index-16">PEP 0249#time</a>
 </li>
-        <li><a href="ctds.html#index-18">PEP 0249#timefromticks</a>
+        <li><a href="ctds.html#index-17">PEP 0249#timefromticks</a>
 </li>
-        <li><a href="ctds.html#index-16">PEP 0249#timestamp</a>
+        <li><a href="ctds.html#index-18">PEP 0249#timestamp</a>
 </li>
         <li><a href="ctds.html#index-19">PEP 0249#timestampfromticks</a>
 </li>
@@ -686,11 +711,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -701,7 +734,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

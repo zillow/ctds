@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cursor &mdash; ctds 1.12.0 documentation</title>
+  <title>Cursor &mdash; ctds 1.13.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ctds" href="ctds.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ctds
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.12
+                1.13
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +113,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="api.html">API Reference</a> &raquo;</li>
         
@@ -174,12 +177,12 @@
             
   <div class="section" id="cursor">
 <h1>Cursor<a class="headerlink" href="#cursor" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="ctds.Cursor">
 <em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Cursor</code><a class="headerlink" href="#ctds.Cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>A database cursor used to manage the context of a fetch operation.</p>
 <p><span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#cursor-objects"><strong>PEP 0249#cursor-objects</strong></a></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.Parameter">
 <code class="sig-name descname">Parameter</code><a class="headerlink" href="#ctds.Cursor.Parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method to <a class="reference internal" href="parameter.html#ctds.Parameter" title="ctds.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Parameter</span></code></a>.</p>
@@ -193,7 +196,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.__enter__">
 <code class="sig-name descname">__enter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__enter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enter the cursor’s runtime context. On exit, the cursor is
@@ -208,54 +211,54 @@ closed automatically.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.__exit__">
-<code class="sig-name descname">__exit__</code><span class="sig-paren">(</span><em class="sig-param">exc_type</em>, <em class="sig-param">exc_val</em>, <em class="sig-param">exc_tb</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__exit__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__exit__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exc_type</span></em>, <em class="sig-param"><span class="n">exc_val</span></em>, <em class="sig-param"><span class="n">exc_tb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__exit__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exit the cursor’s runtime context, closing the cursor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>exc_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.8)"><em>type</em></a>) – The exception type, if an exception
-is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>exc_val</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.8)"><em>Exception</em></a>) – The exception value, if an exception
-is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
-<li><p><strong>exc_tb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a>) – The exception traceback, if an exception
-is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>exc_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.9)"><em>type</em></a>) – The exception type, if an exception
+is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>exc_val</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.9)"><em>Exception</em></a>) – The exception value, if an exception
+is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>exc_tb</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The exception traceback, if an exception
+is raised in the context, otherwise <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.__iter__">
 <code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement iter(self).</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.__next__">
 <code class="sig-name descname">__next__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__next__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement next(self).</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.arraysize">
 <code class="sig-name descname">arraysize</code><a class="headerlink" href="#ctds.Cursor.arraysize" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of rows to fetch at a time with <a class="reference internal" href="#ctds.Cursor.fetchmany" title="ctds.Cursor.fetchmany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchmany()</span></code></a>.</p>
 <p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#arraysize"><strong>PEP 0249#arraysize</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.callproc">
-<code class="sig-name descname">callproc</code><span class="sig-paren">(</span><em class="sig-param">sproc</em>, <em class="sig-param">parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.callproc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">callproc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sproc</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.callproc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call a stored database procedure with the given name. The sequence of
 parameters must contain one entry for each argument that the procedure
 expects. The result of the call is returned as modified copy of the input
@@ -276,11 +279,11 @@ before being transmitted to the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The name of the stored procedure to execute.</p></li>
-<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – Parameters to pass to the stored procedure.
-Parameters passed in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> must map from the parameter
+<li><p><strong>sproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The name of the stored procedure to execute.</p></li>
+<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – Parameters to pass to the stored procedure.
+Parameters passed in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> must map from the parameter
 name to value and start with the <strong>&#64;</strong> character. Parameters passed
-in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> are passed in the tuple order.</p></li>
+in a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> are passed in the tuple order.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -288,19 +291,19 @@ in a <a class="reference external" href="https://docs.python.org/3/library/stdty
 the output values.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.close">
 <code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the cursor.</p>
 <p><span class="target" id="index-3"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#Cursor.close"><strong>PEP 0249#Cursor.close</strong></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.connection">
 <code class="sig-name descname">connection</code><a class="headerlink" href="#ctds.Cursor.connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to the Connection object on which the cursor was created.</p>
@@ -312,7 +315,7 @@ the output values.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.description">
 <code class="sig-name descname">description</code><a class="headerlink" href="#ctds.Cursor.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>A description of the current result set columns.
@@ -351,25 +354,25 @@ columns.</p></td>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In Python 3+, this is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of
-<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.namedtuple" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">collections.namedtuple()</span></code></a> objects whose members are defined
+<p>In Python 3+, this is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of
+<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.namedtuple" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">collections.namedtuple()</span></code></a> objects whose members are defined
 above.</p>
 </div>
 <p><span class="target" id="index-5"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#description"><strong>PEP 0249#description</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A sequence of tuples or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if no results are
+<dd class="field-odd"><p>A sequence of tuples or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if no results are
 available.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a>))</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a>))</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">sql</em>, <em class="sig-param">parameters=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare and execute a database operation.
 Parameters may be provided as sequence and will be bound to variables
 specified in the SQL statement. Parameter notation is specified by
@@ -378,16 +381,16 @@ specified in the SQL statement. Parameter notation is specified by
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The SQL statement to execute.</p></li>
-<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – Optional variables to bind.</p></li>
+<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The SQL statement to execute.</p></li>
+<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – Optional variables to bind.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.executemany">
-<code class="sig-name descname">executemany</code><span class="sig-paren">(</span><em class="sig-param">sql</em>, <em class="sig-param">seq_of_parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.executemany" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">executemany</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql</span></em>, <em class="sig-param"><span class="n">seq_of_parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.executemany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare a database operation (query or command) and then execute it
 against all parameter sequences or mappings found in the sequence
 <cite>seq_of_parameters</cite>.</p>
@@ -395,14 +398,14 @@ against all parameter sequences or mappings found in the sequence
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The SQL statement to execute.</p></li>
-<li><p><strong>seq_of_parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typeiter" title="(in Python v3.8)"><span class="xref std std-ref">typeiter</span></a>) – An iterable of parameter sequences to bind.</p></li>
+<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The SQL statement to execute.</p></li>
+<li><p><strong>seq_of_parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#typeiter" title="(in Python v3.9)"><span class="xref std std-ref">typeiter</span></a>) – An iterable of parameter sequences to bind.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.fetchall">
 <code class="sig-name descname">fetchall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch all (remaining) rows of a query result, returning them as a
@@ -418,9 +421,9 @@ sequence of sequences.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.fetchmany">
-<code class="sig-name descname">fetchmany</code><span class="sig-paren">(</span><em class="sig-param">size=self.arraysize</em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchmany" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fetchmany</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">self.arraysize</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchmany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the next set of rows of a query result, returning a sequence of
 sequences. An empty sequence is returned when no more rows are available.</p>
 <p><span class="target" id="index-9"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#fetchmany"><strong>PEP 0249#fetchmany</strong></a></p>
@@ -434,29 +437,29 @@ sequences. An empty sequence is returned when no more rows are available.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.fetchone">
 <code class="sig-name descname">fetchone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the next row of a query result set, returning a single sequence, or
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> when no more data is available.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> when no more data is available.</p>
 <p><span class="target" id="index-10"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#fetchone"><strong>PEP 0249#fetchone</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The next row or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+<dd class="field-odd"><p>The next row or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.next">
 <code class="sig-name descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the next row from the currently executing SQL statement using the
-same semantics as <a class="reference internal" href="#ctds.Cursor.fetchone" title="ctds.Cursor.fetchone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchone()</span></code></a>. A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">StopIteration</span></code></a> exception
+same semantics as <a class="reference internal" href="#ctds.Cursor.fetchone" title="ctds.Cursor.fetchone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchone()</span></code></a>. A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">StopIteration</span></code></a> exception
 is raised when the result set is exhausted.</p>
 <p><span class="target" id="index-11"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#next"><strong>PEP 0249#next</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.8)"><strong>StopIteration</strong></a> – The result set is exhausted.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.9)"><strong>StopIteration</strong></a> – The result set is exhausted.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The next row.</p>
@@ -464,7 +467,7 @@ is raised when the result set is exhausted.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.nextset">
 <code class="sig-name descname">nextset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.nextset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Skip to the next available set, discarding any remaining rows from the
@@ -472,16 +475,16 @@ current set.</p>
 <p><span class="target" id="index-12"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#nextset"><strong>PEP 0249#nextset</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if there was another result set or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> if there was another result set or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>
 if not.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.rowcount">
 <code class="sig-name descname">rowcount</code><a class="headerlink" href="#ctds.Cursor.rowcount" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of rows that the last <a class="reference internal" href="#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a> produced or affected.</p>
@@ -493,46 +496,46 @@ and using a version of FreeTDS prior to 1.1.</p>
 <p><span class="target" id="index-13"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#rowcount"><strong>PEP 0249#rowcount</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.rownumber">
 <code class="sig-name descname">rownumber</code><a class="headerlink" href="#ctds.Cursor.rownumber" title="Permalink to this definition">¶</a></dt>
 <dd><p>The current 0-based index of the cursor in the result set or
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the index cannot be determined.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the index cannot be determined.</p>
 <p><span class="target" id="index-14"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#rownumber"><strong>PEP 0249#rownumber</strong></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.setinputsizes">
 <code class="sig-name descname">setinputsizes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.setinputsizes" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method has no effect.</p>
 <p><span class="target" id="index-15"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#setinputsizes"><strong>PEP 0249#setinputsizes</strong></a></p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ctds.Cursor.setoutputsize">
 <code class="sig-name descname">setoutputsize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.setoutputsize" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method has no effect.</p>
 <p><span class="target" id="index-16"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#setoutputsize"><strong>PEP 0249#setoutputsize</strong></a></p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ctds.Cursor.spid">
 <code class="sig-name descname">spid</code><a class="headerlink" href="#ctds.Cursor.spid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the SQL Server Session Process ID (SPID) for the connection or
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the connection is closed.</p>
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the connection is closed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,11 +564,19 @@ and using a version of FreeTDS prior to 1.1.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2016-, Zillow, Inc.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -576,7 +587,6 @@ and using a version of FreeTDS prior to 1.1.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
