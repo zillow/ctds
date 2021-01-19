@@ -17,8 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Compile FreeTDS and store it for use in later jobs.
       - name: 'Compile FreeTDS ${{ matrix.freetds-version }}'
+        run: |
+          make freetds-${{ matrix.freetds-version }}
+
+      - name: 'Upload FreeTDS ${{ matrix.freetds-version }}'
         uses: 'actions/upload-artifact@v2'
         with:
           name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
