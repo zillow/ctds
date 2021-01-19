@@ -50,6 +50,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+          path: build/freetds-${{ matrix.freetds-version }}/
+
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -59,15 +64,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip tox tox-gh-actions
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
-          path: build/freetds-${{ matrix.freetds-version }}/
+          echo "CTDS_INCLUDE_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
+          echo "CTDS_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
+          echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
 
       - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
-        env:
-          CTDS_INCLUDE_DIRS: $GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include
-          CTDS_LIBRARY_DIRS: $GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib
-          CTDS_RUNTIME_LIBRARY_DIRS: $GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include
         run: |
           tox
