@@ -66,8 +66,14 @@ jobs:
 
           echo "CTDS_INCLUDE_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
           echo "CTDS_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
-          echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
+          echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
 
       - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
         run: |
           tox
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./build/coverage/
+          fail_ci_if_error: true
