@@ -6,16 +6,29 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         freetds:
-          - 0.91.112
-          - 0.92.405
-          - 0.95.95
-          - 1.00.80
-          - 1.1.24
+          #- 0.91.112
+          #- 0.92.405
+          #- 0.95.95
+          #- 1.00.80
+          #- 1.1.24
           - 1.2.10
+        python-version:
+          - 3.9
 
     steps:
-      - name: Run tests against FreeTDS ${{ matrix.freetds }}
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
         run: |
-          make freetds-${{ matrix.freetds }}
+          python -m pip install --upgrade pip tox tox-gh-actions
+
+      - name: Build FreeTDS ${{ matrix.freetds }}
+        run: |
+          make test-${{ matrix.freetds }} TOX_PYENVS=${{ matrix.python-version }}
