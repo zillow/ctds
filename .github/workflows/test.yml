@@ -1,38 +1,9 @@
-name: Automated tests and code checks
+name: CI/CD
 on: [push, pull_request]
 
 jobs:
-  freetds:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        freetds-version:
-          #- 0.91.112
-          #- 0.92.405
-          #- 0.95.95
-          #- 1.00.80
-          - 1.1.24
-          - 1.2.10
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache FreeTDS ${{ matrix.freetds-version }}
-        id: cache-freetds
-        uses: actions/cache@v2
-        with:
-          path: |
-            build/freetds-${{ matrix.freetds-version }}/include
-            build/freetds-${{ matrix.freetds-version }}/lib
-          key: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
-
-      - name: Compile FreeTDS ${{ matrix.freetds-version }}
-        if: steps.cache-freetds.outputs.cache-hit != 'true'
-        run: make freetds-${{ matrix.freetds-version }}
-
   tests:
     runs-on: ${{ matrix.os }}
-    needs: freetds
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -49,12 +20,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Python
+      - name: 'Cache FreeTDS ${{ matrix.freetds-version }}'
+        id: cache-freetds
+        uses: actions/cache@v2
+        with:
+          path: |
+            build/freetds-${{ matrix.freetds-version }}/include
+            build/freetds-${{ matrix.freetds-version }}/lib
+          key: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+
+      - name: 'Compile FreeTDS ${{ matrix.freetds-version }}'
+        if: steps.cache-freetds.outputs.cache-hit != 'true'
+        run: make freetds-${{ matrix.freetds-version }}
+
+      - name: 'Setup Python'
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: 'Install dependencies'
         run: |
           python -m pip install --upgrade pip tox tox-gh-actions
 
