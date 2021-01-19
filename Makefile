@@ -295,23 +295,25 @@ TOX_PYENVS ?= $(subst $(subst ,, ),$(subst ,,,),$(shell tox -l | grep 'py[[:digi
 # $(eval $(call FREETDS_BUILD_RULE, <freetds_version>))
 #
 define FREETDS_BUILD_RULE
-$(BUILDDIR)/src/freetds-$(strip $(1)):
+$(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz:
 	mkdir -p $(BUILDDIR)/src
 	if [ `which wget` ]; then \
-        wget 'https://www.freetds.org/files/stable/freetds-$(strip $(1)).tar.gz' -O $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz; \
+        wget 'https://www.freetds.org/files/stable/freetds-$(strip $(1)).tar.gz' -O $$(@); \
     else \
-        curl -sSf 'https://www.freetds.org/files/stable/freetds-$(strip $(1)).tar.gz' -o $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz; \
+        curl -sSf 'https://www.freetds.org/files/stable/freetds-$(strip $(1)).tar.gz' -o $$(@); \
     fi
-	tar -xzC $(BUILDDIR)/src -f $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz
 
-$(BUILDDIR)/src/freetds-$(strip $(1))/include/sybdb.h: | $(BUILDDIR)/src/freetds-$(strip $(1))/
+$(BUILDDIR)/src/freetds-$(strip $(1)): $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz
+	tar -xzC $(BUILDDIR)/src -f $$(^)
+
+$(BUILDDIR)/freetds-$(strip $(1))/include/sybdb.h: $(BUILDDIR)/src/freetds-$(strip $(1))
 	cd $(BUILDDIR)/src/freetds-$(strip $(1)) \
     && ./configure --prefix "$(abspath $(BUILDDIR)/freetds-$(strip $(1)))" \
     && make \
     && make install
 
 .PHONY: freetds-$(strip $(1))
-freetds-$(strip $(1)): $(BUILDDIR)/src/freetds-$(strip $(1))/include/sybdb.h
+freetds-$(strip $(1)): $(BUILDDIR)/freetds-$(strip $(1))/include/sybdb.h
 
 .PHONY: test-$(strip $(1))
 test-$(strip $(1)): freetds-$(strip $(1))
