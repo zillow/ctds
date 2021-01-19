@@ -18,4 +18,4 @@ jobs:
     steps:
       - name: Run tests against FreeTDS ${{ matrix.freetds }}
         run: |
-          make test-${{ matrix.freetds }}
+          make freetds-${{ matrix.freetds }}
