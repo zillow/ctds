@@ -77,3 +77,5 @@ jobs:
         with:
           directory: ./build/coverage/
           fail_ci_if_error: true
+          functionalities: ['gcov']
+          verbose: true
