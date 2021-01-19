@@ -112,7 +112,7 @@ parameters are replaced with output values.
 
     def test_sql_raiseerror_warning(self):
         # The error is simply reported as a warning because another statement follows
-        # and completes sucessfully.
+        # and completes successfully.
         with self.connect() as connection:
             with connection.cursor() as cursor:
                 sproc = self.test_sql_raiseerror_warning.__name__

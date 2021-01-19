@@ -1,0 +1,21 @@
+name: Automated tests and code checks
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        freetds:
+          - 0.91.112
+          - 0.92.405
+          - 0.95.95
+          - 1.00.80
+          - 1.1.24
+          - 1.2.10
+
+    steps:
+      - name: Run tests against FreeTDS ${{ matrix.freetds }}
+        run: |
+          make test-${{ matrix.freetds }}

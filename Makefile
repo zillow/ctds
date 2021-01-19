@@ -1,7 +1,5 @@
 # -*- makefile-gmake -*-
 
-PACKAGE_NAME = ctds
-
 # Python version support
 SUPPORTED_PYTHON_VERSIONS := \
     2.7 \
@@ -51,7 +49,6 @@ VIRTUALENV_FREETDS_VERSION ?= $(lastword $(CHECKED_FREETDS_VERSIONS))
 # Ignore warnings, i.e. "Unknown distribution option: 'python_requires'"
 CTDS_VERSION := $(strip $(shell python -W ignore setup.py --version))
 
-VIRTUALENV_DIR ?= .venv
 COVERAGE_DIR ?= .coverage
 
 # Help
@@ -85,10 +82,6 @@ help:
 	@echo "    valgrind"
 	@echo "        Run tests using a debug build of Python versions ($(VALGRIND_PYTHON_VERSIONS)) and"
 	@echo "        FreeTDS versions ($(VALGRIND_FREETDS_VERSIONS)) under valgrind."
-	@echo
-	@echo "    virtualenv"
-	@echo "        Create a local virtualenv in $(VIRTUALENV_DIR), install FreeTDS version"
-	@echo "        '$(VIRTUALENV_FREETDS_VERSION)', and ctds from local source."
 	@echo
 	@echo "    Optional variables:"
 	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
@@ -290,28 +283,45 @@ _post_publish-doc:
 .PHONY: publish-doc
 publish-doc: _pre_publish-doc doc _post_publish-doc
 
-virtualenv: $(VIRTUALENV_DIR)/include/sybdb.h src/ctds/*.c
-	CTDS_INCLUDE_DIRS="$(abspath $(VIRTUALENV_DIR))/include" \
-        CTDS_LIBRARY_DIRS="$(abspath $(VIRTUALENV_DIR))/lib" \
-        CTDS_RUNTIME_LIBRARY_DIRS="$(abspath $(VIRTUALENV_DIR))/lib" \
-        CTDS_STRICT=1 \
-        $(VIRTUALENV_DIR)/bin/python setup.py -v install
 
-$(VIRTUALENV_DIR)/include/sybdb.h: | $(VIRTUALENV_DIR) $(VIRTUALENV_FREETDS_VERSION)
-	cd freetds-$(VIRTUALENV_FREETDS_VERSION) \
-        && ./configure --prefix "$(abspath $(VIRTUALENV_DIR))" \
-        && make \
-        && make install
-	rm -rf freetds-$(VIRTUALENV_FREETDS_VERSION)
+BUILDDIR ?= build
+TOX_PYENVS ?= $(subst $(subst ,, ),$(subst ,,,),$(shell tox -l | grep 'py[[:digit:]]'))
 
-$(VIRTUALENV_DIR):
-	virtualenv $(VIRTUALENV_DIR)
 
-VIRTUALENV_FREETDS_VERSION_URL = https://www.freetds.org/files/stable/freetds-$(VIRTUALENV_FREETDS_VERSION).tar.gz
-$(VIRTUALENV_FREETDS_VERSION):
+# Function to generate rules for:
+#   * downloading FreeTDS source
+#   * compiling FreeTDS source
+#
+# $(eval $(call FREETDS_BUILD_RULE, <freetds_version>))
+#
+define FREETDS_BUILD_RULE
+$(BUILDDIR)/src/freetds-$(strip $(1)):
+	mkdir -p $(BUILDDIR)/src
 	if [ `which wget` ]; then \
-        wget '$(VIRTUALENV_FREETDS_VERSION_URL)' -O freetds.tar.gz; \
+        wget 'https://www.freetds.org/files/stable/freetds-$(strip $(1)).tar.gz' -O $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz; \
     else \
-        curl -sSf '$(VIRTUALENV_FREETDS_VERSION_URL)' -o freetds.tar.gz; \
+        curl -sSf 'https://www.freetds.org/files/stable/freetds-$(strip $(1)).tar.gz' -o $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz; \
     fi
-	tar -xzf freetds.tar.gz && rm freetds.tar.gz
+	tar -xzC $(BUILDDIR)/src -f $(BUILDDIR)/src/freetds-$(strip $(1)).tar.gz
+
+$(BUILDDIR)/src/freetds-$(strip $(1))/include/sybdb.h: | $(BUILDDIR)/src/freetds-$(strip $(1))/
+	cd $(BUILDDIR)/src/freetds-$(strip $(1)) \
+    && ./configure --prefix "$(abspath $(BUILDDIR)/freetds-$(strip $(1)))" \
+    && make \
+    && make install
+
+.PHONY: freetds-$(strip $(1))
+freetds-$(strip $(1)): $(BUILDDIR)/src/freetds-$(strip $(1))/include/sybdb.h
+
+.PHONY: test-$(strip $(1))
+test-$(strip $(1)): freetds-$(strip $(1))
+	CTDS_INCLUDE_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/include" \
+    CTDS_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
+    CTDS_RUNTIME_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
+    tox -vv -e $(TOX_PYENVS)
+endef
+
+$(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_BUILD_RULE, $(FREETDS_VERSION))))
+
+.PHONY: freetds-latest
+freetds-latest: freetds-$(DEFAULT_FREETDS_VERSION)

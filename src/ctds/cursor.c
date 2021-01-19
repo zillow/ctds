@@ -26,6 +26,14 @@
 #  pragma GCC diagnostic ignored "-Wlong-long"
 #endif /* if defined(__GNUC__) && (__GNUC__ > 4) */
 
+#ifdef __clang__
+# if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 8
+/* Ignore "'tp_print' has been explicitly marked deprecated here" */
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#  endif /* if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 8 */
+#endif /* ifdef __clang__ */
+
 
 struct Column {
     DBCOL dbcol;
