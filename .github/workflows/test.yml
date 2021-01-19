@@ -64,10 +64,12 @@ jobs:
           name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
           path: build/freetds-${{ matrix.freetds-version }}/
 
+        # Set the include paths for use by later steps.
+        run: |
+          echo "CTDS_INCLUDE_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
+          echo "CTDS_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
+          echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
+
       - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
-        env:
-          CTDS_INCLUDE_DIRS: build/freetds-${{ matrix.freetds-version }}/include
-          CTDS_LIBRARY_DIRS: build/freetds-${{ matrix.freetds-version }}/lib
-          CTDS_RUNTIME_LIBRARY_DIRS: build/freetds-${{ matrix.freetds-version }}/lib
         run: |
           tox
