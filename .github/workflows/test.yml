@@ -15,6 +15,8 @@ jobs:
           - 1.1.24
           - 1.2.10
     steps:
+      - uses: actions/checkout@v2
+
       # Compile FreeTDS and store it for use in later jobs.
       - name: 'Compile FreeTDS ${{ matrix.freetds-version }}'
         uses: 'actions/upload-artifact@v2'
@@ -23,6 +25,7 @@ jobs:
           path: |
             build/freetds-${{ matrix.freetds-version }}/include/
             build/freetds-${{ matrix.freetds-version }}/lib/
+        if-no-files-found: error
 
   tests:
     runs-on: ${{ matrix.os }}
