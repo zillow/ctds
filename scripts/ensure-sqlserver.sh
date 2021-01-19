@@ -29,7 +29,7 @@ if [ -z "$CONTAINER_ID" ]; then
 fi
 
 until docker run \
-        --rm -it \
+        --rm \
         --network container:$CONTAINER_ID \
     mcr.microsoft.com/mssql-tools \
     /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SA_PASSWORD" -W -b -Q 'SET NOCOUNT ON; SELECT @@VERSION'
@@ -48,7 +48,7 @@ do
 done
 
 docker run \
-        --rm -it \
+        --rm \
         --network container:$CONTAINER_ID \
         -v $(dirname $CURDIR)/misc/:/misc \
     mcr.microsoft.com/mssql-tools \

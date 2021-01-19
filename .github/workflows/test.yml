@@ -25,6 +25,7 @@ jobs:
         uses: 'actions/upload-artifact@v2'
         with:
           name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+          # Only upload the directories we care about.
           path: |
             build/freetds-${{ matrix.freetds-version }}/include/
             build/freetds-${{ matrix.freetds-version }}/lib/
@@ -61,6 +62,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+          path: build/freetds-${{ matrix.freetds-version }}/
 
       - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
         env:
