@@ -17,19 +17,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 'Compile FreeTDS ${{ matrix.freetds-version }}'
-        run: |
-          make freetds-${{ matrix.freetds-version }}
-
-      - name: 'Upload FreeTDS ${{ matrix.freetds-version }}'
-        uses: 'actions/upload-artifact@v2'
+      - name: Cache FreeTDS ${{ matrix.freetds-version }}
+        id: cache-freetds
+        uses: actions/cache@v2
         with:
-          name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
-          # Only upload the directories we care about.
           path: |
-            build/freetds-${{ matrix.freetds-version }}/include/
-            build/freetds-${{ matrix.freetds-version }}/lib/
-          if-no-files-found: error
+            build/freetds-${{ matrix.freetds-version }}/include
+            build/freetds-${{ matrix.freetds-version }}/lib
+          key: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+
+      - name: Compile FreeTDS ${{ matrix.freetds-version }}
+        if: steps.cache-freetds.outputs.cache-hit != 'true'
+        run: make freetds-${{ matrix.freetds-version }}
 
   tests:
     runs-on: ${{ matrix.os }}
@@ -49,11 +48,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
-          path: build/freetds-${{ matrix.freetds-version }}/
 
       - name: Setup Python
         uses: actions/setup-python@v2
