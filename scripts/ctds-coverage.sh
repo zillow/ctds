@@ -1,7 +1,5 @@
 #!/bin/sh -e
 
-set -o pipefail
-
 if [ -n "$VERBOSE" ]; then VERBOSITY="-v"; fi
 
 # Install using setuptools directly so the local setup.cfg is used.
