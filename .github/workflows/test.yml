@@ -25,7 +25,7 @@ jobs:
           path: |
             build/freetds-${{ matrix.freetds-version }}/include/
             build/freetds-${{ matrix.freetds-version }}/lib/
-        if-no-files-found: error
+          if-no-files-found: error
 
   tests:
     runs-on: ${{ matrix.os }}
