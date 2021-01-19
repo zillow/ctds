@@ -17,12 +17,12 @@ jobs:
     steps:
       # Compile FreeTDS and store it for use in later jobs.
       - name: 'Compile FreeTDS ${{ matrix.freetds-version }}'
-          uses: 'actions/upload-artifact@v2'
-          with:
-              name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
-              path: |
-                build/freetds-${{ matrix.freetds-version }}/include/
-                build/freetds-${{ matrix.freetds-version }}/lib/
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+          path: |
+            build/freetds-${{ matrix.freetds-version }}/include/
+            build/freetds-${{ matrix.freetds-version }}/lib/
 
   tests:
     runs-on: ${{ matrix.os }}
@@ -56,7 +56,7 @@ jobs:
         with:
           name: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
 
-      - name: "Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})"
+      - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
         env:
           CTDS_INCLUDE_DIRS: build/freetds-${{ matrix.freetds-version }}/include
           CTDS_LIBRARY_DIRS: build/freetds-${{ matrix.freetds-version }}/lib
