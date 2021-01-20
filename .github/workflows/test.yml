@@ -3,6 +3,7 @@ on: [push, pull_request]
 
 jobs:
   tests:
+    name: 'FreeTDS ${{ matrix.freetds-version }} Python ${{ matrix.python-version }} tests (${{ matrix.os }})'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
