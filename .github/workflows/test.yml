@@ -70,3 +70,19 @@ jobs:
           fail_ci_if_error: true
           functionalities: 'gcov'
           verbose: true
+
+  valgrind:
+    # Must run on linux VM as that is the only one which supports docker.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 2.7.18
+          - 3.9.1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 'valgrind Python ${{ matrix.python-version }}'
+        run: |
+          make valgrind_${{ matrix.python-version }}

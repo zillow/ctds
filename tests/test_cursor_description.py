@@ -181,14 +181,14 @@ result set. The tuple describes the column data as follows:
                 descriptions.append(cursor.description)
 
                 with self.stored_procedure(
-                        cursor,
-                        'CallProcDescription',
-                        """
-                        AS BEGIN
-                            SELECT CONVERT(DECIMAL(5,2), 1.75) AS [decimal];
-                            SELECT CONVERT(MONEY, 1.99) AS [money];
-                        END
-                        """
+                    cursor,
+                    'CallProcDescription',
+                    """
+                    AS BEGIN
+                        SELECT CONVERT(DECIMAL(5,2), 1.75) AS [decimal];
+                        SELECT CONVERT(MONEY, 1.99) AS [money];
+                    END
+                    """
                 ):
                     cursor.callproc('CallProcDescription', {})
                     descriptions.append(cursor.description)
