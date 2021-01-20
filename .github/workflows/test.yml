@@ -9,8 +9,11 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-11.0
         freetds-version:
+          - 0.91.112
+          - 0.92.405
+          - 0.95.95
+          - 1.00.80
           - 1.1.24
         python-version:
           - 3.9
@@ -18,20 +21,13 @@ jobs:
           - 3.7
           - 3.6
           - 2.7
-        # Include jobs to validate against older versions of FreeTDS.
         include:
-          - freetds-version: 0.91.112
-            os: ubuntu-20.04
+          - freetds-version: 1.1.24
+            os: macos-11.0
             python-version: 3.9
-          - freetds-version: 0.92.405
-            os: ubuntu-20.04
-            python-version: 3.9
-          - freetds-version: 0.95.95
-            os: ubuntu-20.04
-            python-version: 3.9
-          - freetds-version: 1.00.80
-            os: ubuntu-20.04
-            python-version: 3.9
+          - freetds-version: 1.1.24
+            os: macos-11.0
+            python-version: 2.7
 
     steps:
       - uses: actions/checkout@v2
@@ -63,6 +59,7 @@ jobs:
           echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
 
       - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
+        if: ${{ !contains(matrix.os, 'macos') }}
         run: |
           tox
 
