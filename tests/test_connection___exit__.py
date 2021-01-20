@@ -141,7 +141,7 @@ will be implicitly rolled back when the connection is closed.
                     with connection.cursor() as cursor:
                         cursor.execute('CREATE TABLE {0} (ints INT)'.format(name))
                         cursor.execute('INSERT INTO {0} VALUES (1),(2),(3)'.format(name))
-                        cursor.execute("WAITFOR DELAY '00:00:01.1';SELECT @@VERSION")
+                        cursor.execute("WAITFOR DELAY '00:00:02';SELECT @@VERSION")
             except ctds.DatabaseError as ex:
                 self.assertEqual(str(ex), 'Adaptive Server connection timed out')
             else:

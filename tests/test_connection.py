@@ -21,7 +21,7 @@ A connection to the database server.
         with self.connect(timeout=1) as connection:
             with connection.cursor() as cursor:
                 try:
-                    cursor.execute("WAITFOR DELAY '00:00:01.1';SELECT @@VERSION")
+                    cursor.execute("WAITFOR DELAY '00:00:02';SELECT @@VERSION")
                 except ctds.DatabaseError as ex:
                     msg = 'Adaptive Server connection timed out'
                     self.assertEqual(str(ex), msg)
