@@ -124,7 +124,7 @@ valgrind_$(strip $(1))_$(strip $(2)): docker_valgrind_$(strip $(1))_$(strip $(2)
             -e DEBUG=1 \
             $(if $(TDSDUMP),-e TDSDUMP=$(TDSDUMP)) \
             $(if $(TEST),-e TEST=$(TEST)) \
-            $(if $(VERBOSE),-e VERBOSE=$(VERBOSE))
+            $(if $(VERBOSE),-e VERBOSE=$(VERBOSE)) \
             --network container:$(SQL_SERVER_DOCKER_IMAGE_NAME) \
         $(call VALGRIND_DOCKER_IMAGE_NAME, $(1), $(2)) \
         ./scripts/ctds-valgrind.sh
