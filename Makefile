@@ -19,8 +19,8 @@ CHECKED_PYTHON_VERSIONS := \
     3.9
 
 VALGRIND_PYTHON_VERSIONS := \
-    2.7.18 \
-    3.9.1
+    2.7.14 \
+    3.6.3
 
 # FreeTDS versions to test against. This should
 # be the latest of each minor release.
