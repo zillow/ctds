@@ -318,7 +318,7 @@ test-$(strip $(1)): freetds-$(strip $(1))
 	CTDS_INCLUDE_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/include" \
     CTDS_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
     CTDS_RUNTIME_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
-    tox -vv $(subst $(subst ,, ),$(subst ,,,),$(shell tox -l | grep 'py[[:digit:]]'))
+    tox -vv $$$$(tox -l | grep 'py[[:digit:]]' | sed -e 's/ /,/g')
 endef
 
 $(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_BUILD_RULE, $(FREETDS_VERSION))))
