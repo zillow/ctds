@@ -10,18 +10,25 @@ jobs:
           - ubuntu-20.04
           - macos-11.0
         freetds-version:
-          - 0.91.112
-          - 0.92.405
-          - 0.95.95
-          - 1.00.80
-          - 1.1.24
-          - 1.2.10
+          - latest
         python-version:
           - 3.9
           - 3.8
           - 3.7
           - 3.6
           - 2.7
+        # Include jobs to validating against older versions of FreeTDS.
+        include:
+          - freetds-version: 0.91.112
+            os: ubuntu-20.04
+          - freetds-version: 0.92.405
+            os: ubuntu-20.04
+          - freetds-version: 0.95.95
+            os: ubuntu-20.04
+          - freetds-version: 1.00.80
+            os: ubuntu-20.04
+          - freetds-version: 1.1.24
+            os: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
