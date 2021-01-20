@@ -21,14 +21,19 @@ jobs:
         include:
           - freetds-version: 0.91.112
             os: ubuntu-20.04
+            python-version: 3.9
           - freetds-version: 0.92.405
             os: ubuntu-20.04
+            python-version: 3.9
           - freetds-version: 0.95.95
             os: ubuntu-20.04
+            python-version: 3.9
           - freetds-version: 1.00.80
             os: ubuntu-20.04
+            python-version: 3.9
           - freetds-version: 1.1.24
             os: ubuntu-20.04
+            python-version: 3.9
 
     steps:
       - uses: actions/checkout@v2

@@ -285,8 +285,6 @@ publish-doc: _pre_publish-doc doc _post_publish-doc
 
 
 BUILDDIR ?= build
-TOX_PYENVS ?= $(subst $(subst ,, ),$(subst ,,,),$(shell tox -l | grep 'py[[:digit:]]'))
-
 
 # Function to generate rules for:
 #   * downloading FreeTDS source
@@ -320,7 +318,7 @@ test-$(strip $(1)): freetds-$(strip $(1))
 	CTDS_INCLUDE_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/include" \
     CTDS_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
     CTDS_RUNTIME_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
-    tox -vv $(if $(TOX_PYENVS), -e $(TOX_PYENVS))
+    tox -vv $(subst $(subst ,, ),$(subst ,,,),$(shell tox -l | grep 'py[[:digit:]]'))
 endef
 
 $(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_BUILD_RULE, $(FREETDS_VERSION))))
