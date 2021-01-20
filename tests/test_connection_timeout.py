@@ -95,7 +95,7 @@ is closed.
             with self.connect(timeout=1) as connection:
                 with connection.cursor() as cursor:
                     connection.timeout = 2
-                    cursor.execute("WAITFOR DELAY '00:00:02';SELECT @@VERSION")
+                    cursor.execute("WAITFOR DELAY '00:00:01';SELECT @@VERSION")
         else:
             pass # pragma: nocover
 
