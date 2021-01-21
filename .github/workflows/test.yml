@@ -87,7 +87,7 @@ jobs:
           make valgrind_${{ matrix.python-version }}
 
   publish-sdist:
-    name: Build and publish ctds to pypi
+    name: Publish Pytohn egg to pypi
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
     needs: [tests, valgrind]
     runs-on: ubuntu-latest
@@ -114,8 +114,8 @@ jobs:
           password: ${{ secrets.TODO }} # ${{ secrets.PYPI_API_TOKEN }}
 
   publish-docs:
-    name: Build and publish ctds docs to Github Pages
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
+    name: Publish docs to Github Pages
+    if: startsWith(github.ref, 'refs/tags')
     needs: [publish-sdist]
     runs-on: ubuntu-latest
     steps:
