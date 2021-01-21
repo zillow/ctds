@@ -11,6 +11,7 @@ on:
 jobs:
   publish-sdist:
     name: Build and publish ctds to pypi
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v2
