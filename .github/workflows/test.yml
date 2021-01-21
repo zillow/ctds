@@ -45,8 +45,7 @@ jobs:
         if: steps.cache-freetds.outputs.cache-hit != 'true'
         run: make freetds-${{ matrix.freetds-version }}
 
-      - name: 'Setup Python'
-        uses: actions/setup-python@v2
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
