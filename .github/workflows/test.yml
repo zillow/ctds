@@ -87,8 +87,8 @@ jobs:
           make valgrind_${{ matrix.python-version }}
 
   publish-sdist:
-    name: Publish Pytohn egg to pypi
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
+    name: Publish Python egg to PyPI
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/tox'
     needs: [tests, valgrind]
     runs-on: ubuntu-latest
     steps:
@@ -115,7 +115,7 @@ jobs:
 
   publish-docs:
     name: Publish docs to Github Pages
-    if: startsWith(github.ref, 'refs/tags')
+    if: startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/tox'
     needs: [publish-sdist]
     runs-on: ubuntu-latest
     steps:
