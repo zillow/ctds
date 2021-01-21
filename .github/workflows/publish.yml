@@ -1,10 +1,12 @@
 name: Publish
-on: push
-  branches:
-    - master
-    - tox # TODO: delete when done testing
-  tags:
-    - v*
+on:
+  push:
+    branches:
+      - master
+      - tox # TODO: delete when done testing
+    tags:
+      - v*
+
 
 jobs:
   publish-sdist:
