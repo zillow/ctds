@@ -117,6 +117,7 @@ jobs:
     name: Build and publish ctds docs to Github Pages
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
     needs: [publish-sdist]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v2
