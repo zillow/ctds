@@ -1,8 +1,5 @@
 #!/bin/sh -e
 
-# Install using setuptools directly so the local setup.cfg is used.
-#CTDS_STRICT=1 python setup.py install
-
 PYTHON_VERSION=$(python -c 'import sys; print(".".join(map(str, sys.version_info)))')
 FREETDS_VERSION=$(python -c 'import ctds; print(ctds.freetds_version.replace(" ", "-"))')
 COVERAGEDIR="build/coverage/python-$PYTHON_VERSION/$FREETDS_VERSION"

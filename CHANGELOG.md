@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Replaced travis-ci with Github Actions.
+- Replaced custom Docker-based testing infrastructure with tox.
 
 ## [1.13.0] - 2020-11-12
 ### Added

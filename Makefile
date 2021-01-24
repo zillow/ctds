@@ -1,5 +1,7 @@
 # -*- makefile-gmake -*-
 
+BUILDDIR ?= build
+
 # Python version support
 SUPPORTED_PYTHON_VERSIONS := \
     2.7 \
@@ -46,37 +48,29 @@ DEFAULT_FREETDS_VERSION := $(lastword $(CHECKED_FREETDS_VERSIONS))
 # Help
 .PHONY: help
 help:
-	@echo "usage: make [check|clean|coverage|doc|publish|pylint|test|valgrind|virtualenv]"
+	@echo "usage: make [check|clean|docs|pylint|test-$$FREETDS_VERSION|valgrind]"
 	@echo
 	@echo "    check"
 	@echo "        Run tests against all supported versions of Python and"
 	@echo "        the following versions of FreeTDS: $(CHECKED_FREETDS_VERSIONS)."
 	@echo
 	@echo "    clean"
-	@echo "        Clean source tree."
+	@echo "        Clean source tree, stop and remove test MS SQL Server container(s)."
 	@echo
-	@echo "    coverage"
-	@echo "        Generate code coverage for c and Python source code."
-	@echo
-	@echo "    doc"
+	@echo "    docs"
 	@echo "        Generate documentation."
-	@echo
-	@echo "    publish"
-	@echo "        Publish egg to pypi."
 	@echo
 	@echo "    pylint"
 	@echo "        Run pylint over all *.py files."
 	@echo
-	@echo "    test"
-	@echo "        Run tests using the default Python version ($(DEFAULT_PYTHON_VERSION)) and"
-	@echo "        the default version of FreeTDS ($(DEFAULT_FREETDS_VERSION))."
+	@echo "    test-$$FREETDS_VERSION"
+	@echo "        Run tests against FreeTDS version $$FREETDS_VERSION"
 	@echo
 	@echo "    valgrind"
 	@echo "        Run tests using a debug build of Python versions ($(VALGRIND_PYTHON_VERSIONS)) and"
 	@echo "        FreeTDS versions ($(VALGRIND_FREETDS_VERSIONS)) under valgrind."
 	@echo
 	@echo "    Optional variables:"
-	@echo "      TEST - Optional test specifier. e.g. \`make test TEST=ctds.tests.test_tds_connect\`"
 	@echo "      VERBOSE - Include more verbose output."
 
 DARWIN := $(findstring Darwin,$(shell uname))
@@ -142,9 +136,6 @@ $(foreach PV, $(VALGRIND_PYTHON_VERSIONS), $(eval $(call VALGRIND_RULE, $(PV))))
 .PHONY: valgrind
 valgrind: $(foreach PV, $(VALGRIND_PYTHON_VERSIONS), valgrind_$(PV))
 
-
-BUILDDIR ?= build
-
 # Function to generate rules for:
 #   * downloading FreeTDS source
 #   * compiling FreeTDS source
@@ -164,10 +155,11 @@ $(BUILDDIR)/src/freetds-$(strip $(1)): $(BUILDDIR)/src/freetds-$(strip $(1)).tar
 	tar -xzC $(BUILDDIR)/src -f $$(^)
 
 $(BUILDDIR)/freetds-$(strip $(1))/include/sybdb.h: $(BUILDDIR)/src/freetds-$(strip $(1))
-	cd $(BUILDDIR)/src/freetds-$(strip $(1)) \
-    && ./configure --prefix "$(abspath $(BUILDDIR)/freetds-$(strip $(1)))" \
-    && make \
-    && make install
+	mkdir -p $(BUILDDIR)/src/freetds-$(strip $(1))
+	cd $(BUILDDIR)/src/freetds-$(strip $(1))
+	./configure --prefix "$(abspath $(BUILDDIR)/freetds-$(strip $(1)))"
+	make
+	make install
 
 .PHONY: freetds-$(strip $(1))
 freetds-$(strip $(1)): $(BUILDDIR)/freetds-$(strip $(1))/include/sybdb.h
@@ -177,10 +169,28 @@ test-$(strip $(1)): freetds-$(strip $(1))
 	CTDS_INCLUDE_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/include" \
     CTDS_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
     CTDS_RUNTIME_LIBRARY_DIRS="$(abspath $(BUILDDIR)/freetds-$(strip $(1)))/lib" \
-    tox -vv $$$$(tox -l | grep 'py[[:digit:]]-test' | sed -e 's/ /,/g')
+    tox -vv -e $$$$(tox -l | grep 'py[[:digit:]]' | xargs | tr -s ' ' ',')
 endef
 
 $(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), $(eval $(call FREETDS_BUILD_RULE, $(FREETDS_VERSION))))
 
 .PHONY: freetds-latest
 freetds-latest: freetds-$(DEFAULT_FREETDS_VERSION)
+
+.PHONY: pylint
+pylint:
+	tox -e $(@)
+
+.PHONY: checkmetadata
+checkmetadata:
+	tox -e $(@)
+
+.PHONY: docs
+docs:
+	tox -e $(@)
+	echo "View generated documentation at: "
+	echo "    file://$(abspath $(BUILDDIR))/docs/index.html"
+
+
+.PHONY: check
+check: checkmetadata pylint docs $(foreach FREETDS_VERSION, $(CHECKED_FREETDS_VERSIONS), test-$(FREETDS_VERSION))

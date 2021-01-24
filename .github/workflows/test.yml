@@ -21,13 +21,13 @@ jobs:
           - 3.7
           - 3.6
           - 2.7
-        # include:
-        #   - freetds-version: 1.1.24
-        #     os: macos-11.0
-        #     python-version: 3.9
-        #   - freetds-version: 1.1.24
-        #     os: macos-11.0
-        #     python-version: 2.7
+        include:
+          - freetds-version: 1.1.24
+            os: macos-11.0
+            python-version: 3.9
+          - freetds-version: 1.1.24
+            os: macos-11.0
+            python-version: 2.7
 
     steps:
       - uses: actions/checkout@v2
@@ -53,6 +53,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip tox tox-gh-actions
 
+          # Set include/binary paths for later steps to use when installing ctds against
+          # the local version of FreeTDS.
           echo "CTDS_INCLUDE_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
           echo "CTDS_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
           echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
@@ -61,6 +63,13 @@ jobs:
         if: ${{ !contains(matrix.os, 'macos') }}
         run: |
           tox
+
+      # The Github OS X images don't currently include Docker (and probably never will)
+      # so simply ensure the egg can be installed.
+      - name: 'Build on OS X'
+        if: ${{ contains(matrix.os, 'macos') }}
+        run: |
+          python -m pip install .
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
@@ -115,7 +124,9 @@ jobs:
 
   publish-docs:
     name: Publish docs to Github Pages
-    if: startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/tox'
+
+    # Publish all commits to master, not just release (i.e. tagged) commits.
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
     needs: [publish-sdist]
     runs-on: ubuntu-latest
     steps:
@@ -128,6 +139,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip tox
 
-      - name: Build ctds docs
+      - name: Build docs
         run: |
           tox doc
+
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: build/docs

@@ -3,8 +3,8 @@ cTDS
 
 .. include-documentation-begin-marker
 
-.. image:: https://travis-ci.org/zillow/ctds.svg?branch=master
-        :target: https://travis-ci.org/zillow/ctds
+.. image:: https://github.com/zillow/ctds/workflows/CI/CD/badge.svg
+        :target: https://github.com/zillow/ctds/actions
 
 .. image:: https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true
         :target: https://ci.appveyor.com/project/joshuahlang/ctds/branch/master
@@ -50,8 +50,8 @@ for more information on installing `FreeTDS`_.
 Releasing
 ---------
 
-Publishing new versions of the egg and documentation is automated using
-`travis-ci <https://docs.travis-ci.com/user/deployment/>`_ deployment.
+Publishing new versions of the egg and documentation is automated using a
+`Github Actions <https://docs.github.com/en/actions/>`_ workflow.
 Official releases are marked using git
 `tags <https://git-scm.com/book/en/v2/Git-Basics-Tagging>`_. Pushing the
 tag to the git remote will trigger the automated deployment. E.g.
@@ -68,8 +68,8 @@ Generate documentation using the following:
 
 .. code-block:: console
 
-    make doc
-    # Generated to ./.gh-pages
+    tox -e docs
+    # Generated to build/docs/
 
 Documentation is hosted on `GitHub Pages <https://pages.github.com/>`_.
 As such, the source code for the documentation pages must be committed
@@ -81,42 +81,29 @@ Development
 -----------
 
 Local development and testing is supported on Linux-based systems running
-`Docker`_. Docker containers are used for both running a local instance
-of `SQL Server on Linux`_ and creating containers for each combination
-of Python and `FreeTDS`_ version supported. Only `Docker`_ and `GNU make`_
-are required for running tests locally on Linux or OS X systems.
-
-If desired, local development *can* be done by installing **ctds** against the
-system versions of `FreeTDS`_ and `Python`_. Additionally there is a
-`virtualenv` target which will download and compile a recent version of
-`FreeTDS`_ and then install **ctds** into a *virtualenv* using the local
-version of `FreeTDS`_.
+`tox`_ and `Docker`_. Docker containers are used for running a local instance
+of `SQL Server on Linux`_. Only `Docker`_ and `tox`_ are required for running
+tests locally on Linux or OS X systems. `pyenv`_ is recommended for managing
+multiple local versions of Python. By default all tests are run against
+the system version of `FreeTDS`_. `GNU Make`_ targets are provided to make
+compiling specific `FreeTDS`_ versions locally for testing purposes. For
+example:
 
 .. code-block:: console
 
-    # Install as a "develop" egg
-    pip install -e .
-
-    # Install tests.
-    pip install -e .[tests]
-
-    # Run tests (requires SQL Server running)
-    python setup.py test
+    # Run tests against FreeTDS version 1.1.24
+    make test-1.1.24
 
 
-However, given the various supported combinations of `FreeTDS`_ and `Python`_,
-it is easier to create a separate `Docker`_ container for each. The matrix
-of `FreeTDS`_ and `Python`_ is driven using `GNU make`_.
-
-
-Development and testing will require an instance of
-`SQL Server on Linux`_ running for validation. A script is provided to
-start a `Docker`_ container running the database and create the login
-used by the tests.
+Development and testing will require an instance of `SQL Server on Linux`_
+running for validation. A script, `./scripts/ensure-sqlserver.sh` is provided
+to start a `Docker`_ container running the database and create the login used
+by the tests.
 
 .. code-block:: console
 
     # Start a docker-based SQL Server instance.
+    # The default tox targets will do this automatically for you.
     make start-sqlserver
 
     # Run tests as needed ...
@@ -129,18 +116,23 @@ Testing
 -------
 
 Testing is designed to be relatively seamless using `Docker`_ containers
-and `SQL Server on Linux`_. All *test* targets will ensure a running
-database instance docker container exists and is accessible prior to running.
+and `SQL Server on Linux`_. The `pytest`_ framework is used for running
+the automated tests.
 
-To run the tests against the most recent versions of `FreeTDS`_ and `Python`_,
+To run the tests against the system version of `FreeTDS`_ and `Python`_,
 use:
 
 .. code-block:: console
 
-    make test
+    tox
 
 
-To run the tests against an arbitrary version of `FreeTDS`_ and `Python`_:
+`GNU make`_ targets are provided for convenience and to provide a standard
+method for building and installing the various versions of `FreeTDS`_ used
+in testing. Most targets are wrappers around `tox`_ or replicate some
+behavior in the CI/CD automation.
+
+To run the tests against an arbitrary version of `FreeTDS`_:
 
 .. code-block:: console
 
@@ -156,6 +148,25 @@ and additional linting and metadata checks:
     make check
 
 
+Valgrind
+--------
+`valgrind`_ is utilized to ensure memory is managed properly and to detect
+defects such as memory leaks, buffer overruns, etc. Because `valgrind`_
+requires Python is compiled with specific flags, a `Docker`_ file is provided
+to `compile Python <https://pythonextensionpatterns.readthedocs.io/en/latest/debugging/valgrind.html>`
+as necessary to run the test suite under `valgrind`_.
+
+To run test test suite under `valgrind`_:
+
+.. code-block:: console
+
+    make valgrind
+
+
 .. _`Docker`: https://www.docker.com/
 .. _`SQL Server on Linux`: https://hub.docker.com/r/microsoft/mssql-server-linux/
 .. _`GNU make`: https://www.gnu.org/software/make/
+.. _`pyenv`: https://github.com/pyenv/pyenv
+.. _`pytest`: https://docs.pytest.org/en/stable/
+.. _`tox`: https://tox.readthedocs.io/en/latest/
+.. _`valgrind`: https://valgrind.org/
