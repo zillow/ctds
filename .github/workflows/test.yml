@@ -60,16 +60,14 @@ jobs:
           echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
 
       - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
-        if: ${{ !contains(matrix.os, 'macos') }}
+        # The Github OS X images don't currently include Docker (and probably never will)
+        # so simply ensure the egg can be installed.
         run: |
-          tox
-
-      # The Github OS X images don't currently include Docker (and probably never will)
-      # so simply ensure the egg can be installed.
-      - name: 'Build on OS X'
-        if: ${{ contains(matrix.os, 'macos') }}
-        run: |
-          python -m pip install .
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            tox
+          else
+            python -m pip install .
+          fi
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
