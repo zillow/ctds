@@ -156,10 +156,10 @@ $(BUILDDIR)/src/freetds-$(strip $(1)): $(BUILDDIR)/src/freetds-$(strip $(1)).tar
 
 $(BUILDDIR)/freetds-$(strip $(1))/include/sybdb.h: $(BUILDDIR)/src/freetds-$(strip $(1))
 	mkdir -p $(BUILDDIR)/src/freetds-$(strip $(1))
-	cd $(BUILDDIR)/src/freetds-$(strip $(1))
-	./configure --prefix "$(abspath $(BUILDDIR)/freetds-$(strip $(1)))"
-	make
-	make install
+	cd $(BUILDDIR)/src/freetds-$(strip $(1)) && \
+    ./configure --prefix "$(abspath $(BUILDDIR)/freetds-$(strip $(1)))" && \
+    make && \
+    make install
 
 .PHONY: freetds-$(strip $(1))
 freetds-$(strip $(1)): $(BUILDDIR)/freetds-$(strip $(1))/include/sybdb.h

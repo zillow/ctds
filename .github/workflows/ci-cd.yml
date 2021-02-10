@@ -22,10 +22,10 @@ jobs:
         #   - 3.6
         #   - 2.7
         include:
-          - freetds-version: 1.1.24
+          - freetds-version: 1.2.10
             os: macos-latest
             python-version: 3.9
-          - freetds-version: 1.1.24
+          - freetds-version: 1.2.10
             os: macos-latest
             python-version: 2.7
 
