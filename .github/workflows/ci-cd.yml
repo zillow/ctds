@@ -7,20 +7,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os:
-          - ubuntu-20.04
-        freetds-version:
-          - 0.91.112
-          - 0.92.405
-          - 0.95.95
-          - 1.00.80
-          - 1.1.24
-        python-version:
-          - 3.9
-          - 3.8
-          - 3.7
-          - 3.6
-          - 2.7
+        # os:
+        #   - ubuntu-20.04
+        # freetds-version:
+        #   - 0.91.112
+        #   - 0.92.405
+        #   - 0.95.95
+        #   - 1.00.80
+        #   - 1.1.24
+        # python-version:
+        #   - 3.9
+        #   - 3.8
+        #   - 3.7
+        #   - 3.6
+        #   - 2.7
         include:
           - freetds-version: 1.1.24
             os: macos-11.0
