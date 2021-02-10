@@ -70,6 +70,7 @@ jobs:
           fi
 
       - name: Upload coverage to Codecov
+        if: ${{ env.RUNNER_OS == 'Linux' }}
         uses: codecov/codecov-action@v1
         with:
           directory: ./build/coverage/
