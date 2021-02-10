@@ -3,7 +3,7 @@ cTDS
 
 .. include-documentation-begin-marker
 
-.. image:: https://github.com/zillow/ctds/workflows/CI/CD/badge.svg
+.. image:: https://github.com/zillow/ctds/workflows/CI/CD/badge.svg?branch=master
         :target: https://github.com/zillow/ctds/actions
 
 .. image:: https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true
@@ -61,6 +61,7 @@ tag to the git remote will trigger the automated deployment. E.g.
     git tag -a v1.2.3 -m 'v1.2.3'
     git push --tags
 
+
 Documentation
 -------------
 
@@ -96,7 +97,7 @@ example:
 
 
 Development and testing will require an instance of `SQL Server on Linux`_
-running for validation. A script, `./scripts/ensure-sqlserver.sh` is provided
+running for validation. A script, **./scripts/ensure-sqlserver.sh**, is provided
 to start a `Docker`_ container running the database and create the login used
 by the tests.
 
@@ -153,8 +154,7 @@ Valgrind
 `valgrind`_ is utilized to ensure memory is managed properly and to detect
 defects such as memory leaks, buffer overruns, etc. Because `valgrind`_
 requires Python is compiled with specific flags, a `Docker`_ file is provided
-to `compile Python <https://pythonextensionpatterns.readthedocs.io/en/latest/debugging/valgrind.html>`
-as necessary to run the test suite under `valgrind`_.
+to `compile Python`_ as necessary to run the test suite under `valgrind`_.
 
 To run test test suite under `valgrind`_:
 
@@ -164,6 +164,7 @@ To run test test suite under `valgrind`_:
 
 
 .. _`Docker`: https://www.docker.com/
+.. _`compile Python`: https://pythonextensionpatterns.readthedocs.io/en/latest/debugging/valgrind.html
 .. _`SQL Server on Linux`: https://hub.docker.com/r/microsoft/mssql-server-linux/
 .. _`GNU make`: https://www.gnu.org/software/make/
 .. _`pyenv`: https://github.com/pyenv/pyenv
