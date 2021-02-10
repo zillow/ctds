@@ -104,8 +104,8 @@ def splitdirs(name):
 
 def read(*names, **kwargs):
     with io.open(
-            os.path.join(os.path.dirname(__file__), *names),
-            encoding=kwargs.get('encoding', 'utf-8')
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get('encoding', 'utf-8')
     ) as file_:
         return file_.read()
 

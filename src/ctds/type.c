@@ -20,6 +20,14 @@
 #  pragma GCC diagnostic ignored "-Wlong-long"
 #endif /* ifdef __GNUC__ */
 
+#ifdef __clang__
+# if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 8
+/* Ignore "'tp_print' has been explicitly marked deprecated here" */
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#  endif /* if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 8 */
+#endif /* ifdef __clang__ */
+
 
 #define _SqlType_init_base(_type, _value, _tdstype) \
     Py_INCREF((_value)); \

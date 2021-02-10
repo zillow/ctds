@@ -64,7 +64,7 @@ Rollback any pending transaction to the database.
                 self.assertRaises(
                     ctds.DatabaseError,
                     cursor.execute,
-                    "WAITFOR DELAY '00:00:01.1';SELECT @@VERSION"
+                    "WAITFOR DELAY '00:00:02';SELECT @@VERSION"
                 )
 
                 try:

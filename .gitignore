@@ -1,12 +1,9 @@
 *~
-*.egg-info
-*.gcov
 *.pyc
 *.so
-.coverage/
 .gh-pages/
-.venv/
+.tox/
 .vscode/
 build/
-coverage_*/
 dist/
+src/ctds.egg-info/

@@ -1,0 +1,151 @@
+name: CI/CD
+on: [push, pull_request]
+
+jobs:
+  tests:
+    name: 'FreeTDS ${{ matrix.freetds-version }} Python ${{ matrix.python-version }} tests (${{ matrix.os }})'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+        freetds-version:
+          - 0.91.112
+          - 0.92.405
+          - 0.95.95
+          - 1.00.80
+          - 1.1.24
+          - 1.2.10
+        python-version:
+          - 3.9
+          - 3.8
+          - 3.7
+          - 3.6
+          - 2.7
+        include:
+          - freetds-version: 1.2.10
+            os: macos-latest
+            python-version: 3.9
+          - freetds-version: 1.2.10
+            os: macos-latest
+            python-version: 2.7
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 'Cache FreeTDS ${{ matrix.freetds-version }}'
+        id: cache-freetds
+        uses: actions/cache@v2
+        with:
+          path: |
+            build/freetds-${{ matrix.freetds-version }}/include
+            build/freetds-${{ matrix.freetds-version }}/lib
+          key: ${{ matrix.os }}-freetds-${{ matrix.freetds-version }}
+
+      - name: 'Compile FreeTDS ${{ matrix.freetds-version }}'
+        if: steps.cache-freetds.outputs.cache-hit != 'true'
+        run: make freetds-${{ matrix.freetds-version }}
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 'Install dependencies'
+        run: |
+          python -m pip install --upgrade pip tox tox-gh-actions
+
+          # Set include/binary paths for later steps to use when installing ctds against
+          # the local version of FreeTDS.
+          echo "CTDS_INCLUDE_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/include" >> $GITHUB_ENV
+          echo "CTDS_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
+          echo "CTDS_RUNTIME_LIBRARY_DIRS=$GITHUB_WORKSPACE/build/freetds-${{ matrix.freetds-version }}/lib" >> $GITHUB_ENV
+
+      - name: 'Run tests (Python: ${{ matrix.python-version }}, FreeTDS: ${{ matrix.freetds-version }})'
+        # The Github OS X images don't currently include Docker (and probably never will)
+        # so simply ensure the egg can be installed.
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            tox
+          else
+            python -m pip install .
+          fi
+
+      - name: Upload coverage to Codecov
+        if: ${{ env.RUNNER_OS == 'Linux' }}
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./build/coverage/
+          fail_ci_if_error: true
+          functionalities: 'gcov'
+          verbose: true
+
+  valgrind:
+    # Must run on linux VM as that is the only one which supports docker.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 2.7.14
+          - 3.6.3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 'valgrind Python ${{ matrix.python-version }}'
+        run: |
+          make valgrind_${{ matrix.python-version }}
+
+  publish-sdist:
+    name: Publish Python egg to PyPI
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
+    needs: [tests, valgrind]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Build ctds sdist
+        run: |
+          python setup.py sdist
+
+      - name: Publish ctds sdist to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish ctds sdist to PyPI
+        if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  publish-docs:
+    name: Publish docs to Github Pages
+
+    # Publish all commits to master, not just release (i.e. tagged) commits.
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
+    needs: [publish-sdist]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: 'Install dependencies'
+        run: |
+          python -m pip install --upgrade pip tox
+
+      - name: Build docs
+        run: |
+          tox doc
+
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: build/docs

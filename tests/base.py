@@ -78,6 +78,8 @@ class TestExternalDatabase(unittest.TestCase):
                 server = os.environ['HOSTNAME'] # pragma: nocover
             elif platform.system() == 'Windows':
                 server = socket.gethostname()
+        # MS SQL limits the server name to 15 characters.
+        server = server[:15]
         instance = self.get_option('instance')
         if instance is not None: # pragma: nocover
             server += '\\' + instance

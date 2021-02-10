@@ -22,6 +22,12 @@
 
 /* Platform-specific thread-local storage support. */
 #ifdef __clang__
+# if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 8
+/* Ignore "'tp_print' has been explicitly marked deprecated here" */
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#  endif /* if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 8 */
+
 #  include <pthread.h>
 
 #  define TLS_DECLARE(_name, _type, _destructor) \
@@ -2243,7 +2249,6 @@ PyObject* Connection_create(const char* server, uint16_t port, const char* insta
 
     return (PyObject*)connection;
 }
-
 
 PyTypeObject ConnectionType = {
     PyVarObject_HEAD_INIT(NULL, 0)
