@@ -31,7 +31,7 @@ result in an error.
 
 .. code-block:: SQL
 
-    RAISERROR (N'some custom error', 16, -1);
+    RAISERROR (N'some custom error', 10, -1);
 
     /* This statement does not fail, hence a Python exception is not raised. */
     SELECT 1 AS Column1;
@@ -54,6 +54,12 @@ the :py:mod:`warnings` module.
             cursor.execute(
                 "RAISERROR (N'this will become a python exception', 16, -1);"
             )
+
+
+In `cTDS` v1.14.0 and later, all `SQL Server errors`_ with **severity > 10**
+are translated to :py:obj:`ctds.DatabaseError` or more appropriate subclass of
+it. Errors and messages with a severity of 10 or less are still translated to a
+:py:obj:`ctds.Warning`.
 
 
 What does the `Unicode codepoint U+1F4A9 is not representable...` warning mean?
@@ -79,3 +85,4 @@ codepoints outside the *UCS-2* range will no longer be replaced.
 
 
 .. _FreeTDS: https://www.freetds.org
+.. _SQL Server errors: https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/database-engine-events-and-errors?view=sql-server-ver15

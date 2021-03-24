@@ -429,7 +429,7 @@ void Connection_raise_lasterror(struct Connection* connection)
             Categorize by severity for levels > 10, which are considered errors by SQL
             Server.
 
-            See https://technet.microsoft.com/en-us/library/ms164086(v=sql.105).aspx
+            See https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/database-engine-error-severities?view=sql-server-ver15
             for descriptions of each severity level.
         */
         switch ((lastmsg) ? lastmsg->severity : 0)
@@ -604,10 +604,25 @@ int Connection_raise_lastwarning(struct Connection* connection)
     {
         if ((lastmsg->msgno > 0) && (!lastmsg->warned))
         {
-            lastmsg->warned = true;
+            /*
+                If the last message has a high enough severity, consider it an error instead
+                of an "informational" warning. Some of these errors aren't reported by
+                FreeTDS' DB-lib implementation, but seemingly should be. As a workaround,
+                assume any message of sufficient severity should be treated as an error
+                and not only when a DB-lib call returned non-success.
+            */
+            if (lastmsg->severity <= 10)
+            {
+                lastmsg->warned = true;
 
-            /* $TODO: figure out some way to include the other metadata in the warning */
-            error = PyErr_WarnEx(PyExc_tds_Warning, lastmsg->msgtext, 1);
+                /* $TODO: figure out some way to include the other metadata in the warning */
+                error = PyErr_WarnEx(PyExc_tds_Warning, lastmsg->msgtext, 1);
+            }
+            else
+            {
+                Connection_raise_lasterror(connection);
+                error = 1;
+            }
             if (error)
             {
                 break;

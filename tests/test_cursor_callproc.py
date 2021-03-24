@@ -121,7 +121,7 @@ parameters are replaced with output values.
                     sproc,
                     '''
                     AS
-                        RAISERROR (N'some custom error %s', 16, -1, 'hello!');
+                        RAISERROR (N'some custom error %s', 10, -1, 'hello!');
                         SELECT 1 As SomeResult
                     '''
                 ):
@@ -144,7 +144,7 @@ parameters are replaced with output values.
                             'line': 4,
                             'number': 50000,
                             'proc': sproc,
-                            'severity': 16,
+                            'severity': 0, # SQL Server translates 10 -> 0
                             'state': 1,
                         },
                     ]
@@ -176,7 +176,7 @@ parameters are replaced with output values.
                     sproc,
                     '''
                     AS
-                        RAISERROR (N'some custom error %s', 16, -1, 'hello!');
+                        RAISERROR (N'some custom error %s', 10, -1, 'hello!');
                         SELECT 1 As SomeResult
                     '''
                 ):

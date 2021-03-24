@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Replaced travis-ci with Github Actions.
 - Replaced custom Docker-based testing infrastructure with tox.
+- Fixed translation of SQL Server errors to Python exceptions.
+  https://github.com/zillow/ctds/issues/84
 
 ## [1.13.0] - 2020-11-12
 ### Added

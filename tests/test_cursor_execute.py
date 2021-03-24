@@ -744,6 +744,30 @@ specified in the SQL statement. Parameter notation is specified by
                     14,
                     7983
                 ),
+                (
+                    '''
+                    DBCC CHECKDB ('master') WITH NO_INFOMSGS;
+                    ''',
+                    ctds.DatabaseError,
+                    14,
+                    7983
+                ),
+                (
+                    '''
+                    SELECT CONVERT(int, 'abcd');
+                    ''',
+                    ctds.DatabaseError,
+                    16,
+                    245
+                ),
+                (
+                    '''
+                    select 1/0;
+                    ''',
+                    ctds.DatabaseError,
+                    16,
+                    8134
+                ),
         ):
             with self.connect() as connection:
                 with connection.cursor() as cursor:
