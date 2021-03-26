@@ -79,6 +79,7 @@ jobs:
           functionalities: 'gcov'
           verbose: true
 
+
   valgrind:
     # Must run on linux VM as that is the only one which supports docker.
     runs-on: ubuntu-latest
@@ -94,6 +95,7 @@ jobs:
       - name: 'valgrind Python ${{ matrix.python-version }}'
         run: |
           make valgrind_${{ matrix.python-version }}
+
 
   publish-sdist:
     name: Publish Python egg to PyPI
@@ -137,11 +139,12 @@ jobs:
 
       - name: 'Install dependencies'
         run: |
+          sudo apt-get -y install python-dev freetds-dev
           python -m pip install --upgrade pip tox
 
       - name: Build docs
         run: |
-          tox doc
+          tox -edocs
 
       - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v3
