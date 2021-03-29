@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Cursor &mdash; ctds 1.13.0 documentation</title>
+  <title>Cursor &mdash; ctds 1.14.0 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -51,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ctds
+            <a href="index.html" class="icon icon-home"> ctds
           
 
           
@@ -61,7 +63,7 @@
             
             
               <div class="version">
-                1.13
+                1.14
               </div>
             
           
@@ -148,6 +150,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -161,7 +165,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/cursor.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -179,12 +183,12 @@
 <h1>Cursor<a class="headerlink" href="#cursor" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ctds.Cursor">
-<em class="property">class </em><code class="sig-prename descclassname">ctds.</code><code class="sig-name descname">Cursor</code><a class="headerlink" href="#ctds.Cursor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ctds.</span></code><code class="sig-name descname"><span class="pre">Cursor</span></code><a class="headerlink" href="#ctds.Cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>A database cursor used to manage the context of a fetch operation.</p>
 <p><span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#cursor-objects"><strong>PEP 0249#cursor-objects</strong></a></p>
 <dl class="py attribute">
 <dt id="ctds.Cursor.Parameter">
-<code class="sig-name descname">Parameter</code><a class="headerlink" href="#ctds.Cursor.Parameter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">Parameter</span></code><a class="headerlink" href="#ctds.Cursor.Parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method to <a class="reference internal" href="parameter.html#ctds.Parameter" title="ctds.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ctds.Parameter</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -198,7 +202,7 @@
 
 <dl class="py method">
 <dt id="ctds.Cursor.__enter__">
-<code class="sig-name descname">__enter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__enter__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__enter__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__enter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enter the cursor’s runtime context. On exit, the cursor is
 closed automatically.</p>
 <dl class="field-list simple">
@@ -213,7 +217,7 @@ closed automatically.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.__exit__">
-<code class="sig-name descname">__exit__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exc_type</span></em>, <em class="sig-param"><span class="n">exc_val</span></em>, <em class="sig-param"><span class="n">exc_tb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__exit__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__exit__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__exit__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exit the cursor’s runtime context, closing the cursor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -234,19 +238,19 @@ is raised in the context, otherwise <a class="reference external" href="https://
 
 <dl class="py method">
 <dt id="ctds.Cursor.__iter__">
-<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__iter__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__iter__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement iter(self).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ctds.Cursor.__next__">
-<code class="sig-name descname">__next__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__next__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__next__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.__next__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement next(self).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="ctds.Cursor.arraysize">
-<code class="sig-name descname">arraysize</code><a class="headerlink" href="#ctds.Cursor.arraysize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">arraysize</span></code><a class="headerlink" href="#ctds.Cursor.arraysize" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of rows to fetch at a time with <a class="reference internal" href="#ctds.Cursor.fetchmany" title="ctds.Cursor.fetchmany"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchmany()</span></code></a>.</p>
 <p><span class="target" id="index-1"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#arraysize"><strong>PEP 0249#arraysize</strong></a></p>
 <dl class="field-list simple">
@@ -258,7 +262,7 @@ is raised in the context, otherwise <a class="reference external" href="https://
 
 <dl class="py method">
 <dt id="ctds.Cursor.callproc">
-<code class="sig-name descname">callproc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sproc</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.callproc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">callproc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sproc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.callproc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call a stored database procedure with the given name. The sequence of
 parameters must contain one entry for each argument that the procedure
 expects. The result of the call is returned as modified copy of the input
@@ -298,14 +302,14 @@ the output values.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.close">
-<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.close" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the cursor.</p>
 <p><span class="target" id="index-3"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#Cursor.close"><strong>PEP 0249#Cursor.close</strong></a></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="ctds.Cursor.connection">
-<code class="sig-name descname">connection</code><a class="headerlink" href="#ctds.Cursor.connection" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">connection</span></code><a class="headerlink" href="#ctds.Cursor.connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to the Connection object on which the cursor was created.</p>
 <p><span class="target" id="index-4"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#id28"><strong>PEP 0249#id28</strong></a></p>
 <dl class="field-list simple">
@@ -317,7 +321,7 @@ the output values.</p>
 
 <dl class="py attribute">
 <dt id="ctds.Cursor.description">
-<code class="sig-name descname">description</code><a class="headerlink" href="#ctds.Cursor.description" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">description</span></code><a class="headerlink" href="#ctds.Cursor.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>A description of the current result set columns.
 The description is a sequence of tuples, one tuple per column in the
 result set. The tuple describes the column data as follows:</p>
@@ -372,7 +376,7 @@ available.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.execute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">execute</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare and execute a database operation.
 Parameters may be provided as sequence and will be bound to variables
 specified in the SQL statement. Parameter notation is specified by
@@ -390,7 +394,7 @@ specified in the SQL statement. Parameter notation is specified by
 
 <dl class="py method">
 <dt id="ctds.Cursor.executemany">
-<code class="sig-name descname">executemany</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql</span></em>, <em class="sig-param"><span class="n">seq_of_parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.executemany" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">executemany</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_of_parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.executemany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare a database operation (query or command) and then execute it
 against all parameter sequences or mappings found in the sequence
 <cite>seq_of_parameters</cite>.</p>
@@ -407,7 +411,7 @@ against all parameter sequences or mappings found in the sequence
 
 <dl class="py method">
 <dt id="ctds.Cursor.fetchall">
-<code class="sig-name descname">fetchall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">fetchall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch all (remaining) rows of a query result, returning them as a
 sequence of sequences.</p>
 <p><span class="target" id="index-8"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#fetchall"><strong>PEP 0249#fetchall</strong></a></p>
@@ -423,7 +427,7 @@ sequence of sequences.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.fetchmany">
-<code class="sig-name descname">fetchmany</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">self.arraysize</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchmany" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">fetchmany</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">self.arraysize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchmany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the next set of rows of a query result, returning a sequence of
 sequences. An empty sequence is returned when no more rows are available.</p>
 <p><span class="target" id="index-9"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#fetchmany"><strong>PEP 0249#fetchmany</strong></a></p>
@@ -439,7 +443,7 @@ sequences. An empty sequence is returned when no more rows are available.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.fetchone">
-<code class="sig-name descname">fetchone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchone" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">fetchone</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.fetchone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the next row of a query result set, returning a single sequence, or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> when no more data is available.</p>
 <p><span class="target" id="index-10"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#fetchone"><strong>PEP 0249#fetchone</strong></a></p>
@@ -452,7 +456,7 @@ sequences. An empty sequence is returned when no more rows are available.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.next">
-<code class="sig-name descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.next" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">next</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the next row from the currently executing SQL statement using the
 same semantics as <a class="reference internal" href="#ctds.Cursor.fetchone" title="ctds.Cursor.fetchone"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fetchone()</span></code></a>. A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">StopIteration</span></code></a> exception
 is raised when the result set is exhausted.</p>
@@ -469,7 +473,7 @@ is raised when the result set is exhausted.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.nextset">
-<code class="sig-name descname">nextset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.nextset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">nextset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.nextset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Skip to the next available set, discarding any remaining rows from the
 current set.</p>
 <p><span class="target" id="index-12"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#nextset"><strong>PEP 0249#nextset</strong></a></p>
@@ -486,7 +490,7 @@ if not.</p>
 
 <dl class="py attribute">
 <dt id="ctds.Cursor.rowcount">
-<code class="sig-name descname">rowcount</code><a class="headerlink" href="#ctds.Cursor.rowcount" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">rowcount</span></code><a class="headerlink" href="#ctds.Cursor.rowcount" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of rows that the last <a class="reference internal" href="#ctds.Cursor.execute" title="ctds.Cursor.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a> produced or affected.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -503,7 +507,7 @@ and using a version of FreeTDS prior to 1.1.</p>
 
 <dl class="py attribute">
 <dt id="ctds.Cursor.rownumber">
-<code class="sig-name descname">rownumber</code><a class="headerlink" href="#ctds.Cursor.rownumber" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">rownumber</span></code><a class="headerlink" href="#ctds.Cursor.rownumber" title="Permalink to this definition">¶</a></dt>
 <dd><p>The current 0-based index of the cursor in the result set or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the index cannot be determined.</p>
 <p><span class="target" id="index-14"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#rownumber"><strong>PEP 0249#rownumber</strong></a></p>
@@ -516,21 +520,21 @@ and using a version of FreeTDS prior to 1.1.</p>
 
 <dl class="py method">
 <dt id="ctds.Cursor.setinputsizes">
-<code class="sig-name descname">setinputsizes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.setinputsizes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setinputsizes</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.setinputsizes" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method has no effect.</p>
 <p><span class="target" id="index-15"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#setinputsizes"><strong>PEP 0249#setinputsizes</strong></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ctds.Cursor.setoutputsize">
-<code class="sig-name descname">setoutputsize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.setoutputsize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setoutputsize</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ctds.Cursor.setoutputsize" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method has no effect.</p>
 <p><span class="target" id="index-16"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0249#setoutputsize"><strong>PEP 0249#setoutputsize</strong></a></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="ctds.Cursor.spid">
-<code class="sig-name descname">spid</code><a class="headerlink" href="#ctds.Cursor.spid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">spid</span></code><a class="headerlink" href="#ctds.Cursor.spid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the SQL Server Session Process ID (SPID) for the connection or
 <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> if the connection is closed.</p>
 <dl class="field-list simple">
@@ -549,37 +553,29 @@ and using a version of FreeTDS prior to 1.1.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ctds.html" class="btn btn-neutral float-right" title="ctds" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="connection.html" class="btn btn-neutral float-left" title="Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="ctds.html" class="btn btn-neutral float-right" title="ctds" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="connection.html" class="btn btn-neutral float-left" title="Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016-, Zillow, Inc.
+        &#169; Copyright 2016-, Zillow, Inc..
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

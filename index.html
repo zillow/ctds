@@ -3,13 +3,13 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <meta content="Python SQL Server Database driver for Linux" name="description" />
 <meta content="Python, SQL Server, Linux, Database" name="keywords" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>cTDS &mdash; ctds 1.13.0 documentation</title>
+  <title>cTDS &mdash; ctds 1.14.0 documentation</title>
   
 
   
@@ -18,7 +18,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -31,7 +34,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +54,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> ctds
+            <a href="#" class="icon icon-home"> ctds
           
 
           
@@ -62,7 +64,7 @@
             
             
               <div class="version">
-                1.13
+                1.14
               </div>
             
           
@@ -140,6 +142,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -151,7 +155,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -167,7 +171,7 @@
             
   <div class="section" id="ctds">
 <h1>cTDS<a class="headerlink" href="#ctds" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://travis-ci.org/zillow/ctds"><img alt="https://travis-ci.org/zillow/ctds.svg?branch=master" src="https://travis-ci.org/zillow/ctds.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://github.com/zillow/ctds/actions"><img alt="https://github.com/zillow/ctds/workflows/CI/CD/badge.svg?branch=master" src="https://github.com/zillow/ctds/workflows/CI/CD/badge.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://ci.appveyor.com/project/joshuahlang/ctds/branch/master"><img alt="https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true" src="https://ci.appveyor.com/api/projects/status/voa33r7qdnxh6wwp/branch/master?svg=true" /></a>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/ctds/"><img alt="http://img.shields.io/pypi/v/ctds.svg" src="http://img.shields.io/pypi/v/ctds.svg" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/zillow/ctds"><img alt="https://codecov.io/gh/zillow/ctds/branch/master/graph/badge.svg" src="https://codecov.io/gh/zillow/ctds/branch/master/graph/badge.svg" /></a>
@@ -260,38 +264,39 @@ both Python 2 and Python 3.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change Log</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#unreleased">Unreleased</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">1.13.0 - 2020-11-12</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">1.12.0 - 2020-03-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id4">1.11.0 - 2019-11-14</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id7">1.10.1 - 2019-06-27</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id9">1.10.0 - 2019-04-15</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id12">1.9.0 - 2018-11-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id15">1.8.0 - 2018-09-07</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id18">1.7.0 - 2018-01-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id21">1.6.3 - 2017-12-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id23">1.6.2 - 2017-11-27</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id25">1.6.1 - 2017-11-20</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id27">1.6.0 - 2017-11-17</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id30">1.5.0 - 2017-10-16</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id32">1.4.1 - 2017-09-29</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id34">1.4.0 - 2017-09-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id37">1.3.2 - 2017-07-25</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id40">1.3.1 - 2017-05-31</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id42">1.3.0 - 2017-03-15</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id44">1.2.3 - 2017-03-13</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id46">1.2.2 - 2017-01-10</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id48">1.2.1 - 2016-12-27</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id50">1.2.0 - 2016-12-27</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id53">1.1.0 - 2016-11-14</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id56">1.0.8 - 2016-08-17</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id58">1.0.7 - 2016-08-15</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id60">1.0.6 - 2016-08-15</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id63">1.0.5 - 2016-05-23</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id65">1.0.4 - 2016-05-19</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id68">1.0.3 - 2016-03-31</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id71">1.0.2 - 2016-03-15</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id74">1.0.1 - 2016-03-14</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id77">1.0.0 - 2016-03-14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">1.14.0 - 2021-03-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">1.13.0 - 2020-11-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id4">1.12.0 - 2020-03-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id6">1.11.0 - 2019-11-14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id9">1.10.1 - 2019-06-27</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id11">1.10.0 - 2019-04-15</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id14">1.9.0 - 2018-11-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id17">1.8.0 - 2018-09-07</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id20">1.7.0 - 2018-01-24</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id23">1.6.3 - 2017-12-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id25">1.6.2 - 2017-11-27</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id27">1.6.1 - 2017-11-20</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id29">1.6.0 - 2017-11-17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id32">1.5.0 - 2017-10-16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id34">1.4.1 - 2017-09-29</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id36">1.4.0 - 2017-09-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id39">1.3.2 - 2017-07-25</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id42">1.3.1 - 2017-05-31</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id44">1.3.0 - 2017-03-15</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id46">1.2.3 - 2017-03-13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id48">1.2.2 - 2017-01-10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id50">1.2.1 - 2016-12-27</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id52">1.2.0 - 2016-12-27</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id55">1.1.0 - 2016-11-14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id58">1.0.8 - 2016-08-17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id60">1.0.7 - 2016-08-15</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id62">1.0.6 - 2016-08-15</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id65">1.0.5 - 2016-05-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id67">1.0.4 - 2016-05-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id70">1.0.3 - 2016-03-31</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id73">1.0.2 - 2016-03-15</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id76">1.0.1 - 2016-03-14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id79">1.0.0 - 2016-03-14</a></li>
 </ul>
 </li>
 </ul>
@@ -304,35 +309,28 @@ both Python 2 and Python 3.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="install.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="install.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2016-, Zillow, Inc.
+        &#169; Copyright 2016-, Zillow, Inc..
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
