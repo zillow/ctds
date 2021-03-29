@@ -114,6 +114,8 @@ jobs:
 
       - name: Publish ctds sdist to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
+        # Allow test publishing to fail as the current version may have been previously published. 
+        continue-on-error: true
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
